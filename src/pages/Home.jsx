@@ -23,6 +23,59 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import PersonalizedWelcome from "@/components/PersonalizedWelcome";
 
+// ============================================
+// PARTICLE LAYER - Industrial Embers / Atmosphere
+// ============================================
+const PARTICLES = Array.from({ length: 30 }, (_, i) => ({
+  id: i,
+  size: 2 + (i % 3), // 2-4px (slightly larger)
+  left: (i * 3.33) % 100, // Spread across width
+  delay: (i * 0.3) % 8, // 0-8s staggered delay
+  duration: 8 + (i % 8), // 8-16s varied duration
+  opacity: 0.3 + ((i % 5) * 0.1), // 0.3-0.7 (more visible)
+  drift: (i % 2 === 0 ? 1 : -1) * (15 + (i % 25)), // Horizontal drift
+}));
+
+const ParticleLayer = () => (
+  <>
+    <style>{`
+      @keyframes floatUpHome {
+        0% {
+          transform: translateY(0) translateX(0);
+          opacity: 0;
+        }
+        5% {
+          opacity: var(--particle-opacity);
+        }
+        95% {
+          opacity: var(--particle-opacity);
+        }
+        100% {
+          transform: translateY(-100vh) translateX(var(--particle-drift));
+          opacity: 0;
+        }
+      }
+    `}</style>
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
+      {PARTICLES.map((particle) => (
+        <div
+          key={particle.id}
+          className="absolute rounded-full bg-white"
+          style={{
+            '--particle-opacity': particle.opacity,
+            '--particle-drift': `${particle.drift}px`,
+            width: `${particle.size}px`,
+            height: `${particle.size}px`,
+            left: `${particle.left}%`,
+            top: '100%',
+            animation: `floatUpHome ${particle.duration}s linear ${particle.delay}s infinite`,
+          }}
+        />
+      ))}
+    </div>
+  </>
+);
+
 export default function Home() {
   const [titleNumber, setTitleNumber] = useState(0);
   const heroPinRef = useRef(null);
@@ -269,7 +322,10 @@ export default function Home() {
 
           {/* Darker Gradient Overlay for better text visibility */}
           <div className="absolute inset-0 z-[-1] bg-gradient-to-br from-black/70 via-black/50 to-black/70 pointer-events-none"></div>
-          
+
+          {/* Floating Particles - Industrial embers effect */}
+          <ParticleLayer />
+
           <AuroraHero
             title={animatedTitle}
             description="Stop searching, start building. Learn from real Chicago exits, meet communities actually shipping, and dive into the startup ecosystem."

@@ -82,11 +82,68 @@ const DotGridPattern = () => (
   </div>
 );
 
+// Particle Layer - Industrial Embers / Atmosphere
+const ParticleLayer = () => {
+  // Generate 25 particles with random properties
+  const particles = Array.from({ length: 25 }, (_, i) => ({
+    id: i,
+    size: Math.random() * 2 + 1, // 1-3px
+    left: Math.random() * 100, // 0-100%
+    delay: Math.random() * 10, // 0-10s delay
+    duration: Math.random() * 10 + 5, // 5-15s
+    opacity: Math.random() * 0.1 + 0.1, // 0.1-0.2
+  }));
+
+  return (
+    <>
+      {/* Keyframes for floating animation */}
+      <style>{`
+        @keyframes floatUp {
+          0% {
+            transform: translateY(100vh) translateX(0);
+            opacity: 0;
+          }
+          10% {
+            opacity: 1;
+          }
+          90% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(-20px) translateX(20px);
+            opacity: 0;
+          }
+        }
+      `}</style>
+
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        {particles.map((particle) => (
+          <div
+            key={particle.id}
+            className="absolute rounded-full bg-slate-400"
+            style={{
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+              left: `${particle.left}%`,
+              bottom: '-10px',
+              opacity: particle.opacity,
+              animation: `floatUp ${particle.duration}s ease-in-out ${particle.delay}s infinite`,
+            }}
+          />
+        ))}
+      </div>
+    </>
+  );
+};
+
 // Chicago Schematic Background Component
 const ChicagoBackground = () => (
   <>
     {/* Dot Grid Pattern - Subtle builder texture */}
     <DotGridPattern />
+
+    {/* Floating Particles - Industrial embers */}
+    <ParticleLayer />
 
     {/* Giant Chicago Star - Top Right, bleeds off screen */}
     <motion.div
