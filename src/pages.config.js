@@ -20,6 +20,7 @@ const BeforeYouStart = lazy(() => import('./pages/BeforeYouStart'));
 const NavigatePaths = lazy(() => import('./pages/NavigatePaths'));
 const BusinessTypeExplorer = lazy(() => import('./pages/BusinessTypeExplorer'));
 const HumanHelp = lazy(() => import('./pages/HumanHelp'));
+const Directory = lazy(() => import('./pages/Directory'));
 
 export const PAGES = {
     "Home": Home,
@@ -41,6 +42,7 @@ export const PAGES = {
     "navigate-toolkit": NavigatePaths,
     "business-type-explorer": BusinessTypeExplorer,
     "human-help": HumanHelp,
+    "Directory": Directory,
 }
 
 export const pagesConfig = {

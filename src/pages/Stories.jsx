@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import SEO from "@/components/SEO";
 import PageHero from "@/components/ui/page-hero";
 import { generateSlug } from "@/lib/utils";
+import ShareActions from "@/components/ShareActions";
 
 export default function Stories() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -513,18 +514,27 @@ export default function Stories() {
                         </p>
 
                         <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/[0.04]">
-                          {getPrimaryPower(story) && (
-                            <div className="flex items-center gap-1.5">
-                              <Shield className="w-3 h-3 text-blue-500/60" />
-                              <span className="text-white/40 text-xs font-medium">{getPrimaryPower(story)}</span>
-                            </div>
-                          )}
-                          <Link to={`/stories/${generateSlug(story.company_name)}`}>
-                            <div className="flex items-center gap-1 text-white/40 hover:text-white text-xs font-medium transition-colors group/link">
-                              Read Story
-                              <ChevronRight className="w-3 h-3 group-hover/link:translate-x-0.5 transition-transform" />
-                            </div>
-                          </Link>
+                          <div className="flex items-center gap-2">
+                            {getPrimaryPower(story) && (
+                              <div className="flex items-center gap-1.5">
+                                <Shield className="w-3 h-3 text-blue-500/60" />
+                                <span className="text-white/40 text-xs font-medium">{getPrimaryPower(story)}</span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <ShareActions
+                              resourceType="story"
+                              resourceId={story.id}
+                              resourceName={story.company_name}
+                            />
+                            <Link to={`/stories/${generateSlug(story.company_name)}`}>
+                              <div className="flex items-center gap-1 text-white/40 hover:text-white text-xs font-medium transition-colors group/link">
+                                Read Story
+                                <ChevronRight className="w-3 h-3 group-hover/link:translate-x-0.5 transition-transform" />
+                              </div>
+                            </Link>
+                          </div>
                         </div>
                       </div>
                     </div>

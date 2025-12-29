@@ -17,6 +17,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import UserMenu from "@/components/auth/UserMenu";
 import LoginModal from "@/components/auth/LoginModal";
 import SignupModal from "@/components/auth/SignupModal";
+import AIAssistant from "@/components/AIAssistant";
 
 export default function Layout({ children }) {
   const location = useLocation();
@@ -590,6 +591,9 @@ export default function Layout({ children }) {
           setShowLogin(true);
         }}
       />
+
+      {/* AI Assistant - only visible for logged-in users */}
+      <AIAssistant />
       </SmoothScrollProvider>
     </div>
   );

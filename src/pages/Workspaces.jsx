@@ -10,6 +10,7 @@ import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
 import SEO from "@/components/SEO";
 import PageHero from "@/components/ui/page-hero";
+import ShareActions from "@/components/ShareActions";
 
 // Fix for default marker icons in react-leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -324,14 +325,21 @@ export default function Workspaces() {
                           </>
                         )}
 
-                        {workspace.website && (
-                          <a href={workspace.website} target="_blank" rel="noopener noreferrer" className="block">
-                            <Button className="w-full bg-white/[0.03] hover:bg-white/[0.08] text-white/60 hover:text-white border border-white/[0.06] hover:border-white/15 text-xs h-9 transition-all duration-300 group/btn">
-                              Visit Website
-                              <ExternalLink className="w-3 h-3 ml-2 group-hover/btn:translate-x-0.5 transition-transform" />
-                            </Button>
-                          </a>
-                        )}
+                        <div className="flex items-center gap-2">
+                          {workspace.website && (
+                            <a href={workspace.website} target="_blank" rel="noopener noreferrer" className="flex-1">
+                              <Button className="w-full bg-white/[0.03] hover:bg-white/[0.08] text-white/60 hover:text-white border border-white/[0.06] hover:border-white/15 text-xs h-9 transition-all duration-300 group/btn">
+                                Visit Website
+                                <ExternalLink className="w-3 h-3 ml-2 group-hover/btn:translate-x-0.5 transition-transform" />
+                              </Button>
+                            </a>
+                          )}
+                          <ShareActions
+                            resourceType="workspace"
+                            resourceId={workspace.id}
+                            resourceName={workspace.name}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>

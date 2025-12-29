@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
+import ShareActions from "@/components/ShareActions";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -459,18 +460,27 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
 
                   {/* Footer */}
                   <div className="flex items-center justify-between pt-3 border-t border-white/[0.06] mt-auto">
-                    {opp.check_size && (
-                      <span className="text-white/40 text-xs">{opp.check_size}</span>
-                    )}
-                    {opp.deadline && !isHot && (
-                      <span className="text-white/40 text-xs flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        {new Date(opp.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                      </span>
-                    )}
-                    <div className="flex items-center gap-1 text-white/40 group-hover:text-white text-xs ml-auto">
-                      Learn More
-                      <ExternalLink className="w-3 h-3" />
+                    <div className="flex items-center gap-2">
+                      {opp.check_size && (
+                        <span className="text-white/40 text-xs">{opp.check_size}</span>
+                      )}
+                      {opp.deadline && !isHot && (
+                        <span className="text-white/40 text-xs flex items-center gap-1">
+                          <Calendar className="w-3 h-3" />
+                          {new Date(opp.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <ShareActions
+                        resourceType="funding_opportunity"
+                        resourceId={opp.id}
+                        resourceName={opp.name}
+                      />
+                      <div className="flex items-center gap-1 text-white/40 group-hover:text-white text-xs">
+                        Learn More
+                        <ExternalLink className="w-3 h-3" />
+                      </div>
                     </div>
                   </div>
                 </motion.a>

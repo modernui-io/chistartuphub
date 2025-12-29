@@ -17,30 +17,45 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
 
+  // Load profile separately - don't block auth
+  const loadUserProfile = async (userId) => {
+    try {
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('id', userId)
+        .maybeSingle();
+      setProfile(data);
+    } catch (error) {
+      console.warn('Profile load failed:', error.message);
+      setProfile(null);
+    }
+  };
+
   useEffect(() => {
-    // Get initial session
+    // Get initial session - don't wait for profile
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
+      setLoading(false);
+
+      // Load profile in background if logged in
       if (session?.user) {
         loadUserProfile(session.user.id);
-      } else {
-        setLoading(false);
       }
     });
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event);
+      (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+        setLoading(false);
 
         if (session?.user) {
-          await loadUserProfile(session.user.id);
+          loadUserProfile(session.user.id);
         } else {
           setProfile(null);
-          setLoading(false);
         }
       }
     );
@@ -48,33 +63,11 @@ export const AuthProvider = ({ children }) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const loadUserProfile = async (userId) => {
-    try {
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows
-        console.error('Error loading profile:', error);
-      }
-
-      setProfile(data);
-    } catch (error) {
-      console.error('Error loading profile:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const signUp = async (email, password, metadata = {}) => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: metadata,
-      },
+      options: { data: metadata },
     });
     return { data, error };
   };
@@ -90,9 +83,7 @@ export const AuthProvider = ({ children }) => {
   const signInWithOAuth = async (provider) => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider,
-      options: {
-        redirectTo: `${window.location.origin}/`,
-      },
+      options: { redirectTo: `${window.location.origin}/` },
     });
     return { data, error };
   };
@@ -110,33 +101,33 @@ export const AuthProvider = ({ children }) => {
   const updateProfile = async (updates) => {
     if (!user) return { error: new Error('No user logged in') };
 
-    const { data, error } = await supabase
-      .from('user_profiles')
-      .upsert({ id: user.id, email: user.email, ...updates })
-      .select()
-      .single();
+    try {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .upsert({ id: user.id, email: user.email, ...updates })
+        .select()
+        .single();
 
-    if (!error) {
+      if (error) return { data: null, error };
       setProfile(data);
+      return { data, error: null };
+    } catch (err) {
+      return { error: err };
     }
-
-    return { data, error };
-  };
-
-  const value = {
-    user,
-    profile,
-    session,
-    loading,
-    signUp,
-    signIn,
-    signInWithOAuth,
-    signOut,
-    updateProfile,
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{
+      user,
+      profile,
+      session,
+      loading,
+      signUp,
+      signIn,
+      signInWithOAuth,
+      signOut,
+      updateProfile,
+    }}>
       {children}
     </AuthContext.Provider>
   );

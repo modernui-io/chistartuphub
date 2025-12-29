@@ -33,9 +33,42 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   website_url TEXT,
   avatar_url TEXT,
   location TEXT,
+  current_focus TEXT,
+  focus_description TEXT,
+  tech_stack TEXT[],
+  achievements TEXT[],
+  sectors TEXT[],
+  badges TEXT[],
+  opportunity_category TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Add new columns if table already exists
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'user_profiles' AND column_name = 'current_focus') THEN
+    ALTER TABLE user_profiles ADD COLUMN current_focus TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'user_profiles' AND column_name = 'focus_description') THEN
+    ALTER TABLE user_profiles ADD COLUMN focus_description TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'user_profiles' AND column_name = 'tech_stack') THEN
+    ALTER TABLE user_profiles ADD COLUMN tech_stack TEXT[];
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'user_profiles' AND column_name = 'achievements') THEN
+    ALTER TABLE user_profiles ADD COLUMN achievements TEXT[];
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'user_profiles' AND column_name = 'opportunity_category') THEN
+    ALTER TABLE user_profiles ADD COLUMN opportunity_category TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'user_profiles' AND column_name = 'sectors') THEN
+    ALTER TABLE user_profiles ADD COLUMN sectors TEXT[];
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'user_profiles' AND column_name = 'badges') THEN
+    ALTER TABLE user_profiles ADD COLUMN badges TEXT[];
+  END IF;
+END $$;
 
 -- Enable Row Level Security
 ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
@@ -68,10 +101,28 @@ CREATE TABLE IF NOT EXISTS bookmarks (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   resource_type TEXT NOT NULL CHECK (resource_type IN ('event', 'funding_opportunity', 'workspace', 'story', 'community', 'accelerator')),
-  resource_id UUID NOT NULL,
+  resource_id TEXT NOT NULL,
+  resource_name TEXT,
   notes TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Add resource_name column if table already exists
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'bookmarks' AND column_name = 'resource_name') THEN
+    ALTER TABLE bookmarks ADD COLUMN resource_name TEXT;
+  END IF;
+END $$;
+
+-- Change resource_id to TEXT if it was UUID (more flexible)
+DO $$
+BEGIN
+  ALTER TABLE bookmarks ALTER COLUMN resource_id TYPE TEXT USING resource_id::TEXT;
+EXCEPTION WHEN OTHERS THEN
+  NULL;
+END $$;
 
 -- Enable Row Level Security
 ALTER TABLE bookmarks ENABLE ROW LEVEL SECURITY;
@@ -111,6 +162,9 @@ COMMENT ON TABLE bookmarks IS 'User bookmarks for resources, events, and opportu
 COMMENT ON COLUMN user_profiles.role IS 'User role: founder, investor, service-provider, student, or other';
 COMMENT ON COLUMN user_profiles.stage IS 'Startup stage: idea, pre-revenue, early-revenue, growth, or scaling';
 COMMENT ON COLUMN user_profiles.interests IS 'Array of interest areas (Capital/Funding, Co-Working Spaces, etc.)';
+COMMENT ON COLUMN user_profiles.opportunity_category IS 'Current opportunity type: Talent (Hiring), Capital (Raising), Work (Looking for Role), Connect (Networking)';
+COMMENT ON COLUMN user_profiles.sectors IS 'Array of industry sectors (FinTech, HealthTech, AI & Machine Learning, etc.)';
+COMMENT ON COLUMN user_profiles.badges IS 'Array of identity badges (Technical Founder, YC Alum, Woman Founder, etc.)';
 
 COMMENT ON COLUMN bookmarks.resource_type IS 'Type of bookmarked resource: event, funding_opportunity, workspace, story, community, or accelerator';
 COMMENT ON COLUMN bookmarks.resource_id IS 'UUID of the bookmarked resource';

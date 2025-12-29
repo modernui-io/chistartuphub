@@ -7,6 +7,7 @@ import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
 import SEO from "@/components/SEO";
 import PageHero from "@/components/ui/page-hero";
+import ShareActions from "@/components/ShareActions";
 
 export default function Community() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -125,12 +126,19 @@ export default function Community() {
                       {community.description}
                     </p>
 
-                    <a href={community.website.startsWith('http') ? community.website : `https://${community.website}`} target="_blank" rel="noopener noreferrer" className="mt-auto">
-                      <Button className="w-full bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 hover:text-blue-300 border border-blue-500/20 hover:border-blue-500/30 transition-all duration-300 group/btn">
-                        Visit Community
-                        <ExternalLink className="w-3.5 h-3.5 ml-2 group-hover/btn:translate-x-0.5 transition-transform" />
-                      </Button>
-                    </a>
+                    <div className="flex items-center gap-2 mt-auto">
+                      <a href={community.website.startsWith('http') ? community.website : `https://${community.website}`} target="_blank" rel="noopener noreferrer" className="flex-1">
+                        <Button className="w-full bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 hover:text-blue-300 border border-blue-500/20 hover:border-blue-500/30 transition-all duration-300 group/btn">
+                          Visit Community
+                          <ExternalLink className="w-3.5 h-3.5 ml-2 group-hover/btn:translate-x-0.5 transition-transform" />
+                        </Button>
+                      </a>
+                      <ShareActions
+                        resourceType="community"
+                        resourceId={community.id}
+                        resourceName={community.name}
+                      />
+                    </div>
                   </div>
                 </div>
               ))}
@@ -166,12 +174,19 @@ export default function Community() {
                       {community.description}
                     </p>
 
-                    <a href={community.website.startsWith('http') ? community.website : `https://${community.website}`} target="_blank" rel="noopener noreferrer" className="mt-auto">
-                      <Button className="w-full bg-white/5 hover:bg-white/10 text-white/60 hover:text-white border border-white/5 hover:border-white/10 text-sm transition-all duration-300 group/btn h-9">
-                        Visit Community
-                        <ExternalLink className="w-3 h-3 ml-2 group-hover/btn:translate-x-0.5 transition-transform" />
-                      </Button>
-                    </a>
+                    <div className="flex items-center gap-2 mt-auto">
+                      <a href={community.website.startsWith('http') ? community.website : `https://${community.website}`} target="_blank" rel="noopener noreferrer" className="flex-1">
+                        <Button className="w-full bg-white/5 hover:bg-white/10 text-white/60 hover:text-white border border-white/5 hover:border-white/10 text-sm transition-all duration-300 group/btn h-9">
+                          Visit Community
+                          <ExternalLink className="w-3 h-3 ml-2 group-hover/btn:translate-x-0.5 transition-transform" />
+                        </Button>
+                      </a>
+                      <ShareActions
+                        resourceType="community"
+                        resourceId={community.id}
+                        resourceName={community.name}
+                      />
+                    </div>
                   </div>
                 </div>
               ))}

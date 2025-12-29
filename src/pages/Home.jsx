@@ -21,6 +21,7 @@ import OptimizedImage from "@/components/OptimizedImage";
 import SEO from "@/components/SEO";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import PersonalizedWelcome from "@/components/PersonalizedWelcome";
 
 export default function Home() {
   const [titleNumber, setTitleNumber] = useState(0);
@@ -322,7 +323,10 @@ export default function Home() {
       {/* Resources Section - Bento Grid */}
       <section id="resources-section" className="py-16 md:py-32 px-4 md:px-6 bg-gradient-to-b from-black via-gray-900 to-black">
         <div className="max-w-7xl mx-auto">
-          <motion.div 
+          {/* Personalized Welcome for logged-in users */}
+          <PersonalizedWelcome />
+
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}

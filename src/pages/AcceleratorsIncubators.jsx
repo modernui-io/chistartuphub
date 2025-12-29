@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
+import ShareActions from "@/components/ShareActions";
 
 export default function AcceleratorsIncubators() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -222,12 +223,19 @@ export default function AcceleratorsIncubators() {
                   ))}
                 </div>
 
-                <a href={program.link} target="_blank" rel="noopener noreferrer">
-                  <Button className="glass-button w-full text-sm">
-                    Learn More
-                    <ExternalLink className="w-3 h-3 ml-2" />
-                  </Button>
-                </a>
+                <div className="flex items-center gap-2">
+                  <a href={program.link} target="_blank" rel="noopener noreferrer" className="flex-1">
+                    <Button className="glass-button w-full text-sm">
+                      Learn More
+                      <ExternalLink className="w-3 h-3 ml-2" />
+                    </Button>
+                  </a>
+                  <ShareActions
+                    resourceType="accelerator"
+                    resourceId={program.id}
+                    resourceName={program.name}
+                  />
+                </div>
               </div>
             ))}
           </div>

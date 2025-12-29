@@ -105,7 +105,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
         return;
       }
 
-      // Create profile
+      // Create profile - even if email confirmation is required, we want to store profile data
       if (data?.user) {
         console.log('Creating profile for user:', data.user.id);
         const { error: profileError } = await updateProfile({
@@ -127,9 +127,19 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
         }
       }
 
-      toast.success('Welcome to ChiStartupHub!', {
-        description: 'Your account has been created successfully!',
-      });
+      // Check if email confirmation is required
+      const needsEmailConfirmation = data?.user && !data.session;
+
+      if (needsEmailConfirmation) {
+        toast.success('Check your email!', {
+          description: 'We sent you a confirmation link. Please verify your email to complete signup.',
+          duration: 8000,
+        });
+      } else {
+        toast.success('Welcome to ChiStartupHub!', {
+          description: 'Your account has been created successfully!',
+        });
+      }
 
       setLoading(false);
       resetForm();
@@ -181,11 +191,47 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
           </DialogDescription>
         </DialogHeader>
 
-        {/* Progress indicator */}
-        <div className="flex gap-2 mb-4">
-          <div className={`flex-1 h-1 rounded ${step >= 1 ? 'bg-blue-600' : 'bg-white/10'}`} />
-          <div className={`flex-1 h-1 rounded ${step >= 2 ? 'bg-blue-600' : 'bg-white/10'}`} />
-          <div className={`flex-1 h-1 rounded ${step >= 3 ? 'bg-blue-600' : 'bg-white/10'}`} />
+        {/* Enhanced Progress indicator */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between">
+            {[
+              { num: 1, label: 'Account' },
+              { num: 2, label: 'Profile' },
+              { num: 3, label: 'Interests' }
+            ].map((s, index) => (
+              <div key={s.num} className="flex items-center">
+                <div className="flex flex-col items-center">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
+                      step > s.num
+                        ? 'bg-blue-600 text-white'
+                        : step === s.num
+                        ? 'bg-blue-600 text-white ring-2 ring-blue-400 ring-offset-2 ring-offset-[#0F0F0F]'
+                        : 'bg-white/10 text-white/40'
+                    }`}
+                  >
+                    {step > s.num ? (
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      s.num
+                    )}
+                  </div>
+                  <span className={`text-xs mt-1.5 transition-colors ${step >= s.num ? 'text-white/80' : 'text-white/40'}`}>
+                    {s.label}
+                  </span>
+                </div>
+                {index < 2 && (
+                  <div
+                    className={`w-12 sm:w-16 h-0.5 mx-2 transition-colors ${
+                      step > s.num ? 'bg-blue-600' : 'bg-white/10'
+                    }`}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         {step === 1 && (

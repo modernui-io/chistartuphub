@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 export default function BookmarkButton({
   resourceType,
   resourceId,
+  resourceName = '',
   variant = 'outline',
   size = 'default',
   showText = true,
@@ -32,7 +33,7 @@ export default function BookmarkButton({
     if (bookmarked && bookmark) {
       removeBookmark(bookmark.id);
     } else {
-      addBookmark({ resourceType, resourceId });
+      addBookmark({ resourceType, resourceId, resourceName });
     }
   };
 

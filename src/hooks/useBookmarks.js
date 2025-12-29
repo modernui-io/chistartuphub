@@ -13,41 +13,79 @@ export const useBookmarks = (resourceType) => {
     queryFn: async () => {
       if (!user) return [];
 
-      let query = supabase
-        .from('bookmarks')
-        .select('*')
-        .eq('user_id', user.id);
+      try {
+        let query = supabase
+          .from('bookmarks')
+          .select('*')
+          .eq('user_id', user.id);
 
-      if (resourceType) {
-        query = query.eq('resource_type', resourceType);
+        if (resourceType) {
+          query = query.eq('resource_type', resourceType);
+        }
+
+        const { data, error } = await query.order('created_at', { ascending: false });
+
+        // If table doesn't exist, return empty array silently
+        if (error) {
+          console.warn('Bookmarks query error (table may not exist):', error.message);
+          return [];
+        }
+        return data || [];
+      } catch (err) {
+        console.warn('Bookmarks fetch error:', err);
+        return [];
       }
-
-      const { data, error} = await query.order('created_at', { ascending: false });
-
-      if (error) throw error;
-      return data || [];
     },
     enabled: !!user,
+    retry: false, // Don't retry if table doesn't exist
   });
 
   // Add bookmark
   const addBookmark = useMutation({
-    mutationFn: async ({ resourceType, resourceId, notes }) => {
+    mutationFn: async ({ resourceType, resourceId, resourceName, notes }) => {
       if (!user) throw new Error('Must be logged in to bookmark');
 
-      const { data, error } = await supabase
+      console.log('Adding bookmark:', { resourceType, resourceId, resourceName, userId: user.id });
+
+      // First try with resource_name, fall back to without it if column doesn't exist
+      let result = await supabase
         .from('bookmarks')
         .insert({
           user_id: user.id,
           resource_type: resourceType,
-          resource_id: resourceId,
-          notes,
+          resource_id: String(resourceId), // Ensure it's a string
+          resource_name: resourceName || null,
+          notes: notes || null,
         })
         .select()
         .single();
 
-      if (error) throw error;
-      return data;
+      // If resource_name column doesn't exist, try without it
+      if (result.error && result.error.message?.includes('resource_name')) {
+        console.log('Retrying without resource_name column...');
+        result = await supabase
+          .from('bookmarks')
+          .insert({
+            user_id: user.id,
+            resource_type: resourceType,
+            resource_id: String(resourceId),
+            notes: notes || null,
+          })
+          .select()
+          .single();
+      }
+
+      if (result.error) {
+        console.error('Bookmark insert error:', JSON.stringify(result.error, null, 2));
+        console.error('Error code:', result.error.code);
+        console.error('Error message:', result.error.message);
+        console.error('Error details:', result.error.details);
+        console.error('Error hint:', result.error.hint);
+        throw result.error;
+      }
+
+      console.log('Bookmark added successfully:', result.data);
+      return result.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
@@ -57,9 +95,20 @@ export const useBookmarks = (resourceType) => {
     },
     onError: (error) => {
       console.error('Bookmark error:', error);
-      toast.error('Error', {
-        description: error.message || 'Failed to bookmark',
-      });
+
+      // More helpful error messages
+      let errorMessage = 'Failed to bookmark';
+      if (error.message?.includes('violates row-level security')) {
+        errorMessage = 'Permission denied. Please try logging out and back in.';
+      } else if (error.message?.includes('duplicate')) {
+        errorMessage = 'Already bookmarked!';
+      } else if (error.message?.includes('does not exist')) {
+        errorMessage = 'Bookmarks not set up yet. Please contact support.';
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      toast.error('Error', { description: errorMessage });
     },
   });
 

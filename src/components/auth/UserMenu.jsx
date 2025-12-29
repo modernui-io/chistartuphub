@@ -13,9 +13,12 @@ import { User, Bookmark, LogOut } from 'lucide-react';
 export default function UserMenu() {
   const { user, profile, signOut } = useAuth();
 
+  // Get full name from profile or user metadata
+  const fullName = profile?.full_name || user?.user_metadata?.full_name || '';
+
   const getInitials = () => {
-    if (profile?.full_name) {
-      return profile.full_name
+    if (fullName) {
+      return fullName
         .split(' ')
         .map((n) => n[0])
         .join('')
@@ -41,7 +44,7 @@ export default function UserMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56 bg-[#0F0F0F] border-white/10">
         <div className="px-3 py-2">
-          <p className="text-sm font-medium text-white">{profile?.full_name || 'User'}</p>
+          <p className="text-sm font-medium text-white">{fullName || 'User'}</p>
           <p className="text-xs text-white/50">{user?.email}</p>
         </div>
         <DropdownMenuSeparator className="bg-white/10" />
