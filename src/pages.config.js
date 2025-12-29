@@ -21,6 +21,7 @@ const NavigatePaths = lazy(() => import('./pages/NavigatePaths'));
 const BusinessTypeExplorer = lazy(() => import('./pages/BusinessTypeExplorer'));
 const HumanHelp = lazy(() => import('./pages/HumanHelp'));
 const Directory = lazy(() => import('./pages/Directory'));
+const Opportunities = lazy(() => import('./pages/Opportunities'));
 
 export const PAGES = {
     "Home": Home,
@@ -43,6 +44,7 @@ export const PAGES = {
     "business-type-explorer": BusinessTypeExplorer,
     "human-help": HumanHelp,
     "Directory": Directory,
+    "Opportunities": Opportunities,
 }
 
 export const pagesConfig = {

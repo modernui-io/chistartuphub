@@ -8,6 +8,8 @@ export default function BookmarkButton({
   resourceType,
   resourceId,
   resourceName = '',
+  resourceDescription = '',
+  resourceUrl = '',
   variant = 'outline',
   size = 'default',
   showText = true,
@@ -33,7 +35,13 @@ export default function BookmarkButton({
     if (bookmarked && bookmark) {
       removeBookmark(bookmark.id);
     } else {
-      addBookmark({ resourceType, resourceId, resourceName });
+      addBookmark({
+        resourceType,
+        resourceId,
+        resourceName,
+        resourceDescription,
+        resourceUrl
+      });
     }
   };
 

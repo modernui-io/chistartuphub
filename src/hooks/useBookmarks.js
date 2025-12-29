@@ -42,45 +42,70 @@ export const useBookmarks = (resourceType) => {
 
   // Add bookmark
   const addBookmark = useMutation({
-    mutationFn: async ({ resourceType, resourceId, resourceName, notes }) => {
+    mutationFn: async ({ resourceType, resourceId, resourceName, resourceDescription, resourceUrl, notes }) => {
       if (!user) throw new Error('Must be logged in to bookmark');
 
-      console.log('Adding bookmark:', { resourceType, resourceId, resourceName, userId: user.id });
+      console.log('Adding bookmark:', { resourceType, resourceId, resourceName, resourceDescription, resourceUrl, userId: user.id });
 
-      // First try with resource_name, fall back to without it if column doesn't exist
+      // Start with minimal required fields, then try adding optional columns
+      const baseData = {
+        user_id: user.id,
+        resource_type: resourceType,
+        resource_id: String(resourceId),
+      };
+
+      // Try with all fields first
       let result = await supabase
         .from('bookmarks')
         .insert({
-          user_id: user.id,
-          resource_type: resourceType,
-          resource_id: String(resourceId), // Ensure it's a string
+          ...baseData,
           resource_name: resourceName || null,
+          resource_description: resourceDescription || null,
+          resource_url: resourceUrl || null,
           notes: notes || null,
         })
         .select()
         .single();
 
-      // If resource_name column doesn't exist, try without it
-      if (result.error && result.error.message?.includes('resource_name')) {
-        console.log('Retrying without resource_name column...');
+      // If columns don't exist, try progressively simpler inserts
+      if (result.error?.code === 'PGRST204' || result.error?.message?.includes('column')) {
+        console.log('Some columns missing, trying with resource_name only...');
         result = await supabase
           .from('bookmarks')
           .insert({
-            user_id: user.id,
-            resource_type: resourceType,
-            resource_id: String(resourceId),
+            ...baseData,
+            resource_name: resourceName || null,
             notes: notes || null,
           })
           .select()
           .single();
       }
 
+      // If resource_name also doesn't exist, try with just base fields
+      if (result.error?.code === 'PGRST204' || result.error?.message?.includes('column')) {
+        console.log('Trying with minimal fields only...');
+        result = await supabase
+          .from('bookmarks')
+          .insert({
+            ...baseData,
+            notes: notes || null,
+          })
+          .select()
+          .single();
+      }
+
+      // Final fallback - just the absolute minimum
+      if (result.error?.code === 'PGRST204' || result.error?.message?.includes('column')) {
+        console.log('Trying with absolute minimum fields...');
+        result = await supabase
+          .from('bookmarks')
+          .insert(baseData)
+          .select()
+          .single();
+      }
+
       if (result.error) {
         console.error('Bookmark insert error:', JSON.stringify(result.error, null, 2));
-        console.error('Error code:', result.error.code);
-        console.error('Error message:', result.error.message);
-        console.error('Error details:', result.error.details);
-        console.error('Error hint:', result.error.hint);
         throw result.error;
       }
 

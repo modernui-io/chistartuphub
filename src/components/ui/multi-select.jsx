@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { X, Check, ChevronDown, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -15,6 +15,7 @@ export function MultiSelect({
   const [searchQuery, setSearchQuery] = useState('');
   const containerRef = useRef(null);
   const inputRef = useRef(null);
+  const listRef = useRef(null);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -26,6 +27,24 @@ export function MultiSelect({
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Handle wheel/trackpad scroll within dropdown
+  const handleWheel = useCallback((e) => {
+    const list = listRef.current;
+    if (!list) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = list;
+    const isAtTop = scrollTop === 0;
+    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+
+    // Prevent page scroll when at boundaries
+    if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
+      e.preventDefault();
+    }
+
+    // Stop propagation to prevent parent scroll
+    e.stopPropagation();
   }, []);
 
   // Filter options based on search
@@ -143,11 +162,14 @@ export function MultiSelect({
 
           {/* Options List - Scrollable */}
           <div
-            className="overflow-y-scroll px-1 py-2"
+            ref={listRef}
+            onWheel={handleWheel}
+            className="overflow-y-auto px-1 py-2 overscroll-contain touch-pan-y"
             style={{
               maxHeight: '280px',
               scrollbarWidth: 'thin',
-              scrollbarColor: 'rgba(255,255,255,0.2) transparent'
+              scrollbarColor: 'rgba(255,255,255,0.2) transparent',
+              WebkitOverflowScrolling: 'touch'
             }}
           >
             {filteredOptions.length === 0 ? (
@@ -198,6 +220,7 @@ export function SingleSelect({
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const containerRef = useRef(null);
+  const listRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -208,6 +231,21 @@ export function SingleSelect({
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Handle wheel/trackpad scroll within dropdown
+  const handleWheel = useCallback((e) => {
+    const list = listRef.current;
+    if (!list) return;
+
+    const { scrollTop, scrollHeight, clientHeight } = list;
+    const isAtTop = scrollTop === 0;
+    const isAtBottom = scrollTop + clientHeight >= scrollHeight - 1;
+
+    if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
+      e.preventDefault();
+    }
+    e.stopPropagation();
   }, []);
 
   const filteredOptions = options.filter(option =>
@@ -263,7 +301,17 @@ export function SingleSelect({
           </div>
 
           {/* Options */}
-          <div className="max-h-64 overflow-y-auto px-1">
+          <div
+            ref={listRef}
+            onWheel={handleWheel}
+            className="overflow-y-auto px-1 overscroll-contain touch-pan-y"
+            style={{
+              maxHeight: '256px',
+              scrollbarWidth: 'thin',
+              scrollbarColor: 'rgba(255,255,255,0.2) transparent',
+              WebkitOverflowScrolling: 'touch'
+            }}
+          >
             {/* Clear option */}
             {selected && (
               <button

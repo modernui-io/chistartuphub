@@ -103,16 +103,26 @@ CREATE TABLE IF NOT EXISTS bookmarks (
   resource_type TEXT NOT NULL CHECK (resource_type IN ('event', 'funding_opportunity', 'workspace', 'story', 'community', 'accelerator')),
   resource_id TEXT NOT NULL,
   resource_name TEXT,
+  resource_description TEXT,
+  resource_url TEXT,
   notes TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Add resource_name column if table already exists
+-- Add columns if table already exists
 DO $$
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns
     WHERE table_name = 'bookmarks' AND column_name = 'resource_name') THEN
     ALTER TABLE bookmarks ADD COLUMN resource_name TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'bookmarks' AND column_name = 'resource_description') THEN
+    ALTER TABLE bookmarks ADD COLUMN resource_description TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'bookmarks' AND column_name = 'resource_url') THEN
+    ALTER TABLE bookmarks ADD COLUMN resource_url TEXT;
   END IF;
 END $$;
 

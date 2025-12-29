@@ -476,6 +476,8 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
                         resourceType="funding_opportunity"
                         resourceId={opp.id}
                         resourceName={opp.name}
+                        resourceDescription={description}
+                        resourceUrl={url}
                       />
                       <div className="flex items-center gap-1 text-white/40 group-hover:text-white text-xs">
                         Learn More

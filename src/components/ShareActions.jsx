@@ -7,6 +7,8 @@ export default function ShareActions({
   resourceType,
   resourceId,
   resourceName,
+  resourceDescription = '',
+  resourceUrl = '',
   className = '',
   size = 'sm',
   showLabels = false
@@ -15,9 +17,8 @@ export default function ShareActions({
     e.preventDefault();
     e.stopPropagation();
 
-    // Generate a shareable URL for the resource
-    const baseUrl = window.location.origin;
-    const url = `${baseUrl}/${resourceType}?id=${resourceId}`;
+    // Use the resource URL if available, otherwise generate a shareable URL
+    const url = resourceUrl || `${window.location.origin}/${resourceType}?id=${resourceId}`;
 
     navigator.clipboard.writeText(url).then(() => {
       toast.success('Link copied!', {
@@ -36,6 +37,8 @@ export default function ShareActions({
         resourceType={resourceType}
         resourceId={resourceId}
         resourceName={resourceName}
+        resourceDescription={resourceDescription}
+        resourceUrl={resourceUrl}
         variant="ghost"
         size={size}
         showText={showLabels}

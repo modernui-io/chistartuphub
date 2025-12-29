@@ -693,29 +693,95 @@ export default function Profile() {
               </Card>
             ) : (
               <div className="space-y-8">
-                {Object.entries(bookmarksByType).map(([type, items]) => (
-                  <div key={type}>
-                    <h3 className="text-lg font-semibold text-white mb-4 capitalize">
-                      {type.replace(/_/g, ' ')}s ({items.length})
-                    </h3>
-                    <div className="grid gap-3">
-                      {items.map((bookmark) => (
-                        <Card key={bookmark.id} className="bg-white/[0.02] border-white/[0.06] p-4 rounded-xl hover:bg-white/[0.04] transition-colors">
-                          <div className="flex justify-between items-center">
-                            <div>
-                              <p className="text-white font-medium">{bookmark.resource_name || `${type} resource`}</p>
-                              <p className="text-sm text-white/40">Saved {new Date(bookmark.created_at).toLocaleDateString()}</p>
-                            </div>
-                            <Button variant="ghost" size="sm" onClick={() => removeBookmark(bookmark.id)}
-                              className="text-white/40 hover:text-red-400 hover:bg-red-500/10 rounded-lg">
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </Card>
-                      ))}
+                {Object.entries(bookmarksByType).map(([type, items]) => {
+                  // Category badge colors
+                  const categoryColors = {
+                    'funding_opportunity': 'bg-green-500/20 text-green-400 border-green-500/30',
+                    'event': 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+                    'workspace': 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+                    'accelerator': 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+                    'community': 'bg-pink-500/20 text-pink-400 border-pink-500/30',
+                    'story': 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
+                  };
+                  const categoryLabels = {
+                    'funding_opportunity': 'Funding',
+                    'event': 'Event',
+                    'workspace': 'Workspace',
+                    'accelerator': 'Accelerator',
+                    'community': 'Community',
+                    'story': 'Story',
+                  };
+
+                  return (
+                    <div key={type}>
+                      <h3 className="text-lg font-semibold text-white mb-4 capitalize">
+                        {categoryLabels[type] || type.replace(/_/g, ' ')}s ({items.length})
+                      </h3>
+                      <div className="grid gap-3">
+                        {items.map((bookmark) => {
+                          const hasUrl = bookmark.resource_url;
+                          const CardWrapper = hasUrl ? 'a' : 'div';
+                          const cardProps = hasUrl ? {
+                            href: bookmark.resource_url,
+                            target: '_blank',
+                            rel: 'noopener noreferrer'
+                          } : {};
+
+                          return (
+                            <CardWrapper
+                              key={bookmark.id}
+                              {...cardProps}
+                              className={`block bg-white/[0.02] border border-white/[0.06] p-5 rounded-xl transition-all ${hasUrl ? 'hover:bg-white/[0.04] hover:border-white/[0.12] cursor-pointer group' : ''}`}
+                            >
+                              <div className="flex justify-between items-start gap-4">
+                                <div className="flex-1 min-w-0">
+                                  {/* Title */}
+                                  <h4 className={`text-white font-semibold mb-2 ${hasUrl ? 'group-hover:text-blue-400 transition-colors' : ''}`}>
+                                    {bookmark.resource_name || 'Untitled Resource'}
+                                    {hasUrl && (
+                                      <ExternalLink size={14} className="inline-block ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    )}
+                                  </h4>
+
+                                  {/* Description */}
+                                  {bookmark.resource_description && (
+                                    <p className="text-sm text-white/50 mb-3 line-clamp-2">
+                                      {bookmark.resource_description}
+                                    </p>
+                                  )}
+
+                                  {/* Meta Row: Category Badge + Date */}
+                                  <div className="flex items-center gap-3 flex-wrap">
+                                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium border ${categoryColors[type] || 'bg-white/10 text-white/60 border-white/20'}`}>
+                                      {categoryLabels[type] || type}
+                                    </span>
+                                    <span className="text-xs text-white/40">
+                                      Saved {new Date(bookmark.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {/* Delete Button */}
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    removeBookmark(bookmark.id);
+                                  }}
+                                  className="text-white/30 hover:text-red-400 hover:bg-red-500/10 rounded-lg flex-shrink-0"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </CardWrapper>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </motion.div>
