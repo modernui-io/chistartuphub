@@ -15,6 +15,7 @@ const Community = lazy(() => import('./pages/Community'));
 const About = lazy(() => import('./pages/About'));
 const SubmitResource = lazy(() => import('./pages/SubmitResource'));
 const Contact = lazy(() => import('./pages/Contact'));
+const Profile = lazy(() => import('./pages/Profile'));
 const BeforeYouStart = lazy(() => import('./pages/BeforeYouStart'));
 const NavigatePaths = lazy(() => import('./pages/NavigatePaths'));
 const BusinessTypeExplorer = lazy(() => import('./pages/BusinessTypeExplorer'));
@@ -35,6 +36,7 @@ export const PAGES = {
     "About": About,
     "SubmitResource": SubmitResource,
     "Contact": Contact,
+    "Profile": Profile,
     "before-you-start": BeforeYouStart,
     "navigate-toolkit": NavigatePaths,
     "business-type-explorer": BusinessTypeExplorer,
