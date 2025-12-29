@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { ExternalLink, X, ChevronDown } from "lucide-react";
+import { ExternalLink, X, ChevronDown, Plus } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import LoadingScreen from "@/components/LoadingScreen";
@@ -11,6 +11,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
@@ -59,6 +60,7 @@ export default function Layout({ children }) {
     {
       name: "Ecosystem",
       items: [
+        { name: "Opportunities", path: createPageUrl("Opportunities") },
         { name: "Hubs & Events", path: createPageUrl("Events") },
         { name: "Community", path: createPageUrl("Community") },
         { name: "Why Chicago", path: createPageUrl("WhyChicago") }
@@ -213,28 +215,6 @@ export default function Layout({ children }) {
           background: #0b0b0b;
         }
 
-        .nav-link-featured {
-          border: 1px solid rgba(245, 245, 245, 0.45);
-        }
-
-        .nav-link-featured::after {
-          content: '';
-          position: absolute;
-          bottom: 4px;
-          left: 10px;
-          right: 10px;
-          height: 2px;
-          background: #3B82F6;
-        }
-
-        .nav-link-featured:hover {
-          border-color: #f5f5f5;
-        }
-
-        .nav-link-featured:hover::after {
-          background: #0b0b0b;
-        }
-
         /* Dropdown Menu Styling */
         [data-radix-popper-content-wrapper] {
           z-index: 9999 !important;
@@ -361,69 +341,94 @@ export default function Layout({ children }) {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-4 xl:gap-6">
-              {navDropdowns.map((dropdown) => (
-                <DropdownMenu key={dropdown.name}>
-                  <DropdownMenuTrigger className="nav-trigger nav-link flex items-center gap-1.5 hover:text-white transition-all outline-none group data-[state=open]:text-white">
-                    <span>{dropdown.name}</span>
-                    <ChevronDown className="w-3.5 h-3.5 opacity-40 group-hover:opacity-70 transition-all group-data-[state=open]:rotate-180 group-data-[state=open]:opacity-100" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent 
-                    className="nav-dropdown min-w-[200px] animate-in fade-in-0 slide-in-from-top-2 duration-150"
-                    sideOffset={0}
-                    align="start"
-                  >
-                    <div className="py-1.5">
-                      {dropdown.items.map((item, index) => (
-                        <DropdownMenuItem key={item.path} asChild>
-                          <Link
-                            to={item.path}
-                            className={`dropdown-link cursor-pointer flex items-center px-4 py-2.5 text-sm font-medium ${
-                              location.pathname === item.path ? 'active' : ''
-                            }`}
-                          >
-                            <span className="relative z-10">{item.name}</span>
-                          </Link>
-                        </DropdownMenuItem>
-                      ))}
-                    </div>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              ))}
+            <div className="hidden lg:flex items-center flex-1 ml-12">
+              {/* Nav Links - Left side */}
+              <div className="flex items-center gap-6 xl:gap-8">
+                {navDropdowns.map((dropdown) => (
+                  <DropdownMenu key={dropdown.name}>
+                    <DropdownMenuTrigger className="nav-trigger nav-link flex items-center gap-1.5 hover:text-white transition-all outline-none group data-[state=open]:text-white">
+                      <span>{dropdown.name}</span>
+                      <ChevronDown className="w-3.5 h-3.5 opacity-40 group-hover:opacity-70 transition-all group-data-[state=open]:rotate-180 group-data-[state=open]:opacity-100" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      className="nav-dropdown min-w-[200px] animate-in fade-in-0 slide-in-from-top-2 duration-150"
+                      sideOffset={0}
+                      align="start"
+                    >
+                      <div className="py-1.5">
+                        {dropdown.items.map((item) => (
+                          <DropdownMenuItem key={item.path} asChild>
+                            <Link
+                              to={item.path}
+                              className={`dropdown-link cursor-pointer flex items-center px-4 py-2.5 text-sm font-medium ${
+                                location.pathname === item.path ? 'active' : ''
+                              }`}
+                            >
+                              <span className="relative z-10">{item.name}</span>
+                            </Link>
+                          </DropdownMenuItem>
+                        ))}
+                        {/* Add "Submit a Resource" to Resources dropdown only */}
+                        {dropdown.name === "Resources" && (
+                          <>
+                            <DropdownMenuSeparator className="bg-white/10 my-1" />
+                            <DropdownMenuItem asChild>
+                              <Link
+                                to={createPageUrl("SubmitResource")}
+                                className="dropdown-link cursor-pointer flex items-center px-4 py-2 text-xs font-medium text-white/50 hover:text-white"
+                              >
+                                <Plus className="w-3 h-3 mr-2 opacity-60" />
+                                <span>Submit a Resource</span>
+                              </Link>
+                            </DropdownMenuItem>
+                          </>
+                        )}
+                      </div>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ))}
 
-              <Link to={createPageUrl("Stories")} className={`nav-link nav-link-featured ${location.pathname === createPageUrl("Stories") ? 'active' : ''}`}>
-                The Blueprints ✨
-              </Link>
+                <Link to={createPageUrl("Stories")} className={`nav-link ${location.pathname === createPageUrl("Stories") ? 'active' : ''}`}>
+                  ✨ The Blueprints
+                </Link>
 
-              <Link to={createPageUrl("About")} className={`nav-link ${location.pathname === createPageUrl("About") ? 'active' : ''}`}>
-                About
-              </Link>
+                <Link to={createPageUrl("About")} className={`nav-link ${location.pathname === createPageUrl("About") ? 'active' : ''}`}>
+                  About
+                </Link>
+              </div>
 
-              <Link to={createPageUrl("SubmitResource")} className="ml-2">
-                <Button className="accent-button text-sm h-9 px-4 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-shadow">
-                  Submit Resource
-                </Button>
-              </Link>
+              {/* Spacer */}
+              <div className="flex-1" />
 
-              {/* Auth Section */}
-              {user ? (
-                <UserMenu />
-              ) : (
-                <div className="flex items-center gap-3 ml-2">
-                  <button
-                    onClick={() => setShowLogin(true)}
-                    className="nav-link text-sm font-medium"
-                  >
-                    Sign In
-                  </button>
-                  <Button
-                    onClick={() => setShowSignup(true)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white text-sm h-9 px-4"
-                  >
-                    Get Started
+              {/* Action Buttons - Right side */}
+              <div className="flex items-center gap-3">
+                <Link to={createPageUrl("Opportunities")}>
+                  <Button className="accent-button text-sm h-9 px-4 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-shadow flex items-center gap-2">
+                    <Plus className="w-4 h-4" />
+                    Create Ask
                   </Button>
-                </div>
-              )}
+                </Link>
+
+                {/* Auth Section */}
+                {user ? (
+                  <UserMenu />
+                ) : (
+                  <>
+                    <button
+                      onClick={() => setShowLogin(true)}
+                      className="nav-link text-sm font-medium"
+                    >
+                      Sign In
+                    </button>
+                    <Button
+                      onClick={() => setShowSignup(true)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white text-sm h-9 px-4"
+                    >
+                      Get Started
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
 
             {/* Mobile Menu Button */}
@@ -466,8 +471,8 @@ export default function Layout({ children }) {
                         key={item.path}
                         to={item.path}
                         className={`mobile-menu-item block px-4 py-3 rounded-lg text-base transition-all ${
-                          location.pathname === item.path 
-                            ? 'bg-white/10 text-white font-semibold' 
+                          location.pathname === item.path
+                            ? 'bg-white/10 text-white font-semibold'
                             : 'text-white/70 hover:bg-white/5 hover:text-white'
                         }`}
                         style={{ animationDelay: `${(dropdownIndex * 3 + index) * 0.05}s` }}
@@ -475,6 +480,16 @@ export default function Layout({ children }) {
                         {item.name}
                       </Link>
                     ))}
+                    {/* Add Submit Resource link under Resources */}
+                    {dropdown.name === "Resources" && (
+                      <Link
+                        to={createPageUrl("SubmitResource")}
+                        className="mobile-menu-item block px-4 py-2 rounded-lg text-sm text-white/40 hover:text-white/60 transition-all flex items-center gap-2"
+                      >
+                        <Plus className="w-3 h-3" />
+                        Submit a Resource
+                      </Link>
+                    )}
                   </div>
                 ))}
 
@@ -485,11 +500,11 @@ export default function Layout({ children }) {
                   to={createPageUrl("Stories")}
                   className={`mobile-menu-item block px-4 py-3 rounded-lg text-base transition-all ${
                     location.pathname === createPageUrl("Stories")
-                      ? 'bg-white/10 text-white font-semibold' 
+                      ? 'bg-white/10 text-white font-semibold'
                       : 'text-white/70 hover:bg-white/5 hover:text-white'
                   }`}
                 >
-                  The Blueprints ✨
+                  ✨ The Blueprints
                 </Link>
                 <Link
                   to={createPageUrl("About")}
@@ -503,9 +518,10 @@ export default function Layout({ children }) {
                 </Link>
 
                 <div className="pt-4 px-4">
-                  <Link to={createPageUrl("SubmitResource")} className="block">
-                    <Button className="accent-button w-full">
-                      Submit a Resource
+                  <Link to={createPageUrl("Opportunities")} className="block">
+                    <Button className="accent-button w-full flex items-center justify-center gap-2">
+                      <Plus className="w-4 h-4" />
+                      Create Ask
                     </Button>
                   </Link>
                 </div>

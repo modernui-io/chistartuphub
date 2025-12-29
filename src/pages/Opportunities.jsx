@@ -8,12 +8,125 @@ import {
   Handshake,
   CheckCircle2,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Plus,
+  Lock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import SEO from '@/components/SEO';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
+
+// ============================================
+// CHICAGO SCHEMATIC BACKGROUND
+// Blueprint / Wireframe Aesthetic
+// ============================================
+
+// Massive Chicago Star - Wireframe Style
+const SchematicStar = ({ className = '' }) => (
+  <svg
+    viewBox="0 0 100 100"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="0.3"
+    className={className}
+  >
+    {/* 6-pointed star geometry */}
+    <path d="M50 0 L58 35 L95 38 L65 58 L75 95 L50 72 L25 95 L35 58 L5 38 L42 35 Z" />
+    {/* Inner detail lines for schematic feel */}
+    <path d="M50 15 L55 35 L75 37 L60 52 L67 75 L50 60 L33 75 L40 52 L25 37 L45 35 Z" strokeWidth="0.2" />
+    {/* Center point */}
+    <circle cx="50" cy="50" r="2" strokeWidth="0.3" />
+    <circle cx="50" cy="50" r="8" strokeWidth="0.15" strokeDasharray="2 2" />
+  </svg>
+);
+
+// Chicago Municipal Device "Y" - Wireframe Style
+const SchematicY = ({ className = '' }) => (
+  <svg
+    viewBox="0 0 100 100"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="0.4"
+    className={className}
+  >
+    {/* Main Y shape */}
+    <path d="M50 100 L50 45 L15 5" strokeLinecap="round" />
+    <path d="M50 45 L85 5" strokeLinecap="round" />
+    {/* Decorative circles at endpoints */}
+    <circle cx="50" cy="100" r="3" strokeWidth="0.3" />
+    <circle cx="15" cy="5" r="3" strokeWidth="0.3" />
+    <circle cx="85" cy="5" r="3" strokeWidth="0.3" />
+    {/* Center junction detail */}
+    <circle cx="50" cy="45" r="5" strokeWidth="0.2" />
+    <circle cx="50" cy="45" r="10" strokeWidth="0.15" strokeDasharray="3 3" />
+    {/* Guide lines */}
+    <path d="M30 25 L70 25" strokeWidth="0.1" strokeDasharray="1 2" />
+    <path d="M40 70 L60 70" strokeWidth="0.1" strokeDasharray="1 2" />
+  </svg>
+);
+
+// Dot Grid Pattern Background
+const DotGridPattern = () => (
+  <div className="absolute inset-0 opacity-[0.03]">
+    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="dotGrid" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="0.5" fill="currentColor" className="text-white" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#dotGrid)" />
+    </svg>
+  </div>
+);
+
+// Chicago Schematic Background Component
+const ChicagoBackground = () => (
+  <>
+    {/* Dot Grid Pattern - Subtle builder texture */}
+    <DotGridPattern />
+
+    {/* Giant Chicago Star - Top Right, bleeds off screen */}
+    <motion.div
+      initial={{ opacity: 0, rotate: -10 }}
+      animate={{ opacity: 1, rotate: 0 }}
+      transition={{ duration: 1.5, ease: "easeOut" }}
+      className="absolute -top-32 -right-32 md:-top-40 md:-right-40 lg:-top-48 lg:-right-48"
+    >
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{
+          duration: 120,
+          repeat: Infinity,
+          ease: "linear",
+        }}
+      >
+        <SchematicStar className="w-[350px] h-[350px] md:w-[450px] md:h-[450px] lg:w-[550px] lg:h-[550px] text-white opacity-[0.04]" />
+      </motion.div>
+    </motion.div>
+
+    {/* Giant Municipal Y - Bottom Left, static anchor */}
+    <motion.div
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 1.2, delay: 0.3, ease: "easeOut" }}
+      className="absolute -bottom-40 -left-24 md:-bottom-48 md:-left-28 lg:-bottom-56 lg:-left-32"
+    >
+      <SchematicY className="w-[300px] h-[300px] md:w-[380px] md:h-[380px] lg:w-[450px] lg:h-[450px] text-slate-400 opacity-[0.06]" />
+    </motion.div>
+
+    {/* Subtle horizontal guide line */}
+    <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/[0.03] to-transparent" />
+
+    {/* Corner accent marks - architectural reference points */}
+    <div className="absolute top-8 left-8 w-12 h-12 border-l border-t border-white/[0.04]" />
+    <div className="absolute top-8 right-8 w-12 h-12 border-r border-t border-white/[0.04]" />
+    <div className="absolute bottom-8 left-8 w-12 h-12 border-l border-b border-white/[0.04]" />
+    <div className="absolute bottom-8 right-8 w-12 h-12 border-r border-b border-white/[0.04]" />
+  </>
+);
 
 // ============================================
 // FILTER TABS
@@ -156,7 +269,12 @@ const getTagStyle = (tag) => {
 // OPPORTUNITY CARD COMPONENT
 // ============================================
 
-const OpportunityCard = ({ opportunity }) => {
+const OpportunityCard = ({ opportunity, user, onConnectClick }) => {
+  const handleConnect = (e) => {
+    e.preventDefault();
+    onConnectClick(opportunity);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -222,15 +340,22 @@ const OpportunityCard = ({ opportunity }) => {
         ))}
       </div>
 
-      {/* Action Button */}
+      {/* Action Button - Auth Gated */}
       <Button
-        asChild
+        onClick={handleConnect}
         className="w-full bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] hover:border-white/[0.15] text-white/80 hover:text-white rounded-xl h-11 transition-all duration-300"
       >
-        <Link to={`/Directory`}>
-          View Profile
-          <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
-        </Link>
+        {user ? (
+          <>
+            View Profile
+            <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
+          </>
+        ) : (
+          <>
+            <Lock size={14} className="mr-2" />
+            Login to Connect
+          </>
+        )}
       </Button>
     </motion.div>
   );
@@ -241,8 +366,47 @@ const OpportunityCard = ({ opportunity }) => {
 // ============================================
 
 export default function Opportunities() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Auth gate handler for "Add Opportunity" button
+  const handleAddOpportunity = () => {
+    if (user) {
+      // User is logged in - navigate to profile edit or open modal
+      navigate('/Profile?tab=edit');
+    } else {
+      // Guest - redirect to signup with toast
+      toast.info('Join the ecosystem to post your opportunity', {
+        description: 'Create an account to share opportunities with Chicago founders.',
+        action: {
+          label: 'Sign Up',
+          onClick: () => navigate('/signup'),
+        },
+      });
+      navigate('/signup');
+    }
+  };
+
+  // Auth gate handler for "Connect/View Profile" button
+  const handleConnectClick = (opportunity) => {
+    if (user) {
+      // User is logged in - go to founder's profile
+      // For now, navigate to Directory; later can be /Profile/:userId
+      navigate(`/Directory?highlight=${opportunity.id}`);
+    } else {
+      // Guest - redirect to signup with toast
+      toast.info('Login to connect with founders', {
+        description: 'Join ChiStartupHub to view profiles and connect directly.',
+        action: {
+          label: 'Sign Up',
+          onClick: () => navigate('/signup'),
+        },
+      });
+      navigate('/signup');
+    }
+  };
 
   // Filter opportunities
   const filteredOpportunities = useMemo(() => {
@@ -283,7 +447,14 @@ export default function Opportunities() {
         <div className="absolute inset-0 bg-gradient-to-b from-blue-600/5 via-transparent to-transparent pointer-events-none" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="relative max-w-3xl mx-auto text-center">
+        {/* ============================================ */}
+        {/* CHICAGO SCHEMATIC BACKGROUND */}
+        {/* ============================================ */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <ChicagoBackground />
+        </div>
+
+        <div className="relative z-20 max-w-3xl mx-auto text-center">
           {/* Headline */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -355,6 +526,25 @@ export default function Opportunities() {
               );
             })}
           </motion.div>
+
+          {/* Add Opportunity Button - Visible to all, auth-gated */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="mt-8"
+          >
+            <Button
+              onClick={handleAddOpportunity}
+              className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-semibold rounded-xl px-6 h-12 text-base shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all duration-300"
+            >
+              <Plus size={18} className="mr-2" />
+              Post an Opportunity
+            </Button>
+            <p className="text-white/30 text-xs mt-3">
+              {user ? 'Share your ask with the community' : 'Join to post opportunities'}
+            </p>
+          </motion.div>
         </div>
       </section>
 
@@ -388,7 +578,11 @@ export default function Opportunities() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                 >
-                  <OpportunityCard opportunity={opp} />
+                  <OpportunityCard
+                    opportunity={opp}
+                    user={user}
+                    onConnectClick={handleConnectClick}
+                  />
                 </motion.div>
               ))}
             </div>
@@ -437,18 +631,28 @@ export default function Opportunities() {
                   Have an opportunity to share?
                 </h3>
                 <p className="text-white/50 max-w-md">
-                  Post your ask to The Exchange and connect with Chicago's founder community.
+                  {user
+                    ? 'Post your ask to The Exchange and connect with Chicago\'s founder community.'
+                    : 'Join ChiStartupHub to post opportunities and connect with founders.'
+                  }
                 </p>
               </div>
 
               <Button
-                asChild
+                onClick={handleAddOpportunity}
                 className="bg-white hover:bg-white/90 text-black font-semibold rounded-xl px-8 h-12 text-base shrink-0"
               >
-                <Link to="/Profile?tab=edit">
-                  Post Your Ask
-                  <ArrowRight size={18} className="ml-2" />
-                </Link>
+                {user ? (
+                  <>
+                    Post Your Ask
+                    <ArrowRight size={18} className="ml-2" />
+                  </>
+                ) : (
+                  <>
+                    <Lock size={16} className="mr-2" />
+                    Join to Post
+                  </>
+                )}
               </Button>
             </div>
           </motion.div>
