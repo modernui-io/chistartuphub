@@ -13,7 +13,6 @@ import { ExpandingCards } from "@/components/ui/expanding-cards";
 import { BentoGrid } from "@/components/ui/bento-grid";
 import SuccessStoriesSection from "@/components/home/SuccessStoriesSection";
 import ParallaxChicagoBackground from "@/components/home/ParallaxChicagoBackground";
-import HotOpportunities from "@/components/home/HotOpportunities";
 import { entities } from "@/api/supabaseClient";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -350,8 +349,12 @@ export default function Home() {
         {/* Success Stories Marquee */}
         <SuccessStoriesSection />
 
-        {/* Hot Opportunities - Time-sensitive funding */}
-        <HotOpportunities />
+        {/* Intelligence Stack - Welcome + Quick Actions */}
+        <section className="pt-12 pb-8 px-4 md:px-6">
+          <div className="max-w-7xl mx-auto">
+            <PersonalizedWelcome />
+          </div>
+        </section>
 
         {/* Why Chicago Section - Expanding Cards */}
         <section className="py-16 md:py-32 px-4 md:px-6 bg-gradient-to-b from-black via-gray-900 to-black relative">
@@ -379,9 +382,6 @@ export default function Home() {
       {/* Resources Section - Bento Grid */}
       <section id="resources-section" className="py-16 md:py-32 px-4 md:px-6 bg-gradient-to-b from-black via-gray-900 to-black">
         <div className="max-w-7xl mx-auto">
-          {/* Personalized Welcome for logged-in users */}
-          <PersonalizedWelcome />
-
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}

@@ -1,19 +1,8 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { X, Sparkles, ArrowRight, DollarSign, Calendar, Building2, Rocket, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-
-const INTEREST_LINKS = {
-  'Capital/Funding': { path: '/Funding', label: 'Funding', icon: DollarSign },
-  'Co-Working Spaces': { path: '/Workspaces', label: 'Workspaces', icon: Building2 },
-  'Networking Events': { path: '/Events', label: 'Events', icon: Calendar },
-  'Accelerators/Incubators': { path: '/AcceleratorsIncubators', label: 'Accelerators', icon: Rocket },
-  'Legal/Compliance': { path: '/Resources', label: 'Resources', icon: Building2 },
-  'Product Development': { path: '/Resources', label: 'Resources', icon: Rocket },
-  'Marketing/Growth': { path: '/Stories', label: 'Success Stories', icon: Sparkles },
-  'Talent/Hiring': { path: '/Community', label: 'Communities', icon: Users },
-};
+import { Sparkles, ArrowUpRight, DollarSign, Users } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { entities } from '@/api/supabaseClient';
 
 const STAGE_LABELS = {
   'idea': 'Idea Stage Founder',
@@ -23,84 +12,97 @@ const STAGE_LABELS = {
   'scaling': 'Scaling Founder',
 };
 
+// Action Tile Component
+const ActionTile = ({ to, icon: Icon, label, subtext, badge, badgeCount }) => (
+  <Link to={to} className="block group">
+    <div className="relative h-24 bg-gray-900 border border-gray-800 rounded-xl p-4 flex flex-col justify-between transition-all duration-200 hover:border-blue-500 hover:bg-gray-900/80">
+      {/* Top Row */}
+      <div className="flex items-start justify-between">
+        <div className="flex items-center gap-2">
+          <Icon className="w-5 h-5 text-white/70 group-hover:text-blue-400 transition-colors" />
+          <span className="text-white font-medium text-sm">{label}</span>
+        </div>
+        <ArrowUpRight className="w-4 h-4 text-white/40 group-hover:text-blue-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+      </div>
+
+      {/* Bottom Row */}
+      <div className="flex items-center justify-between">
+        <span className="text-white/50 text-xs">{subtext}</span>
+
+        {/* Badge for Funding */}
+        {badge && badgeCount > 0 && (
+          <span className="flex items-center justify-center px-2 py-0.5 bg-red-500 text-white text-[10px] font-semibold rounded-full animate-pulse">
+            {badgeCount} New
+          </span>
+        )}
+      </div>
+    </div>
+  </Link>
+);
+
 export default function PersonalizedWelcome() {
   const { user, profile } = useAuth();
-  const [dismissed, setDismissed] = useState(false);
 
-  if (!user || dismissed) return null;
+  // Query for hot opportunities count
+  const { data: hotCount = 0 } = useQuery({
+    queryKey: ['hot-opportunities-count'],
+    queryFn: async () => {
+      const all = await entities.FundingOpportunity.list('-created_date');
+      const now = new Date();
+      const timeSensitive = all.filter(opp => {
+        if (opp.deadline) {
+          const deadline = new Date(opp.deadline);
+          const daysUntil = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
+          return daysUntil > 0 && daysUntil <= 60;
+        }
+        return false;
+      });
+      return timeSensitive.length;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  if (!user) return null;
 
   const fullName = profile?.full_name || user?.user_metadata?.full_name || '';
   const firstName = fullName?.split(' ')[0] || 'there';
   const stage = profile?.stage;
-  const role = profile?.role;
 
-  // Ensure interests is always an array, even if stored as string
-  let interests = profile?.interests || [];
-  if (typeof interests === 'string') {
-    try {
-      interests = JSON.parse(interests);
-    } catch {
-      interests = [interests];
-    }
-  }
-  if (!Array.isArray(interests)) {
-    interests = [];
-  }
-
-  // Get quick links based on interests (max 3)
-  const quickLinks = interests
-    .filter(interest => interest && INTEREST_LINKS[interest])
-    .slice(0, 3)
-    .map(interest => ({
-      ...INTEREST_LINKS[interest],
-      interest
-    }));
-
-  // Smart default links based on role and stage if no interests selected
-  const getSmartDefaults = () => {
-    if (stage === 'idea' || stage === 'pre-revenue') {
-      return [
-        { path: '/Resources', label: 'Resources', icon: Building2 },
-        { path: '/Events', label: 'Events', icon: Calendar },
-        { path: '/Community', label: 'Communities', icon: Users },
-      ];
-    } else if (stage === 'early-revenue' || stage === 'growth' || stage === 'scaling') {
-      return [
-        { path: '/Funding', label: 'Funding', icon: DollarSign },
-        { path: '/Events', label: 'Events', icon: Calendar },
-        { path: '/Stories', label: 'Success Stories', icon: Sparkles },
-      ];
-    } else if (role === 'investor') {
-      return [
-        { path: '/Events', label: 'Events', icon: Calendar },
-        { path: '/Community', label: 'Communities', icon: Users },
-        { path: '/Stories', label: 'Success Stories', icon: Sparkles },
-      ];
-    }
-    // Default fallback
-    return [
-      { path: '/Funding', label: 'Funding', icon: DollarSign },
-      { path: '/Events', label: 'Events', icon: Calendar },
-      { path: '/Stories', label: 'Success Stories', icon: Sparkles },
-    ];
-  };
-
-  const linksToShow = quickLinks.length > 0 ? quickLinks : getSmartDefaults();
+  // Define the action tiles
+  const actionTiles = [
+    {
+      to: '/Funding',
+      icon: DollarSign,
+      label: 'Funding',
+      subtext: hotCount > 0 ? `${hotCount} Active Sources` : 'Explore opportunities',
+      badge: true,
+      badgeCount: hotCount,
+    },
+    {
+      to: '/Community',
+      icon: Users,
+      label: 'Communities',
+      subtext: '22 Active Groups',
+      badge: false,
+      badgeCount: 0,
+    },
+    {
+      to: '/Stories',
+      icon: Sparkles,
+      label: 'Blueprints',
+      subtext: 'New Success Stories',
+      badge: false,
+      badgeCount: 0,
+    },
+  ];
 
   return (
-    <div className="relative bg-gradient-to-r from-blue-600/10 via-purple-600/5 to-blue-600/10 border border-blue-500/20 rounded-2xl p-6 mb-8">
-      {/* Dismiss button */}
-      <button
-        onClick={() => setDismissed(true)}
-        className="absolute top-3 right-3 text-white/40 hover:text-white/60 transition-colors"
-        aria-label="Dismiss"
-      >
-        <X className="w-4 h-4" />
-      </button>
-
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h2 className="text-xl font-semibold text-white mb-1">
+    <div className="w-full">
+      {/* Desktop Layout */}
+      <div className="hidden md:flex items-start justify-between gap-8">
+        {/* Left: Welcome Text */}
+        <div className="flex-shrink-0">
+          <h2 className="text-3xl font-bold text-white mb-1">
             Welcome back, {firstName}!
           </h2>
           {stage && STAGE_LABELS[stage] && (
@@ -119,24 +121,55 @@ export default function PersonalizedWelcome() {
           )}
         </div>
 
-        {/* Quick access links based on interests */}
-        <div className="flex flex-wrap gap-2">
-          {linksToShow.map((link, index) => {
-            const Icon = link.icon;
-            return (
-              <Link key={index} to={link.path}>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="bg-white/5 hover:bg-white/10 text-white/80 hover:text-white border border-white/10 hover:border-white/20 text-xs h-8 px-3 gap-1.5"
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  {link.label}
-                  <ArrowRight className="w-3 h-3" />
-                </Button>
-              </Link>
-            );
-          })}
+        {/* Right: Action Tiles Grid */}
+        <div className="grid grid-cols-3 gap-3 flex-1 max-w-2xl">
+          {actionTiles.map((tile, index) => (
+            <ActionTile key={index} {...tile} />
+          ))}
+        </div>
+      </div>
+
+      {/* Mobile Layout */}
+      <div className="md:hidden flex flex-col gap-4">
+        {/* Welcome Text */}
+        <div>
+          <h2 className="text-2xl font-bold text-white mb-1">
+            Welcome back, {firstName}!
+          </h2>
+          {stage && STAGE_LABELS[stage] && (
+            <p className="text-sm text-blue-400 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" />
+              {STAGE_LABELS[stage]}
+            </p>
+          )}
+          {!stage && profile?.role && (
+            <p className="text-sm text-white/60">
+              {profile.role === 'founder' ? 'Entrepreneur' :
+               profile.role === 'investor' ? 'Investor' :
+               profile.role === 'service-provider' ? 'Service Provider' :
+               profile.role === 'student' ? 'Student' : 'Member'}
+            </p>
+          )}
+        </div>
+
+        {/* Chicago Bean Image */}
+        <div className="relative w-full h-32 rounded-xl overflow-hidden">
+          <img
+            src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&q=80"
+            alt="Chicago skyline"
+            className="w-full h-full object-cover brightness-75"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute bottom-3 left-3">
+            <p className="text-white/80 text-xs font-medium">Your Chicago HQ</p>
+          </div>
+        </div>
+
+        {/* Action Tiles - Stacked */}
+        <div className="flex flex-col gap-3">
+          {actionTiles.map((tile, index) => (
+            <ActionTile key={index} {...tile} />
+          ))}
         </div>
       </div>
     </div>
