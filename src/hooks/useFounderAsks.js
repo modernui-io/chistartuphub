@@ -1,94 +1,84 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/contexts/AuthContext';
 
-/**
- * Hook for managing founder asks
- */
-export function useFounderAsks() {
-  const [asks, setAsks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+// Query key constants
+export const FOUNDER_ASKS_KEY = ['founder-asks'];
+export const CONNECTION_REQUESTS_KEY = ['connection-requests'];
 
-  // Fetch all active asks
-  const fetchAsks = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
+// Fetch function for founder asks
+async function fetchFounderAsks() {
+  const { data, error } = await supabase
+    .from('founder_asks')
+    .select(`
+      *,
+      user_profiles (
+        full_name,
+        avatar_url,
+        company_name
+      )
+    `)
+    .eq('is_active', true)
+    .order('created_at', { ascending: false });
 
-      const { data, error: fetchError } = await supabase
-        .from('founder_asks')
-        .select(`
-          *,
-          user_profiles (
-            full_name,
-            avatar_url,
-            company_name
-          )
-        `)
-        .eq('is_active', true)
-        .order('created_at', { ascending: false });
+  if (error) throw error;
 
-      if (fetchError) throw fetchError;
-
-      // Transform data for UI
-      const transformedAsks = (data || []).map(ask => ({
-        id: ask.id,
-        category: ask.category || 'general_advice',
-        sector: ask.sector,
-        description: ask.description,
-        stage: ask.stage,
-        amount: ask.amount,
-        target: ask.target_amount,
-        linkedIn: ask.linkedin_url,
-        companyName: ask.company_name || ask.user_profiles?.company_name,
-        founderName: ask.is_anonymous ? null : ask.user_profiles?.full_name,
-        founderAvatar: ask.is_anonymous ? null : ask.user_profiles?.avatar_url,
-        isAnonymous: ask.is_anonymous,
-        allowAmplification: ask.allow_amplification,
-        isVerified: ask.is_verified,
-        viewCount: ask.view_count,
-        connectionCount: ask.connection_request_count,
-        createdAt: formatTimeAgo(ask.created_at),
-        expiresAt: ask.expires_at,
-        isActive: ask.is_active,
-        userId: ask.user_id,
-      }));
-
-      setAsks(transformedAsks);
-    } catch (err) {
-      console.error('Error fetching founder asks:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchAsks();
-  }, [fetchAsks]);
-
-  return { asks, loading, error, refetch: fetchAsks };
+  // Transform data for UI
+  return (data || []).map(ask => ({
+    id: ask.id,
+    category: ask.category || 'general_advice',
+    sector: ask.sector,
+    description: ask.description,
+    stage: ask.stage,
+    amount: ask.amount,
+    target: ask.target_amount,
+    linkedIn: ask.linkedin_url,
+    companyName: ask.company_name || ask.user_profiles?.company_name,
+    founderName: ask.is_anonymous ? null : ask.user_profiles?.full_name,
+    founderAvatar: ask.is_anonymous ? null : ask.user_profiles?.avatar_url,
+    isAnonymous: ask.is_anonymous,
+    allowAmplification: ask.allow_amplification,
+    isVerified: ask.is_verified,
+    viewCount: ask.view_count,
+    connectionCount: ask.connection_request_count,
+    createdAt: formatTimeAgo(ask.created_at),
+    expiresAt: ask.expires_at,
+    isActive: ask.is_active,
+    userId: ask.user_id,
+  }));
 }
 
 /**
- * Hook for creating a founder ask
+ * Hook for managing founder asks with React Query caching
+ */
+export function useFounderAsks() {
+  const { data: asks = [], isLoading: loading, error, refetch } = useQuery({
+    queryKey: FOUNDER_ASKS_KEY,
+    queryFn: fetchFounderAsks,
+  });
+
+  return {
+    asks,
+    loading,
+    error: error?.message || null,
+    refetch
+  };
+}
+
+/**
+ * Hook for creating a founder ask with automatic cache invalidation
  */
 export function useCreateFounderAsk() {
   const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
 
-  const createAsk = async (askData) => {
-    if (!user) {
-      throw new Error('Must be logged in to create an ask');
-    }
+  const mutation = useMutation({
+    mutationFn: async (askData) => {
+      if (!user) {
+        throw new Error('Must be logged in to create an ask');
+      }
 
-    try {
-      setLoading(true);
-      setError(null);
-
-      const { data, error: insertError } = await supabase
+      const { data, error } = await supabase
         .from('founder_asks')
         .insert({
           user_id: user.id,
@@ -107,37 +97,45 @@ export function useCreateFounderAsk() {
         .select()
         .single();
 
-      if (insertError) throw insertError;
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      // Invalidate founder asks cache to refetch fresh data
+      queryClient.invalidateQueries({ queryKey: FOUNDER_ASKS_KEY });
+    },
+  });
 
+  // Wrapper to maintain API compatibility
+  const createAsk = async (askData) => {
+    try {
+      const data = await mutation.mutateAsync(askData);
       return { data, error: null };
     } catch (err) {
       console.error('Error creating founder ask:', err);
-      setError(err.message);
       return { data: null, error: err };
-    } finally {
-      setLoading(false);
     }
   };
 
-  return { createAsk, loading, error };
+  return {
+    createAsk,
+    loading: mutation.isPending,
+    error: mutation.error?.message || null
+  };
 }
 
 /**
- * Hook for connection requests
+ * Hook for connection requests with cache invalidation
  */
 export function useConnectionRequest() {
   const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
 
-  const sendRequest = async (askId, founderId, linkedinUrl, context) => {
-    if (!user) {
-      throw new Error('Must be logged in to send a connection request');
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
+  const mutation = useMutation({
+    mutationFn: async ({ askId, founderId, linkedinUrl, context }) => {
+      if (!user) {
+        throw new Error('Must be logged in to send a connection request');
+      }
 
       // Check if request already exists
       const { data: existing } = await supabase
@@ -151,7 +149,7 @@ export function useConnectionRequest() {
         throw new Error('You have already requested to connect with this founder');
       }
 
-      const { data, error: insertError } = await supabase
+      const { data, error } = await supabase
         .from('connection_requests')
         .insert({
           ask_id: askId,
@@ -164,45 +162,52 @@ export function useConnectionRequest() {
         .select()
         .single();
 
-      if (insertError) throw insertError;
+      if (error) throw error;
 
       // Increment connection request count
       await supabase.rpc('increment_connection_count', { ask_uuid: askId });
 
+      return data;
+    },
+    onSuccess: () => {
+      // Invalidate both asks and connection requests cache
+      queryClient.invalidateQueries({ queryKey: FOUNDER_ASKS_KEY });
+      queryClient.invalidateQueries({ queryKey: CONNECTION_REQUESTS_KEY });
+    },
+  });
+
+  // Wrapper to maintain API compatibility
+  const sendRequest = async (askId, founderId, linkedinUrl, context) => {
+    try {
+      const data = await mutation.mutateAsync({ askId, founderId, linkedinUrl, context });
       return { data, error: null };
     } catch (err) {
       console.error('Error sending connection request:', err);
-      setError(err.message);
       return { data: null, error: err };
-    } finally {
-      setLoading(false);
     }
   };
 
-  return { sendRequest, loading, error };
+  return {
+    sendRequest,
+    loading: mutation.isPending,
+    error: mutation.error?.message || null
+  };
 }
 
 /**
- * Hook for founder to view their requests
+ * Hook for founder to view their requests with React Query caching
  */
 export function useMyConnectionRequests() {
   const { user } = useAuth();
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
 
-  const fetchRequests = useCallback(async () => {
-    if (!user) {
-      setRequests([]);
-      setLoading(false);
-      return;
-    }
+  // Query for fetching connection requests
+  const { data: requests = [], isLoading: loading, error, refetch } = useQuery({
+    queryKey: [...CONNECTION_REQUESTS_KEY, user?.id],
+    queryFn: async () => {
+      if (!user) return [];
 
-    try {
-      setLoading(true);
-      setError(null);
-
-      const { data, error: fetchError } = await supabase
+      const { data, error } = await supabase
         .from('connection_requests')
         .select(`
           *,
@@ -215,20 +220,16 @@ export function useMyConnectionRequests() {
         .eq('founder_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (fetchError) throw fetchError;
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user,
+  });
 
-      setRequests(data || []);
-    } catch (err) {
-      console.error('Error fetching connection requests:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [user]);
-
-  const respondToRequest = async (requestId, status, response = null) => {
-    try {
-      const { error: updateError } = await supabase
+  // Mutation for responding to requests
+  const respondMutation = useMutation({
+    mutationFn: async ({ requestId, status, response }) => {
+      const { error } = await supabase
         .from('connection_requests')
         .update({
           status,
@@ -238,10 +239,16 @@ export function useMyConnectionRequests() {
         .eq('id', requestId)
         .eq('founder_id', user.id);
 
-      if (updateError) throw updateError;
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: CONNECTION_REQUESTS_KEY });
+    },
+  });
 
-      // Refresh requests
-      await fetchRequests();
+  const respondToRequest = async (requestId, status, response = null) => {
+    try {
+      await respondMutation.mutateAsync({ requestId, status, response });
       return { error: null };
     } catch (err) {
       console.error('Error responding to request:', err);
@@ -249,18 +256,29 @@ export function useMyConnectionRequests() {
     }
   };
 
-  useEffect(() => {
-    fetchRequests();
-  }, [fetchRequests]);
-
-  return { requests, loading, error, refetch: fetchRequests, respondToRequest };
+  return {
+    requests,
+    loading,
+    error: error?.message || null,
+    refetch,
+    respondToRequest
+  };
 }
 
-// Helper function to format time ago
+// Helper function to format time ago with date validation
 function formatTimeAgo(dateString) {
+  if (!dateString) return 'Unknown';
+
   const date = new Date(dateString);
+
+  // Validate date is valid
+  if (isNaN(date.getTime())) return 'Unknown';
+
   const now = new Date();
   const seconds = Math.floor((now - date) / 1000);
+
+  // Handle future dates
+  if (seconds < 0) return 'just now';
 
   if (seconds < 60) return 'just now';
   if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;

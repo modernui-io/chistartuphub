@@ -137,7 +137,6 @@ export default function NavigatePaths() {
         className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url('https://images.unsplash.com/photo-1494522855154-9297ac14b55f?w=1920&q=80')`,
-          backgroundAttachment: 'fixed',
           filter: 'grayscale(100%) contrast(1.2)',
           opacity: 0.15
         }}

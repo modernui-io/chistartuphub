@@ -231,7 +231,7 @@ export default function Opportunities({ onOpenSignup }) {
                 <button
                   key={sector}
                   onClick={() => setSelectedSector(sector)}
-                  className={`font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-1.5 border transition-colors cursor-crosshair ${
+                  className={`font-mono text-[10px] uppercase tracking-[0.1em] px-4 py-2.5 border transition-colors cursor-crosshair ${
                     selectedSector === sector
                       ? 'bg-white/10 text-white border-white/40'
                       : 'bg-transparent text-white/30 border-white/10 hover:border-white/20 hover:text-white/50'

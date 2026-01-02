@@ -14,14 +14,22 @@ const AuroraHero = ({
     <section className="relative w-full overflow-hidden">
       <div className="relative mx-auto flex max-w-7xl flex-col items-start gap-6 px-4 pb-12 pt-28 sm:gap-8 sm:pt-44 md:px-10 lg:px-16 md:pb-20">
         {badgeText && badgeLabel && (
-           <a
-             href={badgeHref || "#"}
-             className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 backdrop-blur-sm hover:bg-white/10 transition-colors cursor-pointer"
-           >
-             <span className="text-[10px] font-light uppercase tracking-[0.08em] text-white/70">{badgeLabel}</span>
-             <span className="h-1 w-1 rounded-full bg-white/40" />
-             <span className="text-xs font-light tracking-tight text-white/80">{badgeText}</span>
-           </a>
+          badgeHref ? (
+            <a
+              href={badgeHref}
+              className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 backdrop-blur-sm hover:bg-white/10 transition-colors cursor-pointer"
+            >
+              <span className="text-[10px] font-light uppercase tracking-[0.08em] text-white/70">{badgeLabel}</span>
+              <span className="h-1 w-1 rounded-full bg-white/40" />
+              <span className="text-xs font-light tracking-tight text-white/80">{badgeText}</span>
+            </a>
+          ) : (
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 backdrop-blur-sm">
+              <span className="text-[10px] font-light uppercase tracking-[0.08em] text-white/70">{badgeLabel}</span>
+              <span className="h-1 w-1 rounded-full bg-white/40" />
+              <span className="text-xs font-light tracking-tight text-white/80">{badgeText}</span>
+            </span>
+          )
         )}
 
         <div className="max-w-2xl">

@@ -350,7 +350,7 @@ export default function Stories() {
                           <button
                             key={sector.id}
                             onClick={() => setSectorFilter(sector.id)}
-                            className={`font-mono text-[10px] uppercase tracking-[0.05em] px-3 py-1.5 border transition-colors cursor-crosshair ${
+                            className={`font-mono text-[10px] uppercase tracking-[0.05em] px-4 py-2.5 border transition-colors cursor-crosshair ${
                               sectorFilter === sector.id
                                 ? 'bg-white text-black border-white'
                                 : 'border-white/10 text-white/50 hover:border-white/30 hover:text-white'
@@ -373,7 +373,7 @@ export default function Stories() {
                           <button
                             key={moat.id}
                             onClick={() => setMoatFilter(moat.id)}
-                            className={`font-mono text-[10px] uppercase tracking-[0.05em] px-3 py-1.5 border transition-colors cursor-crosshair ${
+                            className={`font-mono text-[10px] uppercase tracking-[0.05em] px-4 py-2.5 border transition-colors cursor-crosshair ${
                               moatFilter === moat.id
                                 ? 'bg-white text-black border-white'
                                 : 'border-white/10 text-white/50 hover:border-white/30 hover:text-white'
@@ -391,7 +391,7 @@ export default function Stories() {
                       <div className="flex flex-wrap gap-2">
                         <button
                           onClick={() => setUnicornFilter(!unicornFilter)}
-                          className={`font-mono text-[10px] uppercase tracking-[0.05em] px-3 py-1.5 border transition-colors cursor-crosshair flex items-center gap-2 ${
+                          className={`font-mono text-[10px] uppercase tracking-[0.05em] px-4 py-2.5 border transition-colors cursor-crosshair flex items-center gap-2 ${
                             unicornFilter
                               ? 'bg-amber-500 text-black border-amber-500'
                               : 'border-white/10 text-white/50 hover:border-amber-500/50 hover:text-amber-400'
@@ -402,7 +402,7 @@ export default function Stories() {
                         </button>
                         <button
                           onClick={() => setExitFilter(!exitFilter)}
-                          className={`font-mono text-[10px] uppercase tracking-[0.05em] px-3 py-1.5 border transition-colors cursor-crosshair flex items-center gap-2 ${
+                          className={`font-mono text-[10px] uppercase tracking-[0.05em] px-4 py-2.5 border transition-colors cursor-crosshair flex items-center gap-2 ${
                             exitFilter
                               ? 'bg-emerald-500 text-black border-emerald-500'
                               : 'border-white/10 text-white/50 hover:border-emerald-500/50 hover:text-emerald-400'
