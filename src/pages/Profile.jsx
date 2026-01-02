@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBookmarks } from '@/hooks/useBookmarks';
+import ConnectionRequests from '@/components/ConnectionRequests';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -29,7 +30,8 @@ import {
   ExternalLink,
   Linkedin,
   Edit3,
-  Eye
+  Eye,
+  Inbox
 } from 'lucide-react';
 import { toast } from 'sonner';
 import SEO from '@/components/SEO';
@@ -333,6 +335,19 @@ export default function Profile() {
               <Bookmark size={16} />
               Saved ({bookmarks.length})
             </button>
+            {profile?.role === 'founder' && (
+              <button
+                onClick={() => setActiveTab('requests')}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                  activeTab === 'requests'
+                    ? 'bg-white text-black'
+                    : 'text-white/60 hover:text-white'
+                }`}
+              >
+                <Inbox size={16} />
+                Requests
+              </button>
+            )}
           </div>
         </motion.div>
 
@@ -797,6 +812,18 @@ export default function Profile() {
             )}
           </motion.div>
         )}
+
+        {/* REQUESTS TAB - Connection Requests for Founders */}
+        {activeTab === 'requests' && profile?.role === 'founder' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <ConnectionRequests />
+          </motion.div>
+        )}
+      </div>
+      <BureauFooter />
       </div>
       <BureauFooter />
       </div>
