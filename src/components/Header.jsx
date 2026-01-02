@@ -37,13 +37,21 @@ export default function Header({
   const [isScrolled, setIsScrolled] = useState(false);
   const userMenuRef = useRef(null);
 
-  // Scroll listener for header background
+  // Scroll listener for header background (RAF throttled for performance)
   useEffect(() => {
+    let rafId = null;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        setIsScrolled(window.scrollY > 20);
+        rafId = null;
+      });
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, []);
 
   // Click outside listener to close user menu

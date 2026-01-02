@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import {
   Search,
@@ -60,27 +60,29 @@ export default function Opportunities({ onOpenSignup }) {
   // Fetch real data from Supabase
   const { asks, loading: asksLoading, error: asksError, refetch } = useFounderAsks();
 
-  // Filter asks based on search, category, and sector
-  const filteredAsks = asks.filter(ask => {
-    // Category filter
-    if (selectedCategory !== 'all' && ask.category !== selectedCategory) {
-      return false;
-    }
-    // Sector filter
-    if (selectedSector !== 'All Sectors' && ask.sector !== selectedSector) {
-      return false;
-    }
-    // Search filter
-    if (!searchQuery.trim()) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      ask.sector?.toLowerCase().includes(query) ||
-      ask.description?.toLowerCase().includes(query) ||
-      ask.stage?.toLowerCase().includes(query) ||
-      ask.founderName?.toLowerCase().includes(query) ||
-      ask.companyName?.toLowerCase().includes(query)
-    );
-  });
+  // Filter asks based on search, category, and sector (memoized for performance)
+  const filteredAsks = useMemo(() => {
+    return asks.filter(ask => {
+      // Category filter
+      if (selectedCategory !== 'all' && ask.category !== selectedCategory) {
+        return false;
+      }
+      // Sector filter
+      if (selectedSector !== 'All Sectors' && ask.sector !== selectedSector) {
+        return false;
+      }
+      // Search filter
+      if (!searchQuery.trim()) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        ask.sector?.toLowerCase().includes(query) ||
+        ask.description?.toLowerCase().includes(query) ||
+        ask.stage?.toLowerCase().includes(query) ||
+        ask.founderName?.toLowerCase().includes(query) ||
+        ask.companyName?.toLowerCase().includes(query)
+      );
+    });
+  }, [asks, selectedCategory, selectedSector, searchQuery]);
 
   const handleHelp = (ask) => {
     if (!user) {
@@ -119,12 +121,12 @@ export default function Opportunities({ onOpenSignup }) {
     setShowPostAskModal(true);
   };
 
-  // Stats
-  const categoryStats = {
+  // Stats (memoized for performance)
+  const categoryStats = useMemo(() => ({
     fundraising: asks.filter(a => a.category === 'fundraising').length,
     cofounder: asks.filter(a => a.category === 'cofounder').length,
     general_advice: asks.filter(a => a.category === 'general_advice').length,
-  };
+  }), [asks]);
 
   return (
     <>

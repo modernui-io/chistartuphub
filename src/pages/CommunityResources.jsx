@@ -7,32 +7,32 @@ export default function CommunityResources() {
     {
       name: "1871",
       description: "Chicago's premier tech and entrepreneurship center",
-      link: "#"
+      link: "https://1871.com"
     },
     {
       name: "mHUB",
       description: "The nation's leading manufacturing and hardtech innovation center",
-      link: "#"
+      link: "https://www.mhubchicago.com"
     },
     {
       name: "MATTER",
       description: "The premier healthcare technology incubator",
-      link: "#"
+      link: "https://matter.health"
     },
     {
       name: "Chicago Innovation",
       description: "Celebrating, educating and connecting innovators",
-      link: "#"
+      link: "https://www.chicagoinnovation.com"
     },
     {
       name: "The Hatchery",
       description: "A non-profit food and beverage incubator helping local entrepreneurs build & grow successful businesses",
-      link: "#"
+      link: "https://thehatcherychicago.org"
     },
     {
       name: "2112 Chicago",
       description: "Supporting entrepreneurship in creative industries through training, mentorship, and networking",
-      link: "#"
+      link: "https://2112inc.com"
     }
   ];
 

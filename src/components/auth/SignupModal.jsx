@@ -150,7 +150,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
         
         // Route based on role: founders go to Asks page, others go home
         if (role === 'founder') {
-          navigate('/ecosystem/founder-asks');
+          navigate('/opportunities');
         } else {
           navigate('/');
         }

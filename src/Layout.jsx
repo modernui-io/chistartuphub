@@ -284,14 +284,13 @@ export default function Layout({ children }) {
         }
       `}</style>
 
-      {/* Simplified Background */}
-      <div 
-        className="fixed inset-0 z-[-2]" 
+      {/* Simplified Background - removed backgroundAttachment: fixed for mobile performance */}
+      <div
+        className="fixed inset-0 z-[-2]"
         style={{
           backgroundImage: 'linear-gradient(135deg, rgba(15, 15, 15, 0.95) 0%, rgba(26, 26, 26, 0.95) 50%, rgba(15, 15, 15, 0.95) 100%), url(https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1600&q=80)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          backgroundAttachment: 'fixed',
           backgroundRepeat: 'no-repeat'
         }}
       />

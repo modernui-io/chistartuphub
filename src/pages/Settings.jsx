@@ -50,7 +50,7 @@ export default function Settings() {
     try {
       setSaving(true);
       const { error } = await supabase
-        .from("profiles")
+        .from("user_profiles")
         .update({
           email_notifications: settings.email_notifications,
           ask_reminders: settings.ask_reminders,

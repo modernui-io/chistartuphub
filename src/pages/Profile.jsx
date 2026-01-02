@@ -812,6 +812,7 @@ export default function Profile() {
           </motion.div>
         )}
       </div>
+      </div>
       <BureauFooter />
       </div>
     </div>
