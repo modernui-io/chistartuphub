@@ -585,9 +585,17 @@ export default function Profile() {
                   <h3 className="text-lg font-semibold text-white mb-4">Current Focus / The Ask</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-white/60 text-sm">Focus Title</Label>
-                      <Input value={formData.current_focus} onChange={(e) => handleInputChange('current_focus', e.target.value)}
-                        placeholder="Raising Seed Round" className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none h-11" />
+                      <Label className="text-white/60 text-sm">What do you need help with?</Label>
+                      <select
+                        value={formData.current_focus}
+                        onChange={(e) => handleInputChange('current_focus', e.target.value)}
+                        className="w-full bg-black/40 backdrop-blur-sm border border-white/[0.08] text-white rounded-none h-11 px-3 focus:outline-none focus:border-white/30"
+                      >
+                        <option value="" className="bg-[#0a0a0a]">Select your ask type...</option>
+                        <option value="Fundraising" className="bg-[#0a0a0a]">Fundraising - Looking for investors, angels, or VCs</option>
+                        <option value="Co-founder" className="bg-[#0a0a0a]">Co-founder - Seeking a co-founder or key team member</option>
+                        <option value="General Advice" className="bg-[#0a0a0a]">General Advice - Need guidance, intros, or expertise</option>
+                      </select>
                     </div>
                     <div className="space-y-2">
                       <Label className="text-white/60 text-sm">LinkedIn URL</Label>
