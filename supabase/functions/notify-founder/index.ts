@@ -1,5 +1,6 @@
 // Supabase Edge Function: notify-founder
 // Sends email to founder when someone offers to help with their ask
+// Includes 48-hour response deadline
 // 
 // Deploy with: supabase functions deploy notify-founder
 // Set secrets: supabase secrets set RESEND_API_KEY=your_key
@@ -20,6 +21,7 @@ interface ConnectionRequest {
   requester_context: string
   requester_email: string
   requester_name: string
+  expires_at: string
 }
 
 interface FounderAsk {
@@ -132,6 +134,18 @@ serve(async (req) => {
     }
     const categoryLabel = categoryLabels[founderAsk.category] || founderAsk.category
 
+    // Calculate expiration time for display
+    const expiresAt = connectionRequest.expires_at 
+      ? new Date(connectionRequest.expires_at).toLocaleString('en-US', { 
+          weekday: 'short', 
+          month: 'short', 
+          day: 'numeric', 
+          hour: 'numeric', 
+          minute: '2-digit',
+          timeZoneName: 'short'
+        })
+      : '48 hours from now'
+
     // Send email via Resend
     const emailResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
@@ -140,64 +154,72 @@ serve(async (req) => {
         'Authorization': `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: 'ChiStartupHub <noreply@chistartuphub.com>',
+        from: 'ChiStartupHub <hello@chistartuphub.com>',
         to: [founderEmail],
         subject: `Someone wants to help with your ${categoryLabel} ask`,
         html: `
           <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-            <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 20px; margin-bottom: 20px;">
-              <h1 style="font-size: 24px; font-weight: 600; color: #111827; margin: 0;">
+            <div style="background: #0a0a0a; padding: 30px; border-radius: 8px;">
+              <h1 style="color: #ffffff; font-size: 24px; margin-bottom: 20px;">
                 Someone wants to help! 🤝
               </h1>
+              
+              <p style="color: #a0a0a0; font-size: 16px; line-height: 1.6;">
+                Hi ${founderProfile.full_name || 'there'},
+              </p>
+              
+              <p style="color: #a0a0a0; font-size: 16px; line-height: 1.6;">
+                <strong style="color: #ffffff;">${connectionRequest.requester_name}</strong> saw your ask on ChiStartupHub and wants to connect.
+              </p>
+              
+              <div style="background: #1a1a1a; border-left: 3px solid #666; padding: 16px; margin: 20px 0;">
+                <p style="color: #666; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 8px 0;">
+                  Your Ask
+                </p>
+                <p style="color: #ffffff; font-size: 14px; margin: 0;">
+                  ${founderAsk.description.substring(0, 200)}${founderAsk.description.length > 200 ? '...' : ''}
+                </p>
+                <p style="color: #666; font-size: 12px; margin: 8px 0 0 0;">
+                  ${categoryLabel} • ${founderAsk.sector}${founderAsk.amount ? ` • $${founderAsk.amount}` : ''}
+                </p>
+              </div>
+              
+              <div style="background: #1a2e1a; border-left: 3px solid #22c55e; padding: 16px; margin: 20px 0;">
+                <p style="color: #22c55e; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 8px 0;">
+                  How They Can Help
+                </p>
+                <p style="color: #a0a0a0; font-size: 14px; margin: 0;">
+                  ${connectionRequest.requester_context}
+                </p>
+              </div>
+              
+              <div style="background: #2a1a1a; border: 1px solid #dc2626; padding: 16px; margin: 20px 0; border-radius: 6px;">
+                <p style="color: #dc2626; font-size: 14px; font-weight: 600; margin: 0;">
+                  ⏰ Respond within 48 hours
+                </p>
+                <p style="color: #a0a0a0; font-size: 12px; margin: 8px 0 0 0;">
+                  This request expires: ${expiresAt}
+                </p>
+              </div>
+              
+              <div style="margin: 24px 0; text-align: center;">
+                <a href="https://chistartuphub.com/profile?tab=requests" 
+                   style="display: inline-block; background: #ffffff; color: #0a0a0a; padding: 14px 28px; text-decoration: none; font-weight: 600; font-size: 14px; border-radius: 6px; margin-right: 10px;">
+                  Review Request →
+                </a>
+              </div>
+              
+              <p style="color: #666; font-size: 14px; line-height: 1.6; text-align: center;">
+                Accept to share your LinkedIn, or decline to pass.
+              </p>
+              
+              <hr style="border: none; border-top: 1px solid #333; margin: 30px 0;">
+              
+              <p style="color: #666; font-size: 12px; text-align: center;">
+                Build Your Vision in Chicago<br>
+                <a href="https://chistartuphub.com" style="color: #666;">chistartuphub.com</a>
+              </p>
             </div>
-            
-            <p style="color: #374151; font-size: 16px; line-height: 1.6;">
-              Hi ${founderProfile.full_name || 'there'},
-            </p>
-            
-            <p style="color: #374151; font-size: 16px; line-height: 1.6;">
-              <strong>${connectionRequest.requester_name}</strong> saw your ask on ChiStartupHub and wants to connect.
-            </p>
-            
-            <div style="background: #f9fafb; border: 1px solid #e5e7eb; padding: 16px; margin: 20px 0;">
-              <p style="color: #6b7280; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 8px 0;">
-                Your Ask
-              </p>
-              <p style="color: #111827; font-size: 14px; margin: 0;">
-                ${founderAsk.description.substring(0, 200)}${founderAsk.description.length > 200 ? '...' : ''}
-              </p>
-              <p style="color: #6b7280; font-size: 12px; margin: 8px 0 0 0;">
-                ${categoryLabel} • ${founderAsk.sector}${founderAsk.amount ? ` • $${founderAsk.amount}` : ''}
-              </p>
-            </div>
-            
-            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 16px; margin: 20px 0;">
-              <p style="color: #166534; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 8px 0;">
-                How They Can Help
-              </p>
-              <p style="color: #166534; font-size: 14px; margin: 0;">
-                ${connectionRequest.requester_context}
-              </p>
-            </div>
-            
-            <div style="margin: 24px 0;">
-              <a href="${connectionRequest.requester_linkedin}" 
-                 style="display: inline-block; background: #0a66c2; color: white; padding: 12px 24px; text-decoration: none; font-weight: 500; font-size: 14px;">
-                View Their LinkedIn Profile →
-              </a>
-            </div>
-            
-            <p style="color: #6b7280; font-size: 14px; line-height: 1.6;">
-              If you're interested in connecting, reach out to them directly on LinkedIn. 
-              They've already expressed interest in helping you.
-            </p>
-            
-            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 24px 0;" />
-            
-            <p style="color: #9ca3af; font-size: 12px;">
-              This email was sent by ChiStartupHub. 
-              <a href="https://chistartuphub.com" style="color: #6b7280;">Visit site</a>
-            </p>
           </div>
         `,
       }),
