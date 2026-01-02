@@ -4,28 +4,12 @@ import { useLocation } from 'react-router-dom';
 export default function GoogleAnalytics() {
   const location = useLocation();
   
-  // Safely get GA Measurement ID from environment variables
-  const getGAMeasurementId = () => {
-    try {
-      // Try different environment variable access patterns
-      if (typeof process !== 'undefined' && process.env) {
-        return process.env.REACT_APP_GA_MEASUREMENT_ID;
-      }
-      if (typeof import.meta !== 'undefined' && import.meta.env) {
-        return import.meta.env.REACT_APP_GA_MEASUREMENT_ID;
-      }
-    } catch (e) {
-      console.warn('Could not access environment variables:', e);
-    }
-    return null;
-  };
-
-  const GA_MEASUREMENT_ID = getGAMeasurementId();
+  const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID;
 
   useEffect(() => {
     // Only initialize if measurement ID is provided
     if (!GA_MEASUREMENT_ID) {
-      console.warn('Google Analytics Measurement ID not found. Please add REACT_APP_GA_MEASUREMENT_ID to your app secrets.');
+      console.warn('Google Analytics Measurement ID not found. Please add VITE_GA_MEASUREMENT_ID to environment variables.');
       return;
     }
 

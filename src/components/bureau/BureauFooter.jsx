@@ -46,7 +46,7 @@ export function BureauFooter({ className = "" }) {
 
             {/* Copyright */}
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/25">
-              © {currentYear} // ALL_RIGHTS_RESERVED
+              © {currentYear} {"// ALL_RIGHTS_RESERVED"}
             </span>
           </div>
 
@@ -103,7 +103,7 @@ export function BureauFooter({ className = "" }) {
         <div className="mt-16 pt-8 border-t border-white/[0.08]">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/15">
-              MAKE NO SMALL PLANS // SYSTEMATIC MODERNISM
+              {"MAKE NO SMALL PLANS // SYSTEMATIC MODERNISM"}
             </span>
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-white/20" />

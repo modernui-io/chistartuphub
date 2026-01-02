@@ -7,10 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Loader2, Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
@@ -63,44 +60,48 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md bg-[#0F0F0F] border-white/10">
+      <DialogContent className="sm:max-w-md bg-[#0F0F0F] border border-white/10 rounded-none">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-white">
+          <DialogTitle className="font-mono text-xl uppercase tracking-[0.1em] text-white">
             Welcome Back
           </DialogTitle>
-          <DialogDescription className="text-white/60">
+          <DialogDescription className="font-mono text-[11px] text-white/50 uppercase tracking-[0.05em]">
             Sign in to access your bookmarks and personalized experience
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleEmailLogin} className="space-y-4 mt-4">
           <div>
-            <Label htmlFor="email" className="text-white/80">Email</Label>
-            <Input
+            <label htmlFor="email" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
+              Email
+            </label>
+            <input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-white/5 border-white/10 text-white"
+              className="w-full bg-transparent border border-white/10 py-3 px-4 font-mono text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-none duration-0 rounded-none"
               required
             />
           </div>
 
           <div>
-            <Label htmlFor="password" className="text-white/80">Password</Label>
+            <label htmlFor="password" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
+              Password
+            </label>
             <div className="relative">
-              <Input
+              <input
                 id="password"
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-white/5 border-white/10 text-white pr-10"
+                className="w-full bg-transparent border border-white/10 py-3 px-4 pr-10 font-mono text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-none duration-0 rounded-none"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 transition-none duration-0 cursor-crosshair"
               >
                 {showPassword ? (
                   <EyeOff className="w-4 h-4" />
@@ -111,55 +112,53 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
             </div>
           </div>
 
-          <Button
+          <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700"
+            className="w-full font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 bg-white text-black hover:bg-transparent hover:text-white border border-white transition-none duration-0 cursor-crosshair disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
             disabled={loading}
           >
             {loading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border border-current border-t-transparent animate-spin" />
                 Signing in...
-              </>
+              </span>
             ) : (
               'Sign In'
             )}
-          </Button>
+          </button>
         </form>
 
         <div className="relative my-4">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-white/10" />
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-[#0F0F0F] px-2 text-white/40">Or continue with</span>
+          <div className="relative flex justify-center">
+            <span className="bg-[#0F0F0F] px-2 font-mono text-[10px] uppercase tracking-[0.1em] text-white/40">Or continue with</span>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          <Button
+          <button
             type="button"
-            variant="outline"
             onClick={() => handleOAuthLogin('google')}
-            className="bg-white/5 border-white/10 hover:bg-white/10 text-white"
+            className="font-mono text-[11px] uppercase tracking-[0.1em] px-4 py-3 bg-transparent text-white hover:bg-white hover:text-black border border-white/10 hover:border-white transition-none duration-0 cursor-crosshair rounded-none"
           >
             Google
-          </Button>
-          <Button
+          </button>
+          <button
             type="button"
-            variant="outline"
             onClick={() => handleOAuthLogin('github')}
-            className="bg-white/5 border-white/10 hover:bg-white/10 text-white"
+            className="font-mono text-[11px] uppercase tracking-[0.1em] px-4 py-3 bg-transparent text-white hover:bg-white hover:text-black border border-white/10 hover:border-white transition-none duration-0 cursor-crosshair rounded-none"
           >
             GitHub
-          </Button>
+          </button>
         </div>
 
-        <p className="text-center text-sm text-white/60 mt-4">
+        <p className="text-center font-mono text-[11px] text-white/50 mt-4">
           Don't have an account?{' '}
           <button
             onClick={onSwitchToSignup}
-            className="text-blue-400 hover:text-blue-300 font-medium"
+            className="text-white hover:text-white/70 uppercase tracking-[0.1em] transition-none duration-0 cursor-crosshair"
           >
             Sign up
           </button>

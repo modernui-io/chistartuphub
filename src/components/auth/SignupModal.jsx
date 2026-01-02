@@ -7,12 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Loader2, Bookmark, Shield, Eye, EyeOff } from 'lucide-react';
+import { Bookmark, Shield, Eye, EyeOff, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
 const ROLES = [
@@ -177,55 +172,53 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
       }
       onClose();
     }}>
-      <DialogContent className="sm:max-w-md bg-[#0F0F0F] border-white/10">
+      <DialogContent className="sm:max-w-md bg-[#0F0F0F] border border-white/10 rounded-none">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-white">
+          <DialogTitle className="font-mono text-xl uppercase tracking-[0.1em] text-white">
             {step === 1 && 'Create Account'}
             {step === 2 && 'Tell Us About You'}
             {step === 3 && 'Your Interests'}
           </DialogTitle>
-          <DialogDescription className="text-white/60">
+          <DialogDescription className="font-mono text-[11px] text-white/50 uppercase tracking-[0.05em]">
             {step === 1 && 'Join ChiStartupHub to bookmark resources and connect with the ecosystem'}
             {step === 2 && 'Help us personalize your experience'}
             {step === 3 && 'What are you looking for? (Optional)'}
           </DialogDescription>
         </DialogHeader>
 
-        {/* Enhanced Progress indicator */}
+        {/* Bureau Progress indicator - Square steps */}
         <div className="mb-6">
           <div className="flex items-center justify-between">
             {[
-              { num: 1, label: 'Account' },
-              { num: 2, label: 'Profile' },
-              { num: 3, label: 'Interests' }
+              { num: 1, label: 'ACCOUNT' },
+              { num: 2, label: 'PROFILE' },
+              { num: 3, label: 'INTERESTS' }
             ].map((s, index) => (
               <div key={s.num} className="flex items-center">
                 <div className="flex flex-col items-center">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
+                    className={`w-8 h-8 flex items-center justify-center font-mono text-[11px] transition-none duration-0 border ${
                       step > s.num
-                        ? 'bg-blue-600 text-white'
+                        ? 'bg-white text-black border-white'
                         : step === s.num
-                        ? 'bg-blue-600 text-white ring-2 ring-blue-400 ring-offset-2 ring-offset-[#0F0F0F]'
-                        : 'bg-white/10 text-white/40'
+                        ? 'bg-white text-black border-white'
+                        : 'bg-transparent text-white/40 border-white/20'
                     }`}
                   >
                     {step > s.num ? (
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                      <Check className="w-4 h-4" strokeWidth={2} />
                     ) : (
                       s.num
                     )}
                   </div>
-                  <span className={`text-xs mt-1.5 transition-colors ${step >= s.num ? 'text-white/80' : 'text-white/40'}`}>
+                  <span className={`font-mono text-[9px] uppercase tracking-[0.1em] mt-1.5 transition-none duration-0 ${step >= s.num ? 'text-white/80' : 'text-white/40'}`}>
                     {s.label}
                   </span>
                 </div>
                 {index < 2 && (
                   <div
-                    className={`w-12 sm:w-16 h-0.5 mx-2 transition-colors ${
-                      step > s.num ? 'bg-blue-600' : 'bg-white/10'
+                    className={`w-12 sm:w-16 h-px mx-2 transition-none duration-0 ${
+                      step > s.num ? 'bg-white' : 'bg-white/10'
                     }`}
                   />
                 )}
@@ -236,21 +229,25 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
 
         {step === 1 && (
           <>
-            {/* Privacy & Benefits Info */}
-            <div className="bg-blue-600/10 border border-blue-600/20 rounded-lg p-4 mb-4">
-              <div className="space-y-2">
+            {/* Privacy & Benefits Info - Bureau Style */}
+            <div className="border border-white/10 p-4 mb-4">
+              <div className="space-y-3">
                 <div className="flex items-start gap-3">
-                  <Bookmark className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
+                  <div className="w-6 h-6 border border-white/20 flex items-center justify-center flex-shrink-0">
+                    <Bookmark className="w-3 h-3 text-white/50" strokeWidth={1.5} />
+                  </div>
                   <div>
-                    <p className="text-sm text-white/90 font-medium">Save & Bookmark Resources</p>
-                    <p className="text-xs text-white/60">Easily save events, funding opportunities, and workspaces for later</p>
+                    <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-white/90">Save & Bookmark Resources</p>
+                    <p className="font-mono text-[10px] text-white/40">Easily save events, funding opportunities, and workspaces for later</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Shield className="w-5 h-5 text-blue-400 mt-0.5 flex-shrink-0" />
+                  <div className="w-6 h-6 border border-white/20 flex items-center justify-center flex-shrink-0">
+                    <Shield className="w-3 h-3 text-white/50" strokeWidth={1.5} />
+                  </div>
                   <div>
-                    <p className="text-sm text-white/90 font-medium">Your Privacy Matters</p>
-                    <p className="text-xs text-white/60">We take your privacy seriously and never share your data without permission</p>
+                    <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-white/90">Your Privacy Matters</p>
+                    <p className="font-mono text-[10px] text-white/40">We take your privacy seriously and never share your data without permission</p>
                   </div>
                 </div>
               </div>
@@ -258,44 +255,50 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
 
             <form onSubmit={handleStep1Submit} className="space-y-4 mt-4">
               <div>
-                <Label htmlFor="fullName" className="text-white/80">Full Name</Label>
-                <Input
+                <label htmlFor="fullName" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
+                  Full Name
+                </label>
+                <input
                   id="fullName"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="bg-white/5 border-white/10 text-white"
+                  className="w-full bg-transparent border border-white/10 py-3 px-4 font-mono text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-none duration-0 rounded-none"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="signup-email" className="text-white/80">Email</Label>
-                <Input
+                <label htmlFor="signup-email" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
+                  Email
+                </label>
+                <input
                   id="signup-email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="bg-white/5 border-white/10 text-white"
+                  className="w-full bg-transparent border border-white/10 py-3 px-4 font-mono text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-none duration-0 rounded-none"
                   required
                 />
               </div>
 
               <div>
-                <Label htmlFor="signup-password" className="text-white/80">Password</Label>
+                <label htmlFor="signup-password" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
+                  Password
+                </label>
                 <div className="relative">
-                  <Input
+                  <input
                     id="signup-password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="bg-white/5 border-white/10 text-white pr-10"
+                    className="w-full bg-transparent border border-white/10 py-3 px-4 pr-10 font-mono text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-none duration-0 rounded-none"
                     required
                     minLength={6}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 transition-none duration-0 cursor-crosshair"
                   >
                     {showPassword ? (
                       <EyeOff className="w-4 h-4" />
@@ -304,47 +307,48 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
                     )}
                   </button>
                 </div>
-                <p className="text-xs text-white/40 mt-1">At least 6 characters</p>
+                <p className="font-mono text-[10px] text-white/30 mt-1">At least 6 characters</p>
               </div>
 
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">
+              <button
+                type="submit"
+                className="w-full font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 bg-white text-black hover:bg-transparent hover:text-white border border-white transition-none duration-0 cursor-crosshair rounded-none"
+              >
                 Continue
-              </Button>
+              </button>
             </form>
 
             <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-white/10" />
               </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-[#0F0F0F] px-2 text-white/40">Or sign up with</span>
+              <div className="relative flex justify-center">
+                <span className="bg-[#0F0F0F] px-2 font-mono text-[10px] uppercase tracking-[0.1em] text-white/40">Or sign up with</span>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <Button
+              <button
                 type="button"
-                variant="outline"
                 onClick={() => handleOAuthSignup('google')}
-                className="bg-white/5 border-white/10 hover:bg-white/10 text-white"
+                className="font-mono text-[11px] uppercase tracking-[0.1em] px-4 py-3 bg-transparent text-white hover:bg-white hover:text-black border border-white/10 hover:border-white transition-none duration-0 cursor-crosshair rounded-none"
               >
                 Google
-              </Button>
-              <Button
+              </button>
+              <button
                 type="button"
-                variant="outline"
                 onClick={() => handleOAuthSignup('github')}
-                className="bg-white/5 border-white/10 hover:bg-white/10 text-white"
+                className="font-mono text-[11px] uppercase tracking-[0.1em] px-4 py-3 bg-transparent text-white hover:bg-white hover:text-black border border-white/10 hover:border-white transition-none duration-0 cursor-crosshair rounded-none"
               >
                 GitHub
-              </Button>
+              </button>
             </div>
 
-            <p className="text-center text-sm text-white/60 mt-4">
+            <p className="text-center font-mono text-[11px] text-white/50 mt-4">
               Already have an account?{' '}
               <button
                 onClick={onSwitchToLogin}
-                className="text-blue-400 hover:text-blue-300 font-medium"
+                className="text-white hover:text-white/70 uppercase tracking-[0.1em] transition-none duration-0 cursor-crosshair"
               >
                 Sign in
               </button>
@@ -355,112 +359,135 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
         {step === 2 && (
           <form onSubmit={handleStep2Submit} className="space-y-4 mt-4">
             <div>
-              <Label htmlFor="companyName" className="text-white/80">
+              <label htmlFor="companyName" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
                 Company/Startup Name (Optional)
-              </Label>
-              <Input
+              </label>
+              <input
                 id="companyName"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
-                className="bg-white/5 border-white/10 text-white"
+                className="w-full bg-transparent border border-white/10 py-3 px-4 font-mono text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-none duration-0 rounded-none"
               />
             </div>
 
             <div>
-              <Label htmlFor="role" className="text-white/80">Role *</Label>
-              <Select value={role} onValueChange={setRole} required>
-                <SelectTrigger className="bg-white/5 border-white/10 text-white">
-                  <SelectValue placeholder="Select your role" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#0F0F0F] border-white/10">
-                  {ROLES.map((r) => (
-                    <SelectItem key={r.value} value={r.value} className="text-white focus:bg-white/10">
-                      {r.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <label htmlFor="role" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
+                Role *
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {ROLES.map((r) => (
+                  <button
+                    key={r.value}
+                    type="button"
+                    onClick={() => setRole(r.value)}
+                    className={`font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 border transition-none duration-0 cursor-crosshair rounded-none ${
+                      role === r.value
+                        ? 'bg-white text-black border-white'
+                        : 'bg-transparent text-white/50 border-white/20 hover:border-white/40 hover:text-white/70'
+                    }`}
+                  >
+                    {r.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {role === 'founder' && (
               <div>
-                <Label htmlFor="stage" className="text-white/80">Startup Stage</Label>
-                <Select value={stage} onValueChange={setStage}>
-                  <SelectTrigger className="bg-white/5 border-white/10 text-white">
-                    <SelectValue placeholder="Select stage" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#0F0F0F] border-white/10">
-                    {STAGES.map((s) => (
-                      <SelectItem key={s.value} value={s.value} className="text-white focus:bg-white/10">
-                        {s.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <label htmlFor="stage" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
+                  Startup Stage
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {STAGES.map((s) => (
+                    <button
+                      key={s.value}
+                      type="button"
+                      onClick={() => setStage(s.value)}
+                      className={`font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 border transition-none duration-0 cursor-crosshair rounded-none ${
+                        stage === s.value
+                          ? 'bg-white text-black border-white'
+                          : 'bg-transparent text-white/50 border-white/20 hover:border-white/40 hover:text-white/70'
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 
             <div className="flex gap-3">
-              <Button
+              <button
                 type="button"
-                variant="outline"
                 onClick={() => setStep(1)}
-                className="flex-1 bg-white/5 border-white/10 hover:bg-white/10 text-white"
+                className="flex-1 font-mono text-[11px] uppercase tracking-[0.1em] px-4 py-3 bg-transparent text-white hover:bg-white hover:text-black border border-white/10 hover:border-white transition-none duration-0 cursor-crosshair rounded-none"
               >
                 Back
-              </Button>
-              <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700" disabled={!role}>
+              </button>
+              <button
+                type="submit"
+                className="flex-1 font-mono text-[11px] uppercase tracking-[0.1em] px-4 py-3 bg-white text-black hover:bg-transparent hover:text-white border border-white transition-none duration-0 cursor-crosshair disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
+                disabled={!role}
+              >
                 Continue
-              </Button>
+              </button>
             </div>
           </form>
         )}
 
         {step === 3 && (
           <form onSubmit={handleFinalSubmit} className="space-y-4 mt-4">
-            <div className="space-y-3 max-h-64 overflow-y-auto pr-2">
+            <div className="space-y-2 max-h-64 overflow-y-auto pr-2">
               {INTERESTS.map((interest) => (
-                <div key={interest} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={interest}
-                    checked={selectedInterests.includes(interest)}
-                    onCheckedChange={() => toggleInterest(interest)}
-                    className="border-white/20"
-                  />
-                  <label
-                    htmlFor={interest}
-                    className="text-sm text-white/80 cursor-pointer flex-1"
-                  >
+                <button
+                  key={interest}
+                  type="button"
+                  onClick={() => toggleInterest(interest)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 border transition-none duration-0 cursor-crosshair rounded-none ${
+                    selectedInterests.includes(interest)
+                      ? 'bg-white text-black border-white'
+                      : 'bg-transparent text-white/70 border-white/10 hover:border-white/30 hover:text-white'
+                  }`}
+                >
+                  <div className={`w-4 h-4 border flex items-center justify-center transition-none duration-0 ${
+                    selectedInterests.includes(interest)
+                      ? 'border-black bg-black'
+                      : 'border-white/30'
+                  }`}>
+                    {selectedInterests.includes(interest) && (
+                      <Check className="w-3 h-3 text-white" strokeWidth={2} />
+                    )}
+                  </div>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.05em]">
                     {interest}
-                  </label>
-                </div>
+                  </span>
+                </button>
               ))}
             </div>
 
             <div className="flex gap-3">
-              <Button
+              <button
                 type="button"
-                variant="outline"
                 onClick={() => setStep(2)}
-                className="flex-1 bg-white/5 border-white/10 hover:bg-white/10 text-white"
+                className="flex-1 font-mono text-[11px] uppercase tracking-[0.1em] px-4 py-3 bg-transparent text-white hover:bg-white hover:text-black border border-white/10 hover:border-white transition-none duration-0 cursor-crosshair disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
                 disabled={loading}
               >
                 Back
-              </Button>
-              <Button
+              </button>
+              <button
                 type="submit"
-                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                className="flex-1 font-mono text-[11px] uppercase tracking-[0.1em] px-4 py-3 bg-white text-black hover:bg-transparent hover:text-white border border-white transition-none duration-0 cursor-crosshair disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
                 disabled={loading}
               >
                 {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating account...
-                  </>
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="w-4 h-4 border border-current border-t-transparent animate-spin" />
+                    Creating...
+                  </span>
                 ) : (
                   'Complete Signup'
                 )}
-              </Button>
+              </button>
             </div>
           </form>
         )}

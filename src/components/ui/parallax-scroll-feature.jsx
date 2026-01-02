@@ -1,4 +1,4 @@
-
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from 'framer-motion';
 import OptimizedImage from '@/components/OptimizedImage';

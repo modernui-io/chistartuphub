@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Download, Mail, Loader2, CheckCircle, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { supabase } from "@/api/supabaseClient";
 import { toast } from "sonner";
 
 const PDF_URL = "https://fbgxeinarhbrqatrsuoj.supabase.co/storage/v1/object/public/ChiStartup%20Hub%20Startup%20Maturity%20Atlas/ChiStartuphub%20Startup%20Maturity%20Atlas.docx%20(4).pdf";
 
+/**
+ * DownloadToolkitModal - Bureau Design System
+ * Systematic Modernism | Precision over Decoration
+ */
 export default function DownloadToolkitModal({ isOpen, onClose }) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -93,138 +95,150 @@ export default function DownloadToolkitModal({ isOpen, onClose }) {
       style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
     >
       <div
-        className="bg-[#0A0A0A] border border-white/[0.15] rounded-t-2xl md:rounded-xl w-full md:max-w-md max-h-[90vh] overflow-hidden flex flex-col"
+        className="bg-[#050A14] border border-white/10 w-full md:max-w-md max-h-[90vh] overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {showSuccess ? (
           // Success Screen
           <>
-            <div className="bg-green-500/10 border-b border-green-500/20 p-4 md:p-6 flex items-start justify-between">
+            <div className="bg-green-500/5 border-b border-green-500/20 p-4 md:p-6 flex items-start justify-between">
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-2">
-                  <CheckCircle className="w-5 h-5 text-green-400" />
-                  <h2 className="text-lg md:text-xl font-semibold text-white">Download Started!</h2>
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-6 h-6 border border-green-500/30 flex items-center justify-center">
+                    <CheckCircle className="w-3 h-3 text-green-400" strokeWidth={1.5} />
+                  </div>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-green-400">
+                    Download Started
+                  </span>
                 </div>
-                <p className="text-xs md:text-sm text-white/60">
+                <p className="font-mono text-[10px] text-white/40 uppercase tracking-[0.05em]">
                   Your toolkit should be opening now
                 </p>
               </div>
               <button
                 onClick={handleClose}
-                className="p-2 hover:bg-white/[0.1] transition-colors rounded-lg flex-shrink-0"
+                className="p-2 hover:bg-white/5 transition-none duration-0 cursor-crosshair"
               >
-                <X className="w-5 h-5 text-white/60" />
+                <X className="w-4 h-4 text-white/40" strokeWidth={1.5} />
               </button>
             </div>
 
             <div className="p-4 md:p-6 space-y-4">
-              <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-4 text-center">
-                <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-8 h-8 text-green-400" />
+              <div className="border border-white/10 p-6 text-center">
+                <div className="w-12 h-12 border border-green-500/30 flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="w-5 h-5 text-green-400" strokeWidth={1.5} />
                 </div>
-                <h3 className="text-base md:text-lg font-semibold text-white mb-2">
+                <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block mb-2">
+                  [DOWNLOAD: COMPLETE]
+                </span>
+                <h3 className="font-serif text-lg text-white mb-2">
                   Thank you{name ? `, ${name}` : ''}!
                 </h3>
-                <p className="text-xs md:text-sm text-white/60 mb-4">
+                <p className="font-mono text-[10px] text-white/40 tracking-[0.02em] mb-6">
                   The PDF should have opened in a new tab. If it didn't open, tap the button below.
                 </p>
-                <Button
+                <button
                   onClick={handleDownloadAgain}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white border-none h-10 md:h-11 text-sm"
+                  className="w-full flex items-center justify-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 bg-white text-black hover:bg-transparent hover:text-white border border-white transition-none duration-0 cursor-crosshair"
                 >
-                  <ExternalLink className="w-4 h-4 mr-2" />
+                  <ExternalLink className="w-4 h-4" strokeWidth={1.5} />
                   Open PDF
-                </Button>
+                </button>
               </div>
 
               <div className="text-center">
-                <p className="text-xs text-white/40 mb-3">
+                <p className="font-mono text-[10px] text-white/30 tracking-[0.02em] mb-4">
                   You'll receive occasional updates on resources, events, and opportunities.
                 </p>
-                <Button
+                <button
                   onClick={handleClose}
-                  variant="ghost"
-                  className="text-white/60 hover:text-white text-sm"
+                  className="font-mono text-[10px] uppercase tracking-[0.1em] text-white/40 hover:text-white transition-none duration-0 cursor-crosshair"
                 >
                   Close
-                </Button>
+                </button>
               </div>
             </div>
           </>
         ) : (
           // Form Screen
           <>
-            <div className="bg-white/[0.04] border-b border-white/[0.1] p-4 md:p-6 flex items-start justify-between">
+            <div className="border-b border-white/10 p-4 md:p-6 flex items-start justify-between">
               <div className="flex-1 pr-2">
-                <div className="flex items-center gap-2 mb-2 flex-wrap">
-                  <Download className="w-4 h-4 md:w-5 md:h-5 text-blue-400" />
-                  <h2 className="text-base md:text-xl font-semibold text-white">Startup Maturity Atlas</h2>
-                  <span className="bg-green-500/20 text-green-400 text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-full border border-green-500/30">FREE</span>
+                <div className="flex items-center gap-3 mb-2 flex-wrap">
+                  <div className="w-6 h-6 border border-white/20 flex items-center justify-center">
+                    <Download className="w-3 h-3 text-white/50" strokeWidth={1.5} />
+                  </div>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white">
+                    Startup Maturity Atlas
+                  </span>
+                  <span className="font-mono text-[9px] uppercase tracking-[0.1em] px-2 py-0.5 border border-green-500/30 text-green-400">
+                    FREE
+                  </span>
                 </div>
-                <p className="text-xs md:text-sm text-white/60">
+                <p className="font-mono text-[10px] text-white/40 uppercase tracking-[0.05em]">
                   Enter your email to get the complete founder toolkit PDF
                 </p>
               </div>
               <button
                 onClick={handleClose}
-                className="p-2 hover:bg-white/[0.1] transition-colors rounded-lg flex-shrink-0"
+                className="p-2 hover:bg-white/5 transition-none duration-0 cursor-crosshair"
               >
-                <X className="w-5 h-5 text-white/60" />
+                <X className="w-4 h-4 text-white/40" strokeWidth={1.5} />
               </button>
             </div>
 
             <form onSubmit={handleSubmit} className="p-4 md:p-6 space-y-4">
               <div>
-                <label className="text-white text-xs md:text-sm font-medium mb-2 block">
+                <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-3">
                   Email Address <span className="text-red-400">*</span>
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-                  <Input
+                  <Mail className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 text-white/20" strokeWidth={1.5} />
+                  <input
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-white/40 h-10 md:h-11 text-sm"
+                    placeholder="YOUR@EMAIL.COM"
+                    className="w-full pl-6 bg-transparent border-b border-white/10 py-3 font-mono text-[11px] uppercase tracking-[0.05em] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-none duration-0 cursor-crosshair"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-white text-xs md:text-sm font-medium mb-2 block">
+                <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-3">
                   Name (Optional)
                 </label>
-                <Input
+                <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Your name"
-                  className="bg-white/5 border-white/10 text-white placeholder:text-white/40 h-10 md:h-11 text-sm"
+                  placeholder="YOUR NAME"
+                  className="w-full bg-transparent border-b border-white/10 py-3 font-mono text-[11px] uppercase tracking-[0.05em] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-none duration-0 cursor-crosshair"
                 />
               </div>
 
               <div className="pt-2">
-                <Button
+                <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white border-none h-10 md:h-11 text-sm"
+                  className="w-full flex items-center justify-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-4 bg-white text-black hover:bg-transparent hover:text-white border border-white transition-none duration-0 cursor-crosshair disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" strokeWidth={1.5} />
                       Processing...
                     </>
                   ) : (
                     <>
-                      <Download className="w-4 h-4 mr-2" />
+                      <Download className="w-4 h-4" strokeWidth={1.5} />
                       Download Free PDF
                     </>
                   )}
-                </Button>
+                </button>
               </div>
 
-              <p className="text-[10px] md:text-xs text-white/40 text-center">
+              <p className="font-mono text-[9px] text-white/30 text-center uppercase tracking-[0.05em]">
                 We'll only use your email to send you helpful startup resources
               </p>
             </form>

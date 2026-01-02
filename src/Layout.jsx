@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { ExternalLink } from "lucide-react";
@@ -17,7 +17,6 @@ export default function Layout({ children }) {
   const isHomePage = location.pathname === '/' || location.pathname === '/home';
   const hideLayoutFooter = isHomePage || location.pathname === '/funding' || location.pathname === '/about' || location.pathname === '/community' || location.pathname === '/workspaces' || location.pathname === '/events' || location.pathname === '/resources' || location.pathname === '/before-you-start' || location.pathname === '/service-resources' || location.pathname === '/small-business-resources' || location.pathname === '/business-type-explorer' || location.pathname === '/opportunities' || location.pathname === '/stories' || location.pathname.startsWith('/stories/') || location.pathname === '/WhyChicago' || location.pathname === '/SubmitResource';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [isLoading, setIsLoading] = useState(!window.hasShownLoader);
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
@@ -27,15 +26,6 @@ export default function Layout({ children }) {
     setIsLoading(false);
     window.hasShownLoader = true;
   };
-
-  // Handle scroll effect
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Close mobile menu on route change
   useEffect(() => {
