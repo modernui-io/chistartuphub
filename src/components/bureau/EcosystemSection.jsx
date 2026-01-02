@@ -163,7 +163,7 @@ function EcosystemSpecs() {
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
-              backgroundImage: `url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1200&q=80')`,
+              backgroundImage: `url('/images/chicago-skyline.jpg')`,
               filter: "grayscale(100%) contrast(1.2)",
             }}
           />

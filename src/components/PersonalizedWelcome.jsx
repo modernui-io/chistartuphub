@@ -155,7 +155,7 @@ export default function PersonalizedWelcome() {
         {/* Chicago Bean Image */}
         <div className="relative w-full h-32 rounded-xl overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&q=80"
+            src="/images/chicago-skyline.jpg"
             alt="Chicago skyline"
             className="w-full h-full object-cover brightness-75"
           />
