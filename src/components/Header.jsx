@@ -229,7 +229,7 @@ export default function Header({
                           <span className="font-mono text-[11px] uppercase tracking-wider">Your Profile</span>
                         </Link>
                         <Link
-                          to={createPageUrl("SavedResources")}
+                          to="/profile?tab=bookmarks"
                           onClick={() => setIsUserMenuOpen(false)}
                           className="flex items-center gap-3 px-5 py-3 text-white/50 hover:bg-white hover:text-black transition-none cursor-crosshair"
                         >
@@ -400,7 +400,7 @@ export default function Header({
                       <span className="font-mono text-sm uppercase tracking-wider">Your Profile</span>
                     </Link>
                     <Link
-                      to={createPageUrl("SavedResources")}
+                      to="/profile?tab=bookmarks"
                       onClick={() => setMobileMenuOpen(false)}
                       className="flex items-center gap-3 px-2 py-3 text-white/50 hover:text-white transition-none"
                     >

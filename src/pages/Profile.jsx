@@ -373,12 +373,11 @@ export default function Profile() {
                 <div className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-[#0a0a0a]" />
               </div>
 
-              {/* Name & Role */}
+              {/* Name, Company, Location */}
               <h1 className="text-xl font-bold text-white mb-1">{displayName}</h1>
               <p className="text-sm text-white/60 mb-3">
-                {profile?.role === 'founder' && formData.company_name
-                  ? `Founder @ ${formData.company_name}`
-                  : profile?.role?.replace('-', ' ') || 'Member'}
+                {formData.company_name && `${formData.company_name} • `}
+                {formData.location || 'Chicago, IL'}
               </p>
 
               {/* Stage Badge */}
@@ -388,12 +387,6 @@ export default function Profile() {
                   {stageBadge.label}
                 </span>
               )}
-
-              {/* Location */}
-              <div className="flex items-center gap-1.5 text-xs text-white/40 mb-4">
-                <MapPin size={12} />
-                <span>{formData.location || 'Chicago, IL'}</span>
-              </div>
 
               {/* Opportunity Category */}
               {formData.opportunity_category && (
@@ -505,22 +498,18 @@ export default function Profile() {
                       <span className="text-xs font-bold text-green-400 uppercase tracking-widest">Current Focus</span>
                     </div>
                     <h3 className="text-lg font-bold text-white mb-2">
-                      {formData.current_focus || 'Set your current focus'}
+                      {formData.current_focus || 'Create an ask'}
                     </h3>
                     <p className="text-sm text-white/50">
-                      {formData.focus_description || 'What are you working on? Add it in the Edit tab.'}
+                      {formData.focus_description || (
+                        !formData.company_name || !formData.bio 
+                          ? 'Complete your profile to connect with the ecosystem.'
+                          : 'What do you need help with? Share your ask in the Edit tab.'
+                      )}
                     </p>
                   </div>
 
                   <div className="flex flex-col gap-3 w-full sm:w-auto">
-                    <button
-                      onClick={handleCopyEmail}
-                      className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-none transition-all"
-                    >
-                      {copied ? <Check size={16} /> : <Copy size={16} />}
-                      {copied ? "Copied!" : "Copy Email"}
-                    </button>
-
                     {formData.website_url && (
                       <a href={formData.website_url} target="_blank" rel="noopener noreferrer"
                         className="flex items-center justify-center gap-2 px-5 py-2.5 bg-black/40 backdrop-blur-sm border border-white/[0.1] text-white/80 hover:text-white text-sm font-medium rounded-none transition-all">
