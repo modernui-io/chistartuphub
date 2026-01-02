@@ -55,61 +55,19 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       sourcemap: false,
-      minify: 'terser', // Better compression than esbuild
-      terserOptions: {
-        compress: {
-          drop_console: true,
-          drop_debugger: true,
-          passes: 2, // Multiple passes for better compression
-        },
-      },
+      minify: 'esbuild', // Back to esbuild for stability
       rollupOptions: {
         output: {
-          // More aggressive code splitting
-          manualChunks: (id) => {
-            if (id.includes('node_modules')) {
-              // Split by library for better caching
-              if (id.includes('react') && !id.includes('react-router')) {
-                return 'react-core';
-              }
-              if (id.includes('react-router')) {
-                return 'react-router';
-              }
-              if (id.includes('framer-motion')) {
-                return 'animation';
-              }
-              if (id.includes('gsap')) {
-                return 'gsap';
-              }
-              if (id.includes('@supabase')) {
-                return 'supabase';
-              }
-              if (id.includes('leaflet') || id.includes('react-leaflet')) {
-                return 'maps';
-              }
-              if (id.includes('@radix-ui') || id.includes('lucide-react')) {
-                return 'ui';
-              }
-              if (id.includes('recharts')) {
-                return 'charts';
-              }
-              return 'vendor';
-            }
-            
-            // Split heavy pages
-            if (id.includes('/pages/Profile')) return 'page-profile';
-            if (id.includes('/pages/Resources')) return 'page-resources';
-            if (id.includes('/pages/Opportunities')) return 'page-opportunities';
-            if (id.includes('/pages/SavedResources')) return 'page-saved';
-          },
-          // Optimize chunk names for caching
-          chunkFileNames: 'assets/[name]-[hash].js',
-          entryFileNames: 'assets/[name]-[hash].js',
-          assetFileNames: 'assets/[name]-[hash][extname]',
+          manualChunks: {
+            // Core React libraries
+            vendor: ['react', 'react-dom', 'react-router-dom'],
+            // Animation libraries
+            animation: ['framer-motion', 'gsap'],
+            // Maps library  
+            maps: ['react-leaflet', 'leaflet'],
+          }
         }
-      },
-      // Smaller chunks for faster initial load
-      chunkSizeWarningLimit: 500,
+      }
     }
   }
 });
