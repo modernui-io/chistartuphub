@@ -179,7 +179,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
   return (
     <div>
       {/* Quick Filter Tabs */}
-      <div className="flex items-center gap-0 border border-white/10 w-fit mb-8">
+      <div className="flex items-center gap-0 border border-white/20 w-fit mb-8">
         {quickTabs.map((tab) => {
           const count = tabCounts[tab.id] || 0;
           const isActive = activeTab === tab.id;
@@ -187,7 +187,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
             <button
               key={tab.id}
               onClick={() => { setActiveTab(tab.id); setPage(0); }}
-              className={`font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-3 flex items-center gap-2 transition-colors cursor-crosshair border-r border-white/10 last:border-r-0 ${
+              className={`font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-3 flex items-center gap-2 transition-colors cursor-crosshair border-r border-white/20 last:border-r-0 ${
                 isActive
                   ? "bg-white text-black"
                   : "text-white/50 hover:text-white hover:bg-white/[0.02]"
@@ -204,19 +204,19 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
       </div>
 
       {/* Search and Filters */}
-      <div className="border border-white/10 mb-8">
-        <div className="p-4 flex items-center gap-4 border-b border-white/10">
-          <Search className="w-4 h-4 text-white/30" strokeWidth={1.5} />
+      <div className="border border-white/20 mb-8">
+        <div className="p-4 flex items-center gap-4 border-b border-white/20">
+          <Search className="w-4 h-4 text-white/50" strokeWidth={1.5} />
           <input
             type="text"
             placeholder="SEARCH_OPPORTUNITIES..."
             value={searchQuery}
             onChange={(e) => { setSearchQuery(e.target.value); setPage(0); }}
-            className="flex-1 bg-transparent font-mono text-sm text-white placeholder:text-white/30 focus:outline-none uppercase tracking-[0.1em]"
+            className="flex-1 bg-transparent font-mono text-sm text-white placeholder:text-white/50 focus:outline-none uppercase tracking-[0.1em]"
           />
           <button
             onClick={() => setShowFilters(!showFilters)}
-            className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2 border border-white/10 text-white/50 hover:text-white hover:border-white/30 transition-colors flex items-center gap-2 cursor-crosshair"
+            className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2 border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors flex items-center gap-2 cursor-crosshair"
           >
             <Filter className="w-3 h-3" strokeWidth={1.5} />
             Filters
@@ -224,13 +224,13 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
               <span className="bg-white text-black px-1.5 py-0.5 text-[9px]">{activeFilterCount}</span>
             )}
           </button>
-          <span className="font-mono text-xs text-white/30">
+          <span className="font-mono text-xs text-white/50">
             {filteredOpportunities.length} RESULTS
           </span>
         </div>
 
         {showFilters && (
-          <div className="p-4 border-b border-white/10">
+          <div className="p-4 border-b border-white/20">
             <div className="grid md:grid-cols-3 gap-4 mb-4">
               <div>
                 <label className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40 mb-2 block">Sector</label>
@@ -315,7 +315,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
               return (
                 <div
                   key={opp.id || index}
-                  className="p-6 border-b border-r border-white/10 last:border-r-0 md:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0 hover:bg-white/[0.02] transition-colors group flex flex-col"
+                  className="p-6 border-b border-r border-white/20 last:border-r-0 md:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0 hover:bg-white/[0.02] transition-colors group flex flex-col"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <span className="font-mono text-xs text-white/20">
@@ -328,37 +328,37 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
                           {days === 0 ? "Today" : `${days}d`}
                         </span>
                       )}
-                      <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.15em] px-2 py-1 border border-white/10">
+                      <span className="font-mono text-[10px] text-white/50 uppercase tracking-[0.15em] px-2 py-1 border border-white/20">
                         {type}
                       </span>
                     </div>
                   </div>
 
-                  <h3 className="font-mono text-sm uppercase tracking-[0.1em] text-white/80 mb-2 group-hover:text-white transition-colors line-clamp-2">
+                  <h3 className="font-mono text-sm uppercase tracking-[0.1em] text-white mb-2 group-hover:text-white transition-colors line-clamp-2">
                     {opp.name}
                   </h3>
 
-                  <p className="text-white/40 text-sm leading-relaxed mb-4 flex-grow line-clamp-2">
+                  <p className="text-white/60 text-sm leading-relaxed mb-4 flex-grow line-clamp-2">
                     {description || opp.check_size || opp.organization || 'Funding opportunity'}
                   </p>
 
                   {sectors.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-4">
                       {sectors.slice(0, 3).map((sector, idx) => (
-                        <span key={idx} className="font-mono text-[9px] text-white/30 uppercase tracking-[0.1em] px-2 py-1 border border-white/5">
+                        <span key={idx} className="font-mono text-[9px] text-white/50 uppercase tracking-[0.1em] px-2 py-1 border border-white/20">
                           {sector}
                         </span>
                       ))}
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/20">
                     <div className="flex items-center gap-3">
                       {opp.check_size && (
-                        <span className="font-mono text-xs text-white/40">{opp.check_size}</span>
+                        <span className="font-mono text-xs text-white/60">{opp.check_size}</span>
                       )}
                       {opp.deadline && !isHot && (
-                        <span className="font-mono text-xs text-white/30 flex items-center gap-1">
+                        <span className="font-mono text-xs text-white/50 flex items-center gap-1">
                           <Calendar className="w-3 h-3" strokeWidth={1.5} />
                           {new Date(opp.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                         </span>
@@ -376,7 +376,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="font-mono text-[10px] uppercase tracking-[0.15em] px-3 py-2 border border-white/10 text-white/40 hover:bg-white hover:text-black hover:border-white transition-colors flex items-center gap-1 cursor-crosshair"
+                        className="font-mono text-[10px] uppercase tracking-[0.15em] px-3 py-2 border border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white transition-colors flex items-center gap-1 cursor-crosshair"
                       >
                         View
                         <ArrowUpRight className="w-3 h-3" strokeWidth={1.5} />
@@ -394,7 +394,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
               <button
                 onClick={() => setPage(p => p - 1)}
                 disabled={!hasPrevPage}
-                className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2 border border-white/10 text-white/40 hover:bg-white hover:text-black hover:border-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-crosshair flex items-center gap-2"
+                className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2 border border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-crosshair flex items-center gap-2"
               >
                 <ChevronLeft className="w-3 h-3" strokeWidth={1.5} />
                 Prev
@@ -405,7 +405,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
               <button
                 onClick={() => setPage(p => p + 1)}
                 disabled={!hasNextPage}
-                className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2 border border-white/10 text-white/40 hover:bg-white hover:text-black hover:border-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-crosshair flex items-center gap-2"
+                className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2 border border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-crosshair flex items-center gap-2"
               >
                 Next
                 <ChevronRight className="w-3 h-3" strokeWidth={1.5} />
@@ -441,15 +441,15 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
               href={resource.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-6 border-r border-white/10 last:border-r-0 hover:bg-white/[0.02] transition-colors group flex flex-col"
+              className="p-6 border-r border-white/20 last:border-r-0 hover:bg-white/[0.02] transition-colors group flex flex-col"
             >
               <span className="font-mono text-xs text-white/20 mb-3">
                 {String(index + 1).padStart(2, '0')}
               </span>
-              <h3 className="font-mono text-sm uppercase tracking-[0.1em] text-white/80 mb-2 group-hover:text-white transition-colors">
+              <h3 className="font-mono text-sm uppercase tracking-[0.1em] text-white mb-2 group-hover:text-white transition-colors">
                 {resource.name}
               </h3>
-              <p className="text-white/40 text-sm leading-relaxed mb-4 flex-grow">
+              <p className="text-white/60 text-sm leading-relaxed mb-4 flex-grow">
                 {resource.description}
               </p>
               <div className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.15em] text-white/30 group-hover:text-white transition-colors">
