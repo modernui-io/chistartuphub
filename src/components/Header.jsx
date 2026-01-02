@@ -308,10 +308,17 @@ export default function Header({
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Full Screen Overlay */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-6 border-t border-white/[0.08] mt-5">
-            <div className="space-y-6">
+          <>
+            {/* Dimmed backdrop */}
+            <div 
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 md:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            {/* Mobile menu content */}
+            <div className="fixed inset-x-0 top-[73px] bottom-0 bg-[#050A14] z-50 md:hidden overflow-y-auto">
+              <div className="px-6 py-8 space-y-6">
               {navDropdowns.map((dropdown) => (
                 <div key={dropdown.name}>
                   <div className="px-2 py-2 text-white/30 text-[10px] font-mono font-semibold uppercase tracking-[0.2em]">
@@ -453,6 +460,7 @@ export default function Header({
               </div>
             </div>
           </div>
+          </>
         )}
       </div>
     </header>
