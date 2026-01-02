@@ -18,62 +18,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import BureauFooter from '@/components/bureau/BureauFooter';
 
-// ============================================
-// MOCK DATA - FOUNDER ASKS
-// ============================================
-
-const FOUNDER_ASKS = [
-  {
-    id: '1',
-    sector: 'CleanTech & Energy',
-    description: 'Building carbon tracking infrastructure for enterprise supply chains. Looking for investors who understand B2B SaaS and sustainability.',
-    stage: 'Seed',
-    target: '$2M',
-    linkedIn: 'https://linkedin.com/in/example1',
-    createdAt: '2 days ago',
-    isActive: true,
-  },
-  {
-    id: '2',
-    sector: 'HealthTech',
-    description: 'AI-powered diagnostic platform for community health clinics. Reducing wait times and improving patient outcomes.',
-    stage: 'Pre-Seed',
-    target: '$750K',
-    linkedIn: 'https://linkedin.com/in/example2',
-    createdAt: '5 hours ago',
-    isActive: true,
-  },
-  {
-    id: '3',
-    sector: 'EdTech',
-    description: 'Personalized learning paths powered by AI tutors for K-12 students. Partnered with 3 Chicago school districts.',
-    stage: 'Pre-Seed',
-    target: '$500K',
-    linkedIn: 'https://linkedin.com/in/example3',
-    createdAt: '12 hours ago',
-    isActive: true,
-  },
-  {
-    id: '4',
-    sector: 'FinTech',
-    description: 'Embedded banking infrastructure for gig economy platforms. Helping workers access their earnings instantly.',
-    stage: 'Seed',
-    target: '$3M',
-    linkedIn: 'https://linkedin.com/in/example4',
-    createdAt: '1 week ago',
-    isActive: true,
-  },
-  {
-    id: '5',
-    sector: 'Logistics & Supply Chain',
-    description: 'Last-mile delivery optimization for Chicago restaurants. Reducing delivery times by 40% through route intelligence.',
-    stage: 'Pre-Seed',
-    target: '$400K',
-    linkedIn: 'https://linkedin.com/in/example5',
-    createdAt: '3 days ago',
-    isActive: true,
-  },
-];
+import { useFounderAsks, useConnectionRequest } from '@/hooks/useFounderAsks';
 
 // ============================================
 // CONNECTION REQUEST MODAL
@@ -266,16 +211,20 @@ const SECTORS = [
   'FoodTech'
 ];
 
-export default function Opportunities() {
+export default function Opportunities({ onOpenSignup }) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSector, setSelectedSector] = useState('All Sectors');
   const [selectedAsk, setSelectedAsk] = useState(null);
   const [showIntroModal, setShowIntroModal] = useState(false);
+  const [showPostAskForm, setShowPostAskForm] = useState(false);
+
+  // Fetch real data from Supabase
+  const { asks, loading: asksLoading, error: asksError, refetch } = useFounderAsks();
 
   // Filter asks based on search and sector
-  const filteredAsks = FOUNDER_ASKS.filter(ask => {
+  const filteredAsks = asks.filter(ask => {
     // Sector filter
     if (selectedSector !== 'All Sectors' && ask.sector !== selectedSector) {
       return false;
@@ -293,6 +242,7 @@ export default function Opportunities() {
   const handleRequestConnection = (ask) => {
     if (!user) {
       toast.error('Please sign in to request a connection');
+      if (onOpenSignup) onOpenSignup();
       return;
     }
     setSelectedAsk(ask);
@@ -301,12 +251,16 @@ export default function Opportunities() {
 
   const handlePostAsk = () => {
     if (!user) {
-      toast.error('Please sign in to post your ask');
-      navigate('/auth');
+      toast('Sign up to post your ask', {
+        description: 'Create an account to share your fundraising ask with the Chicago startup community.',
+        action: {
+          label: 'Sign Up',
+          onClick: () => onOpenSignup && onOpenSignup(),
+        },
+      });
       return;
     }
-    // Navigate to post ask form (to be built)
-    toast.info('Post Ask feature coming soon!');
+    setShowPostAskForm(true);
   };
 
   return (
@@ -422,7 +376,7 @@ export default function Opportunities() {
               </div>
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[10px] text-white/30 uppercase">Sectors</span>
-                <span className="font-mono text-sm text-white">{new Set(FOUNDER_ASKS.map(a => a.sector)).size}</span>
+                <span className="font-mono text-sm text-white">{new Set(asks.map(a => a.sector)).size}</span>
               </div>
             </div>
             <div className="font-mono text-[10px] text-white/20 uppercase">
@@ -434,7 +388,27 @@ export default function Opportunities() {
         {/* Asks Grid */}
         <section className="py-16 px-6">
           <div className="max-w-6xl mx-auto">
-            {filteredAsks.length > 0 ? (
+            {asksLoading ? (
+              <div className="text-center py-16 border border-white/10">
+                <div className="w-6 h-6 border border-white/30 border-t-white animate-spin mx-auto mb-4" />
+                <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em]">
+                  [LOADING_ASKS...]
+                </span>
+              </div>
+            ) : asksError ? (
+              <div className="text-center py-16 border border-white/10">
+                <span className="font-mono text-[10px] text-red-400/80 uppercase tracking-[0.2em]">
+                  [ERROR]
+                </span>
+                <p className="text-white/40 mt-4">Failed to load asks. Please try again.</p>
+                <button
+                  onClick={refetch}
+                  className="mt-4 font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 hover:text-white border border-white/20 px-4 py-2 hover:bg-white hover:text-black transition-colors cursor-crosshair"
+                >
+                  Retry
+                </button>
+              </div>
+            ) : filteredAsks.length > 0 ? (
               <div className="grid md:grid-cols-2 gap-4">
                 {filteredAsks.map((ask, index) => (
                   <FounderAskCard
@@ -445,6 +419,20 @@ export default function Opportunities() {
                   />
                 ))}
               </div>
+            ) : asks.length === 0 ? (
+              <div className="text-center py-16 border border-white/10">
+                <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em]">
+                  [NO_ASKS_YET]
+                </span>
+                <p className="text-white/40 mt-4 mb-6">Be the first to share your fundraising ask with the Chicago startup community.</p>
+                <button
+                  onClick={handlePostAsk}
+                  className="font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair"
+                >
+                  <Plus className="w-4 h-4 inline mr-2" strokeWidth={1.5} />
+                  Post Your Ask
+                </button>
+              </div>
             ) : (
               <div className="text-center py-16 border border-white/10">
                 <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em]">
@@ -452,10 +440,10 @@ export default function Opportunities() {
                 </span>
                 <p className="text-white/40 mt-4">No asks match your search.</p>
                 <button
-                  onClick={() => setSearchQuery('')}
+                  onClick={() => { setSearchQuery(''); setSelectedSector('All Sectors'); }}
                   className="mt-4 font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 hover:text-white border border-white/20 px-4 py-2 hover:bg-white hover:text-black transition-colors cursor-crosshair"
                 >
-                  Clear Search
+                  Clear Filters
                 </button>
               </div>
             )}
