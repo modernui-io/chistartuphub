@@ -1,18 +1,12 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { createPageUrl } from "@/utils";
 import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
-import { BookOpen, Loader2, Award, Filter, X, Sparkles, Shield, ChevronLeft, ChevronRight, Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import StoryCard from "../components/stories/StoryCard";
+import { Search, Filter, X, Sparkles, Shield, ChevronDown, ArrowUpRight, Building2, Users, TrendingUp, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import SEO from "@/components/SEO";
-import PageHero from "@/components/ui/page-hero";
 import { generateSlug } from "@/lib/utils";
-import ShareActions from "@/components/ShareActions";
+import BureauFooter from "@/components/bureau/BureauFooter";
 
 export default function Stories() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,7 +20,7 @@ export default function Stories() {
   const { data: stories = [], isLoading, error } = useQuery({
     queryKey: ['stories'],
     queryFn: () => entities.Story.list('-created_date'),
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5,
   });
 
   const sectors = useMemo(() => [
@@ -60,87 +54,56 @@ export default function Stories() {
     { id: "Process Power", label: "Process" }
   ], []);
 
-  // Helper to get founder name(s) from founders array or founder_name
+  // Helper functions
   const getFounderName = (story) => {
-    // New Supabase schema uses 'founders' array
     if (story.founders && Array.isArray(story.founders)) {
       return story.founders.join(', ');
     }
-    // Old Base44 schema used 'founder_name' string
     if (story.founder_name) return story.founder_name;
     return 'Unknown Founder';
   };
 
-  // Helper to get journey summary/description
   const getJourneySummary = (story) => {
-    // New Supabase schema uses 'description'
-    // Old Base44 schema used 'journey_summary'
     return story.description || story.journey_summary || story.tagline || '';
   };
 
-  // Helper to get category/sector
   const getCategory = (story) => {
-    // New Supabase schema uses 'sector'
-    // Old Base44 schema used 'category'
     return story.sector || story.category || 'Technology';
   };
 
-  // Helper to get exit value/valuation
   const getExitValue = (story) => {
-    // New Supabase schema uses 'funding_raised' or 'valuation'
     return story.funding_raised || story.valuation || story.exit_value || '';
   };
 
-  // Helper to get founded year
   const getFounded = (story) => {
-    // New Supabase schema uses 'founded_year'
-    // Old Base44 schema used 'founded'
     return story.founded_year || story.founded || '';
   };
 
-  // Helper to get primary power/moat
   const getPrimaryPower = (story) => {
-    // New Supabase schema uses 'competitive_moat'
-    // Old Base44 schema used 'primary_power'
     return story.competitive_moat || story.primary_power || '';
   };
 
-  // Helper function to check if a company is a unicorn
   const isUnicorn = (story) => {
     if (story.is_unicorn) return true;
-
     const valuation = (story.valuation || story.exit_value || '').toLowerCase();
-
     return valuation.includes("unicorn") ||
            valuation.includes("$1b") ||
-           valuation.includes("$2b") ||
-           valuation.includes("$3b") ||
-           valuation.includes("$4b") ||
-           valuation.includes("$5b") ||
-           valuation.includes("$6b") ||
            valuation.includes("billion");
   };
 
   const filteredStories = useMemo(() => {
     return stories.filter(story => {
       const category = getCategory(story);
-      if (sectorFilter !== "all" && category !== sectorFilter) {
-        return false;
-      }
+      if (sectorFilter !== "all" && category !== sectorFilter) return false;
 
       if (moatFilter !== "all") {
         const primaryPower = getPrimaryPower(story).toLowerCase();
         const secondaryPower = (story.secondary_power || story.moat_description || '').toLowerCase();
         const moatLower = moatFilter.toLowerCase();
-
-        if (!primaryPower.includes(moatLower) && !secondaryPower.includes(moatLower)) {
-          return false;
-        }
+        if (!primaryPower.includes(moatLower) && !secondaryPower.includes(moatLower)) return false;
       }
 
-      if (unicornFilter && !isUnicorn(story)) {
-        return false;
-      }
+      if (unicornFilter && !isUnicorn(story)) return false;
 
       if (searchQuery) {
         const searchLower = searchQuery.toLowerCase();
@@ -148,17 +111,13 @@ export default function Stories() {
         const founderMatch = getFounderName(story).toLowerCase().includes(searchLower);
         const categoryMatch = category.toLowerCase().includes(searchLower);
         const summaryMatch = getJourneySummary(story).toLowerCase().includes(searchLower);
-
-        if (!companyMatch && !founderMatch && !categoryMatch && !summaryMatch) {
-          return false;
-        }
+        if (!companyMatch && !founderMatch && !categoryMatch && !summaryMatch) return false;
       }
 
       return true;
     });
   }, [stories, sectorFilter, moatFilter, unicornFilter, searchQuery]);
 
-  // Paginate filtered stories
   const paginatedStories = useMemo(() => {
     const start = page * ITEMS_PER_PAGE;
     return filteredStories.slice(start, start + ITEMS_PER_PAGE);
@@ -168,7 +127,6 @@ export default function Stories() {
   const hasNextPage = page < totalPages - 1;
   const hasPrevPage = page > 0;
 
-  // Reset to page 0 when filters change
   useEffect(() => {
     setPage(0);
   }, [searchQuery, sectorFilter, moatFilter, unicornFilter]);
@@ -194,413 +152,417 @@ export default function Stories() {
     return featured.length > 0 ? featured[0] : null;
   }, [filteredStories]);
 
-  const getHeadlineSummary = (story) => {
-    const fullSummary = getJourneySummary(story);
-    if (!fullSummary) return "No summary available";
-    const firstSentence = fullSummary.split('→')[0].trim();
-    return firstSentence.length > 150 ? firstSentence.substring(0, 150) + '...' : firstSentence;
-  };
-
+  // Loading State
   if (isLoading) {
     return (
-      <div className="min-h-screen py-20 px-4 flex items-center justify-center">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="text-center"
-        >
-          <Loader2 className="w-12 h-12 text-white animate-spin mx-auto mb-4" />
-          <p className="text-white/70 text-lg">Loading stories...</p>
-        </motion.div>
+      <div className="min-h-screen bg-[#050A14] flex items-center justify-center">
+        <div className="text-center">
+          <div className="font-mono text-4xl text-white mb-4">
+            <span className="inline-block animate-pulse">LOADING</span>
+          </div>
+          <div className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em]">
+            [BLUEPRINTS: LOADING]
+          </div>
+        </div>
       </div>
     );
   }
 
+  // Error State
   if (error) {
     return (
-      <div className="min-h-screen py-20 px-4 flex items-center justify-center">
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center"
-        >
-          <p className="text-white/70 text-lg">Error loading stories. Please try again later.</p>
-        </motion.div>
+      <div className="min-h-screen bg-[#050A14] flex items-center justify-center">
+        <div className="text-center">
+          <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block mb-4">
+            [ERROR: LOAD_FAILED]
+          </span>
+          <p className="text-white/50">Error loading stories. Please try again later.</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen py-12 md:py-20 px-4 md:px-6">
+    <>
       <SEO
         title="Chicago Blueprints: Startup Success Stories"
         description="How Groupon, ShipBob, and Cameo built billion-dollar companies. Deconstructed playbooks showing their competitive moats and paths to success."
         keywords="Chicago startups, founder playbooks, success blueprints, competitive moats, how they did it, startup strategy"
       />
-      <div className="max-w-7xl mx-auto">
-        <PageHero
-          label="Learn from the Best"
-          title="Chicago Blueprints"
-          description="How Groupon, ShipBob, and Cameo actually did it. Deconstructed."
-          stat={stories.length}
-          statLabel="success stories"
-          backgroundImage="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1600&q=80"
-        />
 
-        {/* Search and Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="sticky top-24 z-40 bg-[#0A0A0A]/80 backdrop-blur-xl p-4 rounded-2xl border border-white/[0.08] shadow-2xl shadow-black/50 mb-8 md:mb-12"
-        >
-          <div className="flex flex-col md:flex-row gap-3">
-            <div className="relative flex-1 group">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-white/70 transition-colors duration-300" />
-              <Input
-                type="text"
-                placeholder="Search companies, founders, moats..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 bg-white/[0.03] hover:bg-white/[0.06] focus:bg-white/[0.08] border-white/[0.06] focus:border-white/20 text-white placeholder:text-white/30 h-11 rounded-xl transition-all duration-300"
-              />
-            </div>
-
-            <Button
-              onClick={() => setShowFilters(!showFilters)}
-              className="bg-white/[0.03] hover:bg-white/[0.08] text-white/90 border border-white/[0.06] hover:border-white/20 h-11 px-5 rounded-xl transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap"
-            >
-              <Filter className="w-3.5 h-3.5" />
-              <span className="text-sm font-medium">Filters</span>
-              {activeFilterCount > 0 && (
-                <Badge className="ml-1.5 bg-white/10 text-white hover:bg-white/20 border-none px-1.5 py-0 h-5 text-[10px]">{activeFilterCount}</Badge>
-              )}
-            </Button>
-          </div>
-
-          {showFilters && (
-            <div className="space-y-4 pt-4 border-t border-white/10">
-              <div>
-                <label className="text-white text-sm font-medium mb-2 block">Sector</label>
-                <div className="flex flex-wrap gap-1.5">
-                  {sectors.map((sector) => (
-                    <Button
-                      key={sector.id}
-                      onClick={() => setSectorFilter(sector.id)}
-                      className={`text-xs px-2 py-1 h-auto ${
-                        sectorFilter === sector.id
-                          ? 'glass-button'
-                          : 'bg-white/5 text-white/70 hover:bg-white/10 border border-white/10'
-                      }`}
-                    >
-                      {sector.label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="text-white text-sm font-medium mb-2 block flex items-center gap-2">
-                  <Shield className="w-4 h-4" />
-                  Competitive Moat
-                </label>
-                <div className="flex flex-wrap gap-1.5">
-                  {moats.map((moat) => (
-                    <Button
-                      key={moat.id}
-                      onClick={() => setMoatFilter(moat.id)}
-                      className={`text-xs px-2 py-1 h-auto ${
-                        moatFilter === moat.id
-                          ? 'glass-button'
-                          : 'bg-white/5 text-white/70 hover:bg-white/10 border border-white/10'
-                      }`}
-                    >
-                      {moat.label}
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="text-white text-sm font-medium mb-2 block">Special Filters</label>
-                <Button
-                  onClick={() => setUnicornFilter(!unicornFilter)}
-                  className={`text-xs px-2 py-1 h-auto flex items-center gap-2 ${
-                    unicornFilter
-                      ? 'glass-button'
-                      : 'bg-white/5 text-white/70 hover:bg-white/10 border border-white/10'
-                  }`}
-                >
-                  <Sparkles className="w-3 h-3" />
-                  Unicorns ($1B+)
-                </Button>
-              </div>
-
-              {activeFilterCount > 0 && (
-                <div className="flex items-center gap-2 flex-wrap pt-2">
-                  <span className="text-white/70 text-xs">Active filters:</span>
-                  {searchQuery && (
-                    <Badge className="bg-white/10 text-white border-white/20 text-xs">
-                      Search: "{searchQuery.slice(0, 15)}..."
-                    </Badge>
-                  )}
-                  {sectorFilter !== "all" && (
-                    <Badge className="bg-white/10 text-white border-white/20 text-xs">
-                      {sectors.find(s => s.id === sectorFilter)?.label}
-                    </Badge>
-                  )}
-                  {moatFilter !== "all" && (
-                    <Badge className="bg-white/10 text-white border-white/20 text-xs">
-                      <Shield className="w-3 h-3 mr-1" />
-                      {moats.find(m => m.id === moatFilter)?.label}
-                    </Badge>
-                  )}
-                  {unicornFilter && (
-                    <Badge className="bg-white/10 text-white border-white/20 text-xs">
-                      <Sparkles className="w-3 h-3 mr-1" />
-                      Unicorns
-                    </Badge>
-                  )}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={clearFilters}
-                    className="text-white/70 hover:text-white text-xs h-auto py-1"
-                  >
-                    <X className="w-3 h-3 mr-1" />
-                    Clear
-                  </Button>
-                </div>
-              )}
-            </div>
-          )}
-        </motion.div>
-
-        <div className="mb-4 md:mb-8 flex items-center justify-between">
-          <p className="text-white/70 text-sm md:text-base">
-            Showing <span className="font-bold text-white">{paginatedStories.length}</span> of {filteredStories.length} stories
-            {filteredStories.length !== stories.length && ` (${stories.length} total)`}
-          </p>
-          {totalPages > 1 && (
-            <p className="text-white/60 text-sm">
-              Page {page + 1} of {totalPages}
-            </p>
-          )}
-        </div>
-
-        {/* Featured Story - Simplified for Mobile */}
-        <AnimatePresence mode="wait">
-          {featuredStory && (
+      <div className="min-h-screen bg-[#050A14] text-white" data-page="stories">
+        {/* Hero Section */}
+        <section className="relative pt-32 pb-16 px-6">
+          <div className="max-w-6xl mx-auto">
+            {/* Label */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-              className="glass-card p-6 md:p-12 rounded-3xl border border-white/10 mb-8 md:mb-16 overflow-hidden"
+              className="mb-6"
             >
-              <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-center">
-                <div>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    <Badge className="accent-badge text-xs">
-                      Featured Story
-                    </Badge>
-                    {isUnicorn(featuredStory) && (
-                      <Badge className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-none text-xs">
-                        <Sparkles className="w-3 h-3 mr-1" />
-                        Unicorn
-                      </Badge>
-                    )}
-                  </div>
-                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">{featuredStory.company_name}</h2>
-                  <p className="text-lg md:text-xl text-white/80 mb-2">{getFounderName(featuredStory)}</p>
-
-                  <div className="flex flex-wrap gap-1.5 mb-4">
-                    <Badge className="bg-white/10 text-white border-white/20 text-xs">{getCategory(featuredStory)}</Badge>
-                    {getFounded(featuredStory) && <Badge className="bg-white/10 text-white border-white/20 text-xs">Founded {getFounded(featuredStory)}</Badge>}
-                    {getExitValue(featuredStory) && <Badge className="bg-green-500/20 text-green-300 border-green-400/30 text-xs">{getExitValue(featuredStory)}</Badge>}
-                  </div>
-
-                  <p className="text-white/70 text-base md:text-lg leading-relaxed mb-4 md:mb-6">{getHeadlineSummary(featuredStory)}</p>
-
-                  {getPrimaryPower(featuredStory) && (
-                    <div className="flex items-center gap-2 mb-4 md:mb-6">
-                      <Award className="w-4 h-4 md:w-5 md:h-5 text-blue-400" />
-                      <span className="text-white/80 text-sm md:text-base">Primary Moat: <strong className="text-white">{getPrimaryPower(featuredStory)}</strong></span>
-                    </div>
-                  )}
-                  
-                  <Link to={`/stories/${generateSlug(featuredStory.company_name)}`}>
-                    <Button className="accent-button text-base md:text-lg w-full md:w-auto">
-                      Read Full Story
-                      <BookOpen className="w-4 h-4 md:w-5 md:h-5 ml-2" />
-                    </Button>
-                  </Link>
-                </div>
-                
-                <div className="order-first md:order-last">
-                  <StoryCard story={featuredStory} size="large" />
-                </div>
-              </div>
+              <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em]">
+                [ARCHIVE: BLUEPRINTS]
+              </span>
             </motion.div>
-          )}
-        </AnimatePresence>
 
-        {/* All Stories Grid */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mb-6 md:mb-8"
-        >
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">All Stories</h2>
-          <p className="text-white/70 text-sm md:text-base">Explore inspiring journeys and competitive moats from Chicago's startup ecosystem</p>
-        </motion.div>
+            {/* Headline */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="font-serif text-5xl md:text-6xl lg:text-7xl text-white mb-6 tracking-tight"
+            >
+              CHICAGO BLUEPRINTS
+            </motion.h1>
 
-        {filteredStories.length === 0 ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            className="text-center py-16"
-          >
-            <BookOpen className="w-16 h-16 text-white/30 mx-auto mb-4" />
-            <p className="text-white/70 text-lg mb-4">No stories match your current filters</p>
-            <Button onClick={clearFilters} className="glass-button">
-              Clear all filters
-            </Button>
-          </motion.div>
-        ) : (
-          <>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {paginatedStories.map((story, index) => (
-                  <motion.div
-                    key={story.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ 
-                      duration: 0.4, 
-                      delay: Math.min(index * 0.05, 0.3)
-                    }}
-                    className="group relative bg-[#0F0F0F] rounded-2xl border border-white/[0.06] overflow-hidden flex flex-col hover:border-white/[0.15] transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/60"
-                  >
-                    <div className="overflow-hidden relative">
-                      <StoryCard story={story} size="default" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0F0F0F] via-transparent to-transparent opacity-90" />
-                    </div>
+            {/* Subhead */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-white/40 text-lg max-w-2xl mb-8"
+            >
+              How Groupon, ShipBob, and Cameo actually did it. Deconstructed playbooks showing competitive moats and paths to success.
+            </motion.p>
+          </div>
+        </section>
 
-                    <div className="p-6 flex flex-col flex-grow relative -mt-6">
-                      <div className="relative z-10 flex flex-col h-full">
-                        <div className="flex items-start justify-between gap-3 mb-1.5">
-                          <h3 className="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors duration-300 tracking-tight">
-                            {story.company_name}
-                          </h3>
-                          {isUnicorn(story) && (
-                            <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 flex-shrink-0 text-[10px] px-1.5 py-0.5">
-                              <Sparkles className="w-2.5 h-2.5 mr-1" />
-                              <span className="hidden sm:inline">Unicorn</span>
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="text-white/40 text-xs font-medium mb-4 uppercase tracking-wider">{getFounderName(story)}</p>
+        {/* Stats Bar */}
+        <section className="border-y border-white/10 py-4 px-6">
+          <div className="max-w-6xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-8">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[10px] text-white/30 uppercase">Total Stories</span>
+                <span className="font-mono text-sm text-white">{stories.length}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-[10px] text-white/30 uppercase">Showing</span>
+                <span className="font-mono text-sm text-white">{filteredStories.length}</span>
+              </div>
+              {unicornFilter && (
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-3 h-3 text-amber-400" />
+                  <span className="font-mono text-[10px] text-amber-400 uppercase">Unicorns Only</span>
+                </div>
+              )}
+            </div>
+            <div className="font-mono text-[10px] text-white/20 uppercase">
+              Page {page + 1} of {totalPages || 1}
+            </div>
+          </div>
+        </section>
 
-                        <div className="flex flex-wrap gap-1.5 mb-4">
-                          <Badge className="bg-white/[0.04] text-white/60 border-white/[0.06] text-[10px] font-medium px-2 py-0.5">{getCategory(story)}</Badge>
-                          {getFounded(story) && <Badge className="bg-white/[0.04] text-white/60 border-white/[0.06] text-[10px] font-medium px-2 py-0.5">{getFounded(story)}</Badge>}
-                          {getExitValue(story) && <Badge className="bg-emerald-900/20 text-emerald-400/80 border-emerald-500/20 text-[10px] font-medium px-2 py-0.5">{getExitValue(story)}</Badge>}
-                        </div>
+        {/* Search & Filters */}
+        <section className="py-8 px-6 border-b border-white/10">
+          <div className="max-w-6xl mx-auto">
+            {/* Search */}
+            <div className="relative mb-4">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" strokeWidth={1.5} />
+              <input
+                type="text"
+                placeholder="SEARCH_COMPANIES_FOUNDERS_MOATS..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-transparent border border-white/10 py-4 pl-12 pr-4 font-mono text-[11px] uppercase tracking-[0.05em] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-colors"
+              />
+            </div>
 
-                        <p className="text-white/50 leading-relaxed mb-5 flex-grow text-sm font-light line-clamp-3">
-                          {getHeadlineSummary(story)}
-                        </p>
+            {/* Filter Toggle */}
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 hover:text-white transition-colors cursor-crosshair"
+              >
+                <Filter className="w-3 h-3" strokeWidth={1.5} />
+                Filters
+                {activeFilterCount > 0 && (
+                  <span className="px-1.5 py-0.5 bg-white/10 text-white text-[9px]">{activeFilterCount}</span>
+                )}
+                <ChevronDown className={`w-3 h-3 transition-transform ${showFilters ? 'rotate-180' : ''}`} strokeWidth={1.5} />
+              </button>
 
-                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/[0.04]">
-                          <div className="flex items-center gap-2">
-                            {getPrimaryPower(story) && (
-                              <div className="flex items-center gap-1.5">
-                                <Shield className="w-3 h-3 text-blue-500/60" />
-                                <span className="text-white/40 text-xs font-medium">{getPrimaryPower(story)}</span>
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <ShareActions
-                              resourceType="story"
-                              resourceId={story.id}
-                              resourceName={story.company_name}
-                            />
-                            <Link to={`/stories/${generateSlug(story.company_name)}`}>
-                              <div className="flex items-center gap-1 text-white/40 hover:text-white text-xs font-medium transition-colors group/link">
-                                Read Story
-                                <ChevronRight className="w-3 h-3 group-hover/link:translate-x-0.5 transition-transform" />
-                              </div>
-                            </Link>
-                          </div>
-                        </div>
+              {activeFilterCount > 0 && (
+                <button
+                  onClick={clearFilters}
+                  className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.1em] text-white/30 hover:text-white transition-colors cursor-crosshair"
+                >
+                  <X className="w-3 h-3" strokeWidth={1.5} />
+                  Clear All
+                </button>
+              )}
+            </div>
+
+            {/* Expanded Filters */}
+            <AnimatePresence>
+              {showFilters && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="pt-6 space-y-6">
+                    {/* Sector Filter */}
+                    <div>
+                      <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.1em] block mb-3">Sector</span>
+                      <div className="flex flex-wrap gap-1">
+                        {sectors.map((sector) => (
+                          <button
+                            key={sector.id}
+                            onClick={() => setSectorFilter(sector.id)}
+                            className={`font-mono text-[10px] uppercase tracking-[0.05em] px-3 py-1.5 border transition-colors cursor-crosshair ${
+                              sectorFilter === sector.id
+                                ? 'bg-white text-black border-white'
+                                : 'border-white/10 text-white/50 hover:border-white/30 hover:text-white'
+                            }`}
+                          >
+                            {sector.label}
+                          </button>
+                        ))}
                       </div>
                     </div>
-                  </motion.div>
-                ))}
-              </div>
 
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-                className="flex items-center justify-center gap-4 mt-12"
-              >
-                <Button
-                  onClick={() => setPage(p => p - 1)}
-                  disabled={!hasPrevPage}
-                  className="glass-button disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <ChevronLeft className="w-4 h-4 mr-2" />
-                  Previous
-                </Button>
-                
-                <div className="flex items-center gap-2">
-                  {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                    let pageNum;
-                    if (totalPages <= 5) {
-                      pageNum = i;
-                    } else if (page < 3) {
-                      pageNum = i;
-                    } else if (page >= totalPages - 3) {
-                      pageNum = totalPages - 5 + i;
-                    } else {
-                      pageNum = page - 2 + i;
-                    }
-                    
-                    return (
-                      <Button
-                        key={pageNum}
-                        onClick={() => setPage(pageNum)}
-                        className={`w-10 h-10 ${
-                          page === pageNum 
-                            ? 'accent-button' 
-                            : 'glass-button'
+                    {/* Moat Filter */}
+                    <div>
+                      <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.1em] block mb-3 flex items-center gap-2">
+                        <Shield className="w-3 h-3" strokeWidth={1.5} />
+                        Competitive Moat
+                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {moats.map((moat) => (
+                          <button
+                            key={moat.id}
+                            onClick={() => setMoatFilter(moat.id)}
+                            className={`font-mono text-[10px] uppercase tracking-[0.05em] px-3 py-1.5 border transition-colors cursor-crosshair ${
+                              moatFilter === moat.id
+                                ? 'bg-white text-black border-white'
+                                : 'border-white/10 text-white/50 hover:border-white/30 hover:text-white'
+                            }`}
+                          >
+                            {moat.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Special Filters */}
+                    <div>
+                      <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.1em] block mb-3">Special</span>
+                      <button
+                        onClick={() => setUnicornFilter(!unicornFilter)}
+                        className={`font-mono text-[10px] uppercase tracking-[0.05em] px-3 py-1.5 border transition-colors cursor-crosshair flex items-center gap-2 ${
+                          unicornFilter
+                            ? 'bg-amber-500 text-black border-amber-500'
+                            : 'border-white/10 text-white/50 hover:border-amber-500/50 hover:text-amber-400'
                         }`}
                       >
-                        {pageNum + 1}
-                      </Button>
-                    );
-                  })}
+                        <Sparkles className="w-3 h-3" strokeWidth={1.5} />
+                        Unicorns ($1B+)
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </section>
+
+        {/* Featured Story */}
+        {featuredStory && (
+          <section className="py-12 px-6 border-b border-white/10">
+            <div className="max-w-6xl mx-auto">
+              <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block mb-4">
+                [FEATURED: BLUEPRINT]
+              </span>
+              
+              <Link 
+                to={`/stories/${generateSlug(featuredStory.company_name)}`}
+                className="block border border-white/10 hover:border-white/30 transition-colors group"
+              >
+                <div className="grid md:grid-cols-2">
+                  {/* Image */}
+                  <div className="aspect-video md:aspect-auto bg-white/5 relative overflow-hidden">
+                    {featuredStory.image_url ? (
+                      <img 
+                        src={featuredStory.image_url} 
+                        alt={featuredStory.company_name}
+                        className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Building2 className="w-16 h-16 text-white/10" strokeWidth={1} />
+                      </div>
+                    )}
+                    {isUnicorn(featuredStory) && (
+                      <div className="absolute top-4 left-4 flex items-center gap-1 font-mono text-[10px] text-amber-400 bg-black/50 px-2 py-1">
+                        <Sparkles className="w-3 h-3" strokeWidth={1.5} />
+                        UNICORN
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-6 md:p-8 flex flex-col">
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="font-mono text-[10px] text-white/30 uppercase">{getCategory(featuredStory)}</span>
+                      {getFounded(featuredStory) && (
+                        <>
+                          <span className="text-white/20">•</span>
+                          <span className="font-mono text-[10px] text-white/30 uppercase">Founded {getFounded(featuredStory)}</span>
+                        </>
+                      )}
+                    </div>
+
+                    <h2 className="font-serif text-3xl md:text-4xl text-white mb-2 group-hover:text-white/80 transition-colors">
+                      {featuredStory.company_name}
+                    </h2>
+                    
+                    <p className="font-mono text-xs text-white/40 uppercase tracking-wider mb-4">
+                      {getFounderName(featuredStory)}
+                    </p>
+
+                    <p className="text-sm text-white/50 leading-relaxed mb-6 flex-1">
+                      {getJourneySummary(featuredStory).slice(0, 200)}...
+                    </p>
+
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        {getPrimaryPower(featuredStory) && (
+                          <div className="flex items-center gap-2">
+                            <Shield className="w-3 h-3 text-white/30" strokeWidth={1.5} />
+                            <span className="font-mono text-[10px] text-white/40 uppercase">{getPrimaryPower(featuredStory)}</span>
+                          </div>
+                        )}
+                        {getExitValue(featuredStory) && (
+                          <div className="flex items-center gap-2">
+                            <TrendingUp className="w-3 h-3 text-white/30" strokeWidth={1.5} />
+                            <span className="font-mono text-[10px] text-white/40 uppercase">{getExitValue(featuredStory)}</span>
+                          </div>
+                        )}
+                      </div>
+                      <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-white transition-colors" strokeWidth={1.5} />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          </section>
+        )}
+
+        {/* Stories Grid */}
+        <section className="py-12 px-6">
+          <div className="max-w-6xl mx-auto">
+            <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block mb-6">
+              [ALL: BLUEPRINTS]
+            </span>
+
+            {filteredStories.length === 0 ? (
+              <div className="text-center py-16 border border-white/10">
+                <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block mb-4">
+                  [NO_RESULTS]
+                </span>
+                <p className="text-white/40 mb-4">No stories match your current filters.</p>
+                <button
+                  onClick={clearFilters}
+                  className="font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 hover:text-white border border-white/20 px-4 py-2 hover:bg-white hover:text-black transition-colors cursor-crosshair"
+                >
+                  Clear Filters
+                </button>
+              </div>
+            ) : (
+              <>
+                {/* Grid */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 border-l border-t border-white/10">
+                  {paginatedStories.map((story, index) => (
+                    <Link
+                      key={story.id}
+                      to={`/stories/${generateSlug(story.company_name)}`}
+                      className="border-r border-b border-white/10 p-6 hover:bg-white/[0.02] transition-colors group"
+                    >
+                      {/* Index */}
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="font-mono text-[10px] text-white/20">
+                          {String(page * ITEMS_PER_PAGE + index + 1).padStart(2, '0')}
+                        </span>
+                        {isUnicorn(story) && (
+                          <div className="flex items-center gap-1 font-mono text-[9px] text-amber-400">
+                            <Sparkles className="w-2.5 h-2.5" strokeWidth={1.5} />
+                            UNICORN
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Company */}
+                      <h3 className="font-serif text-xl text-white mb-1 group-hover:text-white/80 transition-colors">
+                        {story.company_name}
+                      </h3>
+                      <p className="font-mono text-[10px] text-white/30 uppercase tracking-wider mb-3">
+                        {getFounderName(story)}
+                      </p>
+
+                      {/* Meta */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        <span className="font-mono text-[9px] text-white/40 px-2 py-0.5 border border-white/10 uppercase">
+                          {getCategory(story)}
+                        </span>
+                        {getFounded(story) && (
+                          <span className="font-mono text-[9px] text-white/40 px-2 py-0.5 border border-white/10 uppercase">
+                            {getFounded(story)}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Description */}
+                      <p className="text-xs text-white/40 leading-relaxed mb-4 line-clamp-2">
+                        {getJourneySummary(story).slice(0, 120)}...
+                      </p>
+
+                      {/* Footer */}
+                      <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                        <div className="flex items-center gap-3">
+                          {getPrimaryPower(story) && (
+                            <div className="flex items-center gap-1">
+                              <Shield className="w-3 h-3 text-white/20" strokeWidth={1.5} />
+                              <span className="font-mono text-[9px] text-white/30 uppercase">{getPrimaryPower(story).split(' ')[0]}</span>
+                            </div>
+                          )}
+                        </div>
+                        <ArrowUpRight className="w-4 h-4 text-white/20 group-hover:text-white transition-colors" strokeWidth={1.5} />
+                      </div>
+                    </Link>
+                  ))}
                 </div>
 
-                <Button
-                  onClick={() => setPage(p => p + 1)}
-                  disabled={!hasNextPage}
-                  className="glass-button disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Next
-                  <ChevronRight className="w-4 h-4 ml-2" />
-                </Button>
-              </motion.div>
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-4 mt-8">
+                    <button
+                      onClick={() => setPage(p => Math.max(0, p - 1))}
+                      disabled={!hasPrevPage}
+                      className="font-mono text-[10px] uppercase tracking-[0.1em] px-4 py-2 border border-white/20 text-white/50 hover:bg-white hover:text-black transition-colors cursor-crosshair disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      Previous
+                    </button>
+                    <span className="font-mono text-[10px] text-white/30">
+                      {page + 1} / {totalPages}
+                    </span>
+                    <button
+                      onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                      disabled={!hasNextPage}
+                      className="font-mono text-[10px] uppercase tracking-[0.1em] px-4 py-2 border border-white/20 text-white/50 hover:bg-white hover:text-black transition-colors cursor-crosshair disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
+              </>
             )}
-          </>
-        )}
+          </div>
+        </section>
+
+        {/* Footer */}
+        <BureauFooter />
       </div>
-    </div>
+    </>
   );
 }

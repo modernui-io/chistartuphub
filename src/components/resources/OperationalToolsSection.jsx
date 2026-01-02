@@ -1,11 +1,9 @@
-import React from "react";
-import { ExternalLink } from "lucide-react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { ArrowUpRight, ChevronDown, ChevronRight } from "lucide-react";
 
 const operationalTools = [
   {
     category: "Business Formation",
-    color: "bg-blue-400",
     icon: "B",
     items: [
       { name: "Stripe Atlas", desc: "Incorporate a Delaware C-corp and open a business bank account", link: "https://stripe.com/atlas" },
@@ -19,7 +17,6 @@ const operationalTools = [
   },
   {
     category: "Legal & Compliance",
-    color: "bg-purple-400",
     icon: "L",
     items: [
       { name: "Clerky", desc: "Incorporation, equity management, and legal documents for startups", link: "https://www.clerky.com" },
@@ -31,7 +28,6 @@ const operationalTools = [
   },
   {
     category: "Finance & Accounting",
-    color: "bg-green-400",
     icon: "F",
     items: [
       { name: "Pilot", desc: "Bookkeeping, tax prep, and CFO services for startups", link: "https://pilot.com" },
@@ -44,7 +40,6 @@ const operationalTools = [
   },
   {
     category: "HR & People Ops",
-    color: "bg-yellow-400",
     icon: "H",
     items: [
       { name: "Gusto", desc: "Payroll, benefits, and HR management platform", link: "https://gusto.com" },
@@ -57,7 +52,6 @@ const operationalTools = [
   },
   {
     category: "Operations & Productivity",
-    color: "bg-orange-400",
     icon: "O",
     items: [
       { name: "Notion", desc: "All-in-one workspace for notes, docs, projects, and wikis", link: "https://www.notion.so" },
@@ -71,6 +65,16 @@ const operationalTools = [
 ];
 
 export default function OperationalToolsSection({ searchQuery = "" }) {
+  const [expandedCategories, setExpandedCategories] = useState([]);
+
+  const toggleCategory = (category) => {
+    setExpandedCategories(prev => 
+      prev.includes(category) 
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
+  };
+
   // Filter tools and categories based on search query
   const filteredTools = searchQuery.trim() === ""
     ? operationalTools
@@ -93,61 +97,74 @@ export default function OperationalToolsSection({ searchQuery = "" }) {
   }
 
   return (
-    <section className="mb-28">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="mb-8"
-      >
-        <div className="flex items-center gap-3 mb-3">
-          <div className="h-px flex-1 max-w-[40px] bg-gradient-to-r from-purple-500/50 to-transparent" />
-          <h2 className="text-sm font-medium uppercase tracking-[0.15em] text-white/50">Operational Tools</h2>
-        </div>
-        <h2 className="text-2xl md:text-3xl font-semibold text-white mb-2 tracking-tight">Essential Tools & Resources</h2>
-        <p className="text-white/40 font-light text-sm md:text-base leading-relaxed max-w-3xl">
-          Operational tools for business formation, legal compliance, finance, hiring, and productivity—plus Chicago-specific resources
+    <section className="mb-8">
+      {/* Header */}
+      <div className="mb-4">
+        <p className="text-white/40 text-sm">
+          Operational tools for business formation, legal compliance, finance, hiring, and productivity
         </p>
-      </motion.div>
+      </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredTools.map((category, index) => (
-          <motion.div
-            key={category.category}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: index * 0.05 }}
-            className="bg-white/[0.02] border border-white/[0.08] hover:border-white/[0.15] rounded-xl transition-all overflow-hidden"
-          >
-            <div className="p-4 border-b border-white/[0.08] flex items-center gap-3">
-              <div className={`w-12 h-12 ${category.color} border border-white/10 rounded-lg flex items-center justify-center font-bold text-xl`}>
-                {category.icon}
-              </div>
-              <h3 className="text-lg font-semibold text-white">{category.category}</h3>
+      {/* Categories */}
+      <div className="border border-white/10">
+        {filteredTools.map((category, index) => {
+          const isExpanded = expandedCategories.includes(category.category) || searchQuery.trim() !== "";
+          
+          return (
+            <div 
+              key={category.category}
+              className={`${index < filteredTools.length - 1 ? 'border-b border-white/10' : ''}`}
+            >
+              {/* Category Header */}
+              <button
+                onClick={() => toggleCategory(category.category)}
+                className="w-full p-4 flex items-center gap-4 text-left hover:bg-white/[0.02] transition-colors cursor-crosshair"
+              >
+                <span className="font-mono text-[10px] text-white/30">0{index + 1}</span>
+                <div className="w-8 h-8 border border-white/20 flex items-center justify-center">
+                  <span className="font-mono text-xs text-white/70">{category.icon}</span>
+                </div>
+                <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white flex-1">
+                  {category.category}
+                </span>
+                <span className="font-mono text-[10px] text-white/30 mr-2">
+                  {category.items.length} TOOLS
+                </span>
+                {isExpanded ? (
+                  <ChevronDown className="w-4 h-4 text-white/30" strokeWidth={1.5} />
+                ) : (
+                  <ChevronRight className="w-4 h-4 text-white/30" strokeWidth={1.5} />
+                )}
+              </button>
+
+              {/* Category Items */}
+              {isExpanded && (
+                <div className="border-t border-white/10">
+                  {category.items.map((item, itemIndex) => (
+                    <a
+                      key={item.name}
+                      href={item.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`flex items-start gap-4 p-4 pl-16 hover:bg-white hover:text-black transition-colors group cursor-crosshair ${itemIndex < category.items.length - 1 ? 'border-b border-white/10' : ''}`}
+                    >
+                      <span className="font-mono text-[10px] text-white/20 group-hover:text-black/40 pt-0.5">
+                        {String(itemIndex + 1).padStart(2, '0')}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-mono text-xs uppercase tracking-[0.05em] text-white group-hover:text-black mb-1">
+                          {item.name}
+                        </h4>
+                        <p className="text-xs text-white/40 group-hover:text-black/60">{item.desc}</p>
+                      </div>
+                      <ArrowUpRight className="w-3 h-3 text-white/20 group-hover:text-black/50 flex-shrink-0 mt-1 opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
-            <div className="p-4 space-y-2">
-              {category.items.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block border-l-2 border-white/20 pl-3 hover:bg-white/[0.04] hover:border-blue-400/50 py-2 rounded-r transition-colors group"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <h4 className="font-medium text-white text-sm group-hover:text-blue-300 transition-colors">{item.name}</h4>
-                      <p className="text-xs text-white/50">{item.desc}</p>
-                    </div>
-                    <ExternalLink className="w-3 h-3 flex-shrink-0 mt-1 text-white/30 group-hover:text-blue-400 transition-colors" />
-                  </div>
-                </a>
-              ))}
-            </div>
-          </motion.div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

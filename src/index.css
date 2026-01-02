@@ -1,33 +1,63 @@
 /* Font imports must come first */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   THE CHICAGO BUREAU - GLOBAL DESIGN SYSTEM
+   THE CHICAGO BUREAU - PREMIUM DESIGN SYSTEM
    Systematic Modernism | Precision over Decoration
+   Version 2.0 - Enhanced with animations and refined spacing
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   LAYER 2: CSS VARIABLES (The DNA)
+   LAYER 1: CSS VARIABLES (The DNA)
    ───────────────────────────────────────────────────────────────────────────── */
 :root {
-  /* Bureau Core */
+  /* Bureau Core Colors */
   --chi-navy: #050A14;
-  --chi-grid: rgba(255, 255, 255, 0.15);
-  --chi-whitewash: rgba(255, 255, 255, 0.95);
+  --chi-midnight: #0A1220;
+  --chi-slate: #1A2332;
+  
+  /* White Scale - Refined Opacity Levels */
+  --chi-white: rgba(255, 255, 255, 0.95);
+  --chi-silver: rgba(255, 255, 255, 0.70);
   --chi-muted: rgba(255, 255, 255, 0.50);
   --chi-dim: rgba(255, 255, 255, 0.30);
+  --chi-ghost: rgba(255, 255, 255, 0.15);
+  --chi-whisper: rgba(255, 255, 255, 0.08);
+  --chi-grid: rgba(255, 255, 255, 0.12);
+  
+  /* Accent Colors - Use Sparingly */
+  --chi-signal: #3B82F6;
+  --chi-coral: #F87171;
+  --chi-mint: #34D399;
 
   /* Typography */
   --font-editorial: 'Playfair Display', Georgia, serif;
   --font-mono: 'JetBrains Mono', Menlo, Monaco, Consolas, monospace;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* Grid */
   --bureau-grid-size: 80px;
   --bureau-border: 1px solid var(--chi-grid);
+
+  /* Animation Timing */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Spacing Scale */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  --space-4xl: 6rem;
+  --space-5xl: 8rem;
 
   /* Existing shadcn variables */
   --background: 0 0% 100%;
@@ -101,6 +131,92 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   LAYER 2: KEYFRAME ANIMATIONS
+   ───────────────────────────────────────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.1);
+  }
+  50% { 
+    box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.05);
+  }
+}
+
+@keyframes line-grow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes text-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes blink {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0.3; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
    LAYER 3: BASE RESETS
    ───────────────────────────────────────────────────────────────────────────── */
 @layer base {
@@ -117,12 +233,19 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-mono);
+    font-family: var(--font-body);
+    background-color: var(--chi-navy);
   }
 
   /* Force no border-radius on all elements */
   *, *::before, *::after {
     border-radius: 0 !important;
+  }
+
+  /* Selection styling */
+  ::selection {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
   }
 }
 
@@ -162,16 +285,27 @@
   );
 }
 
-/* Grid Texture Overlay */
+/* Grid Texture Overlay - Enhanced */
 .bureau-grid-texture {
   position: fixed;
   inset: 0;
   z-index: 2;
-  opacity: 0.04;
+  opacity: 0.03;
   background-image:
-    linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px);
   background-size: 80px 80px;
+  pointer-events: none;
+}
+
+/* Subtle Gradient Glow - For depth */
+.bureau-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 50% !important;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+  filter: blur(80px);
   pointer-events: none;
 }
 
@@ -186,10 +320,10 @@
     border-left: 1px solid var(--chi-grid);
   }
 
-  /* The Data Cell (Card) */
+  /* The Data Cell (Card) - Enhanced */
   .bureau-card {
     position: relative;
-    padding: 2rem 2.5rem;
+    padding: 2.5rem 3rem;
     border-right: 1px solid var(--chi-grid);
     border-bottom: 1px solid var(--chi-grid);
     background: transparent;
@@ -215,58 +349,83 @@
     right: 1.5rem;
     font-family: var(--font-mono);
     font-size: 0.875rem;
-    opacity: 0.3;
+    opacity: 0.25;
   }
 
-  /* The Terminal Input */
+  /* The Terminal Input - Enhanced */
   .bureau-input {
     width: 100%;
     background: transparent;
     border: none;
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid var(--chi-ghost);
     padding: 1.25rem 0;
     font-family: var(--font-mono);
     font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: white;
+    transition: border-color 0.2s ease;
   }
 
   .bureau-input::placeholder {
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--chi-dim);
     text-transform: uppercase;
     letter-spacing: 0.1em;
   }
 
   .bureau-input:focus {
     outline: none;
-    border-bottom-color: rgba(255, 255, 255, 0.6);
+    border-bottom-color: var(--chi-silver);
   }
 
-  /* Bureau Button - The "Hard Cut" */
+  /* Bureau Button - The "Hard Cut" - Enhanced */
   .bureau-btn {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    padding: 0.75rem 1.5rem;
-    border: none;
+    padding: 1rem 2rem;
+    border: 1px solid var(--chi-ghost);
     background: transparent;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--chi-muted);
     cursor: crosshair;
     transition: none;
+    position: relative;
+    overflow: hidden;
   }
 
   .bureau-btn:hover {
     background: white;
     color: black;
+    border-color: white;
   }
 
-  /* Bureau Typography */
+  .bureau-btn-primary {
+    background: white;
+    color: black;
+    border-color: white;
+  }
+
+  .bureau-btn-primary:hover {
+    background: transparent;
+    color: white;
+    border-color: var(--chi-ghost);
+  }
+
+  /* Bureau Typography - Enhanced */
   .bureau-heading {
     font-family: var(--font-editorial);
     font-weight: 500;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+  }
+
+  .bureau-heading-xl {
+    font-family: var(--font-editorial);
+    font-weight: 500;
+    font-size: clamp(3.5rem, 10vw, 8rem);
+    letter-spacing: -0.04em;
+    line-height: 0.9;
   }
 
   .bureau-mono {
@@ -277,17 +436,105 @@
 
   .bureau-label {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     text-transform: uppercase;
-    letter-spacing: 0.2em;
-    opacity: 0.4;
+    letter-spacing: 0.25em;
+    color: var(--chi-dim);
+  }
+
+  .bureau-body {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--chi-silver);
+  }
+
+  /* System Status Badge */
+  .bureau-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    color: var(--chi-dim);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--chi-ghost);
+    background: var(--chi-whisper);
+  }
+
+  .bureau-status::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--chi-mint);
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
+
+  /* Scroll Indicator */
+  .bureau-scroll-indicator {
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, var(--chi-dim), transparent);
+    animation: line-grow 1.5s var(--ease-out-expo) forwards;
+    transform-origin: top;
   }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   LAYER 6: UTILITY CLASSES
+   LAYER 6: ANIMATION UTILITIES
    ───────────────────────────────────────────────────────────────────────────── */
 @layer utilities {
+  /* Fade In Up Animation */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s var(--ease-out-expo) forwards;
+    opacity: 0;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.6s var(--ease-out-quart) forwards;
+    opacity: 0;
+  }
+
+  .animate-slide-in-left {
+    animation: slideInFromLeft 0.6s var(--ease-out-expo) forwards;
+    opacity: 0;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInFromRight 0.6s var(--ease-out-expo) forwards;
+    opacity: 0;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.5s var(--ease-out-expo) forwards;
+    opacity: 0;
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-blink {
+    animation: blink 1.5s ease-in-out infinite;
+  }
+
+  /* Animation Delays */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+  .delay-600 { animation-delay: 600ms; }
+  .delay-700 { animation-delay: 700ms; }
+  .delay-800 { animation-delay: 800ms; }
+  .delay-1000 { animation-delay: 1000ms; }
+
   /* Hard Cut Transition Override */
   .transition-hard {
     transition-duration: 0ms !important;
@@ -313,6 +560,16 @@
     background-color: var(--chi-navy);
   }
 
+  .bg-bureau-elevated {
+    background-color: var(--chi-midnight);
+  }
+
+  /* Text Colors */
+  .text-chi-white { color: var(--chi-white); }
+  .text-chi-silver { color: var(--chi-silver); }
+  .text-chi-muted { color: var(--chi-muted); }
+  .text-chi-dim { color: var(--chi-dim); }
+
   /* Hide scrollbar */
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
@@ -320,5 +577,46 @@
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  /* Gradient Text */
+  .text-gradient {
+    background: linear-gradient(135deg, var(--chi-white) 0%, var(--chi-silver) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Subtle Glow Effect */
+  .glow-subtle {
+    box-shadow: 0 0 60px 20px rgba(255, 255, 255, 0.03);
+  }
+
+  /* Letter Spacing Utilities */
+  .tracking-bureau { letter-spacing: 0.15em; }
+  .tracking-bureau-wide { letter-spacing: 0.25em; }
+  .tracking-bureau-tight { letter-spacing: -0.02em; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LAYER 7: RESPONSIVE REFINEMENTS
+   ───────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .bureau-card {
+    padding: 2rem;
+  }
+
+  .bureau-heading-xl {
+    font-size: clamp(2.5rem, 12vw, 4rem);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LAYER 8: PRINT STYLES
+   ───────────────────────────────────────────────────────────────────────────── */
+@media print {
+  .bureau-atmosphere,
+  .bureau-grid-texture {
+    display: none;
   }
 }

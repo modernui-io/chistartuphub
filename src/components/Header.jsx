@@ -7,7 +7,8 @@ import {
   User,
   Bookmark,
   Settings,
-  LogOut
+  LogOut,
+  ArrowUpRight
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -16,8 +17,12 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 
+/**
+ * Header - The Bureau Navigation
+ * Version 2.0 - Premium refinements
+ * Systematic Modernism | Precision over Decoration
+ */
 export default function Header({
   user,
   onSignInClick,
@@ -29,7 +34,17 @@ export default function Header({
   const location = useLocation();
   const isLoggedIn = Boolean(user);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const userMenuRef = useRef(null);
+
+  // Scroll listener for header background
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Click outside listener to close user menu
   useEffect(() => {
@@ -65,7 +80,7 @@ export default function Header({
     {
       name: "Ecosystem",
       items: [
-        { name: "Opportunities", path: createPageUrl("Opportunities") },
+        { name: "Founder Asks", path: createPageUrl("Opportunities") },
         { name: "Hubs & Events", path: createPageUrl("Events") },
         { name: "Community", path: createPageUrl("Community") },
         { name: "Why Chicago", path: createPageUrl("WhyChicago") }
@@ -74,41 +89,52 @@ export default function Header({
   ];
 
   return (
-    <header className="bg-black border-b border-gray-800">
-      <div className="max-w-7xl mx-auto px-6 py-4">
+    <header 
+      className={`
+        fixed top-0 left-0 right-0 z-50
+        transition-all duration-300
+        ${isScrolled 
+          ? 'bg-[#050A14]/95 backdrop-blur-md border-b border-white/[0.08]' 
+          : 'bg-transparent border-b border-transparent'
+        }
+      `}
+    >
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-5">
         <div className="flex items-center justify-between">
           {/* Logo - Left */}
-          <Link to={createPageUrl("Home")} className="flex items-center gap-3 group flex-shrink-0">
-            <div className="w-10 h-10 border-2 border-white/45 bg-black flex items-center justify-center">
-              <span className="text-white font-black text-base uppercase">CS</span>
+          <Link to={createPageUrl("Home")} className="flex items-center gap-4 group flex-shrink-0">
+            <div className="w-11 h-11 border border-white/20 bg-transparent flex items-center justify-center group-hover:bg-white group-hover:border-white transition-none cursor-crosshair">
+              <span className="text-white font-bold text-base uppercase group-hover:text-black font-mono">CS</span>
             </div>
-            <span className="text-lg font-black text-white uppercase tracking-wider hidden sm:block">
+            <span className="text-sm font-mono font-medium text-white/80 uppercase tracking-[0.15em] hidden sm:block group-hover:text-white transition-colors">
               ChiStartup Hub
             </span>
           </Link>
 
           {/* Navigation - Center */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-10">
             {navDropdowns.map((dropdown) => (
               <DropdownMenu key={dropdown.name}>
-                <DropdownMenuTrigger className="flex items-center gap-1.5 text-gray-300 hover:text-white transition-colors text-sm font-medium uppercase tracking-wider outline-none">
+                <DropdownMenuTrigger className="flex items-center gap-2 text-white/50 hover:text-white transition-none text-[11px] font-mono font-medium uppercase tracking-[0.15em] outline-none cursor-crosshair">
                   <span>{dropdown.name}</span>
-                  <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+                  <ChevronDown className="w-3 h-3 opacity-50" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="bg-gray-900 border border-gray-700 min-w-[180px]"
-                  sideOffset={8}
+                  className="bg-[#0A1220] border border-white/[0.12] min-w-[200px] p-2"
+                  sideOffset={12}
                   align="start"
                 >
                   {dropdown.items.map((item) => (
                     <DropdownMenuItem key={item.path} asChild>
                       <Link
                         to={item.path}
-                        className={`cursor-pointer px-4 py-2.5 text-sm font-medium transition-colors ${
-                          location.pathname === item.path
-                            ? 'text-white bg-gray-800'
-                            : 'text-gray-300 hover:text-white hover:bg-gray-800'
-                        }`}
+                        className={`
+                          cursor-crosshair px-4 py-3 text-[11px] font-mono uppercase tracking-[0.1em] transition-none
+                          ${location.pathname === item.path
+                            ? 'text-white bg-white/[0.08]'
+                            : 'text-white/50 hover:text-white hover:bg-white/[0.05]'
+                          }
+                        `}
                       >
                         {item.name}
                       </Link>
@@ -116,14 +142,14 @@ export default function Header({
                   ))}
                   {dropdown.name === "Resources" && (
                     <>
-                      <DropdownMenuSeparator className="bg-gray-700" />
+                      <DropdownMenuSeparator className="bg-white/[0.08] my-2" />
                       <DropdownMenuItem asChild>
                         <Link
                           to={createPageUrl("SubmitResource")}
-                          className="cursor-pointer px-4 py-2 text-xs font-medium text-gray-400 hover:text-white hover:bg-gray-800 flex items-center gap-2"
+                          className="cursor-crosshair px-4 py-3 text-[10px] font-mono uppercase tracking-[0.1em] text-white/30 hover:text-white hover:bg-white/[0.05] flex items-center gap-2 transition-none"
                         >
                           <Plus className="w-3 h-3" />
-                          Submit a Resource
+                          Submit Resource
                         </Link>
                       </DropdownMenuItem>
                     </>
@@ -134,22 +160,26 @@ export default function Header({
 
             <Link
               to={createPageUrl("Stories")}
-              className={`text-sm font-medium uppercase tracking-wider transition-colors ${
-                location.pathname === createPageUrl("Stories")
+              className={`
+                text-[11px] font-mono font-medium uppercase tracking-[0.15em] transition-none cursor-crosshair
+                ${location.pathname === createPageUrl("Stories")
                   ? 'text-white'
-                  : 'text-gray-300 hover:text-white'
-              }`}
+                  : 'text-white/50 hover:text-white'
+                }
+              `}
             >
-              The Blueprints
+              Blueprints
             </Link>
 
             <Link
               to={createPageUrl("About")}
-              className={`text-sm font-medium uppercase tracking-wider transition-colors ${
-                location.pathname === createPageUrl("About")
+              className={`
+                text-[11px] font-mono font-medium uppercase tracking-[0.15em] transition-none cursor-crosshair
+                ${location.pathname === createPageUrl("About")
                   ? 'text-white'
-                  : 'text-gray-300 hover:text-white'
-              }`}
+                  : 'text-white/50 hover:text-white'
+                }
+              `}
             >
               About
             </Link>
@@ -161,31 +191,31 @@ export default function Header({
               <>
                 {/* Logged In: Show Create Ask + Avatar */}
                 <Link to={createPageUrl("Opportunities")}>
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm h-9 px-4 flex items-center gap-2">
-                    <Plus className="w-4 h-4" />
-                    Create Ask
-                  </Button>
+                  <button className="bureau-btn bureau-btn-primary text-[10px] px-5 py-2.5 flex items-center gap-2">
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>CREATE ASK</span>
+                  </button>
                 </Link>
 
                 {/* User Avatar with Dropdown */}
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="w-9 h-9 rounded-full bg-gray-700 flex items-center justify-center cursor-pointer hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="w-10 h-10 border border-white/20 bg-transparent flex items-center justify-center cursor-crosshair hover:bg-white hover:border-white transition-none group"
                     aria-label="User menu"
                   >
-                    <span className="text-white text-sm font-medium uppercase">
+                    <span className="text-white text-xs font-mono font-medium uppercase group-hover:text-black">
                       {userInitial}
                     </span>
                   </button>
 
                   {/* User Dropdown Menu */}
                   {isUserMenuOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-64 bg-gray-900 border border-gray-800 rounded-xl shadow-xl z-50 overflow-hidden">
+                    <div className="absolute right-0 top-full mt-3 w-64 bg-[#0A1220] border border-white/[0.12] shadow-xl z-50 overflow-hidden">
                       {/* Section 1: User Info */}
-                      <div className="px-4 py-3 border-b border-gray-800">
-                        <p className="text-white font-medium truncate">{userName}</p>
-                        <p className="text-sm text-gray-400 truncate">{userEmail}</p>
+                      <div className="px-5 py-4 border-b border-white/[0.08]">
+                        <p className="text-white font-mono text-sm truncate">{userName}</p>
+                        <p className="text-[10px] font-mono text-white/40 truncate mt-1 uppercase tracking-wider">{userEmail}</p>
                       </div>
 
                       {/* Section 2: Navigation */}
@@ -193,40 +223,40 @@ export default function Header({
                         <Link
                           to={createPageUrl("Profile")}
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+                          className="flex items-center gap-3 px-5 py-3 text-white/50 hover:bg-white hover:text-black transition-none cursor-crosshair"
                         >
                           <User className="w-4 h-4" />
-                          <span>Your Profile</span>
+                          <span className="font-mono text-[11px] uppercase tracking-wider">Your Profile</span>
                         </Link>
                         <Link
                           to={createPageUrl("SavedResources")}
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+                          className="flex items-center gap-3 px-5 py-3 text-white/50 hover:bg-white hover:text-black transition-none cursor-crosshair"
                         >
                           <Bookmark className="w-4 h-4" />
-                          <span>Saved Resources</span>
+                          <span className="font-mono text-[11px] uppercase tracking-wider">Saved Resources</span>
                         </Link>
                         <Link
                           to={createPageUrl("Settings")}
                           onClick={() => setIsUserMenuOpen(false)}
-                          className="flex items-center gap-3 px-4 py-2.5 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+                          className="flex items-center gap-3 px-5 py-3 text-white/50 hover:bg-white hover:text-black transition-none cursor-crosshair"
                         >
                           <Settings className="w-4 h-4" />
-                          <span>Settings</span>
+                          <span className="font-mono text-[11px] uppercase tracking-wider">Settings</span>
                         </Link>
                       </div>
 
                       {/* Section 3: Sign Out */}
-                      <div className="border-t border-gray-800 py-2">
+                      <div className="border-t border-white/[0.08] py-2">
                         <button
                           onClick={() => {
                             setIsUserMenuOpen(false);
                             onSignOut?.();
                           }}
-                          className="flex items-center gap-3 w-full px-4 py-2.5 text-gray-400 hover:bg-gray-800 hover:text-red-400 transition-colors"
+                          className="flex items-center gap-3 w-full px-5 py-3 text-white/30 hover:bg-red-500/10 hover:text-red-400 transition-none cursor-crosshair"
                         >
                           <LogOut className="w-4 h-4" />
-                          <span>Sign Out</span>
+                          <span className="font-mono text-[11px] uppercase tracking-wider">Sign Out</span>
                         </button>
                       </div>
                     </div>
@@ -238,39 +268,39 @@ export default function Header({
                 {/* Logged Out: Show Sign In + Get Started */}
                 <button
                   onClick={onSignInClick}
-                  className="text-gray-300 hover:text-white text-sm font-medium transition-colors px-3 py-2"
+                  className="text-white/50 hover:text-white text-[11px] font-mono font-medium uppercase tracking-[0.15em] transition-none cursor-crosshair px-3 py-2 hidden sm:block"
                 >
-                  Sign In
+                  Sign Up
                 </button>
-                <Button
+                <button
                   onClick={onGetStartedClick}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm h-9 px-4"
+                  className="bureau-btn bureau-btn-primary text-[10px] px-5 py-2.5"
                 >
-                  Get Started
-                </Button>
+                  GET STARTED
+                </button>
               </>
             )}
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden relative w-10 h-10 flex items-center justify-center hover:bg-gray-800 transition-colors rounded"
+              className="md:hidden relative w-10 h-10 flex items-center justify-center border border-white/20 hover:bg-white hover:border-white transition-none cursor-crosshair group"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
             >
-              <div className="w-5 h-4 flex flex-col justify-between">
+              <div className="w-4 h-3 flex flex-col justify-between">
                 <span
-                  className={`w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
-                    mobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''
+                  className={`w-full h-px bg-white group-hover:bg-black transition-all duration-300 ${
+                    mobileMenuOpen ? 'rotate-45 translate-y-[5px]' : ''
                   }`}
                 />
                 <span
-                  className={`w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
+                  className={`w-full h-px bg-white group-hover:bg-black transition-all duration-300 ${
                     mobileMenuOpen ? 'opacity-0' : ''
                   }`}
                 />
                 <span
-                  className={`w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
-                    mobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''
+                  className={`w-full h-px bg-white group-hover:bg-black transition-all duration-300 ${
+                    mobileMenuOpen ? '-rotate-45 -translate-y-[5px]' : ''
                   }`}
                 />
               </div>
@@ -280,22 +310,25 @@ export default function Header({
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-800 mt-4">
-            <div className="space-y-4">
+          <div className="md:hidden py-6 border-t border-white/[0.08] mt-5">
+            <div className="space-y-6">
               {navDropdowns.map((dropdown) => (
                 <div key={dropdown.name}>
-                  <div className="px-2 py-2 text-gray-500 text-xs font-semibold uppercase tracking-wider">
-                    {dropdown.name}
+                  <div className="px-2 py-2 text-white/30 text-[10px] font-mono font-semibold uppercase tracking-[0.2em]">
+                    [{dropdown.name}]
                   </div>
                   {dropdown.items.map((item) => (
                     <Link
                       key={item.path}
                       to={item.path}
-                      className={`block px-2 py-3 text-base transition-colors ${
-                        location.pathname === item.path
-                          ? 'text-white font-semibold'
-                          : 'text-gray-400 hover:text-white'
-                      }`}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`
+                        block px-2 py-3 font-mono text-sm uppercase tracking-wider transition-none
+                        ${location.pathname === item.path
+                          ? 'text-white'
+                          : 'text-white/50 hover:text-white'
+                        }
+                      `}
                     >
                       {item.name}
                     </Link>
@@ -303,43 +336,49 @@ export default function Header({
                 </div>
               ))}
 
-              <div className="px-2 py-2 text-gray-500 text-xs font-semibold uppercase tracking-wider">
-                More
+              <div className="px-2 py-2 text-white/30 text-[10px] font-mono font-semibold uppercase tracking-[0.2em]">
+                [More]
               </div>
               <Link
                 to={createPageUrl("Stories")}
-                className={`block px-2 py-3 text-base transition-colors ${
-                  location.pathname === createPageUrl("Stories")
-                    ? 'text-white font-semibold'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`
+                  block px-2 py-3 font-mono text-sm uppercase tracking-wider transition-none
+                  ${location.pathname === createPageUrl("Stories")
+                    ? 'text-white'
+                    : 'text-white/50 hover:text-white'
+                  }
+                `}
               >
-                The Blueprints
+                Blueprints
               </Link>
               <Link
                 to={createPageUrl("About")}
-                className={`block px-2 py-3 text-base transition-colors ${
-                  location.pathname === createPageUrl("About")
-                    ? 'text-white font-semibold'
-                    : 'text-gray-400 hover:text-white'
-                }`}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`
+                  block px-2 py-3 font-mono text-sm uppercase tracking-wider transition-none
+                  ${location.pathname === createPageUrl("About")
+                    ? 'text-white'
+                    : 'text-white/50 hover:text-white'
+                  }
+                `}
               >
                 About
               </Link>
 
               {/* Mobile Action Buttons */}
-              <div className="pt-4 space-y-3">
+              <div className="pt-6 border-t border-white/[0.08] space-y-4">
                 {isLoggedIn ? (
                   <>
                     {/* Mobile User Info */}
-                    <div className="px-2 py-3 mb-2 bg-gray-900 rounded-lg border border-gray-800">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center">
-                          <span className="text-white font-medium uppercase">{userInitial}</span>
+                    <div className="px-2 py-4 bg-white/[0.03] border border-white/[0.08]">
+                      <div className="flex items-center gap-4">
+                        <div className="w-11 h-11 border border-white/20 flex items-center justify-center">
+                          <span className="text-white font-mono font-medium uppercase">{userInitial}</span>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-white font-medium truncate">{userName}</p>
-                          <p className="text-sm text-gray-400 truncate">{userEmail}</p>
+                          <p className="text-white font-mono text-sm truncate">{userName}</p>
+                          <p className="text-[10px] font-mono text-white/40 truncate uppercase tracking-wider">{userEmail}</p>
                         </div>
                       </div>
                     </div>
@@ -347,36 +386,42 @@ export default function Header({
                     {/* Mobile User Navigation */}
                     <Link
                       to={createPageUrl("Profile")}
-                      className="flex items-center gap-3 px-2 py-3 text-gray-400 hover:text-white transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-2 py-3 text-white/50 hover:text-white transition-none"
                     >
                       <User className="w-4 h-4" />
-                      <span>Your Profile</span>
+                      <span className="font-mono text-sm uppercase tracking-wider">Your Profile</span>
                     </Link>
                     <Link
                       to={createPageUrl("SavedResources")}
-                      className="flex items-center gap-3 px-2 py-3 text-gray-400 hover:text-white transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-2 py-3 text-white/50 hover:text-white transition-none"
                     >
                       <Bookmark className="w-4 h-4" />
-                      <span>Saved Resources</span>
+                      <span className="font-mono text-sm uppercase tracking-wider">Saved Resources</span>
                     </Link>
                     <Link
                       to={createPageUrl("Settings")}
-                      className="flex items-center gap-3 px-2 py-3 text-gray-400 hover:text-white transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-2 py-3 text-white/50 hover:text-white transition-none"
                     >
                       <Settings className="w-4 h-4" />
-                      <span>Settings</span>
+                      <span className="font-mono text-sm uppercase tracking-wider">Settings</span>
                     </Link>
 
-                    <div className="pt-3 border-t border-gray-800 space-y-3">
-                      <Link to={createPageUrl("Opportunities")} className="block">
-                        <Button className="bg-blue-600 hover:bg-blue-700 text-white font-bold w-full flex items-center justify-center gap-2">
+                    <div className="pt-4 border-t border-white/[0.08] space-y-4">
+                      <Link to={createPageUrl("Opportunities")} onClick={() => setMobileMenuOpen(false)} className="block">
+                        <button className="bureau-btn bureau-btn-primary w-full flex items-center justify-center gap-2">
                           <Plus className="w-4 h-4" />
-                          Create Ask
-                        </Button>
+                          CREATE ASK
+                        </button>
                       </Link>
                       <button
-                        onClick={onSignOut}
-                        className="flex items-center justify-center gap-2 w-full text-center text-gray-400 hover:text-red-400 text-sm font-medium py-2 transition-colors"
+                        onClick={() => {
+                          setMobileMenuOpen(false);
+                          onSignOut?.();
+                        }}
+                        className="flex items-center justify-center gap-2 w-full text-center text-white/30 hover:text-red-400 font-mono text-[11px] uppercase tracking-wider py-3 transition-none"
                       >
                         <LogOut className="w-4 h-4" />
                         Sign Out
@@ -385,15 +430,21 @@ export default function Header({
                   </>
                 ) : (
                   <>
-                    <Button
-                      onClick={onGetStartedClick}
-                      className="bg-blue-600 hover:bg-blue-700 text-white font-bold w-full"
-                    >
-                      Get Started
-                    </Button>
                     <button
-                      onClick={onSignInClick}
-                      className="w-full text-center text-gray-300 hover:text-white text-sm font-medium py-2"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        onGetStartedClick?.();
+                      }}
+                      className="bureau-btn bureau-btn-primary w-full"
+                    >
+                      GET STARTED
+                    </button>
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        onSignInClick?.();
+                      }}
+                      className="w-full text-center text-white/50 hover:text-white font-mono text-[11px] uppercase tracking-wider py-3 transition-none"
                     >
                       Sign In
                     </button>

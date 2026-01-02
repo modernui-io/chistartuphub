@@ -1,10 +1,9 @@
-import React, { useState, useMemo } from "react";
-import { Send, Download, HelpCircle, Search, X } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Send, Download, HelpCircle, Search, X, ChevronDown, ChevronRight, ArrowUpRight, Compass, BookOpen, Wrench, TrendingUp, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Button } from "@/components/ui/button";
 import SEO from "@/components/SEO";
-import PageHero from "@/components/ui/page-hero";
+import { BureauAtmosphere, BureauFooter } from "@/components/bureau";
 import MaturityMatrix from "@/components/resources/MaturityMatrix";
 import FounderGuidesSection from "@/components/resources/FounderGuidesSection";
 import AIToolsSection from "@/components/resources/AIToolsSection";
@@ -13,159 +12,250 @@ import LearningResourcesSection from "@/components/resources/LearningResourcesSe
 import GlossarySection from "@/components/resources/GlossarySection";
 import DownloadToolkitModal from "@/components/DownloadToolkitModal";
 
-const TOOLKIT_SECTION_GROUPS = [
+const SECTIONS = [
   {
-    group: "Overview",
-    sections: [
-      { id: "all", label: "All Resources" },
-      { id: "maturity", label: "Maturity Matrix" },
-    ]
+    id: "framework",
+    icon: Compass,
+    title: "Framework",
+    subtitle: "Startup Maturity Matrix",
+    description: "A framework to diagnose where you are and identify your next focus area",
+    defaultOpen: true
   },
   {
-    group: "Build & Learn",
-    sections: [
-      { id: "guides", label: "Core Pillars" },
-      { id: "ai", label: "AI Lab" },
-      { id: "operational", label: "Operational Tools" },
-      { id: "learning", label: "Knowledge Base" },
-    ]
+    id: "guides",
+    icon: BookOpen,
+    title: "Guides",
+    subtitle: "Core Pillars",
+    description: "Master the essential pillars of startup success",
+    defaultOpen: false
   },
   {
-    group: "Reference",
-    sections: [
-      { id: "glossary", label: "Glossary" },
-    ]
+    id: "tools",
+    icon: Wrench,
+    title: "Tools",
+    subtitle: "AI & Operational",
+    description: "Production tools organized by workflow and business function",
+    defaultOpen: false
+  },
+  {
+    id: "insights",
+    icon: TrendingUp,
+    title: "Insights",
+    subtitle: "Stay Current",
+    description: "Podcasts, newsletters, and market insights to stay ahead of trends",
+    defaultOpen: false
+  },
+  {
+    id: "glossary",
+    icon: FileText,
+    title: "Glossary",
+    subtitle: "Terms Decoded",
+    description: "The language of fundraising and growth, decoded",
+    defaultOpen: false
   }
 ];
 
 export default function Resources() {
+  const [isLoaded, setIsLoaded] = useState(false);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedSection, setSelectedSection] = useState("all");
+  const [expandedSections, setExpandedSections] = useState(["framework"]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const toggleSection = (sectionId) => {
+    setExpandedSections(prev => 
+      prev.includes(sectionId) 
+        ? prev.filter(id => id !== sectionId)
+        : [...prev, sectionId]
+    );
+  };
+
+  const isExpanded = (sectionId) => expandedSections.includes(sectionId);
 
   return (
-    <div className="min-h-screen py-12 md:py-20 px-4 md:px-6">
+    <div className="min-h-screen relative" data-page="resources">
       <SEO
         title="Startup Toolkit"
         description="Tools, frameworks, and Chicago-specific resources organized by what you need to build. AI tools, operational guides, legal compliance, and startup glossary."
         keywords="startup toolkit, founder resources, AI tools, Illinois business formation, Chicago legal compliance, startup glossary"
       />
-      <div className="max-w-7xl mx-auto">
-        <PageHero
-          label="For Founders"
-          title="Startup Toolkit"
-          description="Tools, frameworks, and Chicago-specific resources—organized by what you need to build."
-          backgroundImage="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1600&q=80"
-        >
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <Button
-              onClick={() => setShowDownloadModal(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white border-none"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Download Free Toolkit
-              <span className="ml-2 bg-green-500/30 text-green-300 text-[10px] font-bold px-1.5 py-0.5 rounded">FREE</span>
-            </Button>
-            <Link to={createPageUrl("SubmitResource")}>
-              <Button className="accent-button">
-                <Send className="w-4 h-4 mr-2" />
-                Submit a Resource
-              </Button>
-            </Link>
-            <Link to="/before-you-start">
-              <Button className="bg-white/[0.08] hover:bg-white/[0.12] text-white border border-white/[0.15] hover:border-white/[0.25]">
-                <HelpCircle className="w-4 h-4 mr-2" />
-                Don't know where to start?
-              </Button>
-            </Link>
-          </div>
-        </PageHero>
 
-        {/* Search and Filter Bar */}
-        <div className="mb-12">
-          {/* Search Bar */}
-          <div className="mb-6">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/40" />
-              <input
-                type="text"
-                placeholder="Search guides, tools, and resources..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg pl-12 pr-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-white/[0.2] focus:bg-white/[0.08] transition-all"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/40 hover:text-white/60 transition-colors"
-                >
-                  <X className="w-5 h-5" />
+      <BureauAtmosphere />
+
+      <div className="relative z-10">
+        {/* Hero Section */}
+        <section className="pt-32 pb-12 px-6">
+          <div className="max-w-5xl mx-auto">
+            <div className={`${isLoaded ? 'animate-fade-in' : 'opacity-0'}`} style={{ animationDelay: '100ms' }}>
+              <span className="bureau-label block mb-6">[TOOLKIT: FOUNDER_RESOURCES]</span>
+            </div>
+            
+            <h1 
+              className={`font-serif text-4xl md:text-5xl lg:text-6xl text-white tracking-tight leading-[1.1] mb-6 ${isLoaded ? 'animate-fade-in-up' : 'opacity-0'}`}
+              style={{ animationDelay: '200ms' }}
+            >
+              Startup Toolkit
+            </h1>
+
+            <p 
+              className={`text-white/50 text-lg max-w-xl mb-8 ${isLoaded ? 'animate-fade-in-up' : 'opacity-0'}`}
+              style={{ animationDelay: '300ms' }}
+            >
+              Tools, frameworks, and Chicago-specific resources—organized by what you need to build.
+            </p>
+
+            {/* Action Buttons */}
+            <div 
+              className={`flex flex-wrap items-center gap-3 ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
+              style={{ animationDelay: '400ms' }}
+            >
+              <button
+                onClick={() => setShowDownloadModal(true)}
+                className="font-mono text-[10px] uppercase tracking-[0.15em] px-5 py-3 bg-white text-black hover:bg-white/90 transition-colors flex items-center gap-2 cursor-crosshair"
+              >
+                <Download className="w-3 h-3" strokeWidth={1.5} />
+                Download Toolkit
+                <span className="bg-black/10 text-black/70 text-[9px] px-1.5 py-0.5">FREE</span>
+              </button>
+              <Link to={createPageUrl("SubmitResource")}>
+                <button className="font-mono text-[10px] uppercase tracking-[0.15em] px-5 py-3 border border-white/20 text-white/70 hover:bg-white hover:text-black hover:border-white transition-colors flex items-center gap-2 cursor-crosshair">
+                  <Send className="w-3 h-3" strokeWidth={1.5} />
+                  Submit Resource
                 </button>
-              )}
+              </Link>
+              <Link to="/before-you-start">
+                <button className="font-mono text-[10px] uppercase tracking-[0.15em] px-5 py-3 border border-white/10 text-white/40 hover:text-white hover:border-white/30 transition-colors flex items-center gap-2 cursor-crosshair">
+                  <HelpCircle className="w-3 h-3" strokeWidth={1.5} />
+                  Where to Start?
+                </button>
+              </Link>
             </div>
           </div>
+        </section>
 
-          {/* Section Filter Tabs - Grouped by Theme */}
-          <div className="space-y-3">
-            {TOOLKIT_SECTION_GROUPS.map((group) => (
-              <div key={group.group}>
-                <p className="text-xs font-semibold uppercase tracking-wider text-white/40 mb-2 px-1">
-                  {group.group}
-                </p>
-                <div className="overflow-x-auto md:overflow-visible">
-                  <div className="flex flex-wrap gap-2 pb-2">
-                    {group.sections.map((section) => (
-                      <button
-                        key={section.id}
-                        onClick={() => setSelectedSection(section.id)}
-                        className={`px-3 md:px-4 py-2 text-sm md:text-base rounded-lg whitespace-nowrap transition-all flex-shrink-0 ${
-                          selectedSection === section.id
-                            ? "bg-blue-600 text-white"
-                            : "bg-white/[0.05] text-white/60 hover:bg-white/[0.1] hover:text-white/80"
-                        }`}
-                      >
-                        {section.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+        {/* Search Bar */}
+        <section className="px-6 pb-8">
+          <div className="max-w-5xl mx-auto">
+            <div 
+              className={`border border-white/10 ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
+              style={{ animationDelay: '500ms' }}
+            >
+              <div className="p-4 flex items-center gap-4">
+                <Search className="w-4 h-4 text-white/30" strokeWidth={1.5} />
+                <input
+                  type="text"
+                  placeholder="SEARCH_RESOURCES..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 bg-transparent font-mono text-sm text-white placeholder:text-white/30 focus:outline-none uppercase tracking-[0.1em]"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="text-white/30 hover:text-white transition-colors cursor-crosshair"
+                  >
+                    <X className="w-4 h-4" strokeWidth={1.5} />
+                  </button>
+                )}
               </div>
-            ))}
+            </div>
           </div>
-        </div>
+        </section>
 
-          {/* Maturity Matrix */}
-          {(selectedSection === "all" || selectedSection === "maturity") && (
-            <MaturityMatrix />
-          )}
+        {/* Collapsible Sections */}
+        <section className="px-6 pb-24">
+          <div className="max-w-5xl mx-auto">
+            <div 
+              className={`border border-white/10 ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
+              style={{ animationDelay: '600ms' }}
+            >
+              {SECTIONS.map((section, index) => {
+                const Icon = section.icon;
+                const expanded = isExpanded(section.id);
+                
+                return (
+                  <div 
+                    key={section.id}
+                    className={`border-b border-white/10 last:border-b-0 ${expanded ? 'bg-white/[0.02]' : ''}`}
+                  >
+                    {/* Section Header */}
+                    <button
+                      onClick={() => toggleSection(section.id)}
+                      className="w-full p-6 md:p-8 flex items-start gap-6 text-left hover:bg-white/[0.02] transition-colors cursor-crosshair"
+                    >
+                      <span className="font-mono text-[10px] text-white/30 pt-1">0{index + 1}</span>
+                      <Icon className="w-5 h-5 text-white/40 mt-1 flex-shrink-0" strokeWidth={1.5} />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-1">
+                          <h2 className="font-serif text-xl md:text-2xl text-white">{section.title}</h2>
+                          <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-white/30 border border-white/10 px-2 py-0.5">
+                            {section.subtitle}
+                          </span>
+                        </div>
+                        <p className="text-white/40 text-sm">{section.description}</p>
+                      </div>
+                      {expanded ? (
+                        <ChevronDown className="w-4 h-4 text-white/30 mt-2" strokeWidth={1.5} />
+                      ) : (
+                        <ChevronRight className="w-4 h-4 text-white/30 mt-2" strokeWidth={1.5} />
+                      )}
+                    </button>
+                    
+                    {/* Section Content */}
+                    {expanded && (
+                      <div className="px-6 md:px-8 pb-8">
+                        {section.id === "framework" && (
+                          <div className="ml-11 md:ml-16">
+                            <MaturityMatrix />
+                          </div>
+                        )}
+                        
+                        {section.id === "guides" && (
+                          <div className="ml-11 md:ml-16">
+                            <FounderGuidesSection searchQuery={searchQuery} />
+                          </div>
+                        )}
+                        
+                        {section.id === "tools" && (
+                          <div className="ml-11 md:ml-16 space-y-8">
+                            <div>
+                              <span className="bureau-label block mb-4">[AI_TOOLS]</span>
+                              <AIToolsSection searchQuery={searchQuery} />
+                            </div>
+                            <div>
+                              <span className="bureau-label block mb-4">[OPERATIONAL_TOOLS]</span>
+                              <OperationalToolsSection searchQuery={searchQuery} />
+                            </div>
+                          </div>
+                        )}
+                        
+                        {section.id === "insights" && (
+                          <div className="ml-11 md:ml-16">
+                            <LearningResourcesSection searchQuery={searchQuery} />
+                          </div>
+                        )}
+                        
+                        {section.id === "glossary" && (
+                          <div className="ml-11 md:ml-16">
+                            <GlossarySection searchQuery={searchQuery} />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
 
-          {/* Founder Guides Section */}
-          {(selectedSection === "all" || selectedSection === "guides") && (
-            <FounderGuidesSection searchQuery={searchQuery} />
-          )}
-
-          {/* AI Tools Section */}
-          {(selectedSection === "all" || selectedSection === "ai") && (
-            <AIToolsSection searchQuery={searchQuery} />
-          )}
-
-          {/* Operational Tools Section */}
-          {(selectedSection === "all" || selectedSection === "operational") && (
-            <OperationalToolsSection searchQuery={searchQuery} />
-          )}
-
-          {/* Learning Resources Section */}
-          {(selectedSection === "all" || selectedSection === "learning") && (
-            <LearningResourcesSection searchQuery={searchQuery} />
-          )}
-
-          {/* Glossary Section */}
-          {(selectedSection === "all" || selectedSection === "glossary") && (
-            <GlossarySection searchQuery={searchQuery} />
-          )}
+        <BureauFooter />
       </div>
 
-      {/* Download Modal */}
       <DownloadToolkitModal 
         isOpen={showDownloadModal} 
         onClose={() => setShowDownloadModal(false)} 

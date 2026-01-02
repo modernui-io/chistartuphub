@@ -14,6 +14,8 @@ import AIAssistant from "@/components/AIAssistant";
 
 export default function Layout({ children }) {
   const location = useLocation();
+  const isHomePage = location.pathname === '/' || location.pathname === '/home';
+  const hideLayoutFooter = isHomePage || location.pathname === '/funding' || location.pathname === '/about' || location.pathname === '/community' || location.pathname === '/workspaces' || location.pathname === '/events' || location.pathname === '/resources' || location.pathname === '/before-you-start' || location.pathname === '/service-resources' || location.pathname === '/small-business-resources' || location.pathname === '/business-type-explorer' || location.pathname === '/opportunities' || location.pathname === '/stories' || location.pathname.startsWith('/stories/') || location.pathname === '/WhyChicago' || location.pathname === '/SubmitResource';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isLoading, setIsLoading] = useState(!window.hasShownLoader);
@@ -83,6 +85,11 @@ export default function Layout({ children }) {
         body {
           background: #000000;
           min-height: 100vh;
+        }
+
+        /* Hide global footer on home page - it has its own BureauFooter */
+        body:has([data-page="home"]) .home-hide-footer {
+          display: none;
         }
 
         .glass-card {
@@ -303,7 +310,7 @@ export default function Layout({ children }) {
         <Header
           user={user}
           onSignInClick={() => setShowLogin(true)}
-          onGetStartedClick={() => setShowSignup(true)}
+          onGetStartedClick={() => window.location.href = '/before-you-start'}
           onSignOut={signOut}
           mobileMenuOpen={mobileMenuOpen}
           setMobileMenuOpen={setMobileMenuOpen}
@@ -316,7 +323,8 @@ export default function Layout({ children }) {
           {children}
         </main>
 
-        {/* Footer */}
+        {/* Global Footer - Hidden on pages with BureauFooter */}
+      {!hideLayoutFooter && (
       <footer className="bg-[#111111] border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-20">
           <div className="grid md:grid-cols-4 gap-16 mb-16">
@@ -368,6 +376,7 @@ export default function Layout({ children }) {
           </div>
         </div>
       </footer>
+      )}
 
       {/* Auth Modals */}
       <LoginModal

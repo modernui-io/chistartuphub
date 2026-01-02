@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import {
   Target,
@@ -10,35 +9,43 @@ import {
   Shield,
   CheckCircle2,
   Mail,
-  ArrowRight
+  ArrowRight,
+  ArrowUpRight
 } from "lucide-react";
 import SEO from "@/components/SEO";
-import PageHero from "@/components/ui/page-hero";
+import { BureauAtmosphere, BureauButton, BureauFooter } from "@/components/bureau";
 
 export default function About() {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   const features = [
     {
       title: "Capital",
-      description: "Find active investors, funding programs, and non-dilutive resources—organized so you can build a realistic outreach plan, not just a wishlist."
+      description: "Find active investors, funding programs, and non-dilutive resources—organized so you can build a realistic outreach plan."
     },
     {
       title: "Workspaces",
-      description: "Explore coworking spaces, innovation hubs, and places built for founders—so you can stop bouncing between tabs and start booking tours."
+      description: "Explore coworking spaces, innovation hubs, and places built for founders—so you can stop bouncing between tabs."
     },
     {
       title: "Hubs & Events",
-      description: "Track the places and gatherings that move the ecosystem forward: demo days, community events, pitch nights, workshops, and labs."
+      description: "Track the places and gatherings that move the ecosystem forward: demo days, community events, pitch nights."
     },
     {
       title: "Community",
-      description: "Because building is hard alone. Find communities by stage, identity, industry, and focus, so support isn't accidental."
+      description: "Find communities by stage, identity, industry, and focus, so support isn't accidental."
     },
     {
       title: "Founder Playbooks",
-      description: "Tactical guidance for the messy middle: fundraising, GTM, product, hiring, operations, and \"what do I do next?\""
+      description: "Tactical guidance for the messy middle: fundraising, GTM, product, hiring, and operations."
     },
     {
-      title: "The Blueprints ✨",
+      title: "The Blueprints",
       description: "A walk through of how other entrepreneurs have succeeded in Chicago."
     }
   ];
@@ -48,30 +55,15 @@ export default function About() {
     "Repeat founders looking for signal over noise",
     "Operators building momentum inside early-stage teams",
     "Builders relocating to Chicago and learning the terrain",
-    "Community leaders and partners who want resources to be easier to access"
+    "Community leaders who want resources to be easier to access"
   ];
 
   const curationCriteria = [
-    {
-      title: "Recency",
-      description: "Active within a recent window (not dead lists)"
-    },
-    {
-      title: "Specificity",
-      description: "Clear criteria, clear focus, clear path to engage"
-    },
-    {
-      title: "Accessibility",
-      description: "Founders can actually take action from the information"
-    },
-    {
-      title: "Credibility",
-      description: "Reputable sources, transparent organizations, real proof of work"
-    },
-    {
-      title: "Clarity",
-      description: "No vague \"reach out for details\" when details should be public"
-    }
+    { title: "Recency", description: "Active within a recent window (not dead lists)" },
+    { title: "Specificity", description: "Clear criteria, clear focus, clear path to engage" },
+    { title: "Accessibility", description: "Founders can actually take action from the information" },
+    { title: "Credibility", description: "Reputable sources, transparent organizations, real proof of work" },
+    { title: "Clarity", description: "No vague \"reach out for details\" when details should be public" }
   ];
 
   const values = [
@@ -98,277 +90,280 @@ export default function About() {
   ];
 
   return (
-    <div className="min-h-screen py-12 md:py-20 px-4 md:px-6">
+    <div className="min-h-screen relative" data-page="about">
       <SEO
         title="About ChiStartup Hub"
         description="ChiStartup Hub is a living map of Chicago's startup ecosystem, built to help founders move faster with less guesswork."
         keywords="about ChiStartup Hub, Chicago startup ecosystem, founder resources, Billy Ndizeye"
       />
 
-      <div className="max-w-4xl mx-auto">
-        <PageHero
-          label="About Us"
-          title="About ChiStartup Hub"
-          description="Chicago is full of opportunity. The hard part is finding it."
-          backgroundImage="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1600&q=80"
-        />
+      {/* Background */}
+      <BureauAtmosphere />
 
-          {/* Mission Statement */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="glass-card p-8 md:p-12 rounded-2xl mb-16"
-          >
-            <p className="text-white/90 text-lg leading-relaxed mb-6">
-              ChiStartupHub is a living map of Chicago's startup ecosystem, built to help founders move faster with less guesswork.
-            </p>
-            <p className="text-white/90 text-lg leading-relaxed">
-              If you're building in Chicago, you shouldn't need perfect connections to discover investors, workspaces, community hubs, and playbooks that actually help. We organize what's already here, make it searchable, and keep it practical.
-            </p>
-          </motion.div>
+      {/* Main Content */}
+      <div className="relative z-10">
+        {/* Hero Section */}
+        <section className="pt-32 pb-20 px-6">
+          <div className="max-w-4xl mx-auto">
+            <div className={`${isLoaded ? 'animate-fade-in' : 'opacity-0'}`} style={{ animationDelay: '100ms' }}>
+              <span className="bureau-label block mb-6">[ABOUT: CHISTARTUPHUB]</span>
+            </div>
+            
+            <h1 
+              className={`font-serif text-4xl md:text-5xl lg:text-6xl text-white tracking-tight leading-[1.1] mb-8 ${isLoaded ? 'animate-fade-in-up' : 'opacity-0'}`}
+              style={{ animationDelay: '200ms' }}
+            >
+              Chicago is full of opportunity.
+              <br />
+              <span className="text-white/50">The hard part is finding it.</span>
+            </h1>
 
-          {/* What ChiStartupHub Gives You */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <p 
+              className={`font-mono text-sm text-white/50 uppercase tracking-[0.15em] ${isLoaded ? 'animate-fade-in-up' : 'opacity-0'}`}
+              style={{ animationDelay: '300ms' }}
+            >
+              Your Launchpad for Chicago
+            </p>
+          </div>
+        </section>
+
+        {/* Mission Statement */}
+        <section className="px-6 pb-20">
+          <div className="max-w-4xl mx-auto">
+            <div className="border border-white/10 p-8 md:p-12">
+              <p className="font-serif text-xl md:text-2xl text-white/90 leading-relaxed mb-6">
+                ChiStartupHub is a living map of Chicago's startup ecosystem, built to help founders move faster with less guesswork.
+              </p>
+              <p className="text-white/60 text-lg leading-relaxed">
+                If you're building in Chicago, you shouldn't need perfect connections to discover investors, workspaces, community hubs, and playbooks that actually help. We organize what's already here, make it searchable, and keep it practical.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* What We Give You */}
+        <section className="px-6 pb-24">
+          <div className="max-w-4xl mx-auto">
+            <span className="bureau-label block mb-4">[SYSTEM: FEATURES]</span>
+            <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
               What ChiStartupHub gives you
             </h2>
-            <p className="text-white/70 text-lg mb-8">
-              We've structured the site around the real questions founders ask when they're trying to get momentum:
+            <p className="text-white/50 mb-12 max-w-2xl">
+              We've structured the site around the real questions founders ask when they're trying to get momentum.
             </p>
-            <div className="grid md:grid-cols-2 gap-6">
+
+            {/* 2x3 Grid with collapsed borders */}
+            <div className="grid md:grid-cols-2 border border-white/10">
               {features.map((feature, index) => (
                 <div
                   key={index}
-                  className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-6 hover:bg-white/[0.05] hover:border-white/[0.1] transition-all"
+                  className="p-6 md:p-8 border-b border-r border-white/10 last:border-b-0 md:[&:nth-last-child(-n+2)]:border-b-0 md:odd:border-r md:even:border-r-0 hover:bg-white/[0.02] transition-colors group"
                 >
-                  <h3 className="text-xl font-semibold text-white mb-3">{feature.title}</h3>
-                  <p className="text-white/70 leading-relaxed">{feature.description}</p>
+                  <div className="flex items-start gap-4">
+                    <span className="font-mono text-xs text-white/30">0{index + 1}</span>
+                    <div>
+                      <h3 className="font-mono text-sm uppercase tracking-[0.1em] text-white mb-3 group-hover:text-white transition-colors">
+                        {feature.title}
+                      </h3>
+                      <p className="text-white/50 text-sm leading-relaxed">
+                        {feature.description}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
+        </section>
 
-          {/* Who This Is For */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="glass-card p-8 md:p-12 rounded-2xl mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Who this is for
-            </h2>
-            <p className="text-white/90 text-lg mb-6">
-              ChiStartupHub is built for people doing the work:
-            </p>
-            <ul className="space-y-4">
-              {forWhom.map((item, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-blue-400 flex-shrink-0 mt-1" />
-                  <span className="text-white/80 text-lg">{item}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="text-white/90 text-lg mt-6 font-medium">
-              If you're serious about building, this is for you.
-            </p>
-          </motion.div>
+        {/* Who This Is For */}
+        <section className="px-6 pb-24">
+          <div className="max-w-4xl mx-auto">
+            <div className="border border-white/10 p-8 md:p-12">
+              <span className="bureau-label block mb-4">[TARGET: AUDIENCE]</span>
+              <h2 className="font-serif text-3xl md:text-4xl text-white mb-6">
+                Who this is for
+              </h2>
+              <p className="text-white/60 text-lg mb-8">
+                ChiStartupHub is built for people doing the work:
+              </p>
+              <ul className="space-y-4 mb-8">
+                {forWhom.map((item, index) => (
+                  <li key={index} className="flex items-start gap-4">
+                    <span className="font-mono text-xs text-white/30 mt-1">—</span>
+                    <span className="text-white/80">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="font-serif text-xl text-white">
+                If you're serious about building, this is for you.
+              </p>
+            </div>
+          </div>
+        </section>
 
-          {/* Curation Standards */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              How we curate (and what "active" means)
+        {/* Curation Standards */}
+        <section className="px-6 pb-24">
+          <div className="max-w-4xl mx-auto">
+            <span className="bureau-label block mb-4">[PROTOCOL: CURATION]</span>
+            <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
+              How we curate
             </h2>
-            <p className="text-white/90 text-lg mb-8">
+            <p className="text-white/50 mb-12">
               We care about usefulness over hype. Resources are prioritized based on:
             </p>
-            <div className="space-y-4">
+
+            <div className="space-y-0 border border-white/10">
               {curationCriteria.map((criteria, index) => (
                 <div
                   key={index}
-                  className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-6 hover:bg-white/[0.05] transition-all"
+                  className="p-6 border-b border-white/10 last:border-b-0 flex items-start gap-6 hover:bg-white/[0.02] transition-colors"
                 >
-                  <h3 className="text-lg font-semibold text-white mb-2">{criteria.title}</h3>
-                  <p className="text-white/70">{criteria.description}</p>
+                  <span className="font-mono text-xs text-white/30">0{index + 1}</span>
+                  <div>
+                    <h3 className="font-mono text-sm uppercase tracking-[0.1em] text-white mb-2">
+                      {criteria.title}
+                    </h3>
+                    <p className="text-white/50 text-sm">{criteria.description}</p>
+                  </div>
                 </div>
               ))}
             </div>
-            <p className="text-white/80 mt-6 text-lg">
-              When we can, we verify through direct links, public references, and consistent updates. <span className="font-semibold text-white">It is updated on a weekly basis!</span>
-            </p>
-          </motion.div>
 
-          {/* Our Values */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
+            <p className="text-white/40 text-sm mt-6 font-mono">
+              Updated on a weekly basis.
+            </p>
+          </div>
+        </section>
+
+        {/* Our Values */}
+        <section className="px-6 pb-24">
+          <div className="max-w-4xl mx-auto">
+            <span className="bureau-label block mb-4">[CORE: VALUES]</span>
+            <h2 className="font-serif text-3xl md:text-4xl text-white mb-12">
               Our values
             </h2>
-            <div className="grid md:grid-cols-2 gap-6">
+
+            <div className="grid md:grid-cols-2 gap-0 border border-white/10">
               {values.map((value, index) => {
                 const Icon = value.icon;
                 return (
                   <div
                     key={index}
-                    className="glass-card p-8 rounded-2xl"
+                    className="p-8 border-b border-r border-white/10 last:border-b-0 md:[&:nth-last-child(-n+2)]:border-b-0 md:odd:border-r md:even:border-r-0 hover:bg-white/[0.02] transition-colors"
                   >
-                    <Icon className="w-10 h-10 text-blue-400 mb-4" />
-                    <h3 className="text-xl font-bold text-white mb-3">{value.title}</h3>
-                    <p className="text-white/80 leading-relaxed">{value.description}</p>
+                    <Icon className="w-6 h-6 text-white/40 mb-4" strokeWidth={1.5} />
+                    <h3 className="font-mono text-sm uppercase tracking-[0.1em] text-white mb-3">
+                      {value.title}
+                    </h3>
+                    <p className="text-white/50 text-sm leading-relaxed">
+                      {value.description}
+                    </p>
                   </div>
                 );
               })}
             </div>
-          </motion.div>
+          </div>
+        </section>
 
-          {/* Data Sources */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-            className="glass-card p-8 md:p-12 rounded-2xl mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Where the data comes from
-            </h2>
-            <p className="text-white/90 text-lg mb-6">
-              ChiStartupHub pulls from a mix of:
-            </p>
-            <ul className="space-y-3 mb-6">
-              {[
-                "Public websites and directories",
-                "Partner organizations and programs",
-                "Ecosystem event pages",
-                "Founder/community submissions",
-                "Firsthand curation and review"
-              ].map((source, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <div className="w-2 h-2 rounded-full bg-blue-400 flex-shrink-0 mt-2" />
-                  <span className="text-white/80 text-lg">{source}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="text-white/90 text-lg">
-              We aim for transparency, and we update as the ecosystem changes.
-            </p>
-          </motion.div>
-
-          {/* Who's Behind This */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-            className="glass-card p-8 md:p-12 rounded-2xl mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Who's behind ChiStartup Hub
-            </h2>
-            <p className="text-white/90 text-lg leading-relaxed mb-4">
-              ChiStartupHub was built by <span className="font-semibold text-white">Billy Ndizeye</span>, an ecosystem builder and writer for the Capital Access Project focused on making startup infrastructure more usable and more equitable.
-            </p>
-            <p className="text-white/90 text-lg leading-relaxed mb-4">
-              I've spent years working inside Chicago's startup and innovation ecosystem, supporting founders, building programs, hosting events, and learning where people get stuck. ChiStartupHub is the resource I wish existed when I was trying to navigate everything with limited time and too many tabs open.
-            </p>
-            <p className="text-white text-xl font-semibold leading-relaxed mb-4">
-              This project is simple: make it easier for others to build here in Chicago.
-            </p>
-            <p className="text-white/70 text-base italic">
-              If you're a partner org and want your resources accurately represented, I'd love to connect.
-            </p>
-          </motion.div>
-
-          {/* Help Improve */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.9 }}
-            className="glass-card p-8 md:p-12 rounded-2xl mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Help improve the map
-            </h2>
-            <p className="text-white/90 text-lg mb-8">
-              ChiStartupHub is a living project. If something is missing, outdated, or wrong—we want to fix it.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link to={createPageUrl("Resources") + "#submit"}>
-                <Button className="accent-button">
-                  Submit a Resource
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
-              <a href="mailto:billy@chistartuphub.com?subject=Report%20an%20Issue">
-                <Button className="glass-button">
-                  Report an Issue
-                </Button>
-              </a>
-              <a href="mailto:billy@chistartuphub.com?subject=Partnership%20Inquiry">
-                <Button className="glass-button">
-                  Partner with Us
-                </Button>
-              </a>
-            </div>
-            <p className="text-white/80 text-base mt-6">
-              If you're building something valuable for founders, we want it included.
-            </p>
-          </motion.div>
-
-          {/* Contact */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.0 }}
-            className="glass-card p-8 md:p-12 rounded-2xl mb-16"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-              Contact
-            </h2>
-            <p className="text-white/90 text-lg mb-4">
-              Questions, corrections, partnerships, or press:
-            </p>
-            <div className="space-y-3">
-              <a 
-                href="mailto:billy@chistartuphub.com" 
-                className="flex items-center gap-3 text-blue-400 hover:text-blue-300 transition-colors text-lg group"
-              >
-                <Mail className="w-5 h-5" />
-                <span className="group-hover:underline">billy@chistartuphub.com</span>
-              </a>
-              <p className="text-white/60 text-base">
-                Social: <span className="italic">coming soon</span>
+        {/* Who's Behind This */}
+        <section className="px-6 pb-24">
+          <div className="max-w-4xl mx-auto">
+            <div className="border border-white/10 p-8 md:p-12">
+              <span className="bureau-label block mb-4">[FOUNDER: PROFILE]</span>
+              <h2 className="font-serif text-3xl md:text-4xl text-white mb-6">
+                Who's behind ChiStartup Hub
+              </h2>
+              <p className="text-white/70 text-lg leading-relaxed mb-6">
+                ChiStartupHub was built by <span className="text-white font-medium">Billy Ndizeye</span>.
+              </p>
+              <p className="text-white/70 text-lg leading-relaxed mb-6">
+                I've spent years working inside Chicago's startup and innovation ecosystem, supporting founders, building programs, hosting events, and learning where people get stuck. ChiStartupHub is the resource I wish existed.
+              </p>
+              <p className="font-serif text-xl text-white mb-6">
+                This project is simple: make it easier for others to build here in Chicago.
+              </p>
+              <p className="text-white/40 text-sm italic">
+                If you're a partner org and want your resources accurately represented, I'd love to connect.
               </p>
             </div>
-          </motion.div>
+          </div>
+        </section>
 
-          {/* Independence Note */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.1 }}
-            className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-6"
-          >
-            <h3 className="text-xl font-semibold text-white mb-3">
-              A quick note on independence
-            </h3>
-            <p className="text-white/80 leading-relaxed">
-              ChiStartupHub is built to be useful first. If we ever use affiliate links, sponsorships, or partnerships, we'll disclose them clearly.
-            </p>
-          </motion.div>
+        {/* Help Improve */}
+        <section className="px-6 pb-24">
+          <div className="max-w-4xl mx-auto">
+            <div className="border border-white/10 p-8 md:p-12">
+              <span className="bureau-label block mb-4">[ACTION: CONTRIBUTE]</span>
+              <h2 className="font-serif text-3xl md:text-4xl text-white mb-4">
+                Help improve the map
+              </h2>
+              <p className="text-white/60 text-lg mb-8">
+                ChiStartupHub is a living project. If something is missing, outdated, or wrong—we want to fix it.
+              </p>
+              <div className="flex flex-wrap gap-4 mb-6">
+                <Link to={createPageUrl("Resources") + "#submit"}>
+                  <BureauButton variant="primary" showArrow>
+                    SUBMIT A RESOURCE
+                  </BureauButton>
+                </Link>
+                <a href="mailto:billy@chistartuphub.com?subject=Report%20an%20Issue">
+                  <BureauButton variant="secondary">
+                    REPORT AN ISSUE
+                  </BureauButton>
+                </a>
+                <a href="mailto:billy@chistartuphub.com?subject=Partnership%20Inquiry">
+                  <BureauButton variant="secondary">
+                    PARTNER WITH US
+                  </BureauButton>
+                </a>
+              </div>
+              <p className="text-white/40 text-sm">
+                If you're building something valuable for founders, we want it included.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact */}
+        <section className="px-6 pb-24">
+          <div className="max-w-4xl mx-auto">
+            <div className="border border-white/10 p-8 md:p-12">
+              <span className="bureau-label block mb-4">[CONTACT: INFO]</span>
+              <h2 className="font-serif text-3xl md:text-4xl text-white mb-6">
+                Contact
+              </h2>
+              <p className="text-white/60 text-lg mb-6">
+                Questions, corrections, partnerships, or press:
+              </p>
+              <a 
+                href="mailto:billy@chistartuphub.com" 
+                className="inline-flex items-center gap-3 font-mono text-sm uppercase tracking-[0.1em] text-white/70 hover:text-white transition-colors group"
+              >
+                <Mail className="w-4 h-4" strokeWidth={1.5} />
+                <span>billy@chistartuphub.com</span>
+                <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={1.5} />
+              </a>
+            </div>
+          </div>
+        </section>
+
+        {/* Independence Note */}
+        <section className="px-6 pb-24">
+          <div className="max-w-4xl mx-auto">
+            <div className="border border-white/10 p-6">
+              <h3 className="font-mono text-xs uppercase tracking-[0.15em] text-white/50 mb-3">
+                A quick note on independence
+              </h3>
+              <p className="text-white/40 text-sm leading-relaxed">
+                ChiStartupHub is built to be useful first. If we ever use affiliate links, sponsorships, or partnerships, we'll disclose them clearly.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <BureauFooter />
       </div>
     </div>
   );

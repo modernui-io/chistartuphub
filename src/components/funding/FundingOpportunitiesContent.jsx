@@ -1,10 +1,5 @@
-import { useState, useMemo, useEffect } from "react";
-import { DollarSign, ExternalLink, Calendar, TrendingUp, Rocket, Award, Search, Filter, X, Flame, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useMemo } from "react";
+import { DollarSign, ExternalLink, Calendar, TrendingUp, Rocket, Award, Search, Filter, X, Flame, ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
 import ShareActions from "@/components/ShareActions";
 
 const ITEMS_PER_PAGE = 12;
@@ -20,7 +15,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
 
   const quickTabs = [
     { id: "all", label: "All" },
-    { id: "hot", label: "🔥 Hot" },
+    { id: "hot", label: "Hot" },
     { id: "Grant", label: "Grants" },
     { id: "VC", label: "VC" },
   ];
@@ -48,7 +43,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
     { value: "africa", label: "Africa" }
   ];
 
-  // Helper functions with null safety
+  // Helper functions
   const getOpportunityUrl = (opp) => opp?.website || opp?.link || '';
   const getOpportunityDescription = (opp) => opp?.description || opp?.note || opp?.subtitle || '';
   const getOpportunitySectors = (opp) => opp?.sectors || opp?.focus_areas || [];
@@ -74,7 +69,6 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
     const desc = getOpportunityDescription(opp).toLowerCase();
     const location = (opp.location || '').toLowerCase();
     const combined = `${name} ${org} ${desc} ${location}`;
-
     if (combined.includes('chicago') || combined.includes('illinois') || combined.includes('midwest')) return 'chicago';
     if (combined.includes('europe') || combined.includes('eic') || combined.includes(' eu ') || combined.includes(' uk ')) return 'europe';
     if (combined.includes('africa') || combined.includes('nigeria') || combined.includes('kenya')) return 'africa';
@@ -105,8 +99,6 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
       if (!item) return false;
       const status = getDeadlineStatus(item);
       if (status === 'closed') return false;
-
-      // Quick tab filter
       if (activeTab === "hot") {
         const days = getDaysUntilDeadline(item.deadline);
         if (days === null || days < 0 || days > 30) return false;
@@ -114,30 +106,22 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
         const type = getOpportunityType(item);
         if (type !== activeTab) return false;
       }
-
-      // Focus area filter
       if (focusFilter !== "all") {
         const sectors = getOpportunitySectors(item);
         if (!sectors.some((f) => f.toLowerCase() === focusFilter.toLowerCase() || f === "All sectors" || f === "All")) {
           return false;
         }
       }
-
-      // Stage filter
       if (stageFilter !== "all") {
         const stageArr = Array.isArray(item.stage) ? item.stage : [item.stage];
         if (!stageArr.some(s => s?.toLowerCase().includes(stageFilter.toLowerCase()))) {
           return false;
         }
       }
-
-      // Region filter
       if (regionFilter !== "all") {
         const region = getRegion(item);
         if (region !== regionFilter) return false;
       }
-
-      // Search query
       if (searchQuery) {
         const searchLower = searchQuery.toLowerCase();
         const nameMatch = item.name?.toLowerCase().includes(searchLower);
@@ -145,58 +129,44 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
         const orgMatch = item.organization?.toLowerCase().includes(searchLower);
         if (!nameMatch && !descMatch && !orgMatch) return false;
       }
-
       return true;
     }).sort((a, b) => {
-      // Sort by featured first, then by deadline (closest first)
-      if (a.featured && !b.featured) return -1;
-      if (!a.featured && b.featured) return 1;
       const daysA = getDaysUntilDeadline(a.deadline);
       const daysB = getDaysUntilDeadline(b.deadline);
       if (daysA !== null && daysB !== null) return daysA - daysB;
       if (daysA !== null) return -1;
       if (daysB !== null) return 1;
-      return (a.name || '').localeCompare(b.name || '');
+      return 0;
     });
   }, [opportunities, activeTab, focusFilter, stageFilter, regionFilter, searchQuery]);
 
-  // Pagination
-  const paginatedOpportunities = useMemo(() => {
-    const start = page * ITEMS_PER_PAGE;
-    return filteredOpportunities.slice(start, start + ITEMS_PER_PAGE);
-  }, [filteredOpportunities, page]);
-
-  const totalPages = Math.ceil(filteredOpportunities.length / ITEMS_PER_PAGE);
-  const hasNextPage = page < totalPages - 1;
-  const hasPrevPage = page > 0;
-
-  // Reset page when filters change
-  useEffect(() => {
-    setPage(0);
-  }, [activeTab, focusFilter, stageFilter, regionFilter, searchQuery]);
-
-  // Tab counts
   const tabCounts = useMemo(() => {
-    const counts = { all: 0, hot: 0, Grant: 0, Accelerator: 0, Competition: 0, VC: 0 };
-    opportunities.filter(Boolean).forEach((item) => {
-      const status = getDeadlineStatus(item);
+    const counts = { all: 0, hot: 0, Grant: 0, VC: 0, Accelerator: 0, Competition: 0 };
+    opportunities.forEach(opp => {
+      if (!opp) return;
+      const status = getDeadlineStatus(opp);
       if (status === 'closed') return;
-
       counts.all++;
-      const type = getOpportunityType(item);
+      const type = getOpportunityType(opp);
       if (counts[type] !== undefined) counts[type]++;
-
-      const days = getDaysUntilDeadline(item.deadline);
+      const days = getDaysUntilDeadline(opp.deadline);
       if (days !== null && days >= 0 && days <= 30) counts.hot++;
     });
     return counts;
   }, [opportunities]);
 
+  const totalPages = Math.ceil(filteredOpportunities.length / ITEMS_PER_PAGE);
+  const paginatedOpportunities = filteredOpportunities.slice(page * ITEMS_PER_PAGE, (page + 1) * ITEMS_PER_PAGE);
+  const hasNextPage = page < totalPages - 1;
+  const hasPrevPage = page > 0;
+
   const clearFilters = () => {
+    setActiveTab("all");
     setFocusFilter("all");
     setStageFilter("all");
     setRegionFilter("all");
     setSearchQuery("");
+    setPage(0);
   };
 
   const activeFilterCount = useMemo(() => [
@@ -206,197 +176,134 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
     searchQuery !== ""
   ].filter(Boolean).length, [focusFilter, stageFilter, regionFilter, searchQuery]);
 
-  const getTypeIcon = (type) => {
-    switch (type) {
-      case 'Grant': return <DollarSign className="w-4 h-4 text-green-400" />;
-      case 'Competition': return <Award className="w-4 h-4 text-yellow-400" />;
-      case 'Accelerator': return <Rocket className="w-4 h-4 text-orange-400" />;
-      default: return <TrendingUp className="w-4 h-4 text-blue-400" />;
-    }
-  };
-
   return (
     <div>
-      {/* Quick Filter Tabs - compact row that fits on mobile */}
-      <div className="mb-6">
-        <div className="flex gap-1.5 sm:gap-2">
-          {quickTabs.map((tab) => {
-            const count = tabCounts[tab.id] || 0;
-            const isActive = activeTab === tab.id;
-
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 flex items-center justify-center gap-1 px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 ${
-                  isActive
-                    ? 'bg-white/10 text-white border border-white/20'
-                    : 'bg-white/[0.03] text-white/60 border border-white/[0.06] hover:bg-white/[0.06] hover:text-white/80'
-                }`}
-              >
-                <span>{tab.label}</span>
-                <span className={`text-[10px] sm:text-xs px-1 sm:px-1.5 py-0.5 rounded-full ${
-                  isActive ? 'bg-white/20' : 'bg-white/[0.06]'
-                }`}>
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+      {/* Quick Filter Tabs */}
+      <div className="flex items-center gap-0 border border-white/10 w-fit mb-8">
+        {quickTabs.map((tab) => {
+          const count = tabCounts[tab.id] || 0;
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => { setActiveTab(tab.id); setPage(0); }}
+              className={`font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-3 flex items-center gap-2 transition-colors cursor-crosshair border-r border-white/10 last:border-r-0 ${
+                isActive
+                  ? "bg-white text-black"
+                  : "text-white/50 hover:text-white hover:bg-white/[0.02]"
+              }`}
+            >
+              {tab.id === "hot" && <Flame className="w-3 h-3" strokeWidth={1.5} />}
+              <span>{tab.label}</span>
+              <span className={`text-[9px] px-1.5 py-0.5 ${isActive ? 'bg-black/20' : 'bg-white/10'}`}>
+                {count}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Search and Filters */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="bg-[#0A0A0A]/80 backdrop-blur-xl p-4 rounded-2xl border border-white/[0.08] shadow-xl mb-8"
-      >
-        <div className="flex flex-col md:flex-row gap-3">
-          <div className="flex-1 relative group">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-white/70 transition-colors" />
-            <Input
-              type="text"
-              placeholder="Search opportunities..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-white/[0.03] hover:bg-white/[0.06] focus:bg-white/[0.08] border-white/[0.06] focus:border-white/20 text-white placeholder:text-white/30 h-11 rounded-xl text-sm"
-            />
-          </div>
-
-          <Button
+      <div className="border border-white/10 mb-8">
+        <div className="p-4 flex items-center gap-4 border-b border-white/10">
+          <Search className="w-4 h-4 text-white/30" strokeWidth={1.5} />
+          <input
+            type="text"
+            placeholder="SEARCH_OPPORTUNITIES..."
+            value={searchQuery}
+            onChange={(e) => { setSearchQuery(e.target.value); setPage(0); }}
+            className="flex-1 bg-transparent font-mono text-sm text-white placeholder:text-white/30 focus:outline-none uppercase tracking-[0.1em]"
+          />
+          <button
             onClick={() => setShowFilters(!showFilters)}
-            className="bg-white/[0.03] hover:bg-white/[0.08] text-white/90 border border-white/[0.06] hover:border-white/20 h-11 px-5 rounded-xl flex items-center gap-2.5 justify-center"
+            className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2 border border-white/10 text-white/50 hover:text-white hover:border-white/30 transition-colors flex items-center gap-2 cursor-crosshair"
           >
-            <Filter className="w-3.5 h-3.5" />
-            <span className="text-sm font-medium">Filters</span>
+            <Filter className="w-3 h-3" strokeWidth={1.5} />
+            Filters
             {activeFilterCount > 0 && (
-              <Badge className="ml-1.5 bg-white/10 text-white hover:bg-white/20 border-none px-1.5 py-0 h-5 text-[10px]">{activeFilterCount}</Badge>
+              <span className="bg-white text-black px-1.5 py-0.5 text-[9px]">{activeFilterCount}</span>
             )}
-          </Button>
+          </button>
+          <span className="font-mono text-xs text-white/30">
+            {filteredOpportunities.length} RESULTS
+          </span>
         </div>
 
-        <AnimatePresence>
-          {showFilters && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="space-y-4 pt-4 mt-4 border-t border-white/[0.06] overflow-hidden"
-            >
-              <div className="grid md:grid-cols-3 gap-4">
-                <div>
-                  <label className="text-white/60 text-xs font-medium mb-2.5 block uppercase tracking-wider">Sector</label>
-                  <Select value={focusFilter} onValueChange={setFocusFilter}>
-                    <SelectTrigger className="bg-white/[0.03] border-white/[0.06] text-white h-10 rounded-lg text-sm">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {focusAreas.map((area) => (
-                        <SelectItem key={area} value={area}>
-                          {area === "all" ? "All Sectors" : area}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="text-white/60 text-xs font-medium mb-2.5 block uppercase tracking-wider">Stage</label>
-                  <Select value={stageFilter} onValueChange={setStageFilter}>
-                    <SelectTrigger className="bg-white/[0.03] border-white/[0.06] text-white h-10 rounded-lg text-sm">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {stages.map((stage) => (
-                        <SelectItem key={stage.value} value={stage.value}>
-                          {stage.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="text-white/60 text-xs font-medium mb-2.5 block uppercase tracking-wider">Region</label>
-                  <Select value={regionFilter} onValueChange={setRegionFilter}>
-                    <SelectTrigger className="bg-white/[0.03] border-white/[0.06] text-white h-10 rounded-lg text-sm">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {regions.map((region) => (
-                        <SelectItem key={region.value} value={region.value}>
-                          {region.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+        {showFilters && (
+          <div className="p-4 border-b border-white/10">
+            <div className="grid md:grid-cols-3 gap-4 mb-4">
+              <div>
+                <label className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40 mb-2 block">Sector</label>
+                <select
+                  value={focusFilter}
+                  onChange={(e) => { setFocusFilter(e.target.value); setPage(0); }}
+                  className="w-full bg-transparent border border-white/10 font-mono text-xs text-white p-2 focus:outline-none focus:border-white/30 cursor-crosshair"
+                >
+                  {focusAreas.map((area) => (
+                    <option key={area} value={area} className="bg-[#0a0a0a]">
+                      {area === "all" ? "All Sectors" : area}
+                    </option>
+                  ))}
+                </select>
               </div>
-
-              {activeFilterCount > 0 && (
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-white/40 text-xs font-medium">Active:</span>
-                  {focusFilter !== "all" && (
-                    <Badge className="bg-white/5 text-white/80 border-white/10 text-[10px]">{focusFilter}</Badge>
-                  )}
-                  {stageFilter !== "all" && (
-                    <Badge className="bg-white/5 text-white/80 border-white/10 text-[10px]">{stageFilter}</Badge>
-                  )}
-                  {regionFilter !== "all" && (
-                    <Badge className="bg-white/5 text-white/80 border-white/10 text-[10px]">
-                      {regions.find(r => r.value === regionFilter)?.label}
-                    </Badge>
-                  )}
-                  {searchQuery && (
-                    <Badge className="bg-white/5 text-white/80 border-white/10 text-[10px]">Search: "{searchQuery}"</Badge>
-                  )}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={clearFilters}
-                    className="text-white/40 hover:text-white h-6 px-2 text-[10px]"
-                  >
-                    <X className="w-3 h-3 mr-1" />
-                    Clear
-                  </Button>
-                </div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-
-      {/* Results count */}
-      <div className="mb-6 flex items-center justify-between">
-        <p className="text-white/60 text-sm">
-          Showing <span className="font-semibold text-white">{paginatedOpportunities.length}</span> of {filteredOpportunities.length} opportunities
-        </p>
-        {totalPages > 1 && (
-          <p className="text-white/50 text-sm">
-            Page {page + 1} of {totalPages}
-          </p>
+              <div>
+                <label className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40 mb-2 block">Stage</label>
+                <select
+                  value={stageFilter}
+                  onChange={(e) => { setStageFilter(e.target.value); setPage(0); }}
+                  className="w-full bg-transparent border border-white/10 font-mono text-xs text-white p-2 focus:outline-none focus:border-white/30 cursor-crosshair"
+                >
+                  {stages.map((stage) => (
+                    <option key={stage.value} value={stage.value} className="bg-[#0a0a0a]">
+                      {stage.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40 mb-2 block">Region</label>
+                <select
+                  value={regionFilter}
+                  onChange={(e) => { setRegionFilter(e.target.value); setPage(0); }}
+                  className="w-full bg-transparent border border-white/10 font-mono text-xs text-white p-2 focus:outline-none focus:border-white/30 cursor-crosshair"
+                >
+                  {regions.map((region) => (
+                    <option key={region.value} value={region.value} className="bg-[#0a0a0a]">
+                      {region.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            {activeFilterCount > 0 && (
+              <button
+                onClick={clearFilters}
+                className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/30 hover:text-white transition-colors flex items-center gap-2 cursor-crosshair"
+              >
+                <X className="w-3 h-3" strokeWidth={1.5} />
+                Clear All Filters
+              </button>
+            )}
+          </div>
         )}
       </div>
 
       {/* Opportunities Grid */}
       {filteredOpportunities.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center py-16"
-        >
-          <DollarSign className="w-16 h-16 text-white/30 mx-auto mb-4" />
-          <p className="text-white/70 text-lg mb-4">No opportunities match your filters</p>
-          <Button onClick={clearFilters} className="glass-button">
-            Clear all filters
-          </Button>
-        </motion.div>
+        <div className="border border-white/10 p-16 text-center">
+          <DollarSign className="w-12 h-12 text-white/20 mx-auto mb-4" strokeWidth={1} />
+          <span className="bureau-label block mb-4">[NO_RESULTS]</span>
+          <p className="text-white/40 mb-6">No opportunities match your filters.</p>
+          <button
+            onClick={clearFilters}
+            className="font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 border border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white transition-colors cursor-crosshair"
+          >
+            Clear Filters
+          </button>
+        </div>
       ) : (
         <>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-0 border border-white/10">
             {paginatedOpportunities.map((opp, index) => {
               const type = getOpportunityType(opp);
               const days = getDaysUntilDeadline(opp.deadline);
@@ -406,67 +313,53 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
               const sectors = getOpportunitySectors(opp);
 
               return (
-                <motion.a
+                <div
                   key={opp.id || index}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.2) }}
-                  className="group relative bg-[#0F0F0F] rounded-xl border border-white/[0.06] p-5 hover:border-white/[0.15] transition-all duration-300 hover:-translate-y-1 flex flex-col"
+                  className="p-6 border-b border-r border-white/10 last:border-r-0 md:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0 hover:bg-white/[0.02] transition-colors group flex flex-col"
                 >
-                  {/* Hot badge */}
-                  {isHot && (
-                    <div className="absolute -top-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
-                      <Flame className="w-3 h-3" />
-                      {days === 0 ? "Today!" : `${days}d left`}
-                    </div>
-                  )}
-
-                  {/* Header */}
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className={`p-2 rounded-lg ${
-                      type === 'Grant' ? 'bg-green-500/10' :
-                      type === 'Competition' ? 'bg-yellow-500/10' :
-                      type === 'Accelerator' ? 'bg-orange-500/10' :
-                      'bg-blue-500/10'
-                    }`}>
-                      {getTypeIcon(type)}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-base font-semibold text-white group-hover:text-blue-400 transition-colors line-clamp-2">
-                        {opp.name}
-                      </h3>
-                      <p className="text-white/40 text-xs mt-0.5">{type}</p>
+                  <div className="flex items-start justify-between mb-3">
+                    <span className="font-mono text-xs text-white/20">
+                      {String(page * ITEMS_PER_PAGE + index + 1).padStart(2, '0')}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      {isHot && (
+                        <span className="font-mono text-[10px] text-orange-400 uppercase tracking-[0.15em] px-2 py-1 border border-orange-400/30 flex items-center gap-1">
+                          <Flame className="w-3 h-3" strokeWidth={1.5} />
+                          {days === 0 ? "Today" : `${days}d`}
+                        </span>
+                      )}
+                      <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.15em] px-2 py-1 border border-white/10">
+                        {type}
+                      </span>
                     </div>
                   </div>
 
-                  {/* Description */}
-                  <p className="text-white/50 text-sm leading-relaxed mb-4 flex-grow line-clamp-2">
-                    {description || `${opp.check_size || opp.organization || 'Funding opportunity'}`}
+                  <h3 className="font-mono text-sm uppercase tracking-[0.1em] text-white/80 mb-2 group-hover:text-white transition-colors line-clamp-2">
+                    {opp.name}
+                  </h3>
+
+                  <p className="text-white/40 text-sm leading-relaxed mb-4 flex-grow line-clamp-2">
+                    {description || opp.check_size || opp.organization || 'Funding opportunity'}
                   </p>
 
-                  {/* Tags */}
                   {sectors.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mb-4">
+                    <div className="flex flex-wrap gap-1 mb-4">
                       {sectors.slice(0, 3).map((sector, idx) => (
-                        <Badge key={idx} className="bg-white/[0.04] text-white/60 border-white/[0.06] text-[10px] px-2 py-0.5">
+                        <span key={idx} className="font-mono text-[9px] text-white/30 uppercase tracking-[0.1em] px-2 py-1 border border-white/5">
                           {sector}
-                        </Badge>
+                        </span>
                       ))}
                     </div>
                   )}
 
-                  {/* Footer */}
-                  <div className="flex items-center justify-between pt-3 border-t border-white/[0.06] mt-auto">
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+                    <div className="flex items-center gap-3">
                       {opp.check_size && (
-                        <span className="text-white/40 text-xs">{opp.check_size}</span>
+                        <span className="font-mono text-xs text-white/40">{opp.check_size}</span>
                       )}
                       {opp.deadline && !isHot && (
-                        <span className="text-white/40 text-xs flex items-center gap-1">
-                          <Calendar className="w-3 h-3" />
+                        <span className="font-mono text-xs text-white/30 flex items-center gap-1">
+                          <Calendar className="w-3 h-3" strokeWidth={1.5} />
                           {new Date(opp.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                         </span>
                       )}
@@ -479,91 +372,53 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
                         resourceDescription={description}
                         resourceUrl={url}
                       />
-                      <div className="flex items-center gap-1 text-white/40 group-hover:text-white text-xs">
-                        Learn More
-                        <ExternalLink className="w-3 h-3" />
-                      </div>
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-mono text-[10px] uppercase tracking-[0.15em] px-3 py-2 border border-white/10 text-white/40 hover:bg-white hover:text-black hover:border-white transition-colors flex items-center gap-1 cursor-crosshair"
+                      >
+                        View
+                        <ArrowUpRight className="w-3 h-3" strokeWidth={1.5} />
+                      </a>
                     </div>
                   </div>
-                </motion.a>
+                </div>
               );
             })}
           </div>
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-              className="flex items-center justify-center gap-4 mt-12"
-            >
-              <Button
+            <div className="flex items-center justify-center gap-2 mt-8">
+              <button
                 onClick={() => setPage(p => p - 1)}
                 disabled={!hasPrevPage}
-                className="glass-button disabled:opacity-50 disabled:cursor-not-allowed"
+                className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2 border border-white/10 text-white/40 hover:bg-white hover:text-black hover:border-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-crosshair flex items-center gap-2"
               >
-                <ChevronLeft className="w-4 h-4 mr-2" />
-                Previous
-              </Button>
-
-              <div className="flex items-center gap-2">
-                {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                  let pageNum;
-                  if (totalPages <= 5) {
-                    pageNum = i;
-                  } else if (page < 3) {
-                    pageNum = i;
-                  } else if (page >= totalPages - 3) {
-                    pageNum = totalPages - 5 + i;
-                  } else {
-                    pageNum = page - 2 + i;
-                  }
-
-                  return (
-                    <Button
-                      key={pageNum}
-                      onClick={() => setPage(pageNum)}
-                      className={`w-10 h-10 ${
-                        page === pageNum
-                          ? 'accent-button'
-                          : 'glass-button'
-                      }`}
-                    >
-                      {pageNum + 1}
-                    </Button>
-                  );
-                })}
-              </div>
-
-              <Button
+                <ChevronLeft className="w-3 h-3" strokeWidth={1.5} />
+                Prev
+              </button>
+              <span className="font-mono text-xs text-white/40 px-4">
+                {page + 1} / {totalPages}
+              </span>
+              <button
                 onClick={() => setPage(p => p + 1)}
                 disabled={!hasNextPage}
-                className="glass-button disabled:opacity-50 disabled:cursor-not-allowed"
+                className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2 border border-white/10 text-white/40 hover:bg-white hover:text-black hover:border-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-crosshair flex items-center gap-2"
               >
                 Next
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
-            </motion.div>
+                <ChevronRight className="w-3 h-3" strokeWidth={1.5} />
+              </button>
+            </div>
           )}
         </>
       )}
 
       {/* Additional Resources */}
-      <section className="mt-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-8"
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="h-px flex-1 max-w-[40px] bg-gradient-to-r from-white/20 to-transparent" />
-            <h2 className="text-sm font-medium uppercase tracking-[0.15em] text-white/40">Resources</h2>
-          </div>
-          <h2 className="text-xl md:text-2xl font-semibold text-white tracking-tight">Additional Resources</h2>
-        </motion.div>
-        <div className="grid md:grid-cols-3 gap-4">
+      <section className="mt-16">
+        <span className="bureau-label block mb-6">[ADDITIONAL_RESOURCES]</span>
+        <div className="grid md:grid-cols-3 gap-0 border border-white/10">
           {[
             {
               name: "NFX Signal Investor Database",
@@ -581,23 +436,27 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
               link: "https://s3gadvisors.notion.site/Chicago-Small-Business-Funding-Wiki-42081a119ab24aa0b18084a15485e320"
             }
           ].map((resource, index) => (
-            <motion.a
+            <a
               key={index}
               href={resource.link}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
-              className="group relative bg-white/[0.02] rounded-xl border border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300 p-5 flex flex-col"
+              className="p-6 border-r border-white/10 last:border-r-0 hover:bg-white/[0.02] transition-colors group flex flex-col"
             >
-              <h3 className="text-base font-medium text-white mb-2 group-hover:text-white/90 transition-colors">{resource.name}</h3>
-              <p className="text-white/40 text-sm leading-relaxed mb-4 flex-grow font-light group-hover:text-white/50 transition-colors">{resource.description}</p>
-              <div className="flex items-center gap-1 text-white/40 text-xs font-medium group-hover:text-white/60 transition-colors">
-                Visit Resource
-                <ExternalLink className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+              <span className="font-mono text-xs text-white/20 mb-3">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <h3 className="font-mono text-sm uppercase tracking-[0.1em] text-white/80 mb-2 group-hover:text-white transition-colors">
+                {resource.name}
+              </h3>
+              <p className="text-white/40 text-sm leading-relaxed mb-4 flex-grow">
+                {resource.description}
+              </p>
+              <div className="flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.15em] text-white/30 group-hover:text-white transition-colors">
+                Visit
+                <ArrowUpRight className="w-3 h-3" strokeWidth={1.5} />
               </div>
-            </motion.a>
+            </a>
           ))}
         </div>
       </section>

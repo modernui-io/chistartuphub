@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import {
   DollarSign,
@@ -8,30 +8,70 @@ import {
   BookOpen,
   Map,
   ArrowRight,
-  ChevronDown,
+  ArrowUpRight,
 } from "lucide-react";
 import { createPageUrl } from "@/utils";
 
 /**
  * EcosystemSection - The Bureau Ecosystem Display
  * Systematic Modernism | Precision over Decoration
+ * Version 2.0 - Premium refinements with animations
  *
  * Structure:
- * 1. Ecosystem Specs - Split editorial (1/3 + 2/3)
+ * 1. Ecosystem Specs - Split editorial (1/2 + 1/2)
  * 2. Resource Grid - 6-card Bureau grid
  */
 
 // ============================================
-// SPEC CARD - Data Point Display
+// INTERSECTION OBSERVER HOOK
 // ============================================
-function SpecCard({ index, label, value }) {
+function useInView(threshold = 0.2) {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [threshold]);
+
+  return [ref, isVisible];
+}
+
+// ============================================
+// SPEC CARD - Data Point Display (Enhanced)
+// ============================================
+function SpecCard({ index, label, value, delay = 0 }) {
+  const [ref, isVisible] = useInView();
+
   return (
-    <div className="p-6 lg:p-8">
-      <span className="font-mono text-xs text-white/30 mb-3 block">{index}</span>
-      <h4 className="font-mono text-sm font-bold uppercase tracking-wider text-white mb-2">
+    <div 
+      ref={ref}
+      className={`
+        p-8 lg:p-10
+        ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}
+      `}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <span className="font-mono text-[10px] tracking-[0.2em] text-white/20 mb-4 block">
+        {index}
+      </span>
+      <h4 className="font-mono text-xs font-semibold uppercase tracking-[0.15em] text-white/80 mb-3">
         {label}
       </h4>
-      <p className="font-serif text-base text-white/60 leading-relaxed">
+      <p className="font-serif text-base text-white/50 leading-relaxed">
         {value}
       </p>
     </div>
@@ -39,9 +79,11 @@ function SpecCard({ index, label, value }) {
 }
 
 // ============================================
-// ECOSYSTEM SPECS - Split Editorial Section
+// ECOSYSTEM SPECS - Split Editorial Section (Enhanced)
 // ============================================
 function EcosystemSpecs() {
+  const [ref, isVisible] = useInView();
+
   const specs = [
     {
       index: "01",
@@ -66,28 +108,57 @@ function EcosystemSpecs() {
   ];
 
   return (
-    <div className="border-b border-white/15">
+    <div className="border-b border-white/[0.12]">
       {/* 50/50 Split - Text + Image */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
         {/* Left Column - The Argument */}
-        <div className="bg-[#0A1220] p-10 lg:p-16 border-r border-white/15 flex flex-col justify-center">
-          <span className="font-mono text-xs uppercase tracking-[0.2em] text-white/40 mb-6 block">
+        <div 
+          ref={ref}
+          className="bg-[#0A1220]/50 p-12 lg:p-20 border-r border-white/[0.12] flex flex-col justify-center"
+        >
+          <span 
+            className={`
+              bureau-label block mb-8
+              ${isVisible ? 'animate-fade-in' : 'opacity-0'}
+            `}
+            style={{ animationDelay: '100ms' }}
+          >
             [WHY BUILD HERE?]
           </span>
-          <h3 className="font-serif text-3xl lg:text-4xl text-white leading-tight mb-6">
-            World-class infrastructure at a builder's pace.
+          <h3 
+            className={`
+              font-serif text-3xl lg:text-4xl xl:text-5xl text-white leading-[1.1] mb-8 tracking-tight
+              ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}
+            `}
+            style={{ animationDelay: '200ms' }}
+          >
+            World-class infrastructure
+            <br />
+            <span className="text-white/50">at a builder's pace.</span>
           </h3>
-          <p className="font-serif text-lg text-white/50 leading-relaxed mb-8">
+          <p 
+            className={`
+              font-serif text-lg text-white/40 leading-relaxed mb-10 max-w-lg
+              ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}
+            `}
+            style={{ animationDelay: '300ms' }}
+          >
             Chicago offers deep talent pools, diverse markets, and a pragmatic
             culture that values revenue over hype. It is the most
             capital-efficient place to launch.
           </p>
           {/* Decorative Line */}
-          <div className="w-16 h-px bg-white/20" />
+          <div 
+            className={`
+              w-20 h-px bg-white/20
+              ${isVisible ? 'animate-fade-in' : 'opacity-0'}
+            `}
+            style={{ animationDelay: '400ms' }}
+          />
         </div>
 
         {/* Right Column - Technical Image */}
-        <div className="relative min-h-[400px] lg:min-h-[500px] overflow-hidden">
+        <div className="relative min-h-[450px] lg:min-h-[550px] overflow-hidden">
           {/* Background Image - Chicago Blueprint/Network */}
           <div
             className="absolute inset-0 bg-cover bg-center"
@@ -98,38 +169,46 @@ function EcosystemSpecs() {
           />
 
           {/* Dark Overlay */}
-          <div className="absolute inset-0 bg-[#050A14]/80 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-[#050A14]/85 mix-blend-multiply" />
 
           {/* Grid/Radar Texture Overlay */}
           <div
-            className="absolute inset-0 opacity-30"
+            className="absolute inset-0 opacity-20"
             style={{
               backgroundImage: `
                 radial-gradient(circle at center, transparent 0%, #050A14 70%),
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)
+                linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
               `,
-              backgroundSize: "100% 100%, 40px 40px, 40px 40px",
+              backgroundSize: "100% 100%, 50px 50px, 50px 50px",
             }}
           />
 
           {/* Radial Scan Effect */}
           <div
-            className="absolute inset-0 opacity-20"
+            className="absolute inset-0 opacity-30"
             style={{
-              background: `radial-gradient(circle at 70% 30%, rgba(255,255,255,0.1) 0%, transparent 50%)`,
+              background: `radial-gradient(circle at 70% 30%, rgba(59, 130, 246, 0.1) 0%, transparent 50%)`,
             }}
           />
 
           {/* Corner Markers - Technical Feel */}
-          <div className="absolute top-6 left-6 w-8 h-8 border-l border-t border-white/20" />
-          <div className="absolute top-6 right-6 w-8 h-8 border-r border-t border-white/20" />
-          <div className="absolute bottom-6 left-6 w-8 h-8 border-l border-b border-white/20" />
-          <div className="absolute bottom-6 right-6 w-8 h-8 border-r border-b border-white/20" />
+          <div className="absolute top-8 left-8 w-12 h-12 border-l border-t border-white/15" />
+          <div className="absolute top-8 right-8 w-12 h-12 border-r border-t border-white/15" />
+          <div className="absolute bottom-8 left-8 w-12 h-12 border-l border-b border-white/15" />
+          <div className="absolute bottom-8 right-8 w-12 h-12 border-r border-b border-white/15" />
+
+          {/* Center Crosshair */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className="w-px h-8 bg-white/10 absolute left-1/2 -translate-x-1/2 -top-4" />
+            <div className="w-px h-8 bg-white/10 absolute left-1/2 -translate-x-1/2 top-4" />
+            <div className="h-px w-8 bg-white/10 absolute top-1/2 -translate-y-1/2 -left-4" />
+            <div className="h-px w-8 bg-white/10 absolute top-1/2 -translate-y-1/2 left-4" />
+          </div>
 
           {/* Coordinates Label */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
-            <span className="font-mono text-xs tracking-widest text-white/30">
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+            <span className="font-mono text-[10px] tracking-[0.2em] text-white/25">
               41.8781° N, 87.6298° W
             </span>
           </div>
@@ -137,18 +216,18 @@ function EcosystemSpecs() {
       </div>
 
       {/* 4-Point Data Grid - Below the split */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border-t border-white/15">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0 border-t border-white/[0.12]">
         {specs.map((spec, i) => (
           <div
             key={spec.label}
             className={`
-              ${i < 3 ? "lg:border-r border-white/15" : ""}
-              ${i < 2 ? "md:border-r border-white/15 lg:border-r-0" : ""}
-              ${i < 2 ? "border-b border-white/15 lg:border-b-0" : ""}
-              ${i === 2 ? "md:border-r-0 lg:border-r border-white/15" : ""}
+              ${i < 3 ? "lg:border-r border-white/[0.12]" : ""}
+              ${i < 2 ? "md:border-r border-white/[0.12] lg:border-r-0" : ""}
+              ${i < 2 ? "border-b border-white/[0.12] lg:border-b-0" : ""}
+              ${i === 2 ? "md:border-r-0 lg:border-r border-white/[0.12]" : ""}
             `}
           >
-            <SpecCard {...spec} />
+            <SpecCard {...spec} delay={i * 100} />
           </div>
         ))}
       </div>
@@ -157,9 +236,10 @@ function EcosystemSpecs() {
 }
 
 // ============================================
-// RESOURCE CARD - Navigation Cell
+// RESOURCE CARD - Navigation Cell (Enhanced)
 // ============================================
-function ResourceCard({ index, icon: Icon, label, description, cta, href, external = false }) {
+function ResourceCard({ index, icon: Icon, label, description, cta, href, external = false, delay = 0 }) {
+  const [ref, isVisible] = useInView();
   const CardWrapper = external ? "a" : Link;
   const linkProps = external
     ? { href, target: "_blank", rel: "noopener noreferrer" }
@@ -167,6 +247,7 @@ function ResourceCard({ index, icon: Icon, label, description, cta, href, extern
 
   return (
     <CardWrapper
+      ref={ref}
       {...linkProps}
       className={`
         group relative text-left p-8 lg:p-10
@@ -174,47 +255,66 @@ function ResourceCard({ index, icon: Icon, label, description, cta, href, extern
         text-white hover:text-black
         transition-none duration-0
         cursor-crosshair
-        border-r border-b border-white/15
-        min-h-[240px] flex flex-col
+        border-r border-b border-white/[0.12]
+        min-h-[280px] flex flex-col
+        ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}
       `}
+      style={{ animationDelay: `${delay}ms` }}
     >
+      {/* Hover Glow Effect */}
+      <div 
+        className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-0"
+        style={{
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 50%)',
+        }}
+      />
+
       {/* Index - Top Right */}
-      <span className="absolute top-6 right-6 font-mono text-sm text-white/20 group-hover:text-black/20">
+      <span className="absolute top-8 right-8 font-mono text-sm text-white/15 group-hover:text-black/15">
         {index}
       </span>
 
       {/* Icon + Label */}
-      <div className="flex items-center gap-3 mb-4">
-        {Icon && (
-          <Icon
-            className="w-5 h-5 text-white/50 group-hover:text-black/50"
-            strokeWidth={1.5}
-          />
-        )}
-        <h3 className="font-mono text-base font-bold uppercase tracking-wider">
+      <div className="flex items-center gap-4 mb-5">
+        <div className="w-10 h-10 flex items-center justify-center border border-white/[0.12] group-hover:border-black/20">
+          {Icon && (
+            <Icon
+              className="w-5 h-5 text-white/40 group-hover:text-black/50"
+              strokeWidth={1.5}
+            />
+          )}
+        </div>
+        <h3 className="font-mono text-sm font-semibold uppercase tracking-[0.1em]">
           {label}
         </h3>
       </div>
 
       {/* Description */}
-      <p className="font-serif text-base leading-relaxed text-white/50 group-hover:text-black/60 mb-auto">
+      <p className="font-serif text-base leading-relaxed text-white/45 group-hover:text-black/60 mb-auto max-w-[260px]">
         {description}
       </p>
 
       {/* CTA - Ghost Style */}
-      <div className="flex items-center gap-2 mt-6 font-mono text-xs uppercase tracking-widest text-white/40 group-hover:text-black">
+      <div className="flex items-center gap-3 mt-8 font-mono text-[10px] uppercase tracking-[0.15em] text-white/35 group-hover:text-black">
         <span>{cta}</span>
-        <ArrowRight
-          className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-150"
-          strokeWidth={2}
-        />
+        {external ? (
+          <ArrowUpRight
+            className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-200"
+            strokeWidth={1.5}
+          />
+        ) : (
+          <ArrowRight
+            className="w-4 h-4 group-hover:translate-x-2 transition-transform duration-200"
+            strokeWidth={1.5}
+          />
+        )}
       </div>
     </CardWrapper>
   );
 }
 
 // ============================================
-// RESOURCE GRID - 6-Card Bureau Grid
+// RESOURCE GRID - 6-Card Bureau Grid (Enhanced)
 // ============================================
 function ResourceGrid() {
   const resources = [
@@ -270,10 +370,10 @@ function ResourceGrid() {
   ];
 
   return (
-    <div className="border-t border-l border-white/15">
+    <div className="border-t border-l border-white/[0.12]">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
-        {resources.map((resource) => (
-          <ResourceCard key={resource.label} {...resource} />
+        {resources.map((resource, i) => (
+          <ResourceCard key={resource.label} {...resource} delay={i * 100} />
         ))}
       </div>
     </div>
@@ -284,14 +384,31 @@ function ResourceGrid() {
 // ECOSYSTEM SECTION - Main Export
 // ============================================
 export function EcosystemSection({ className = "" }) {
+  const [ref, isVisible] = useInView();
+
   return (
     <section className={`${className}`}>
-      {/* Section Header */}
-      <div className="px-8 lg:px-12 py-8 border-b border-white/15">
-        <span className="font-mono text-xs uppercase tracking-[0.2em] text-white/40 mb-2 block">
+      {/* Section Header - Enhanced */}
+      <div 
+        ref={ref}
+        className="px-8 lg:px-12 py-12 border-b border-white/[0.12]"
+      >
+        <span 
+          className={`
+            bureau-label block mb-4
+            ${isVisible ? 'animate-fade-in' : 'opacity-0'}
+          `}
+          style={{ animationDelay: '100ms' }}
+        >
           [SYSTEM: ECOSYSTEM_MAP]
         </span>
-        <h2 className="font-serif text-2xl lg:text-3xl text-white">
+        <h2 
+          className={`
+            font-serif text-3xl lg:text-4xl text-white tracking-tight
+            ${isVisible ? 'animate-fade-in-up' : 'opacity-0'}
+          `}
+          style={{ animationDelay: '200ms' }}
+        >
           Everything you need to build.
         </h2>
       </div>
@@ -299,25 +416,25 @@ export function EcosystemSection({ className = "" }) {
       {/* Ecosystem Specs - Split Editorial */}
       <EcosystemSpecs />
 
-      {/* Resource Dashboard Header */}
-      <div className="border-t border-white/15 py-10 lg:py-12 px-8 lg:px-12">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+      {/* Resource Dashboard Header - Enhanced */}
+      <div className="border-t border-white/[0.12] py-14 lg:py-16 px-8 lg:px-12">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
           {/* Left - Label */}
-          <span className="font-mono text-xs uppercase tracking-[0.2em] text-white/40">
+          <span className="bureau-label">
             [RESOURCE_INDEX]
           </span>
 
           {/* Center/Right - Headline */}
-          <h3 className="font-serif text-3xl lg:text-4xl text-white">
-            Everything you need to build.
+          <h3 className="font-serif text-3xl lg:text-4xl xl:text-5xl text-white tracking-tight">
+            Your operational toolkit.
           </h3>
 
-          {/* Right - Scroll Indicator */}
-          <div className="flex items-center gap-2 text-white/30">
-            <span className="font-mono text-xs uppercase tracking-wider">
-              [SCROLL_FOR_DATA]
+          {/* Right - Count */}
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-2xl text-white/60">06</span>
+            <span className="font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase">
+              Resources
             </span>
-            <ChevronDown className="w-4 h-4 animate-bounce" strokeWidth={1.5} />
           </div>
         </div>
       </div>

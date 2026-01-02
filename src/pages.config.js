@@ -22,6 +22,8 @@ const BusinessTypeExplorer = lazy(() => import('./pages/BusinessTypeExplorer'));
 const HumanHelp = lazy(() => import('./pages/HumanHelp'));
 const Directory = lazy(() => import('./pages/Directory'));
 const Opportunities = lazy(() => import('./pages/Opportunities'));
+const ServiceResources = lazy(() => import('./pages/ServiceResources'));
+const SmallBusinessResources = lazy(() => import('./pages/SmallBusinessResources'));
 
 export const PAGES = {
     "Home": Home,
@@ -45,6 +47,8 @@ export const PAGES = {
     "human-help": HumanHelp,
     "Directory": Directory,
     "Opportunities": Opportunities,
+    "service-resources": ServiceResources,
+    "small-business-resources": SmallBusinessResources,
 }
 
 export const pagesConfig = {
