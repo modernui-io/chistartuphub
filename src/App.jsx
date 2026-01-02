@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from '@/contexts/AuthContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import PageSkeleton from '@/components/PageSkeleton';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -24,14 +25,7 @@ function App() {
         <AuthProvider>
           <Router>
             <LayoutWrapper currentPageName={mainPageKey}>
-              <Suspense fallback={
-                <div className="min-h-screen flex items-center justify-center bg-[#050A14]">
-                  <div className="text-center">
-                    <div className="w-8 h-8 border border-white/30 border-t-white animate-spin mx-auto mb-4"></div>
-                    <p className="font-mono text-[10px] text-white/40 uppercase tracking-[0.2em]">Loading...</p>
-                  </div>
-                </div>
-              }>
+              <Suspense fallback={<PageSkeleton />}>
                 <Routes>
                   <Route path="/" element={<MainPage />} />
                   {Object.entries(Pages).map(([path, Page]) => (

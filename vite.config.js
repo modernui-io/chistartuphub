@@ -54,47 +54,62 @@ export default defineConfig(({ mode }) => {
       },
     },
     build: {
-      sourcemap: false, // Disable sourcemaps for production
-      minify: 'esbuild', // Use esbuild for faster builds
+      sourcemap: false,
+      minify: 'terser', // Better compression than esbuild
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+          passes: 2, // Multiple passes for better compression
+        },
+      },
       rollupOptions: {
         output: {
-          manualChunks: {
-            // Core React libraries
-            vendor: ['react', 'react-dom', 'react-router-dom'],
-            // Radix UI components
-            ui: [
-              '@radix-ui/react-dialog',
-              '@radix-ui/react-dropdown-menu',
-              '@radix-ui/react-tabs',
-              '@radix-ui/react-select',
-              '@radix-ui/react-tooltip',
-              '@radix-ui/react-popover',
-              '@radix-ui/react-checkbox',
-              '@radix-ui/react-radio-group',
-              '@radix-ui/react-switch',
-              '@radix-ui/react-slider',
-              '@radix-ui/react-label',
-              '@radix-ui/react-separator',
-              '@radix-ui/react-avatar',
-              '@radix-ui/react-scroll-area'
-            ].filter(pkg => {
-              // Only include packages that are actually installed
-              try {
-                require.resolve(pkg);
-                return true;
-              } catch {
-                return false;
+          // More aggressive code splitting
+          manualChunks: (id) => {
+            if (id.includes('node_modules')) {
+              // Split by library for better caching
+              if (id.includes('react') && !id.includes('react-router')) {
+                return 'react-core';
               }
-            }),
-            // Charts library
-            charts: ['recharts'],
-            // Maps library
-            maps: ['react-leaflet', 'leaflet'],
-            // Animation libraries
-            animation: ['framer-motion', 'gsap']
-          }
+              if (id.includes('react-router')) {
+                return 'react-router';
+              }
+              if (id.includes('framer-motion')) {
+                return 'animation';
+              }
+              if (id.includes('gsap')) {
+                return 'gsap';
+              }
+              if (id.includes('@supabase')) {
+                return 'supabase';
+              }
+              if (id.includes('leaflet') || id.includes('react-leaflet')) {
+                return 'maps';
+              }
+              if (id.includes('@radix-ui') || id.includes('lucide-react')) {
+                return 'ui';
+              }
+              if (id.includes('recharts')) {
+                return 'charts';
+              }
+              return 'vendor';
+            }
+            
+            // Split heavy pages
+            if (id.includes('/pages/Profile')) return 'page-profile';
+            if (id.includes('/pages/Resources')) return 'page-resources';
+            if (id.includes('/pages/Opportunities')) return 'page-opportunities';
+            if (id.includes('/pages/SavedResources')) return 'page-saved';
+          },
+          // Optimize chunk names for caching
+          chunkFileNames: 'assets/[name]-[hash].js',
+          entryFileNames: 'assets/[name]-[hash].js',
+          assetFileNames: 'assets/[name]-[hash][extname]',
         }
-      }
+      },
+      // Smaller chunks for faster initial load
+      chunkSizeWarningLimit: 500,
     }
   }
 });

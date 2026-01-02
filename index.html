@@ -70,6 +70,36 @@
     <link rel="dns-prefetch" href="https://images.unsplash.com" />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
 
+    <!-- Critical inline CSS for instant render -->
+    <style>
+      /* Prevent flash of unstyled content */
+      body {
+        margin: 0;
+        background-color: #050A14;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      
+      /* Instant skeleton loader */
+      #root:empty::before {
+        content: '';
+        display: block;
+        width: 100%;
+        height: 100vh;
+        background: #050A14;
+      }
+      
+      /* Reduce animation jank on mobile */
+      * {
+        -webkit-tap-highlight-color: transparent;
+      }
+      
+      /* Hardware acceleration for smoother animations */
+      .will-change-transform {
+        will-change: transform;
+      }
+    </style>
+
     <!-- Structured Data - Organization -->
     <script type="application/ld+json">
     {
