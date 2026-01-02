@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   Dialog,
@@ -38,6 +39,7 @@ const INTERESTS = [
 ];
 
 export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -52,6 +54,10 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
   const [companyName, setCompanyName] = useState('');
   const [role, setRole] = useState('');
   const [stage, setStage] = useState('');
+  
+  // Founder vetting fields
+  const [linkedinUrl, setLinkedinUrl] = useState('');
+  const [websiteUrl, setWebsiteUrl] = useState('');
 
   // Step 3: Interests
   const [selectedInterests, setSelectedInterests] = useState([]);
@@ -64,6 +70,8 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
     setCompanyName('');
     setRole('');
     setStage('');
+    setLinkedinUrl('');
+    setWebsiteUrl('');
     setSelectedInterests([]);
   };
 
@@ -109,7 +117,12 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
           company_name: companyName,
           role,
           stage,
+          linkedin_url: linkedinUrl || null,
+          website_url: websiteUrl || null,
           interests: selectedInterests,
+          // Founders start with pending verification (48hr review)
+          verification_status: role === 'founder' ? 'pending' : 'none',
+          verification_submitted_at: role === 'founder' ? new Date().toISOString() : null,
         });
 
         if (profileError) {
@@ -134,6 +147,13 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
         toast.success('Welcome to ChiStartupHub!', {
           description: 'Your account has been created successfully!',
         });
+        
+        // Route based on role: founders go to Asks page, others go home
+        if (role === 'founder') {
+          navigate('/ecosystem/founder-asks');
+        } else {
+          navigate('/');
+        }
       }
 
       setLoading(false);
@@ -390,27 +410,68 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
             </div>
 
             {role === 'founder' && (
-              <div>
-                <label htmlFor="stage" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
-                  Startup Stage
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {STAGES.map((s) => (
-                    <button
-                      key={s.value}
-                      type="button"
-                      onClick={() => setStage(s.value)}
-                      className={`font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 border transition-none duration-0 cursor-crosshair rounded-none ${
-                        stage === s.value
-                          ? 'bg-white text-black border-white'
-                          : 'bg-transparent text-white/50 border-white/20 hover:border-white/40 hover:text-white/70'
-                      }`}
-                    >
-                      {s.label}
-                    </button>
-                  ))}
+              <>
+                {/* Founder Vetting Section */}
+                <div className="p-3 border border-amber-500/30 bg-amber-500/5 mb-4">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-amber-400 mb-1">
+                    Founder Verification
+                  </p>
+                  <p className="text-[11px] text-white/50">
+                    To post asks, we need to verify you're a real founder. This helps maintain trust in our community.
+                  </p>
                 </div>
-              </div>
+                
+                <div>
+                  <label htmlFor="linkedinUrl" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
+                    LinkedIn Profile URL *
+                  </label>
+                  <input
+                    id="linkedinUrl"
+                    type="url"
+                    value={linkedinUrl}
+                    onChange={(e) => setLinkedinUrl(e.target.value)}
+                    placeholder="https://linkedin.com/in/yourprofile"
+                    className="w-full bg-transparent border border-white/10 py-3 px-4 font-mono text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-none duration-0 rounded-none"
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="websiteUrl" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
+                    Company Website (Optional)
+                  </label>
+                  <input
+                    id="websiteUrl"
+                    type="url"
+                    value={websiteUrl}
+                    onChange={(e) => setWebsiteUrl(e.target.value)}
+                    placeholder="https://yourcompany.com"
+                    className="w-full bg-transparent border border-white/10 py-3 px-4 font-mono text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-none duration-0 rounded-none"
+                  />
+                </div>
+              
+                <div>
+                  <label htmlFor="stage" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
+                    Startup Stage
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {STAGES.map((s) => (
+                      <button
+                        key={s.value}
+                        type="button"
+                        onClick={() => setStage(s.value)}
+                        className={`font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 border transition-none duration-0 cursor-crosshair rounded-none ${
+                          stage === s.value
+                            ? 'bg-white text-black border-white'
+                            : 'bg-transparent text-white/50 border-white/20 hover:border-white/40 hover:text-white/70'
+                        }`}
+                      >
+                        {s.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
             )}
 
             <div className="flex gap-3">

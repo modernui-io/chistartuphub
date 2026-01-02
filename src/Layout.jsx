@@ -11,6 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import LoginModal from "@/components/auth/LoginModal";
 import SignupModal from "@/components/auth/SignupModal";
 import AIAssistant from "@/components/AIAssistant";
+import VerificationBanner from "@/components/VerificationBanner";
 
 export default function Layout({ children }) {
   const location = useLocation();
@@ -305,6 +306,8 @@ export default function Layout({ children }) {
           mobileMenuOpen={mobileMenuOpen}
           setMobileMenuOpen={setMobileMenuOpen}
         />
+        {/* Verification Banner for founders under review */}
+        <VerificationBanner />
       </div>
 
       {/* Main Content with ScrollSmoother */}

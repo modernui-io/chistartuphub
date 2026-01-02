@@ -130,7 +130,7 @@ export default function Opportunities({ onOpenSignup }) {
     <>
       <SEO
         title="Founder Asks | ChiStartup Hub"
-        description="What do Chicago founders need this week? Browse asks for fundraising help, co-founders, and advice. Connect directly to help."
+        description="What help do you need? Post your ask for fundraising, co-founders, or advice. The Chicago startup community is here to help."
       />
 
       <div className="min-h-screen bg-[#050A14] text-white" data-page="opportunities">
@@ -155,7 +155,7 @@ export default function Opportunities({ onOpenSignup }) {
               transition={{ delay: 0.1 }}
               className="font-serif text-4xl md:text-5xl lg:text-6xl text-white tracking-tight leading-[1.1] mb-6"
             >
-              What Do Chicago Founders<br />Need This Week?
+              What Help Do You Need?<br /><span className="text-white/40">Ask the Chicago Community.</span>
             </motion.h1>
 
             {/* Subhead */}
