@@ -12,12 +12,20 @@ export default function SmoothScrollProvider({ children }) {
   const location = useLocation();
 
   useEffect(() => {
-    // Create ScrollSmoother instance
+    // Disable ScrollSmoother on mobile devices for better performance
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
+    
+    if (isMobile) {
+      // On mobile, just use native scrolling - no ScrollSmoother
+      return;
+    }
+
+    // Create ScrollSmoother instance (desktop only)
     smoother.current = ScrollSmoother.create({
       smooth: 1.2,           // seconds to catch up to native scroll
       effects: true,         // enables data-speed and data-lag attributes
-      smoothTouch: 0.1,      // light smoothing on touch devices
-      normalizeScroll: true, // prevents address bar show/hide issues on mobile
+      smoothTouch: false,    // disable on touch devices
+      normalizeScroll: false, // let mobile handle its own scrolling
       ignoreMobileResize: true,
     });
 
