@@ -130,7 +130,7 @@ export default function LoadingScreen({ onComplete }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.5 }}
-          className="h-4 overflow-hidden"
+          className="h-6 overflow-visible"
         >
           <motion.span
             key={phase}
