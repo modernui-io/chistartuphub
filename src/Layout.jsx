@@ -389,8 +389,8 @@ export default function Layout({ children }) {
         }}
       />
 
-      {/* AI Assistant - only visible for logged-in users */}
-      <AIAssistant />
+      {/* AI Assistant - disabled for now, roadmap feature */}
+      {/* <AIAssistant /> */}
       </SmoothScrollProvider>
     </div>
   );
