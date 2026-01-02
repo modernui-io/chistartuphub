@@ -43,6 +43,11 @@ const ActionTile = ({ to, icon: Icon, label, subtext, badge, badgeCount }) => (
 export default function PersonalizedWelcome() {
   const { user, profile } = useAuth();
 
+  // Check if user is new (created within last hour)
+  const isNewUser = profile?.created_at 
+    ? (Date.now() - new Date(profile.created_at).getTime()) < 60 * 60 * 1000 // 1 hour
+    : false;
+
   // Query for hot opportunities count
   const { data: hotCount = 0 } = useQuery({
     queryKey: ['hot-opportunities-count'],
@@ -103,7 +108,7 @@ export default function PersonalizedWelcome() {
         {/* Left: Welcome Text */}
         <div className="flex-shrink-0">
           <h2 className="text-3xl font-bold text-white mb-1">
-            Welcome back, {firstName}!
+            {isNewUser ? `Welcome, ${firstName}!` : `Welcome back, ${firstName}!`}
           </h2>
           {stage && STAGE_LABELS[stage] && (
             <p className="text-sm text-blue-400 flex items-center gap-1.5">
@@ -134,7 +139,7 @@ export default function PersonalizedWelcome() {
         {/* Welcome Text */}
         <div>
           <h2 className="text-2xl font-bold text-white mb-1">
-            Welcome back, {firstName}!
+            {isNewUser ? `Welcome, ${firstName}!` : `Welcome back, ${firstName}!`}
           </h2>
           {stage && STAGE_LABELS[stage] && (
             <p className="text-sm text-blue-400 flex items-center gap-1.5">

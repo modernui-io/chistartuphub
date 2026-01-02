@@ -34,18 +34,23 @@ export function useFounderAsks() {
       // Transform data for UI
       const transformedAsks = (data || []).map(ask => ({
         id: ask.id,
+        category: ask.category || 'general_advice',
         sector: ask.sector,
         description: ask.description,
         stage: ask.stage,
+        amount: ask.amount,
         target: ask.target_amount,
         linkedIn: ask.linkedin_url,
         companyName: ask.company_name || ask.user_profiles?.company_name,
-        founderName: ask.user_profiles?.full_name,
-        founderAvatar: ask.user_profiles?.avatar_url,
+        founderName: ask.is_anonymous ? null : ask.user_profiles?.full_name,
+        founderAvatar: ask.is_anonymous ? null : ask.user_profiles?.avatar_url,
+        isAnonymous: ask.is_anonymous,
+        allowAmplification: ask.allow_amplification,
         isVerified: ask.is_verified,
         viewCount: ask.view_count,
         connectionCount: ask.connection_request_count,
         createdAt: formatTimeAgo(ask.created_at),
+        expiresAt: ask.expires_at,
         isActive: ask.is_active,
         userId: ask.user_id,
       }));
@@ -87,13 +92,17 @@ export function useCreateFounderAsk() {
         .from('founder_asks')
         .insert({
           user_id: user.id,
+          category: askData.category,
           sector: askData.sector,
           description: askData.description,
           stage: askData.stage,
+          amount: askData.amount,
           target_amount: askData.targetAmount,
           company_name: askData.companyName,
           linkedin_url: askData.linkedinUrl,
           website_url: askData.websiteUrl,
+          is_anonymous: askData.isAnonymous,
+          allow_amplification: askData.allowAmplification,
         })
         .select()
         .single();

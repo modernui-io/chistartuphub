@@ -3,228 +3,69 @@ import { motion } from 'framer-motion';
 import {
   Search,
   DollarSign,
-  ArrowUpRight,
+  Users,
+  MessageCircle,
   Plus,
   Lock,
-  Linkedin,
-  Mail,
-  Clock,
-  Building2,
-  TrendingUp
+  HandHelping,
+  Filter,
 } from 'lucide-react';
 import SEO from '@/components/SEO';
-import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import BureauFooter from '@/components/bureau/BureauFooter';
 
-import { useFounderAsks, useConnectionRequest } from '@/hooks/useFounderAsks';
+import { useFounderAsks } from '@/hooks/useFounderAsks';
+import { FounderAskCard, PostAskModal, HelpModal } from '@/components/founder-asks';
 
 // ============================================
-// CONNECTION REQUEST MODAL
+// CONSTANTS
 // ============================================
 
-const ConnectionRequestModal = ({ isOpen, onClose, founder }) => {
-  const [linkedIn, setLinkedIn] = useState('');
-  const [context, setContext] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const CATEGORIES = [
+  { value: 'all', label: 'All Asks', icon: Filter },
+  { value: 'fundraising', label: 'Fundraising', icon: DollarSign },
+  { value: 'cofounder', label: 'Co-founder', icon: Users },
+  { value: 'general_advice', label: 'General Advice', icon: MessageCircle },
+];
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!linkedIn.trim()) {
-      toast.error('Please provide your LinkedIn profile URL');
-      return;
-    }
-    if (!context.trim()) {
-      toast.error('Please provide context for your connection request');
-      return;
-    }
-    
-    setIsSubmitting(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsSubmitting(false);
-    
-    toast.success('Connection request sent! The founder will review your LinkedIn and decide whether to connect.');
-    onClose();
-    setLinkedIn('');
-    setContext('');
-  };
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div 
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      
-      {/* Modal */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.95 }}
-        className="relative w-full max-w-lg bg-[#0a0f1a] border border-white/10 p-6"
-      >
-        {/* Header */}
-        <div className="mb-6">
-          <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em]">
-            [REQUEST: CONNECTION]
-          </span>
-          <h3 className="font-serif text-2xl text-white mt-2">Request to Connect</h3>
-          <p className="text-sm text-white/40 mt-2">
-            The founder will receive your LinkedIn profile and context. If interested, they'll connect with you directly on LinkedIn.
-          </p>
-        </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="font-mono text-[10px] text-white/50 uppercase tracking-[0.1em] block mb-2">
-              Your LinkedIn Profile URL
-            </label>
-            <input
-              type="url"
-              value={linkedIn}
-              onChange={(e) => setLinkedIn(e.target.value)}
-              placeholder="https://linkedin.com/in/yourprofile"
-              className="w-full bg-transparent border border-white/20 p-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/40 font-mono"
-              required
-            />
-          </div>
-
-          <div className="mb-4">
-            <label className="font-mono text-[10px] text-white/50 uppercase tracking-[0.1em] block mb-2">
-              Why do you want to connect?
-            </label>
-            <textarea
-              value={context}
-              onChange={(e) => setContext(e.target.value)}
-              placeholder="Share your background and how you might be able to help this founder..."
-              className="w-full h-28 bg-transparent border border-white/20 p-3 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/40 resize-none font-mono"
-              required
-            />
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 font-mono text-[11px] uppercase tracking-[0.1em] py-3 border border-white/20 text-white/50 hover:bg-white/5 transition-colors cursor-crosshair"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex-1 font-mono text-[11px] uppercase tracking-[0.1em] py-3 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair disabled:opacity-50"
-            >
-              {isSubmitting ? 'Sending...' : 'Send Request'}
-            </button>
-          </div>
-        </form>
-      </motion.div>
-    </div>
-  );
-};
-
-// ============================================
-// FOUNDER ASK CARD
-// ============================================
-
-const FounderAskCard = ({ ask, index, onRequestConnection }) => {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05 }}
-      className="border border-white/10 hover:border-white/20 transition-colors group"
-    >
-      {/* Header */}
-      <div className="p-4 border-b border-white/10 flex items-center gap-4">
-        <span className="font-mono text-[10px] text-white/20">
-          {String(index + 1).padStart(2, '0')}
-        </span>
-        <div className="flex items-center gap-2 flex-1">
-          <Building2 className="w-4 h-4 text-white/30" strokeWidth={1.5} />
-          <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white">
-            {ask.sector}
-          </span>
-        </div>
-        <div className="flex items-center gap-2 text-white/30">
-          <Clock className="w-3 h-3" strokeWidth={1.5} />
-          <span className="font-mono text-[10px]">{ask.createdAt}</span>
-        </div>
-      </div>
-
-      {/* Body */}
-      <div className="p-4">
-        <p className="text-sm text-white/60 leading-relaxed mb-4">
-          {ask.description}
-        </p>
-
-        {/* Fundraising Info */}
-        <div className="flex items-center gap-4 mb-4">
-          <div className="flex items-center gap-2">
-            <TrendingUp className="w-3 h-3 text-white/30" strokeWidth={1.5} />
-            <span className="font-mono text-[10px] text-white/40 uppercase">{ask.stage}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <DollarSign className="w-3 h-3 text-white/30" strokeWidth={1.5} />
-            <span className="font-mono text-[10px] text-white/40 uppercase">Target: {ask.target}</span>
-          </div>
-        </div>
-
-        {/* Actions */}
-        <div className="flex gap-2">
-          <button
-            onClick={() => onRequestConnection(ask)}
-            className="w-full flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] py-2.5 border border-white/20 text-white/50 hover:bg-white hover:text-black transition-colors cursor-crosshair"
-          >
-            <Linkedin className="w-3 h-3" strokeWidth={1.5} />
-            Request to Connect
-          </button>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
-// ============================================
-// MAIN PAGE
-// ============================================
-
-// Sector options for filtering
 const SECTORS = [
   'All Sectors',
-  'CleanTech & Energy',
+  'FinTech',
   'HealthTech',
   'EdTech',
-  'FinTech',
+  'CleanTech & Energy',
   'Logistics & Supply Chain',
   'Consumer',
   'Enterprise SaaS',
   'AI & Machine Learning',
   'PropTech',
-  'FoodTech'
+  'FoodTech',
+  'Other',
 ];
 
+// ============================================
+// MAIN PAGE
+// ============================================
+
 export default function Opportunities({ onOpenSignup }) {
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const { user, profile } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSector, setSelectedSector] = useState('All Sectors');
   const [selectedAsk, setSelectedAsk] = useState(null);
-  const [showIntroModal, setShowIntroModal] = useState(false);
-  const [showPostAskForm, setShowPostAskForm] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [showPostAskModal, setShowPostAskModal] = useState(false);
 
   // Fetch real data from Supabase
   const { asks, loading: asksLoading, error: asksError, refetch } = useFounderAsks();
 
-  // Filter asks based on search and sector
+  // Filter asks based on search, category, and sector
   const filteredAsks = asks.filter(ask => {
+    // Category filter
+    if (selectedCategory !== 'all' && ask.category !== selectedCategory) {
+      return false;
+    }
     // Sector filter
     if (selectedSector !== 'All Sectors' && ask.sector !== selectedSector) {
       return false;
@@ -233,26 +74,17 @@ export default function Opportunities({ onOpenSignup }) {
     if (!searchQuery.trim()) return true;
     const query = searchQuery.toLowerCase();
     return (
-      ask.sector.toLowerCase().includes(query) ||
-      ask.description.toLowerCase().includes(query) ||
-      ask.stage.toLowerCase().includes(query)
+      ask.sector?.toLowerCase().includes(query) ||
+      ask.description?.toLowerCase().includes(query) ||
+      ask.stage?.toLowerCase().includes(query) ||
+      ask.founderName?.toLowerCase().includes(query) ||
+      ask.companyName?.toLowerCase().includes(query)
     );
   });
 
-  const handleRequestConnection = (ask) => {
+  const handleHelp = (ask) => {
     if (!user) {
-      toast.error('Please sign in to request a connection');
-      if (onOpenSignup) onOpenSignup();
-      return;
-    }
-    setSelectedAsk(ask);
-    setShowIntroModal(true);
-  };
-
-  const handlePostAsk = () => {
-    if (!user) {
-      toast('Sign up to post your ask', {
-        description: 'Create an account to share your fundraising ask with the Chicago startup community.',
+      toast.error('Please sign in to help', {
         action: {
           label: 'Sign Up',
           onClick: () => onOpenSignup && onOpenSignup(),
@@ -260,14 +92,45 @@ export default function Opportunities({ onOpenSignup }) {
       });
       return;
     }
-    setShowPostAskForm(true);
+    setSelectedAsk(ask);
+    setShowHelpModal(true);
+  };
+
+  const handlePostAsk = () => {
+    if (!user) {
+      toast('Sign up to post your ask', {
+        description: 'Create an account to share your ask with the Chicago startup community.',
+        action: {
+          label: 'Sign Up',
+          onClick: () => onOpenSignup && onOpenSignup(),
+        },
+      });
+      return;
+    }
+    
+    // Check if user is a founder
+    if (profile?.role !== 'founder') {
+      toast.error('Only founders can post asks', {
+        description: 'Update your profile role to "Founder" to unlock this feature.',
+      });
+      return;
+    }
+    
+    setShowPostAskModal(true);
+  };
+
+  // Stats
+  const categoryStats = {
+    fundraising: asks.filter(a => a.category === 'fundraising').length,
+    cofounder: asks.filter(a => a.category === 'cofounder').length,
+    general_advice: asks.filter(a => a.category === 'general_advice').length,
   };
 
   return (
     <>
       <SEO
         title="Founder Asks | ChiStartup Hub"
-        description="Discover Chicago founders who are fundraising. Connect with startups raising capital in CleanTech, HealthTech, FinTech, and more."
+        description="What do Chicago founders need this week? Browse asks for fundraising help, co-founders, and advice. Connect directly to help."
       />
 
       <div className="min-h-screen bg-[#050A14] text-white" data-page="opportunities">
@@ -290,9 +153,9 @@ export default function Opportunities({ onOpenSignup }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="font-serif text-5xl md:text-6xl lg:text-7xl text-white mb-6 tracking-tight"
+              className="font-serif text-4xl md:text-5xl lg:text-6xl text-white tracking-tight leading-[1.1] mb-6"
             >
-              FOUNDER ASKS
+              What Do Chicago Founders<br />Need This Week?
             </motion.h1>
 
             {/* Subhead */}
@@ -302,7 +165,7 @@ export default function Opportunities({ onOpenSignup }) {
               transition={{ delay: 0.2 }}
               className="text-white/40 text-lg max-w-2xl mb-8"
             >
-              Chicago founders raising capital. Connect directly or request an introduction.
+              Founders ask. Helpers connect. We amplify.
             </motion.p>
 
             {/* Actions */}
@@ -321,25 +184,55 @@ export default function Opportunities({ onOpenSignup }) {
               </button>
               <div className="flex items-center gap-2 font-mono text-[10px] text-white/30 px-4">
                 <Lock className="w-3 h-3" strokeWidth={1.5} />
-                Vetted founders only
+                Founders only • One ask per 14 days
               </div>
             </motion.div>
 
-            {/* Sector Filters */}
+            {/* Category Filters */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
               className="flex flex-wrap gap-2 mb-6"
             >
+              {CATEGORIES.map((cat) => {
+                const Icon = cat.icon;
+                const count = cat.value === 'all' ? asks.length : categoryStats[cat.value] || 0;
+                return (
+                  <button
+                    key={cat.value}
+                    onClick={() => setSelectedCategory(cat.value)}
+                    className={`flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] px-4 py-2 border transition-colors cursor-crosshair ${
+                      selectedCategory === cat.value
+                        ? 'bg-white text-black border-white'
+                        : 'bg-transparent text-white/50 border-white/20 hover:border-white/40 hover:text-white/70'
+                    }`}
+                  >
+                    <Icon className="w-3 h-3" strokeWidth={1.5} />
+                    {cat.label}
+                    <span className={`ml-1 ${selectedCategory === cat.value ? 'text-black/50' : 'text-white/30'}`}>
+                      ({count})
+                    </span>
+                  </button>
+                );
+              })}
+            </motion.div>
+
+            {/* Sector Filters */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45 }}
+              className="flex flex-wrap gap-2 mb-6"
+            >
               {SECTORS.map((sector) => (
                 <button
                   key={sector}
                   onClick={() => setSelectedSector(sector)}
-                  className={`font-mono text-[10px] uppercase tracking-[0.1em] px-4 py-2 border transition-colors cursor-crosshair ${
+                  className={`font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-1.5 border transition-colors cursor-crosshair ${
                     selectedSector === sector
-                      ? 'bg-white text-black border-white'
-                      : 'bg-transparent text-white/50 border-white/20 hover:border-white/40 hover:text-white/70'
+                      ? 'bg-white/10 text-white border-white/40'
+                      : 'bg-transparent text-white/30 border-white/10 hover:border-white/20 hover:text-white/50'
                   }`}
                 >
                   {sector}
@@ -357,7 +250,7 @@ export default function Opportunities({ onOpenSignup }) {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" strokeWidth={1.5} />
               <input
                 type="text"
-                placeholder="SEARCH_BY_KEYWORD..."
+                placeholder="SEARCH_ASKS..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-transparent border border-white/10 py-4 pl-12 pr-4 font-mono text-[11px] uppercase tracking-[0.05em] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-colors"
@@ -415,7 +308,7 @@ export default function Opportunities({ onOpenSignup }) {
                     key={ask.id}
                     ask={ask}
                     index={index}
-                    onRequestConnection={handleRequestConnection}
+                    onHelp={handleHelp}
                   />
                 ))}
               </div>
@@ -424,7 +317,7 @@ export default function Opportunities({ onOpenSignup }) {
                 <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em]">
                   [NO_ASKS_YET]
                 </span>
-                <p className="text-white/40 mt-4 mb-6">Be the first to share your fundraising ask with the Chicago startup community.</p>
+                <p className="text-white/40 mt-4 mb-6">Be the first to share your ask with the Chicago startup community.</p>
                 <button
                   onClick={handlePostAsk}
                   className="font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair"
@@ -438,9 +331,9 @@ export default function Opportunities({ onOpenSignup }) {
                 <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em]">
                   [NO_RESULTS]
                 </span>
-                <p className="text-white/40 mt-4">No asks match your search.</p>
+                <p className="text-white/40 mt-4">No asks match your filters.</p>
                 <button
-                  onClick={() => { setSearchQuery(''); setSelectedSector('All Sectors'); }}
+                  onClick={() => { setSearchQuery(''); setSelectedCategory('all'); setSelectedSector('All Sectors'); }}
                   className="mt-4 font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 hover:text-white border border-white/20 px-4 py-2 hover:bg-white hover:text-black transition-colors cursor-crosshair"
                 >
                   Clear Filters
@@ -456,39 +349,52 @@ export default function Opportunities({ onOpenSignup }) {
             <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block mb-4">
               [HOW_IT_WORKS]
             </span>
-            <h2 className="font-serif text-3xl text-white mb-8">Two Ways to Connect</h2>
+            <h2 className="font-serif text-3xl text-white mb-8">The Flywheel</h2>
 
-            <div className="grid md:grid-cols-2 gap-4">
-              {/* How It Works - Single Path */}
-              <div className="border border-white/10 p-6 md:col-span-2">
+            <div className="grid md:grid-cols-3 gap-4">
+              {/* Step 1 */}
+              <div className="border border-white/10 p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-8 h-8 border border-white/20 flex items-center justify-center">
-                    <Linkedin className="w-4 h-4 text-white/50" strokeWidth={1.5} />
+                    <span className="font-mono text-[11px] text-white/50">01</span>
                   </div>
                   <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white">
-                    Request to Connect
+                    Founders Ask
                   </span>
                 </div>
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div>
-                    <span className="font-mono text-[10px] text-white/30 block mb-2">01 — YOU</span>
-                    <p className="text-sm text-white/40 leading-relaxed">
-                      Share your LinkedIn profile and context about why you want to connect with this founder.
-                    </p>
+                <p className="text-sm text-white/40 leading-relaxed">
+                  Post what you need: fundraising intros, co-founder search, or general advice. One ask per 14 days keeps it focused.
+                </p>
+              </div>
+
+              {/* Step 2 */}
+              <div className="border border-white/10 p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 border border-white/20 flex items-center justify-center">
+                    <span className="font-mono text-[11px] text-white/50">02</span>
                   </div>
-                  <div>
-                    <span className="font-mono text-[10px] text-white/30 block mb-2">02 — FOUNDER</span>
-                    <p className="text-sm text-white/40 leading-relaxed">
-                      The founder receives your LinkedIn and reviews your profile. They stay anonymous until they decide.
-                    </p>
-                  </div>
-                  <div>
-                    <span className="font-mono text-[10px] text-white/30 block mb-2">03 — CONNECT</span>
-                    <p className="text-sm text-white/40 leading-relaxed">
-                      If interested, the founder connects with you directly on LinkedIn. Simple, no middleman.
-                    </p>
-                  </div>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white">
+                    Helpers Connect
+                  </span>
                 </div>
+                <p className="text-sm text-white/40 leading-relaxed">
+                  See an ask you can help with? Click "I Can Help" and share how. The founder gets an email and connects on LinkedIn.
+                </p>
+              </div>
+
+              {/* Step 3 */}
+              <div className="border border-white/10 p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 border border-white/20 flex items-center justify-center">
+                    <span className="font-mono text-[11px] text-white/50">03</span>
+                  </div>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white">
+                    We Amplify
+                  </span>
+                </div>
+                <p className="text-sm text-white/40 leading-relaxed">
+                  Opt-in to let ChiStartupHub share your ask on LinkedIn and our newsletter. More visibility, more connections.
+                </p>
               </div>
             </div>
           </div>
@@ -498,14 +404,24 @@ export default function Opportunities({ onOpenSignup }) {
         <BureauFooter />
       </div>
 
-      {/* Connection Request Modal */}
-      <ConnectionRequestModal
-        isOpen={showIntroModal}
+      {/* Post Ask Modal */}
+      <PostAskModal
+        isOpen={showPostAskModal}
+        onClose={() => setShowPostAskModal(false)}
+        onSuccess={() => {
+          refetch();
+          setShowPostAskModal(false);
+        }}
+      />
+
+      {/* Help Modal */}
+      <HelpModal
+        isOpen={showHelpModal}
         onClose={() => {
-          setShowIntroModal(false);
+          setShowHelpModal(false);
           setSelectedAsk(null);
         }}
-        founder={selectedAsk}
+        ask={selectedAsk}
       />
     </>
   );

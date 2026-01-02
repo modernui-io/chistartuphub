@@ -117,83 +117,56 @@ function PathwayCard({
 }
 
 // ============================================
-// TERMINAL EMAIL INPUT - Newsletter Row (Enhanced)
+// NEWSLETTER ROW - Substack Subscribe Button
 // ============================================
-function TerminalEmailRow() {
-  const [email, setEmail] = useState("");
+function NewsletterRow() {
   const [isHovered, setIsHovered] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (email) {
-      // Open Tally form with email pre-filled
-      window.open(`https://tally.so/r/ob6dJP?email=${encodeURIComponent(email)}`, "_blank");
-      setEmail("");
-    }
+  const handleSubscribe = () => {
+    window.open('https://chistartuphub.substack.com/subscribe', '_blank');
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className={`
-        border-b border-white/[0.12] px-8 lg:px-12 py-8 
-        flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6
-        transition-colors duration-300
-        ${isFocused ? 'bg-white/[0.02]' : ''}
-      `}
+    <div
+      className="border-b border-white/[0.12] px-8 lg:px-12 py-8 
+        flex flex-col md:flex-row items-stretch md:items-center justify-between gap-6"
     >
-      {/* Left: Label */}
-      <div className="flex items-center gap-3 flex-shrink-0">
+      {/* Left: Label + Description */}
+      <div className="flex items-center gap-4 flex-shrink-0">
         <div className="w-2 h-2 bg-emerald-400/60 animate-pulse-subtle" />
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/30">
-          [INTEL: CAPITAL_ACCESS_PROJECT]
-        </span>
+        <div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/50 block">
+            [INTEL: CAPITAL_ACCESS_PROJECT]
+          </span>
+          <span className="font-serif text-sm text-white/40 mt-1 block">
+            Weekly insights on Chicago startup funding & ecosystem news
+          </span>
+        </div>
       </div>
 
-      {/* Right: Input + Submit */}
-      <div className="flex items-center flex-1 max-w-xl gap-4">
-        <div className="flex-1 relative">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-            placeholder="ENTER_EMAIL_ADDRESS..."
-            className="
-              w-full bg-transparent
-              font-mono text-sm uppercase tracking-[0.1em]
-              text-white placeholder-white/20
-              focus:outline-none
-              px-0 py-3
-              border-b border-white/[0.12] focus:border-white/40
-              transition-colors duration-300
-            "
-          />
-          {/* Cursor blink effect when focused */}
-          {isFocused && !email && (
-            <span className="absolute right-0 top-1/2 -translate-y-1/2 w-[2px] h-5 bg-white/60 animate-blink" />
-          )}
-        </div>
-        <button
-          type="submit"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          className={`
-            font-mono text-[10px] uppercase tracking-[0.15em]
-            px-6 py-3
-            border border-white/50
-            transition-none duration-0
-            cursor-crosshair
-            whitespace-nowrap
-            ${isHovered ? "bg-white text-black border-white" : "bg-white/10 text-white border-white/50"}
-          `}
-        >
-          SUBMIT
-        </button>
-      </div>
-    </form>
+      {/* Right: Subscribe Button */}
+      <button
+        onClick={handleSubscribe}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className={`
+          font-mono text-[11px] uppercase tracking-[0.15em]
+          px-8 py-4
+          border border-white/50
+          transition-none duration-0
+          cursor-crosshair
+          whitespace-nowrap
+          flex items-center gap-3
+          ${isHovered ? "bg-white text-black border-white" : "bg-white/10 text-white border-white/50"}
+        `}
+      >
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+          <polyline points="22,6 12,13 2,6" />
+        </svg>
+        Subscribe to Newsletter
+      </button>
+    </div>
   );
 }
 
@@ -247,8 +220,8 @@ export function PathwaysSection({ className = "" }) {
           ))}
         </div>
 
-        {/* Terminal Email Row */}
-        <TerminalEmailRow />
+        {/* Newsletter Subscribe Row */}
+        <NewsletterRow />
       </div>
     </section>
   );
