@@ -1,21 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { ExternalLink, X, ChevronDown, Plus } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import LoadingScreen from "@/components/LoadingScreen";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import Header from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
-import UserMenu from "@/components/auth/UserMenu";
 import LoginModal from "@/components/auth/LoginModal";
 import SignupModal from "@/components/auth/SignupModal";
 import AIAssistant from "@/components/AIAssistant";
@@ -27,7 +19,7 @@ export default function Layout({ children }) {
   const [isLoading, setIsLoading] = useState(!window.hasShownLoader);
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
 
   const handleLoadComplete = () => {
     setIsLoading(false);
@@ -47,26 +39,6 @@ export default function Layout({ children }) {
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
-
-  const navDropdowns = [
-    {
-      name: "Resources",
-      items: [
-        { name: "Capital", path: createPageUrl("Funding") },
-        { name: "Co-Working", path: createPageUrl("Workspaces") },
-        { name: "Startup Toolkit", path: createPageUrl("Resources") }
-      ]
-    },
-    {
-      name: "Ecosystem",
-      items: [
-        { name: "Opportunities", path: createPageUrl("Opportunities") },
-        { name: "Hubs & Events", path: createPageUrl("Events") },
-        { name: "Community", path: createPageUrl("Community") },
-        { name: "Why Chicago", path: createPageUrl("WhyChicago") }
-      ]
-    }
-  ];
 
   const footerSections = [
     {
@@ -326,210 +298,17 @@ export default function Layout({ children }) {
         }}
       />
 
-      {/* Navigation */}
-      <nav className={`professional-nav fixed top-0 left-0 right-0 z-50 ${scrolled ? 'scrolled' : ''}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-16 md:h-20">
-            {/* Logo */}
-            <Link to={createPageUrl("Home")} className="flex items-center gap-3 group flex-shrink-0">
-              <div className="w-10 h-10 md:w-11 md:h-11 border-2 border-white/45 bg-[#0b0b0b] flex items-center justify-center transition-all duration-150">
-                <span className="text-white font-black text-base md:text-lg uppercase">CS</span>
-              </div>
-              <span className="text-base md:text-lg font-black text-white uppercase tracking-wider hidden sm:block">
-                ChiStartup Hub
-              </span>
-            </Link>
-
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center flex-1 ml-12">
-              {/* Nav Links - Left side */}
-              <div className="flex items-center gap-6 xl:gap-8">
-                {navDropdowns.map((dropdown) => (
-                  <DropdownMenu key={dropdown.name}>
-                    <DropdownMenuTrigger className="nav-trigger nav-link flex items-center gap-1.5 hover:text-white transition-all outline-none group data-[state=open]:text-white">
-                      <span>{dropdown.name}</span>
-                      <ChevronDown className="w-3.5 h-3.5 opacity-40 group-hover:opacity-70 transition-all group-data-[state=open]:rotate-180 group-data-[state=open]:opacity-100" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      className="nav-dropdown min-w-[200px] animate-in fade-in-0 slide-in-from-top-2 duration-150"
-                      sideOffset={0}
-                      align="start"
-                    >
-                      <div className="py-1.5">
-                        {dropdown.items.map((item) => (
-                          <DropdownMenuItem key={item.path} asChild>
-                            <Link
-                              to={item.path}
-                              className={`dropdown-link cursor-pointer flex items-center px-4 py-2.5 text-sm font-medium ${
-                                location.pathname === item.path ? 'active' : ''
-                              }`}
-                            >
-                              <span className="relative z-10">{item.name}</span>
-                            </Link>
-                          </DropdownMenuItem>
-                        ))}
-                        {/* Add "Submit a Resource" to Resources dropdown only */}
-                        {dropdown.name === "Resources" && (
-                          <>
-                            <DropdownMenuSeparator className="bg-white/10 my-1" />
-                            <DropdownMenuItem asChild>
-                              <Link
-                                to={createPageUrl("SubmitResource")}
-                                className="dropdown-link cursor-pointer flex items-center px-4 py-2 text-xs font-medium text-white/50 hover:text-white"
-                              >
-                                <Plus className="w-3 h-3 mr-2 opacity-60" />
-                                <span>Submit a Resource</span>
-                              </Link>
-                            </DropdownMenuItem>
-                          </>
-                        )}
-                      </div>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ))}
-
-                <Link to={createPageUrl("Stories")} className={`nav-link ${location.pathname === createPageUrl("Stories") ? 'active' : ''}`}>
-                  ✨ The Blueprints
-                </Link>
-
-                <Link to={createPageUrl("About")} className={`nav-link ${location.pathname === createPageUrl("About") ? 'active' : ''}`}>
-                  About
-                </Link>
-              </div>
-
-              {/* Spacer */}
-              <div className="flex-1" />
-
-              {/* Action Buttons - Right side */}
-              <div className="flex items-center gap-3">
-                <Link to={createPageUrl("Opportunities")}>
-                  <Button className="accent-button text-sm h-9 px-4 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-shadow flex items-center gap-2">
-                    <Plus className="w-4 h-4" />
-                    Create Ask
-                  </Button>
-                </Link>
-
-                {/* Auth Section */}
-                {user ? (
-                  <UserMenu />
-                ) : (
-                  <>
-                    <button
-                      onClick={() => setShowLogin(true)}
-                      className="nav-link text-sm font-medium"
-                    >
-                      Sign In
-                    </button>
-                    <Button
-                      onClick={() => setShowSignup(true)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white text-sm h-9 px-4"
-                    >
-                      Get Started
-                    </Button>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              className="lg:hidden relative w-10 h-10 rounded-lg flex items-center justify-center hover:bg-white/10 transition-colors"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              <div className="w-5 h-4 flex flex-col justify-between">
-                <span 
-                  className={`w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
-                    mobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''
-                  }`}
-                />
-                <span 
-                  className={`w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
-                    mobileMenuOpen ? 'opacity-0' : ''
-                  }`}
-                />
-                <span 
-                  className={`w-full h-0.5 bg-white rounded-full transition-all duration-300 ${
-                    mobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''
-                  }`}
-                />
-              </div>
-            </button>
-          </div>
-
-          {/* Mobile Navigation */}
-          {mobileMenuOpen && (
-            <div className="lg:hidden py-4 border-t border-white/10 max-h-[70vh] overflow-y-auto">
-              <div className="space-y-4">
-                {navDropdowns.map((dropdown, dropdownIndex) => (
-                  <div key={dropdown.name}>
-                    <div className="px-4 py-2 text-white/40 text-xs font-semibold uppercase tracking-wider">
-                      {dropdown.name}
-                    </div>
-                    {dropdown.items.map((item, index) => (
-                      <Link
-                        key={item.path}
-                        to={item.path}
-                        className={`mobile-menu-item block px-4 py-3 rounded-lg text-base transition-all ${
-                          location.pathname === item.path
-                            ? 'bg-white/10 text-white font-semibold'
-                            : 'text-white/70 hover:bg-white/5 hover:text-white'
-                        }`}
-                        style={{ animationDelay: `${(dropdownIndex * 3 + index) * 0.05}s` }}
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                    {/* Add Submit Resource link under Resources */}
-                    {dropdown.name === "Resources" && (
-                      <Link
-                        to={createPageUrl("SubmitResource")}
-                        className="mobile-menu-item block px-4 py-2 rounded-lg text-sm text-white/40 hover:text-white/60 transition-all flex items-center gap-2"
-                      >
-                        <Plus className="w-3 h-3" />
-                        Submit a Resource
-                      </Link>
-                    )}
-                  </div>
-                ))}
-
-                <div className="px-4 py-2 text-white/40 text-xs font-semibold uppercase tracking-wider">
-                  More
-                </div>
-                <Link
-                  to={createPageUrl("Stories")}
-                  className={`mobile-menu-item block px-4 py-3 rounded-lg text-base transition-all ${
-                    location.pathname === createPageUrl("Stories")
-                      ? 'bg-white/10 text-white font-semibold'
-                      : 'text-white/70 hover:bg-white/5 hover:text-white'
-                  }`}
-                >
-                  ✨ The Blueprints
-                </Link>
-                <Link
-                  to={createPageUrl("About")}
-                  className={`mobile-menu-item block px-4 py-3 rounded-lg text-base transition-all ${
-                    location.pathname === createPageUrl("About")
-                      ? 'bg-white/10 text-white font-semibold' 
-                      : 'text-white/70 hover:bg-white/5 hover:text-white'
-                  }`}
-                >
-                  About
-                </Link>
-
-                <div className="pt-4 px-4">
-                  <Link to={createPageUrl("Opportunities")} className="block">
-                    <Button className="accent-button w-full flex items-center justify-center gap-2">
-                      <Plus className="w-4 h-4" />
-                      Create Ask
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </nav>
+      {/* Header */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <Header
+          user={user}
+          onSignInClick={() => setShowLogin(true)}
+          onGetStartedClick={() => setShowSignup(true)}
+          onSignOut={signOut}
+          mobileMenuOpen={mobileMenuOpen}
+          setMobileMenuOpen={setMobileMenuOpen}
+        />
+      </div>
 
       {/* Main Content with ScrollSmoother */}
       <SmoothScrollProvider>

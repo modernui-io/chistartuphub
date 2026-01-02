@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, AlertCircle, CheckCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 import SEO from "@/components/SEO";
 import { motion } from "framer-motion";
 
@@ -9,175 +8,129 @@ export default function BeforeYouStart() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen py-20 md:py-24 px-4 md:px-6">
+    <div className="relative min-h-screen w-full overflow-hidden bg-slate-900 font-sans text-slate-900 selection:bg-blue-100 selection:text-slate-900">
       <SEO
         title="Before You Start"
         description="Understanding ChiStartupHub's approach to founder resources - honest, contextual, and built for Chicago."
         keywords="startup resources, founder toolkit, Chicago startups, honest guidance"
       />
 
-      <div className="max-w-4xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
+      {/* Background (Chicago Night) */}
+      <div
+        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-60 grayscale blur-[2px]"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1920&q=80')`
+        }}
+      />
+      {/* Heavy Overlay for text pop */}
+      <div className="fixed inset-0 z-0 bg-slate-950/90 mix-blend-multiply" />
+
+      {/* Main Stage */}
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 py-32 md:py-40">
+
+        {/* THE "WHITE PAPER" ARTIFACT */}
+        <motion.article
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="group relative w-full max-w-2xl bg-[#fafafa] shadow-[0_35px_60px_-15px_rgba(0,0,0,0.6)] rounded-[1px] md:max-w-3xl"
         >
-          {/* Header */}
-          <div className="text-center mb-12 pt-6">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Before You Start
-            </h1>
-          </div>
+          {/* Decorative Top Accent */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-slate-900" />
 
-          {/* Main Content */}
-          <div className="space-y-8">
-            {/* Intro */}
-            <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6 md:p-8">
-              <p className="text-lg text-white/80 leading-relaxed mb-4">
-                ChiStartupHub exists because <strong className="text-white">information asymmetry is a capital access barrier</strong>.
+          <div className="px-8 py-16 md:px-20 md:py-24">
+
+            {/* A. THE HEADER (Editorial Style) */}
+            <header className="mb-16 text-center">
+              <span className="mb-6 inline-block border-b border-slate-300 pb-1 font-sans text-xs font-bold tracking-[0.3em] text-slate-400 uppercase">
+                01 — Introduction
+              </span>
+
+              <h1 className="font-serif text-5xl font-medium tracking-tight text-slate-900 md:text-6xl">
+                Before You Start
+              </h1>
+            </header>
+
+            {/* B. THE LEDE (The Hook) */}
+            <blockquote className="mb-16 border-l-4 border-slate-900 pl-6 md:pl-8">
+              <p className="font-serif text-2xl italic leading-relaxed text-slate-800 md:text-3xl">
+                "Information asymmetry is a capital access barrier. ChiStartupHub exists to reduce that barrier by making the ecosystem easier to navigate."
               </p>
-              <p className="text-white/70 leading-relaxed">
-                I've aggregated resources, frameworks, and patterns to help you navigate Chicago's startup ecosystem.
-              </p>
+            </blockquote>
+
+            {/* C. THE CONTENT (Left Aligned & Structured) */}
+            <div className="space-y-16">
+
+              {/* Section 1: The Reality */}
+              <section>
+                <h3 className="mb-6 font-sans text-sm font-bold tracking-widest text-slate-400 uppercase">
+                  The Reality
+                </h3>
+                <div className="max-w-none font-sans text-slate-600 text-lg leading-8">
+                  <p className="mb-6">
+                    This hub is built by a real human, not an institution. I'm doing my best to stay accurate, but the ecosystem moves faster than any one person can track.{" "}
+                    <span className="text-slate-900 font-medium">Treat this as a map, not the territory.</span>
+                  </p>
+                  <p className="mb-6">
+                    Your context is unique. No framework can fully capture the nuance of your journey. And more resources don't automatically mean more clarity. Sometimes they create overwhelm instead of momentum.
+                  </p>
+                  <p className="font-serif text-xl italic text-slate-800">
+                    Use what serves you. Ignore what doesn't.
+                  </p>
+                </div>
+              </section>
+
+              {/* Section 2: Our Commitment */}
+              <section>
+                <h3 className="mb-6 font-sans text-sm font-bold tracking-widest text-slate-400 uppercase">
+                  Our Commitment
+                </h3>
+                <div className="max-w-none font-sans text-slate-600 text-lg leading-8">
+                  <p className="mb-6">
+                    In return for your attention, we promise honest context. We will not gatekeep information or hide resources behind unnecessary barriers.
+                  </p>
+                  <p className="mb-6">
+                    We prioritize Chicago-specific insights over generic startup advice. The ecosystem here has its own rhythm, its own players, and its own pathways. We will help you understand how it works.
+                  </p>
+                  <p>
+                    And we will continuously update these resources based on feedback from founders like you. If something is wrong or missing,{" "}
+                    <a
+                      href="mailto:hello@chistartuphub.com"
+                      className="text-slate-900 underline underline-offset-2 hover:text-slate-600 transition-colors"
+                    >
+                      tell us
+                    </a>
+                    . We will fix it.
+                  </p>
+                </div>
+              </section>
             </div>
 
-            {/* Limitations */}
-            <div className="bg-red-500/5 border border-red-500/20 rounded-xl p-6 md:p-8">
-              <div className="flex items-start gap-3 mb-4">
-                <AlertCircle className="w-6 h-6 text-red-400 flex-shrink-0 mt-1" />
-                <div>
-                  <h2 className="text-xl font-semibold text-white mb-2">
-                    But I need to be honest about limitations:
-                  </h2>
-                </div>
+            {/* D. SIGNATURE & ACTION */}
+            <footer className="mt-20 flex flex-col items-center justify-between gap-12 border-t border-slate-200 pt-12 md:flex-row">
+
+              {/* Signature */}
+              <div className="flex flex-col text-center md:text-left">
+                <span className="font-serif text-2xl italic text-slate-800">— Billy</span>
+                <span className="text-xs font-medium text-slate-400 uppercase tracking-wider mt-1">
+                  ChiStartupHub Founder
+                </span>
               </div>
-              
-              <ul className="space-y-4 text-white/70">
-                <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-red-400 rounded-full flex-shrink-0 mt-2" />
-                  <span>
-                    <strong className="text-white">I'm one person.</strong> I can't make introductions for everyone or provide personalized guidance at scale.
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-red-400 rounded-full flex-shrink-0 mt-2" />
-                  <span>
-                    <strong className="text-white">No framework captures your full situation.</strong> You might match a "pattern" but your context is unique.
-                  </span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="w-2 h-2 bg-red-400 rounded-full flex-shrink-0 mt-2" />
-                  <span>
-                    <strong className="text-white">Having more resources doesn't automatically make you better equipped.</strong> It can overwhelm as much as it helps.
-                  </span>
-                </li>
-              </ul>
-            </div>
 
-            {/* Promises */}
-            <div className="bg-blue-500/5 border border-blue-500/20 rounded-xl p-6 md:p-8">
-              <div className="flex items-start gap-3 mb-4">
-                <CheckCircle className="w-6 h-6 text-blue-400 flex-shrink-0 mt-1" />
-                <div>
-                  <h2 className="text-xl font-semibold text-white mb-2">
-                    What I CAN promise:
-                  </h2>
-                </div>
-              </div>
-              
-              <ul className="space-y-3 text-white/70">
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                  <span>Honest context about what works and what doesn't</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                  <span>No gatekeeping—you decide what's relevant</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                  <span>Chicago-specific insights where they exist</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-                  <span>Continuous updates as I learn more</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* How to Use This Toolkit */}
-            <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6 md:p-8">
-              <h2 className="text-xl font-semibold text-white mb-6">
-                How to Use This Toolkit
-              </h2>
-              <p className="text-white/70 mb-6">
-                Three simple paths depending on where you are:
-              </p>
-
-              <div className="space-y-4">
-                {/* Path 1 */}
-                <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="text-lg font-semibold text-blue-400 flex-shrink-0">1</div>
-                    <div>
-                      <p className="text-white font-medium">"I know what I need"</p>
-                      <p className="text-white/60 text-sm mt-1">
-                        Go straight to <strong>Resources</strong> and explore by category.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Path 2 */}
-                <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="text-lg font-semibold text-purple-400 flex-shrink-0">2</div>
-                    <div>
-                      <p className="text-white font-medium">"Help me find where to start"</p>
-                      <p className="text-white/60 text-sm mt-1">
-                        Go to <strong>Business Type Explorer</strong> → answer 3 quick questions → get routed to the right path.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Path 3 */}
-                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="text-lg font-semibold text-green-400 flex-shrink-0">3</div>
-                    <div>
-                      <p className="text-white font-medium">"I want community"</p>
-                      <p className="text-white/60 text-sm mt-1">
-                        Join the <strong>Peer Community</strong> to connect with other builders in Chicago.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Closing */}
-            <div className="bg-white/[0.03] border border-white/[0.08] rounded-xl p-6 md:p-8 text-center">
-              <p className="text-white/70 leading-relaxed mb-4">
-                Use what helps. Ignore what doesn't. And if something's missing or wrong,{" "}
-                <a href="/Contact" className="text-blue-400 hover:text-blue-300 underline">
-                  tell me
-                </a>.
-              </p>
-              <p className="text-white/50 text-sm mb-8">
-                — Billy, ChiStartupHub
-              </p>
-              
-              <Button
+              {/* High-End Button (Minimalist) */}
+              <button
                 onClick={() => navigate('/navigate-toolkit')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-6 text-lg"
+                className="group relative inline-flex items-center gap-3 overflow-hidden rounded-sm bg-slate-900 px-8 py-4 text-sm font-semibold text-white transition-all hover:bg-black hover:shadow-xl"
               >
-                Let's Go
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </div>
+                <span>Explore the Ecosystem</span>
+                <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </button>
+
+            </footer>
+
           </div>
-        </motion.div>
+        </motion.article>
+
       </div>
     </div>
   );
