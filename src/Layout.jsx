@@ -317,8 +317,8 @@ export default function Layout({ children }) {
       {!hideLayoutFooter && (
       <footer className="bg-[#111111] border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-20">
-          <div className="grid md:grid-cols-4 gap-16 mb-16">
-            <div className="md:col-span-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 md:gap-16 mb-16">
+            <div className="sm:col-span-2 md:col-span-2">
               <Link to={createPageUrl("Home")} className="flex items-center gap-3 mb-6 group">
                 <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center transition-transform group-hover:scale-110 shadow-lg">
                   <span className="text-white font-bold text-xl">CS</span>

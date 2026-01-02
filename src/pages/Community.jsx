@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Users, ExternalLink, Search, Loader2, ArrowUpRight } from "lucide-react";
 import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
@@ -21,18 +21,20 @@ export default function Community() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const filteredCommunities = communities.filter(community => {
-    if (searchQuery) {
-      const searchLower = searchQuery.toLowerCase();
-      const nameMatch = community.name?.toLowerCase().includes(searchLower);
-      const descriptionMatch = community.description?.toLowerCase().includes(searchLower);
-      if (!nameMatch && !descriptionMatch) return false;
-    }
-    return true;
-  });
+  const filteredCommunities = useMemo(() => {
+    return communities.filter(community => {
+      if (searchQuery) {
+        const searchLower = searchQuery.toLowerCase();
+        const nameMatch = community.name?.toLowerCase().includes(searchLower);
+        const descriptionMatch = community.description?.toLowerCase().includes(searchLower);
+        if (!nameMatch && !descriptionMatch) return false;
+      }
+      return true;
+    });
+  }, [communities, searchQuery]);
 
-  const featuredCommunities = filteredCommunities.filter(c => c.featured);
-  const regularCommunities = filteredCommunities.filter(c => !c.featured);
+  const featuredCommunities = useMemo(() => filteredCommunities.filter(c => c.featured), [filteredCommunities]);
+  const regularCommunities = useMemo(() => filteredCommunities.filter(c => !c.featured), [filteredCommunities]);
 
   if (isLoading) {
     return (

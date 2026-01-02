@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { MapPin, Building2, Search, Filter, X, Map as MapIcon, List, Loader2, ArrowUpRight } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -44,27 +44,29 @@ export default function Workspaces() {
     { id: "freelance", label: "Freelance" }
   ];
 
-  const filteredWorkspaces = workspaces.filter(workspace => {
-    if (activeCategory !== "all") {
-      const workspaceType = workspace.workspace_type || '';
-      const amenities = workspace.amenities || [];
-      const matchesCategory = workspaceType.toLowerCase().includes(activeCategory.toLowerCase()) ||
-        amenities.some(a => a?.toLowerCase().includes(activeCategory.toLowerCase()));
-      if (!matchesCategory) return false;
-    }
+  const filteredWorkspaces = useMemo(() => {
+    return workspaces.filter(workspace => {
+      if (activeCategory !== "all") {
+        const workspaceType = workspace.workspace_type || '';
+        const amenities = workspace.amenities || [];
+        const matchesCategory = workspaceType.toLowerCase().includes(activeCategory.toLowerCase()) ||
+          amenities.some(a => a?.toLowerCase().includes(activeCategory.toLowerCase()));
+        if (!matchesCategory) return false;
+      }
 
-    if (searchQuery) {
-      const searchLower = searchQuery.toLowerCase();
-      const nameMatch = (workspace.name || '').toLowerCase().includes(searchLower);
-      const addressMatch = (workspace.address || '').toLowerCase().includes(searchLower);
-      const descriptionMatch = (workspace.description || '').toLowerCase().includes(searchLower);
-      const neighborhoodMatch = (workspace.neighborhood || '').toLowerCase().includes(searchLower);
-      const amenitiesMatch = (workspace.amenities || []).some(item => item?.toLowerCase().includes(searchLower));
-      if (!nameMatch && !addressMatch && !descriptionMatch && !neighborhoodMatch && !amenitiesMatch) return false;
-    }
+      if (searchQuery) {
+        const searchLower = searchQuery.toLowerCase();
+        const nameMatch = (workspace.name || '').toLowerCase().includes(searchLower);
+        const addressMatch = (workspace.address || '').toLowerCase().includes(searchLower);
+        const descriptionMatch = (workspace.description || '').toLowerCase().includes(searchLower);
+        const neighborhoodMatch = (workspace.neighborhood || '').toLowerCase().includes(searchLower);
+        const amenitiesMatch = (workspace.amenities || []).some(item => item?.toLowerCase().includes(searchLower));
+        if (!nameMatch && !addressMatch && !descriptionMatch && !neighborhoodMatch && !amenitiesMatch) return false;
+      }
 
-    return true;
-  });
+      return true;
+    });
+  }, [workspaces, activeCategory, searchQuery]);
 
   const clearFilters = () => {
     setActiveCategory("all");

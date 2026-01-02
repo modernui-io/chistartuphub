@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Filter, X, Sparkles, Shield, ChevronDown, ArrowUpRight, Building2, Users, TrendingUp, Clock } from "lucide-react";
+import { Search, Filter, X, Sparkles, Shield, ChevronDown, ArrowUpRight, Building2, Users, TrendingUp, Clock, DollarSign } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import SEO from "@/components/SEO";
 import { generateSlug } from "@/lib/utils";
@@ -13,6 +13,7 @@ export default function Stories() {
   const [sectorFilter, setSectorFilter] = useState("all");
   const [moatFilter, setMoatFilter] = useState("all");
   const [unicornFilter, setUnicornFilter] = useState(false);
+  const [exitFilter, setExitFilter] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(0);
   const ITEMS_PER_PAGE = 12;
@@ -86,9 +87,27 @@ export default function Stories() {
   const isUnicorn = (story) => {
     if (story.is_unicorn) return true;
     const valuation = (story.valuation || story.exit_value || '').toLowerCase();
+    const funding = (story.funding_raised || '').toLowerCase();
     return valuation.includes("unicorn") ||
            valuation.includes("$1b") ||
-           valuation.includes("billion");
+           valuation.includes("billion") ||
+           /\$[\d.]+\s*b/i.test(valuation) ||
+           /\$[\d.]+\s*b/i.test(funding);
+  };
+
+  const isExit = (story) => {
+    const funding = (story.funding_raised || '').toLowerCase();
+    const companyName = (story.company_name || '').toLowerCase();
+    const knownExits = ['braintree', 'grubhub', 'simple mills', 'cleversafe', 'fieldglass', 'tock', 'bonobos', 'villagemd'];
+    return funding.includes('acquired') ||
+           funding.includes('exit') ||
+           funding.includes('paypal') ||
+           funding.includes('ibm') ||
+           funding.includes('sap') ||
+           funding.includes('walmart') ||
+           funding.includes('squarespace') ||
+           funding.includes('flowers') ||
+           knownExits.includes(companyName);
   };
 
   const filteredStories = useMemo(() => {
@@ -104,6 +123,7 @@ export default function Stories() {
       }
 
       if (unicornFilter && !isUnicorn(story)) return false;
+      if (exitFilter && !isExit(story)) return false;
 
       if (searchQuery) {
         const searchLower = searchQuery.toLowerCase();
@@ -116,7 +136,7 @@ export default function Stories() {
 
       return true;
     });
-  }, [stories, sectorFilter, moatFilter, unicornFilter, searchQuery]);
+  }, [stories, sectorFilter, moatFilter, unicornFilter, exitFilter, searchQuery]);
 
   const paginatedStories = useMemo(() => {
     const start = page * ITEMS_PER_PAGE;
@@ -129,13 +149,14 @@ export default function Stories() {
 
   useEffect(() => {
     setPage(0);
-  }, [searchQuery, sectorFilter, moatFilter, unicornFilter]);
+  }, [searchQuery, sectorFilter, moatFilter, unicornFilter, exitFilter]);
 
   const clearFilters = () => {
     setSearchQuery("");
     setSectorFilter("all");
     setMoatFilter("all");
     setUnicornFilter(false);
+    setExitFilter(false);
   };
 
   const activeFilterCount = useMemo(() => {
@@ -143,9 +164,10 @@ export default function Stories() {
       searchQuery !== "",
       sectorFilter !== "all",
       moatFilter !== "all",
-      unicornFilter
+      unicornFilter,
+      exitFilter
     ].filter(Boolean).length;
-  }, [searchQuery, sectorFilter, moatFilter, unicornFilter]);
+  }, [searchQuery, sectorFilter, moatFilter, unicornFilter, exitFilter]);
 
   const featuredStory = useMemo(() => {
     const featured = filteredStories.filter(s => s.featured);
@@ -191,9 +213,21 @@ export default function Stories() {
       />
 
       <div className="min-h-screen bg-[#050A14] text-white" data-page="stories">
-        {/* Hero Section */}
-        <section className="relative pt-32 pb-16 px-6">
-          <div className="max-w-6xl mx-auto">
+        {/* Hero Section with Chicago Background */}
+        <section className="relative pt-32 pb-16 px-6 overflow-hidden">
+          {/* Chicago Marina City Background - Unique architectural landmark */}
+          <div
+            className="absolute inset-0 z-0"
+            style={{
+              backgroundImage: 'url(https://images.unsplash.com/photo-1569761316261-9a8696fa2ca3?w=1920&q=80)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              filter: 'grayscale(100%) brightness(0.15)',
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#050A14]/80 via-[#050A14]/60 to-[#050A14] z-[1]" />
+
+          <div className="max-w-6xl mx-auto relative z-10">
             {/* Label */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -243,6 +277,12 @@ export default function Stories() {
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-3 h-3 text-amber-400" />
                   <span className="font-mono text-[10px] text-amber-400 uppercase">Unicorns Only</span>
+                </div>
+              )}
+              {exitFilter && (
+                <div className="flex items-center gap-2">
+                  <DollarSign className="w-3 h-3 text-emerald-400" />
+                  <span className="font-mono text-[10px] text-emerald-400 uppercase">Exits Only</span>
                 </div>
               )}
             </div>
@@ -348,17 +388,30 @@ export default function Stories() {
                     {/* Special Filters */}
                     <div>
                       <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.1em] block mb-3">Special</span>
-                      <button
-                        onClick={() => setUnicornFilter(!unicornFilter)}
-                        className={`font-mono text-[10px] uppercase tracking-[0.05em] px-3 py-1.5 border transition-colors cursor-crosshair flex items-center gap-2 ${
-                          unicornFilter
-                            ? 'bg-amber-500 text-black border-amber-500'
-                            : 'border-white/10 text-white/50 hover:border-amber-500/50 hover:text-amber-400'
-                        }`}
-                      >
-                        <Sparkles className="w-3 h-3" strokeWidth={1.5} />
-                        Unicorns ($1B+)
-                      </button>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          onClick={() => setUnicornFilter(!unicornFilter)}
+                          className={`font-mono text-[10px] uppercase tracking-[0.05em] px-3 py-1.5 border transition-colors cursor-crosshair flex items-center gap-2 ${
+                            unicornFilter
+                              ? 'bg-amber-500 text-black border-amber-500'
+                              : 'border-white/10 text-white/50 hover:border-amber-500/50 hover:text-amber-400'
+                          }`}
+                        >
+                          <Sparkles className="w-3 h-3" strokeWidth={1.5} />
+                          Unicorns ($1B+)
+                        </button>
+                        <button
+                          onClick={() => setExitFilter(!exitFilter)}
+                          className={`font-mono text-[10px] uppercase tracking-[0.05em] px-3 py-1.5 border transition-colors cursor-crosshair flex items-center gap-2 ${
+                            exitFilter
+                              ? 'bg-emerald-500 text-black border-emerald-500'
+                              : 'border-white/10 text-white/50 hover:border-emerald-500/50 hover:text-emerald-400'
+                          }`}
+                        >
+                          <DollarSign className="w-3 h-3" strokeWidth={1.5} />
+                          Exits (Acquired)
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -484,12 +537,20 @@ export default function Stories() {
                         <span className="font-mono text-[10px] text-white/20">
                           {String(page * ITEMS_PER_PAGE + index + 1).padStart(2, '0')}
                         </span>
-                        {isUnicorn(story) && (
-                          <div className="flex items-center gap-1 font-mono text-[9px] text-amber-400">
-                            <Sparkles className="w-2.5 h-2.5" strokeWidth={1.5} />
-                            UNICORN
-                          </div>
-                        )}
+                        <div className="flex items-center gap-2">
+                          {isUnicorn(story) && (
+                            <div className="flex items-center gap-1 font-mono text-[9px] text-amber-400">
+                              <Sparkles className="w-2.5 h-2.5" strokeWidth={1.5} />
+                              UNICORN
+                            </div>
+                          )}
+                          {isExit(story) && (
+                            <div className="flex items-center gap-1 font-mono text-[9px] text-emerald-400">
+                              <DollarSign className="w-2.5 h-2.5" strokeWidth={1.5} />
+                              EXIT
+                            </div>
+                          )}
+                        </div>
                       </div>
 
                       {/* Company */}

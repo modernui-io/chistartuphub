@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Calendar, Search, ArrowUpRight } from "lucide-react";
 import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
@@ -21,18 +21,20 @@ export default function Events() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const filteredHubs = eventHubs.filter(hub => {
-    if (searchQuery) {
-      const searchLower = searchQuery.toLowerCase();
-      const nameMatch = hub.name?.toLowerCase().includes(searchLower);
-      const descriptionMatch = hub.description?.toLowerCase().includes(searchLower);
-      if (!nameMatch && !descriptionMatch) return false;
-    }
-    return true;
-  });
+  const filteredHubs = useMemo(() => {
+    return eventHubs.filter(hub => {
+      if (searchQuery) {
+        const searchLower = searchQuery.toLowerCase();
+        const nameMatch = hub.name?.toLowerCase().includes(searchLower);
+        const descriptionMatch = hub.description?.toLowerCase().includes(searchLower);
+        if (!nameMatch && !descriptionMatch) return false;
+      }
+      return true;
+    });
+  }, [eventHubs, searchQuery]);
 
-  const featuredHubs = filteredHubs.filter(hub => hub.featured);
-  const regularHubs = filteredHubs.filter(hub => !hub.featured);
+  const featuredHubs = useMemo(() => filteredHubs.filter(hub => hub.featured), [filteredHubs]);
+  const regularHubs = useMemo(() => filteredHubs.filter(hub => !hub.featured), [filteredHubs]);
 
   if (isLoading) {
     return (
