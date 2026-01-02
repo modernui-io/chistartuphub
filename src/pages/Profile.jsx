@@ -814,7 +814,6 @@ export default function Profile() {
       </div>
       </div>
       <BureauFooter />
-      </div>
     </div>
   );
 }
