@@ -7,6 +7,7 @@ import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from '@/contexts/AuthContext';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -18,41 +19,49 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout ?
 
 function App() {
   return (
-    <QueryClientProvider client={queryClientInstance}>
-      <AuthProvider>
-        <Router>
-          <LayoutWrapper currentPageName={mainPageKey}>
-            <Suspense fallback={
-              <div className="min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
-                  <p className="text-white/60">Loading...</p>
-                </div>
-              </div>
-            }>
-              <Routes>
-                <Route path="/" element={<MainPage />} />
-                {Object.entries(Pages).map(([path, Page]) => (
-                  <Route key={path} path={`/${path}`} element={<Page />} />
-                ))}
-                <Route path="/stories/:slug" element={<Pages.StoryDetail />} />
-                <Route path="*" element={
-                  <div className="min-h-screen flex items-center justify-center">
-                    <div className="text-center">
-                      <h1 className="text-6xl font-bold text-white/30 mb-4">404</h1>
-                      <p className="text-white/60 mb-6">Page not found</p>
-                      <a href="/" className="text-blue-400 hover:text-blue-300">Go Home</a>
-                    </div>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClientInstance}>
+        <AuthProvider>
+          <Router>
+            <LayoutWrapper currentPageName={mainPageKey}>
+              <Suspense fallback={
+                <div className="min-h-screen flex items-center justify-center bg-[#050A14]">
+                  <div className="text-center">
+                    <div className="w-8 h-8 border border-white/30 border-t-white animate-spin mx-auto mb-4"></div>
+                    <p className="font-mono text-[10px] text-white/40 uppercase tracking-[0.2em]">Loading...</p>
                   </div>
-                } />
-              </Routes>
-            </Suspense>
-          </LayoutWrapper>
-        </Router>
-        <Toaster />
-        <Analytics />
-      </AuthProvider>
-    </QueryClientProvider>
+                </div>
+              }>
+                <Routes>
+                  <Route path="/" element={<MainPage />} />
+                  {Object.entries(Pages).map(([path, Page]) => (
+                    <Route key={path} path={`/${path}`} element={<Page />} />
+                  ))}
+                  <Route path="/stories/:slug" element={<Pages.StoryDetail />} />
+                  <Route path="*" element={
+                    <div className="min-h-screen flex items-center justify-center bg-[#050A14]">
+                      <div className="text-center">
+                        <span className="font-mono text-[10px] text-white/20 uppercase tracking-[0.2em] block mb-4">[ERROR: 404]</span>
+                        <h1 className="font-serif text-4xl text-white mb-3">Page Not Found</h1>
+                        <p className="text-white/40 text-sm mb-8">The page you're looking for doesn't exist.</p>
+                        <a 
+                          href="/" 
+                          className="font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 border border-white/20 text-white/50 hover:bg-white hover:text-black transition-colors cursor-crosshair inline-block"
+                        >
+                          Go Home
+                        </a>
+                      </div>
+                    </div>
+                  } />
+                </Routes>
+              </Suspense>
+            </LayoutWrapper>
+          </Router>
+          <Toaster />
+          <Analytics />
+        </AuthProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   )
 }
 
