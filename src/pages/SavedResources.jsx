@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Bookmark, ExternalLink, Trash2, Filter, Search, FolderOpen } from "lucide-react";
+import { Bookmark, ExternalLink, Trash2, Filter, Search, FolderOpen, Download } from "lucide-react";
+import ExportResourcesModal from "@/components/ExportResourcesModal";
 import { BureauAtmosphere, BureauFooter } from "@/components/bureau";
 import SEO from "@/components/SEO";
 import { supabase } from "@/api/supabaseClient";
@@ -14,6 +15,7 @@ export default function SavedResources() {
   const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoaded(true), 100);
@@ -135,6 +137,15 @@ export default function SavedResources() {
                 <span className="font-mono text-2xl text-white">{savedItems.length}</span>
                 <span className="font-mono text-xs text-white/40 uppercase tracking-[0.15em]">Saved Items</span>
               </div>
+              {savedItems.length > 0 && (
+                <button
+                  onClick={() => setShowExportModal(true)}
+                  className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2 border border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white transition-colors cursor-crosshair flex items-center gap-2"
+                >
+                  <Download className="w-3 h-3" strokeWidth={1.5} />
+                  Export (up to 10)
+                </button>
+              )}
             </div>
           </div>
         </section>
@@ -272,6 +283,14 @@ export default function SavedResources() {
 
         <BureauFooter />
       </div>
+
+      {/* Export Modal */}
+      <ExportResourcesModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        resources={filteredItems}
+        getTypeLabel={getTypeLabel}
+      />
     </div>
   );
 }
