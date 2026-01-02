@@ -47,7 +47,7 @@ const ProfileCard = ({
     location: "Chicago, IL",
     pitch: "Building the operating system for Chicago's founder ecosystem.",
     website_url: "https://chistartuphub.com",
-    email: "billy@chistartuphub.com",
+    email: "hello@chistartuphub.com",
     linkedin_url: "https://linkedin.com/in/billyjenkins",
     currentFocus: "Raising Pre-Seed Round",
     focusDescription: "Looking for strategic angels with deep networks in GovTech and Community building.",

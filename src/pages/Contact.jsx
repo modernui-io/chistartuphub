@@ -142,10 +142,10 @@ export default function Contact() {
                       Email
                     </label>
                     <a
-                      href="mailto:billy@chistartuphub.com"
+                      href="mailto:hello@chistartuphub.com"
                       className="flex items-center gap-3 text-white hover:text-white/70 transition-none duration-0 font-mono text-[11px] uppercase tracking-[0.05em] cursor-crosshair"
                     >
-                      <span>billy@chistartuphub.com</span>
+                      <span>hello@chistartuphub.com</span>
                     </a>
                   </div>
 
@@ -331,7 +331,7 @@ export default function Contact() {
               <p className="text-white/40 font-mono text-[11px] tracking-[0.02em] mb-6 max-w-xl mx-auto">
                 If you're creating tools, resources, or programs that help Chicago's startup ecosystem, we want to feature you.
               </p>
-              <a href="mailto:billy@chistartuphub.com?subject=Partnership%20Opportunity">
+              <a href="mailto:hello@chistartuphub.com?subject=Partnership%20Opportunity">
                 <button className="font-mono text-[11px] uppercase tracking-[0.1em] px-8 py-3 bg-white text-black hover:bg-transparent hover:text-white border border-white transition-none duration-0 cursor-crosshair">
                   Let's Partner
                 </button>

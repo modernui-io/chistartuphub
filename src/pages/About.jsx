@@ -307,12 +307,12 @@ export default function About() {
                     SUBMIT A RESOURCE
                   </BureauButton>
                 </Link>
-                <a href="mailto:billy@chistartuphub.com?subject=Report%20an%20Issue">
+                <a href="mailto:hello@chistartuphub.com?subject=Report%20an%20Issue">
                   <BureauButton variant="secondary">
                     REPORT AN ISSUE
                   </BureauButton>
                 </a>
-                <a href="mailto:billy@chistartuphub.com?subject=Partnership%20Inquiry">
+                <a href="mailto:hello@chistartuphub.com?subject=Partnership%20Inquiry">
                   <BureauButton variant="secondary">
                     PARTNER WITH US
                   </BureauButton>
@@ -337,11 +337,11 @@ export default function About() {
                 Questions, corrections, partnerships, or press:
               </p>
               <a 
-                href="mailto:billy@chistartuphub.com" 
+                href="mailto:hello@chistartuphub.com" 
                 className="inline-flex items-center gap-3 font-mono text-sm uppercase tracking-[0.1em] text-white/70 hover:text-white transition-colors group"
               >
                 <Mail className="w-4 h-4" strokeWidth={1.5} />
-                <span>billy@chistartuphub.com</span>
+                <span>hello@chistartuphub.com</span>
                 <ArrowUpRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={1.5} />
               </a>
             </div>
