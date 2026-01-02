@@ -7,73 +7,103 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://chistartuphub.com/Funding</loc>
+    <loc>https://chistartuphub.com/funding</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://chistartuphub.com/Events</loc>
+    <loc>https://chistartuphub.com/events</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://chistartuphub.com/Workspaces</loc>
+    <loc>https://chistartuphub.com/workspaces</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://chistartuphub.com/Stories</loc>
+    <loc>https://chistartuphub.com/stories</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://chistartuphub.com/Community</loc>
+    <loc>https://chistartuphub.com/community</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://chistartuphub.com/AcceleratorsIncubators</loc>
+    <loc>https://chistartuphub.com/accelerators-incubators</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://chistartuphub.com/CommunityResources</loc>
+    <loc>https://chistartuphub.com/community-resources</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://chistartuphub.com/Resources</loc>
+    <loc>https://chistartuphub.com/resources</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://chistartuphub.com/WhyChicago</loc>
+    <loc>https://chistartuphub.com/why-chicago</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://chistartuphub.com/About</loc>
+    <loc>https://chistartuphub.com/about</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://chistartuphub.com/Contact</loc>
+    <loc>https://chistartuphub.com/contact</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://chistartuphub.com/SubmitResource</loc>
+    <loc>https://chistartuphub.com/submit-resource</loc>
+    <lastmod>2026-01-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://chistartuphub.com/ecosystem/founder-asks</loc>
+    <lastmod>2026-01-02</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://chistartuphub.com/before-you-start</loc>
+    <lastmod>2026-01-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://chistartuphub.com/profile</loc>
+    <lastmod>2026-01-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://chistartuphub.com/saved</loc>
+    <lastmod>2026-01-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://chistartuphub.com/settings</loc>
     <lastmod>2026-01-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>

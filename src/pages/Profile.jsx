@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import SEO from '@/components/SEO';
+import { BureauAtmosphere, BureauFooter } from '@/components/bureau';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { MultiSelect, SingleSelect } from '@/components/ui/multi-select';
 
@@ -285,7 +286,9 @@ export default function Profile() {
   }, {});
 
   return (
-    <div className="min-h-screen py-12 md:py-20 px-4 md:px-6">
+    <div className="min-h-screen relative" data-page="profile">
+      <BureauAtmosphere />
+      <div className="relative z-10 py-12 md:py-20 px-4 md:px-6">
       <SEO title="My Profile" description="Manage your ChiStartupHub profile" />
 
       <div className="max-w-5xl mx-auto">
@@ -296,12 +299,12 @@ export default function Profile() {
           animate={{ opacity: 1, y: 0 }}
           className="flex justify-center mb-8"
         >
-          <div className="inline-flex bg-white/[0.03] border border-white/[0.06] rounded-xl p-1">
+          <div className="inline-flex bg-black/40 backdrop-blur-sm border border-white/10 p-1">
             <button
               onClick={() => setActiveTab('preview')}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === 'preview'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-white text-black'
                   : 'text-white/60 hover:text-white'
               }`}
             >
@@ -312,7 +315,7 @@ export default function Profile() {
               onClick={() => setActiveTab('edit')}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === 'edit'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-white text-black'
                   : 'text-white/60 hover:text-white'
               }`}
             >
@@ -323,7 +326,7 @@ export default function Profile() {
               onClick={() => setActiveTab('bookmarks')}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 activeTab === 'bookmarks'
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-white text-black'
                   : 'text-white/60 hover:text-white'
               }`}
             >
@@ -341,7 +344,7 @@ export default function Profile() {
             className="grid grid-cols-1 md:grid-cols-3 gap-4"
           >
             {/* LEFT: Identity Card */}
-            <div className="md:col-span-1 bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6 flex flex-col items-center text-center">
+            <div className="md:col-span-1 bg-black/40 backdrop-blur-sm border border-white/10 p-6 flex flex-col items-center text-center">
 
               {/* Avatar */}
               <div className="relative mb-4">
@@ -387,7 +390,7 @@ export default function Profile() {
 
               {/* Bio/Pitch */}
               {formData.bio && (
-                <div className="bg-white/[0.03] border border-white/[0.06] p-4 rounded-xl w-full">
+                <div className="bg-black/40 backdrop-blur-sm border border-white/10 p-4 rounded-none w-full">
                   <p className="text-sm text-white/70 leading-relaxed italic">"{formData.bio}"</p>
                 </div>
               )}
@@ -406,7 +409,7 @@ export default function Profile() {
             <div className="md:col-span-2 flex flex-col gap-4">
 
               {/* Stack Section */}
-              <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6">
+              <div className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-none p-6">
 
                 {/* Sectors */}
                 {formData.sectors?.length > 0 && (
@@ -438,7 +441,7 @@ export default function Profile() {
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {formData.badges.map((badge, i) => (
-                        <span key={i} className="px-3 py-1.5 bg-white/[0.03] border border-white/[0.08] text-xs font-medium rounded-full text-white/70">
+                        <span key={i} className="px-3 py-1.5 bg-black/40 backdrop-blur-sm border border-white/[0.08] text-xs font-medium rounded-full text-white/70">
                           {badge}
                         </span>
                       ))}
@@ -459,7 +462,7 @@ export default function Profile() {
                     </div>
                     <div className="flex gap-3 overflow-x-auto pb-2">
                       {formData.tech_stack.map((tool, i) => (
-                        <div key={i} className="flex-shrink-0 flex flex-col items-center justify-center w-16 h-16 bg-white/[0.02] border border-white/[0.06] rounded-xl hover:border-white/20 transition-all">
+                        <div key={i} className="flex-shrink-0 flex flex-col items-center justify-center w-16 h-16 bg-black/40 backdrop-blur-sm border border-white/10 rounded-none hover:border-white/20 transition-all">
                           <span className="text-lg mb-1">{TECH_ICONS[tool] || '🔧'}</span>
                           <span className="text-[10px] text-white/40 font-medium">{tool}</span>
                         </div>
@@ -477,7 +480,7 @@ export default function Profile() {
               </div>
 
               {/* The Ask Section */}
-              <div className="relative bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] rounded-2xl p-6 overflow-hidden">
+              <div className="relative bg-gradient-to-br from-white/[0.03] to-white/[0.01] border border-white/[0.08] rounded-none p-6 overflow-hidden">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
 
                 <div className="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
@@ -497,7 +500,7 @@ export default function Profile() {
                   <div className="flex flex-col gap-3 w-full sm:w-auto">
                     <button
                       onClick={handleCopyEmail}
-                      className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-xl transition-all"
+                      className="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-none transition-all"
                     >
                       {copied ? <Check size={16} /> : <Copy size={16} />}
                       {copied ? "Copied!" : "Copy Email"}
@@ -505,7 +508,7 @@ export default function Profile() {
 
                     {formData.website_url && (
                       <a href={formData.website_url} target="_blank" rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white/[0.03] border border-white/[0.1] text-white/80 hover:text-white text-sm font-medium rounded-xl transition-all">
+                        className="flex items-center justify-center gap-2 px-5 py-2.5 bg-black/40 backdrop-blur-sm border border-white/[0.1] text-white/80 hover:text-white text-sm font-medium rounded-none transition-all">
                         <Globe size={16} />
                         Visit Website
                         <ExternalLink size={12} className="opacity-50" />
@@ -524,7 +527,7 @@ export default function Profile() {
                     const Icon = resource.icon;
                     return (
                       <Link key={i} to={resource.link}
-                        className="flex items-center gap-2 px-4 py-2 bg-white/[0.02] border border-white/[0.06] rounded-xl text-sm text-white/60 hover:text-white hover:border-white/[0.1] transition-all">
+                        className="flex items-center gap-2 px-4 py-2 bg-black/40 backdrop-blur-sm border border-white/10 rounded-none text-sm text-white/60 hover:text-white hover:border-white/[0.1] transition-all">
                         <Icon size={14} />
                         {resource.title}
                       </Link>
@@ -539,7 +542,7 @@ export default function Profile() {
         {/* EDIT TAB */}
         {activeTab === 'edit' && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <Card className="bg-white/[0.02] border-white/[0.06] p-8 rounded-2xl">
+            <Card className="bg-black/40 backdrop-blur-sm border-white/10 p-8 rounded-none">
               <form onSubmit={handleSaveProfile} className="space-y-8">
 
                 {/* Basic Info */}
@@ -549,22 +552,22 @@ export default function Profile() {
                     <div className="space-y-2">
                       <Label className="text-white/60 text-sm">Full Name</Label>
                       <Input value={formData.full_name} onChange={(e) => handleInputChange('full_name', e.target.value)}
-                        className="bg-white/[0.03] border-white/[0.08] text-white rounded-xl h-11" />
+                        className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none h-11" />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-white/60 text-sm">Company/Startup</Label>
                       <Input value={formData.company_name} onChange={(e) => handleInputChange('company_name', e.target.value)}
-                        className="bg-white/[0.03] border-white/[0.08] text-white rounded-xl h-11" />
+                        className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none h-11" />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-white/60 text-sm">Location</Label>
                       <Input value={formData.location} onChange={(e) => handleInputChange('location', e.target.value)}
-                        placeholder="Chicago, IL" className="bg-white/[0.03] border-white/[0.08] text-white rounded-xl h-11" />
+                        placeholder="Chicago, IL" className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none h-11" />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-white/60 text-sm">Website URL</Label>
                       <Input value={formData.website_url} onChange={(e) => handleInputChange('website_url', e.target.value)}
-                        placeholder="https://..." className="bg-white/[0.03] border-white/[0.08] text-white rounded-xl h-11" />
+                        placeholder="https://..." className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none h-11" />
                     </div>
                   </div>
                 </div>
@@ -574,7 +577,7 @@ export default function Profile() {
                   <Label className="text-white/60 text-sm">Bio / One-Line Pitch</Label>
                   <Textarea value={formData.bio} onChange={(e) => handleInputChange('bio', e.target.value)}
                     placeholder="Building the Stripe for Africa..." rows={3}
-                    className="bg-white/[0.03] border-white/[0.08] text-white rounded-xl" />
+                    className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none" />
                 </div>
 
                 {/* Current Focus */}
@@ -584,19 +587,19 @@ export default function Profile() {
                     <div className="space-y-2">
                       <Label className="text-white/60 text-sm">Focus Title</Label>
                       <Input value={formData.current_focus} onChange={(e) => handleInputChange('current_focus', e.target.value)}
-                        placeholder="Raising Seed Round" className="bg-white/[0.03] border-white/[0.08] text-white rounded-xl h-11" />
+                        placeholder="Raising Seed Round" className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none h-11" />
                     </div>
                     <div className="space-y-2">
                       <Label className="text-white/60 text-sm">LinkedIn URL</Label>
                       <Input value={formData.linkedin_url} onChange={(e) => handleInputChange('linkedin_url', e.target.value)}
-                        placeholder="https://linkedin.com/in/..." className="bg-white/[0.03] border-white/[0.08] text-white rounded-xl h-11" />
+                        placeholder="https://linkedin.com/in/..." className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none h-11" />
                     </div>
                   </div>
                   <div className="mt-4 space-y-2">
                     <Label className="text-white/60 text-sm">Focus Description</Label>
                     <Textarea value={formData.focus_description} onChange={(e) => handleInputChange('focus_description', e.target.value)}
                       placeholder="Looking for strategic angels with deep networks in..." rows={2}
-                      className="bg-white/[0.03] border-white/[0.08] text-white rounded-xl" />
+                      className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none" />
                   </div>
                 </div>
 
@@ -628,7 +631,7 @@ export default function Profile() {
                 {/* Badges / Identity */}
                 <div>
                   <h3 className="text-lg font-semibold text-white mb-2">Identity & Badges</h3>
-                  <div className="bg-blue-500/5 border border-blue-500/10 rounded-xl p-4 mb-4">
+                  <div className="bg-blue-500/5 border border-blue-500/10 rounded-none p-4 mb-4">
                     <p className="text-blue-300/80 text-sm">
                       <span className="font-medium">Be Found:</span> Many investors look for specific backgrounds. Select any communities or achievements to help them find you (e.g., "Veteran Founder").
                     </p>
@@ -664,7 +667,7 @@ export default function Profile() {
 
                 {/* Save Button */}
                 <div className="pt-4">
-                  <Button type="submit" className="bg-blue-600 hover:bg-blue-500 rounded-xl px-8" disabled={saving}>
+                  <Button type="submit" className="bg-blue-600 hover:bg-blue-500 rounded-none px-8" disabled={saving}>
                     {saving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Saving...</> : 'Save Profile'}
                   </Button>
                 </div>
@@ -681,13 +684,13 @@ export default function Profile() {
                 <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
               </div>
             ) : bookmarks.length === 0 ? (
-              <Card className="bg-white/[0.02] border-white/[0.06] p-16 text-center rounded-2xl">
-                <div className="w-16 h-16 rounded-2xl bg-white/[0.03] flex items-center justify-center mx-auto mb-6">
+              <Card className="bg-black/40 backdrop-blur-sm border-white/10 p-16 text-center rounded-none">
+                <div className="w-16 h-16 rounded-none bg-black/40 backdrop-blur-sm flex items-center justify-center mx-auto mb-6">
                   <Bookmark className="w-8 h-8 text-white/30" />
                 </div>
                 <p className="text-white/60 mb-2 text-lg">No saved items yet</p>
                 <p className="text-white/40 text-sm mb-8">Save resources by clicking the bookmark icon</p>
-                <Button asChild className="bg-blue-600 hover:bg-blue-500 rounded-xl px-6">
+                <Button asChild className="bg-blue-600 hover:bg-blue-500 rounded-none px-6">
                   <Link to="/Funding">Explore Funding</Link>
                 </Button>
               </Card>
@@ -731,7 +734,7 @@ export default function Profile() {
                             <CardWrapper
                               key={bookmark.id}
                               {...cardProps}
-                              className={`block bg-white/[0.02] border border-white/[0.06] p-5 rounded-xl transition-all ${hasUrl ? 'hover:bg-white/[0.04] hover:border-white/[0.12] cursor-pointer group' : ''}`}
+                              className={`block bg-black/40 backdrop-blur-sm border border-white/10 p-5 rounded-none transition-all ${hasUrl ? 'hover:bg-white/[0.04] hover:border-white/[0.12] cursor-pointer group' : ''}`}
                             >
                               <div className="flex justify-between items-start gap-4">
                                 <div className="flex-1 min-w-0">
@@ -786,6 +789,8 @@ export default function Profile() {
             )}
           </motion.div>
         )}
+      </div>
+      <BureauFooter />
       </div>
     </div>
   );

@@ -303,7 +303,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
         </div>
       ) : (
         <>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-0 border border-white/10">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-0 border border-white/10 bg-black/40 backdrop-blur-sm">
             {paginatedOpportunities.map((opp, index) => {
               const type = getOpportunityType(opp);
               const days = getDaysUntilDeadline(opp.deadline);
@@ -315,7 +315,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
               return (
                 <div
                   key={opp.id || index}
-                  className="p-6 border-b border-r border-white/20 last:border-r-0 md:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0 hover:bg-white/[0.02] transition-colors group flex flex-col"
+                  className="p-6 border-b border-r border-white/10 last:border-r-0 md:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0 bg-black/20 hover:bg-black/40 transition-colors group flex flex-col"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <span className="font-mono text-xs text-white/20">
