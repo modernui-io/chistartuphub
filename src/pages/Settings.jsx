@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Settings as SettingsIcon, Bell, Shield, User, Mail, Trash2, LogOut, Check, X } from "lucide-react";
+import { Settings as SettingsIcon, Bell, Shield, User, Mail, Trash2, LogOut, Check, X, MessageSquare, HandHelping } from "lucide-react";
 import { BureauAtmosphere, BureauFooter } from "@/components/bureau";
 import SEO from "@/components/SEO";
 import { supabase } from "@/api/supabaseClient";
@@ -19,6 +19,12 @@ export default function Settings() {
     ask_reminders: true,
     newsletter_subscribed: false,
     profile_visible: true,
+    // Founder notifications - when someone offers to help
+    help_offer_email: true,
+    help_offer_inapp: true,
+    // Helper notifications - when founder responds to your offer
+    help_response_email: true,
+    help_response_inapp: true,
   });
 
   useEffect(() => {
@@ -38,6 +44,10 @@ export default function Settings() {
         ask_reminders: profile.ask_reminders ?? true,
         newsletter_subscribed: profile.newsletter_subscribed ?? false,
         profile_visible: profile.profile_visible ?? true,
+        help_offer_email: profile.help_offer_email ?? true,
+        help_offer_inapp: profile.help_offer_inapp ?? true,
+        help_response_email: profile.help_response_email ?? true,
+        help_response_inapp: profile.help_response_inapp ?? true,
       });
     }
   }, [user, profile, navigate]);
@@ -56,6 +66,10 @@ export default function Settings() {
           ask_reminders: settings.ask_reminders,
           newsletter_subscribed: settings.newsletter_subscribed,
           profile_visible: settings.profile_visible,
+          help_offer_email: settings.help_offer_email,
+          help_offer_inapp: settings.help_offer_inapp,
+          help_response_email: settings.help_response_email,
+          help_response_inapp: settings.help_response_inapp,
           updated_at: new Date().toISOString(),
         })
         .eq("id", user.id);
@@ -99,25 +113,63 @@ export default function Settings() {
 
   if (!user) return null;
 
+  const isFounder = profile?.role === 'founder';
+
   const settingsSections = [
     {
-      title: "Notifications",
+      title: "General Notifications",
       icon: Bell,
       settings: [
         {
           key: "email_notifications",
           label: "Email Notifications",
-          description: "Receive updates about your asks and connections",
-        },
-        {
-          key: "ask_reminders",
-          label: "Ask Reminders",
-          description: "Get reminded when your asks are about to expire",
+          description: "Receive general updates and announcements",
         },
         {
           key: "newsletter_subscribed",
           label: "Newsletter",
           description: "Receive the ChiStartupHub weekly newsletter",
+        },
+      ],
+    },
+    // Founder-specific: when someone offers to help
+    ...(isFounder ? [{
+      title: "When Someone Offers to Help",
+      subtitle: "Get notified when community members want to help with your asks",
+      icon: HandHelping,
+      settings: [
+        {
+          key: "help_offer_email",
+          label: "Email Notification",
+          description: "Receive an email when someone offers to help",
+        },
+        {
+          key: "help_offer_inapp",
+          label: "In-App Notification",
+          description: "See a notification in your Requests tab",
+        },
+        {
+          key: "ask_reminders",
+          label: "Ask Expiry Reminders",
+          description: "Get reminded when your asks are about to expire",
+        },
+      ],
+    }] : []),
+    // Helper notifications: when founder responds
+    {
+      title: "When Founders Respond",
+      subtitle: "Get notified when a founder accepts or declines your help offer",
+      icon: MessageSquare,
+      settings: [
+        {
+          key: "help_response_email",
+          label: "Email Notification",
+          description: "Receive an email when a founder responds to your offer",
+        },
+        {
+          key: "help_response_inapp",
+          label: "In-App Notification",
+          description: "See a notification when your offer is accepted or declined",
         },
       ],
     },
@@ -229,12 +281,15 @@ export default function Settings() {
             {settingsSections.map((section) => (
               <div key={section.title} className="border border-white/10 mb-8 bg-black/40 backdrop-blur-sm">
                 <div className="p-6 border-b border-white/10">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 mb-1">
                     <section.icon className="w-5 h-5 text-white/50" strokeWidth={1.5} />
                     <h2 className="font-mono text-sm uppercase tracking-[0.15em] text-white">
                       {section.title}
                     </h2>
                   </div>
+                  {section.subtitle && (
+                    <p className="text-white/40 text-sm ml-8">{section.subtitle}</p>
+                  )}
                 </div>
                 <div className="divide-y divide-white/10">
                   {section.settings.map((setting) => (
