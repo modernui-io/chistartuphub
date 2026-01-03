@@ -24,10 +24,10 @@ const coloredMarkerIcon = new L.DivIcon({
     <div style="
       width: 24px;
       height: 24px;
-      background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+      background: #DC2626;
       border: 3px solid white;
       border-radius: 50%;
-      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.5);
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.5);
     "></div>
   `,
   iconSize: [24, 24],
