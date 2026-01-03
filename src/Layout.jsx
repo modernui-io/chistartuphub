@@ -311,7 +311,7 @@ export default function Layout({ children }) {
 
       {/* Main Content with ScrollSmoother */}
       <SmoothScrollProvider>
-        <main>
+        <main id="main-content" role="main" aria-label="Main content">
           {children}
         </main>
 

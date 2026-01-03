@@ -98,6 +98,47 @@
       .will-change-transform {
         will-change: transform;
       }
+      
+      /* ADA Compliance - Skip Link */
+      .skip-link {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #fff;
+        color: #000;
+        padding: 8px 16px;
+        z-index: 10000;
+        font-family: system-ui, sans-serif;
+        font-size: 14px;
+        text-decoration: none;
+        transition: top 0.2s;
+      }
+      .skip-link:focus {
+        top: 0;
+      }
+      
+      /* ADA Compliance - Focus Indicators */
+      *:focus {
+        outline: 2px solid #3B82F6;
+        outline-offset: 2px;
+      }
+      *:focus:not(:focus-visible) {
+        outline: none;
+      }
+      *:focus-visible {
+        outline: 2px solid #3B82F6;
+        outline-offset: 2px;
+      }
+      
+      /* Reduced motion for accessibility */
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
     </style>
 
     <!-- Structured Data - Organization -->

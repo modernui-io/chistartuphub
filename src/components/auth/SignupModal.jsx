@@ -61,6 +61,9 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
 
   // Step 3: Interests
   const [selectedInterests, setSelectedInterests] = useState([]);
+  
+  // Age verification
+  const [isOver18, setIsOver18] = useState(false);
 
   const resetForm = () => {
     setStep(1);
@@ -73,6 +76,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
     setLinkedinUrl('');
     setWebsiteUrl('');
     setSelectedInterests([]);
+    setIsOver18(false);
   };
 
   const handleStep1Submit = async (e) => {
@@ -150,7 +154,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
         
         // Route based on role: founders go to Asks page, others go home
         if (role === 'founder') {
-          navigate('/opportunities');
+          navigate('/Opportunities');
         } else {
           navigate('/');
         }
@@ -330,9 +334,29 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
                 <p className="font-mono text-[10px] text-white/30 mt-1">At least 6 characters</p>
               </div>
 
+              {/* Age Verification */}
+              <div className="flex items-start gap-3 p-3 border border-white/10">
+                <input
+                  type="checkbox"
+                  id="age-verification"
+                  checked={isOver18}
+                  onChange={(e) => setIsOver18(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 bg-transparent border border-white/30 rounded-none cursor-crosshair accent-white"
+                  required
+                />
+                <label htmlFor="age-verification" className="font-mono text-[10px] text-white/60 leading-relaxed cursor-crosshair">
+                  I confirm that I am <span className="text-white">18 years of age or older</span> and agree to the Terms of Service and Privacy Policy.
+                </label>
+              </div>
+
               <button
                 type="submit"
-                className="w-full font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 bg-white text-black hover:bg-transparent hover:text-white border border-white transition-none duration-0 cursor-crosshair rounded-none"
+                disabled={!isOver18}
+                className={`w-full font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 border border-white transition-none duration-0 cursor-crosshair rounded-none ${
+                  isOver18 
+                    ? 'bg-white text-black hover:bg-transparent hover:text-white' 
+                    : 'bg-white/20 text-white/40 border-white/20 cursor-not-allowed'
+                }`}
               >
                 Continue
               </button>

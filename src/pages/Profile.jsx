@@ -31,7 +31,8 @@ import {
   Linkedin,
   Edit3,
   Eye,
-  Inbox
+  Inbox,
+  GraduationCap
 } from 'lucide-react';
 import { toast } from 'sonner';
 import SEO from '@/components/SEO';
@@ -385,6 +386,14 @@ export default function Profile() {
                 <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r ${stageBadge.color} text-white mb-3`}>
                   <Sparkles size={10} />
                   {stageBadge.label}
+                </span>
+              )}
+
+              {/* Student Builder Badge */}
+              {profile?.role === 'student' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-500 text-white mb-3">
+                  <GraduationCap size={10} />
+                  Student Builder
                 </span>
               )}
 

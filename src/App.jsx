@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from '@/contexts/AuthContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -32,6 +32,7 @@ function App() {
                     <Route key={path} path={`/${path}`} element={<Page />} />
                   ))}
                   <Route path="/stories/:slug" element={<Pages.StoryDetail />} />
+                  <Route path="/ecosystem/founder-asks" element={<Navigate to="/Opportunities" replace />} />
                   <Route path="*" element={
                     <div className="min-h-screen flex items-center justify-center bg-[#050A14]">
                       <div className="text-center">

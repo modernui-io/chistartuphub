@@ -26,7 +26,7 @@ export function BureauFooter({ className = "" }) {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className={`border-t border-white/[0.12] bg-[#050A14]/98 backdrop-blur-sm ${className}`}>
+    <footer role="contentinfo" aria-label="Site footer" className={`border-t border-white/[0.12] bg-[#050A14]/98 backdrop-blur-sm ${className}`}>
       <div className="max-w-6xl mx-auto px-6 lg:px-8 py-16 lg:py-20">
         {/* 3-Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 lg:gap-12">

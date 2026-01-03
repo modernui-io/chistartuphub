@@ -98,6 +98,8 @@ export default function Header({
 
   return (
     <header 
+      role="banner"
+      aria-label="Main navigation"
       className={`
         fixed top-0 left-0 right-0 z-50
         transition-all duration-300
@@ -110,7 +112,7 @@ export default function Header({
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-5">
         <div className="flex items-center justify-between">
           {/* Logo - Left */}
-          <Link to={createPageUrl("Home")} className="flex items-center gap-4 group flex-shrink-0">
+          <Link to={createPageUrl("Home")} className="flex items-center gap-4 group flex-shrink-0" aria-label="ChiStartup Hub - Go to homepage">
             <div className="w-11 h-11 border border-white/20 bg-transparent flex items-center justify-center group-hover:bg-white group-hover:border-white transition-none cursor-crosshair">
               <span className="text-white font-bold text-base uppercase group-hover:text-black font-mono">CS</span>
             </div>
@@ -120,7 +122,7 @@ export default function Header({
           </Link>
 
           {/* Navigation - Center */}
-          <nav className="hidden md:flex items-center gap-10">
+          <nav className="hidden md:flex items-center gap-10" aria-label="Primary navigation">
             {navDropdowns.map((dropdown) => (
               <DropdownMenu key={dropdown.name}>
                 <DropdownMenuTrigger className="flex items-center gap-2 text-white/50 hover:text-white transition-none text-[11px] font-mono font-medium uppercase tracking-[0.15em] outline-none cursor-crosshair">
