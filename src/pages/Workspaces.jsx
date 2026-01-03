@@ -17,6 +17,24 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
+// Custom colored marker for better visibility on grayscale map
+const coloredMarkerIcon = new L.DivIcon({
+  className: 'custom-marker',
+  html: `
+    <div style="
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.5);
+    "></div>
+  `,
+  iconSize: [24, 24],
+  iconAnchor: [12, 12],
+  popupAnchor: [0, -12],
+});
+
 export default function Workspaces() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -258,7 +276,7 @@ export default function Workspaces() {
                   {filteredWorkspaces
                     .filter(workspace => workspace.latitude && workspace.longitude)
                     .map((workspace, index) => (
-                    <Marker key={index} position={[workspace.latitude, workspace.longitude]}>
+                    <Marker key={index} position={[workspace.latitude, workspace.longitude]} icon={coloredMarkerIcon}>
                       <Popup>
                         <div className="p-2 font-sans">
                           <h3 className="font-bold text-sm mb-1">{workspace.name}</h3>

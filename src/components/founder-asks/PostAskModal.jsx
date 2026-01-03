@@ -238,10 +238,10 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                   <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                   <div>
                     <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-amber-400 mb-1">
-                      Founders Only
+                      Posting is Limited to Founders
                     </p>
                     <p className="text-sm text-white/50">
-                      Only founders can post asks. Update your profile to "Founder" to unlock this feature.
+                      This is intentional to maintain quality and trust in our community. If you're a founder, go to your Profile and update your role to "Founder" to unlock this feature.
                     </p>
                   </div>
                 </div>

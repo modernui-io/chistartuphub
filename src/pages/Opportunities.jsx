@@ -112,8 +112,9 @@ export default function Opportunities({ onOpenSignup }) {
     
     // Check if user is a founder
     if (profile?.role !== 'founder') {
-      toast.error('Only founders can post asks', {
-        description: 'Update your profile role to "Founder" to unlock this feature.',
+      toast.error('Posting is limited to founders only', {
+        description: 'This is intentional to maintain quality asks. If you\'re a founder, update your profile role to "Founder" to unlock this feature.',
+        duration: 6000,
       });
       return;
     }
