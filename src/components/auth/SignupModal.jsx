@@ -38,7 +38,7 @@ const INTERESTS = [
   'Talent/Hiring',
 ];
 
-export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
+export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignupComplete }) {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -148,16 +148,13 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
           duration: 8000,
         });
       } else {
-        toast.success('Welcome to ChiStartupHub!', {
-          description: 'Your account has been created successfully!',
-        });
-        
-        // Route based on role: founders go to Asks page, others go home
-        if (role === 'founder') {
-          navigate('/Opportunities');
-        } else {
-          navigate('/');
+        // Trigger welcome modal instead of simple toast
+        if (onSignupComplete) {
+          onSignupComplete({ name: fullName, role: role });
         }
+        
+        // Navigate to home - welcome modal will guide them
+        navigate('/');
       }
 
       setLoading(false);

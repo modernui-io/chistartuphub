@@ -10,6 +10,7 @@ import Header from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginModal from "@/components/auth/LoginModal";
 import SignupModal from "@/components/auth/SignupModal";
+import WelcomeModal from "@/components/auth/WelcomeModal";
 import AIAssistant from "@/components/AIAssistant";
 import VerificationBanner from "@/components/VerificationBanner";
 
@@ -21,6 +22,8 @@ export default function Layout({ children }) {
   const [isLoading, setIsLoading] = useState(!window.hasShownLoader);
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [welcomeUserData, setWelcomeUserData] = useState({ name: '', role: '' });
   const { user, signOut } = useAuth();
 
   const handleLoadComplete = () => {
@@ -386,6 +389,16 @@ export default function Layout({ children }) {
           setShowSignup(false);
           setShowLogin(true);
         }}
+        onSignupComplete={(userData) => {
+          setWelcomeUserData(userData);
+          setShowWelcome(true);
+        }}
+      />
+      <WelcomeModal
+        isOpen={showWelcome}
+        onClose={() => setShowWelcome(false)}
+        userName={welcomeUserData.name}
+        userRole={welcomeUserData.role}
       />
 
       {/* AI Assistant - disabled for now, roadmap feature */}
