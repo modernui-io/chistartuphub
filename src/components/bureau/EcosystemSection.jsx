@@ -65,7 +65,7 @@ function SpecCard({ index, label, value, delay = 0 }) {
       `}
       style={{ animationDelay: `${delay}ms` }}
     >
-      <span className="font-mono text-[10px] tracking-[0.2em] text-white/20 mb-4 block">
+      <span className="font-mono text-[10px] tracking-[0.2em] text-white/50 mb-4 block">
         {index}
       </span>
       <h4 className="font-mono text-xs font-semibold uppercase tracking-[0.15em] text-white/80 mb-3">
@@ -208,7 +208,7 @@ function EcosystemSpecs() {
 
           {/* Coordinates Label */}
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-            <span className="font-mono text-[10px] tracking-[0.2em] text-white/25">
+            <span className="font-mono text-[10px] tracking-[0.2em] text-white/50">
               41.8781° N, 87.6298° W
             </span>
           </div>
@@ -270,7 +270,7 @@ function ResourceCard({ index, icon: Icon, label, description, cta, href, extern
       />
 
       {/* Index - Top Right */}
-      <span className="absolute top-8 right-8 font-mono text-sm text-white/15 group-hover:text-black/15">
+      <span className="absolute top-8 right-8 font-mono text-sm text-white/50 group-hover:text-black/50">
         {index}
       </span>
 
@@ -295,7 +295,7 @@ function ResourceCard({ index, icon: Icon, label, description, cta, href, extern
       </p>
 
       {/* CTA - Ghost Style */}
-      <div className="flex items-center gap-3 mt-8 font-mono text-[10px] uppercase tracking-[0.15em] text-white/35 group-hover:text-black">
+      <div className="flex items-center gap-3 mt-8 font-mono text-[10px] uppercase tracking-[0.15em] text-white/50 group-hover:text-black">
         <span>{cta}</span>
         {external ? (
           <ArrowUpRight
@@ -432,7 +432,7 @@ export function EcosystemSection({ className = "" }) {
           {/* Right - Count */}
           <div className="flex items-center gap-3">
             <span className="font-mono text-2xl text-white/60">06</span>
-            <span className="font-mono text-[10px] tracking-[0.2em] text-white/30 uppercase">
+            <span className="font-mono text-[10px] tracking-[0.2em] text-white/50 uppercase">
               Resources
             </span>
           </div>

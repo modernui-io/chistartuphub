@@ -112,7 +112,7 @@ export default function Header({
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-5">
         <div className="flex items-center justify-between">
           {/* Logo - Left */}
-          <Link to={createPageUrl("Home")} className="flex items-center gap-4 group flex-shrink-0" aria-label="ChiStartup Hub - Go to homepage">
+          <Link to={createPageUrl("Home")} className="flex items-center gap-4 group flex-shrink-0" aria-label="CS ChiStartup Hub homepage">
             <div className="w-11 h-11 border border-white/20 bg-transparent flex items-center justify-center group-hover:bg-white group-hover:border-white transition-none cursor-crosshair">
               <span className="text-white font-bold text-base uppercase group-hover:text-black font-mono">CS</span>
             </div>

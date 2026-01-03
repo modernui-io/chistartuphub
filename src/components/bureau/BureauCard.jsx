@@ -37,7 +37,7 @@ export function BureauCard({
     >
       {/* Index Number - Top Right */}
       {index && (
-        <span className="absolute top-6 right-6 font-mono text-sm text-white/30 group-hover:text-black/30">
+        <span className="absolute top-6 right-6 font-mono text-sm text-white/50 group-hover:text-black/50">
           {index}
         </span>
       )}

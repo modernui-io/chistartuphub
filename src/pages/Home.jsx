@@ -149,7 +149,7 @@ const AnimatedCounter = ({ value, label, delay = 0 }) => {
       <span className="font-mono text-lg md:text-xl text-white/60 font-medium tabular-nums">
         {displayValue}{suffix}
       </span>
-      <span className="font-mono text-[10px] tracking-[0.2em] text-white/30">
+      <span className="font-mono text-[10px] tracking-[0.2em] text-white/50">
         {label}
       </span>
     </motion.div>
@@ -359,7 +359,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="font-mono text-xs sm:text-sm uppercase tracking-[0.25em] text-white/40 text-center mb-14 max-w-xl"
+            className="font-mono text-xs sm:text-sm uppercase tracking-[0.25em] text-white/60 text-center mb-14 max-w-xl"
           >
             Your Launchpad for Chicago
           </motion.p>
@@ -402,7 +402,7 @@ export default function Home() {
             <motion.span 
               animate={{ opacity: [0.2, 0.5, 0.2] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              className="font-mono text-[10px] tracking-[0.3em] text-white/20 uppercase"
+              className="font-mono text-[10px] tracking-[0.3em] text-white/50 uppercase"
             >
               Scroll
             </motion.span>

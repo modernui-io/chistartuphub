@@ -76,10 +76,10 @@ function PathwayCard({
 
       {/* Top Row: Meta (Left) + Index (Right) */}
       <div className="flex items-start justify-between mb-10">
-        <span className="font-mono text-[10px] tracking-[0.2em] text-white/30 group-hover:text-black/40">
+        <span className="font-mono text-[10px] tracking-[0.2em] text-white/50 group-hover:text-black/50">
           {meta}
         </span>
-        <span className="font-mono text-base text-white/20 group-hover:text-black/20">
+        <span className="font-mono text-base text-white/50 group-hover:text-black/50">
           {index}
         </span>
       </div>
@@ -94,9 +94,9 @@ function PathwayCard({
             />
           </div>
         )}
-        <h3 className="font-mono text-lg font-semibold uppercase tracking-[0.1em]">
+        <h2 className="font-mono text-lg font-semibold uppercase tracking-[0.1em]">
           {label}
-        </h3>
+        </h2>
       </div>
 
       {/* Body - Serif for readability */}

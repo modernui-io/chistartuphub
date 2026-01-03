@@ -41,11 +41,11 @@ export function BureauFooter({ className = "" }) {
             <p className="font-serif text-lg text-white/60 leading-relaxed mb-8">
               ChiStartup Hub.
               <br />
-              <span className="text-white/40">Your Launchpad for Chicago.</span>
+              <span className="text-white/60">Your Launchpad for Chicago.</span>
             </p>
 
             {/* Copyright */}
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/25">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/50">
               © {currentYear} {"// ALL_RIGHTS_RESERVED"}
             </span>
           </div>
@@ -60,7 +60,7 @@ export function BureauFooter({ className = "" }) {
                 <li key={item.label}>
                   <Link
                     to={item.href}
-                    className="group inline-flex items-center gap-2 font-mono text-sm uppercase tracking-[0.1em] text-white/40 hover:text-white transition-none"
+                    className="group inline-flex items-center gap-2 font-mono text-sm uppercase tracking-[0.1em] text-white/60 hover:text-white transition-none"
                   >
                     <span>{item.label}</span>
                   </Link>
@@ -81,7 +81,7 @@ export function BureauFooter({ className = "" }) {
                     href={item.href}
                     target={item.external ? "_blank" : undefined}
                     rel={item.external ? "noopener noreferrer" : undefined}
-                    className="group inline-flex items-center gap-2 font-mono text-sm uppercase tracking-[0.1em] text-white/40 hover:text-white transition-none"
+                    className="group inline-flex items-center gap-2 font-mono text-sm uppercase tracking-[0.1em] text-white/60 hover:text-white transition-none"
                   >
                     <span>{item.label}</span>
                     {item.external && (
@@ -102,12 +102,12 @@ export function BureauFooter({ className = "" }) {
         {/* Bottom Bar */}
         <div className="mt-16 pt-8 border-t border-white/[0.08]">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/15">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/50">
               {"MAKE NO SMALL PLANS // SYSTEMATIC MODERNISM"}
             </span>
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-white/20" />
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/15">
+              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/50">
                 BUILT IN CHICAGO
               </span>
             </div>
