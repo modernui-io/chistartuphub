@@ -26,6 +26,7 @@ const ServiceResources = lazy(() => import('./pages/ServiceResources'));
 const SmallBusinessResources = lazy(() => import('./pages/SmallBusinessResources'));
 const SavedResources = lazy(() => import('./pages/SavedResources'));
 const Settings = lazy(() => import('./pages/Settings'));
+const Admin = lazy(() => import('./pages/Admin'));
 
 export const PAGES = {
     "Home": Home,
@@ -53,6 +54,7 @@ export const PAGES = {
     "small-business-resources": SmallBusinessResources,
     "saved": SavedResources,
     "settings": Settings,
+    "admin": Admin,
 }
 
 export const pagesConfig = {
