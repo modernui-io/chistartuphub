@@ -4,7 +4,7 @@ import { X, Download, Mail, Loader2, CheckCircle, ExternalLink } from "lucide-re
 import { supabase } from "@/api/supabaseClient";
 import { toast } from "sonner";
 
-const PDF_URL = "https://fbgxeinarhbrqatrsuoj.supabase.co/storage/v1/object/public/ChiStartup%20Hub%20Startup%20Maturity%20Atlas/ChiStartuphub%20Startup%20Maturity%20Atlas.docx%20(4).pdf";
+const PDF_URL = "https://fbgxeinarhbrqatrsuoj.supabase.co/storage/v1/object/public/toolkit/Startup-Maturity-Workbook-v2.pdf";
 
 /**
  * DownloadToolkitModal - Bureau Design System
@@ -169,14 +169,14 @@ export default function DownloadToolkitModal({ isOpen, onClose }) {
                     <Download className="w-3 h-3 text-white/50" strokeWidth={1.5} />
                   </div>
                   <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white">
-                    Startup Maturity Atlas
+                    Startup Maturity Workbook
                   </span>
                   <span className="font-mono text-[9px] uppercase tracking-[0.1em] px-2 py-0.5 border border-green-500/30 text-green-400">
                     FREE
                   </span>
                 </div>
                 <p className="font-mono text-[10px] text-white/40 uppercase tracking-[0.05em]">
-                  Enter your email to get the complete founder toolkit PDF
+                  A framework for knowing what to do next — free PDF download
                 </p>
               </div>
               <button
