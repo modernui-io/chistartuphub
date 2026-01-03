@@ -159,8 +159,9 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
 
       if (error) throw error;
 
-      toast.success('Your ask has been posted!', {
-        description: 'It will be visible for 14 days. You can refresh it anytime.',
+      toast.success('Your ask is live! 🎉', {
+        description: 'Community helpers can now reach out. We\'ll notify you when someone offers to help. In the meantime, explore resources and save what\'s helpful.',
+        duration: 8000,
       });
 
       handleClose();
