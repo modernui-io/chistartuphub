@@ -36,7 +36,11 @@ import {
   MessageSquarePlus,
   RefreshCw,
   Clock,
-  Plus
+  Plus,
+  HandHelping,
+  CheckCircle,
+  XCircle,
+  Clock3
 } from 'lucide-react';
 import { toast } from 'sonner';
 import SEO from '@/components/SEO';
@@ -174,6 +178,8 @@ export default function Profile() {
   const [myAsks, setMyAsks] = useState([]);
   const [asksLoading, setAsksLoading] = useState(false);
   const [showPostAskModal, setShowPostAskModal] = useState(false);
+  const [myOffers, setMyOffers] = useState([]);
+  const [offersLoading, setOffersLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     full_name: '',
@@ -220,6 +226,46 @@ export default function Profile() {
     };
 
     fetchMyAsks();
+  }, [user, activeTab]);
+
+  // Fetch user's sent help offers when offers tab is active
+  useEffect(() => {
+    const fetchMyOffers = async () => {
+      if (!user || activeTab !== 'offers') return;
+
+      setOffersLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('connection_requests')
+          .select(`
+            *,
+            founder_asks (
+              id,
+              description,
+              sector,
+              category,
+              amount,
+              is_active,
+              user_profiles (
+                full_name,
+                company_name
+              )
+            )
+          `)
+          .eq('requester_id', user.id)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        setMyOffers(data || []);
+      } catch (error) {
+        console.error('Error fetching offers:', error);
+        toast.error('Failed to load your help offers');
+      } finally {
+        setOffersLoading(false);
+      }
+    };
+
+    fetchMyOffers();
   }, [user, activeTab]);
 
   useEffect(() => {
@@ -373,6 +419,18 @@ export default function Profile() {
             >
               <Bookmark size={16} />
               Saved ({bookmarks.length})
+            </button>
+            {/* My Offers tab - for all users who have sent help offers */}
+            <button
+              onClick={() => setActiveTab('offers')}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                activeTab === 'offers'
+                  ? 'bg-white text-black'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              <HandHelping size={16} />
+              My Offers
             </button>
             {profile?.role === 'founder' && (
               <>
@@ -994,6 +1052,138 @@ export default function Profile() {
             animate={{ opacity: 1, y: 0 }}
           >
             <ConnectionRequests />
+          </motion.div>
+        )}
+
+        {/* MY OFFERS TAB - Help offers sent by user */}
+        {activeTab === 'offers' && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-white">My Help Offers</h2>
+              <p className="text-sm text-white/50 mt-1">Track the status of your offers to help founders</p>
+            </div>
+
+            {offersLoading ? (
+              <div className="flex justify-center py-16">
+                <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
+              </div>
+            ) : myOffers.length === 0 ? (
+              <Card className="bg-black/40 backdrop-blur-sm border-white/10 p-16 text-center rounded-none">
+                <div className="w-16 h-16 rounded-none bg-black/40 backdrop-blur-sm flex items-center justify-center mx-auto mb-6">
+                  <HandHelping className="w-8 h-8 text-white/30" />
+                </div>
+                <p className="text-white/60 mb-2 text-lg">No offers sent yet</p>
+                <p className="text-white/40 text-sm mb-8">
+                  Browse asks and offer your help to founders in the ecosystem
+                </p>
+                <Button asChild className="bg-white text-black hover:bg-white/90 rounded-none px-6">
+                  <Link to="/opportunities">Browse Asks</Link>
+                </Button>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {myOffers.map((offer) => {
+                  const ask = offer.founder_asks;
+                  const founderName = ask?.user_profiles?.full_name || 'Anonymous Founder';
+                  const companyName = ask?.user_profiles?.company_name;
+                  const createdAt = new Date(offer.created_at);
+                  const hoursAgo = Math.floor((Date.now() - createdAt.getTime()) / (1000 * 60 * 60));
+                  const hoursRemaining = Math.max(0, 48 - hoursAgo);
+
+                  const statusConfig = {
+                    pending: {
+                      icon: Clock3,
+                      label: 'Pending',
+                      color: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+                      description: hoursRemaining > 0
+                        ? `Founder has ${hoursRemaining}h to respond`
+                        : 'Awaiting response'
+                    },
+                    accepted: {
+                      icon: CheckCircle,
+                      label: 'Accepted',
+                      color: 'bg-green-500/10 text-green-400 border-green-500/20',
+                      description: 'The founder accepted your offer!'
+                    },
+                    declined: {
+                      icon: XCircle,
+                      label: 'Declined',
+                      color: 'bg-red-500/10 text-red-400 border-red-500/20',
+                      description: 'The founder declined this time'
+                    },
+                  };
+
+                  const status = statusConfig[offer.status] || statusConfig.pending;
+                  const StatusIcon = status.icon;
+
+                  return (
+                    <motion.div
+                      key={offer.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-none p-6"
+                    >
+                      {/* Status + Category */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <span className={`flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-full border ${status.color}`}>
+                            <StatusIcon size={12} />
+                            {status.label}
+                          </span>
+                          <span className="text-xs text-white/40 uppercase tracking-wider">
+                            {ask?.category === 'fundraising' ? 'Fundraising' :
+                             ask?.category === 'cofounder' ? 'Co-founder' : 'General Advice'}
+                          </span>
+                        </div>
+                        <span className="text-xs text-white/30">
+                          {createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </span>
+                      </div>
+
+                      {/* Founder info */}
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                          <span className="font-mono text-[10px] text-white/50">
+                            {founderName.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-sm text-white font-medium">{founderName}</span>
+                          {companyName && (
+                            <span className="text-xs text-white/40 ml-2">• {companyName}</span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Ask description */}
+                      <p className="text-white/60 text-sm leading-relaxed mb-4 line-clamp-2">
+                        {ask?.description || 'Ask no longer available'}
+                      </p>
+
+                      {/* Your message */}
+                      <div className="bg-white/5 border border-white/5 p-3 rounded-none mb-4">
+                        <span className="text-[10px] text-white/30 uppercase tracking-wider block mb-1">Your message</span>
+                        <p className="text-xs text-white/50 line-clamp-2">{offer.requester_context}</p>
+                      </div>
+
+                      {/* Status description */}
+                      <div className="flex items-center gap-2 text-xs text-white/40">
+                        <StatusIcon size={12} />
+                        {status.description}
+                      </div>
+
+                      {/* If accepted, show founder's response */}
+                      {offer.status === 'accepted' && offer.founder_response && (
+                        <div className="mt-4 pt-4 border-t border-white/5">
+                          <span className="text-[10px] text-green-400 uppercase tracking-wider block mb-1">Founder's response</span>
+                          <p className="text-sm text-white/70">{offer.founder_response}</p>
+                        </div>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
           </motion.div>
         )}
       </div>

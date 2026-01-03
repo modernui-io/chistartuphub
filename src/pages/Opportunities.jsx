@@ -49,7 +49,7 @@ const SECTORS = [
 // ============================================
 
 export default function Opportunities() {
-  const { user, profile, openSignup } = useAuth();
+  const { user, profile, openSignup, openLogin } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSector, setSelectedSector] = useState('All Sectors');
@@ -86,11 +86,13 @@ export default function Opportunities() {
 
   const handleHelp = (ask) => {
     if (!user) {
-      toast.error('Please sign in to help', {
+      toast('Sign up to connect with founders', {
+        description: 'Create an account to offer your help and expertise.',
         action: {
           label: 'Sign Up',
           onClick: openSignup,
         },
+        duration: 5000,
       });
       return;
     }
@@ -171,24 +173,85 @@ export default function Opportunities() {
               Founders ask. Helpers connect. We amplify.
             </motion.p>
 
-            {/* Actions */}
+            {/* Actions - Different states based on auth */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="flex flex-wrap gap-3 mb-12"
+              className="mb-12"
             >
-              <button
-                onClick={handlePostAsk}
-                className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair"
-              >
-                <Plus className="w-4 h-4" strokeWidth={1.5} />
-                Post Your Ask
-              </button>
-              <div className="flex items-center gap-2 font-mono text-[10px] text-white/30 px-4">
-                <Lock className="w-3 h-3" strokeWidth={1.5} />
-                Founders only • One ask per 14 days
-              </div>
+              {!user ? (
+                /* Not logged in state */
+                <div className="border border-white/10 p-4 inline-block">
+                  <div className="flex flex-wrap items-center gap-4">
+                    <button
+                      onClick={openSignup}
+                      className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair"
+                    >
+                      <Plus className="w-4 h-4" strokeWidth={1.5} />
+                      Post Your Ask
+                    </button>
+                    <div className="flex flex-col gap-1">
+                      <span className="font-mono text-[10px] text-white/50 uppercase tracking-[0.1em]">
+                        Sign up or login to post
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={openSignup}
+                          className="font-mono text-[10px] text-white hover:text-white/70 uppercase tracking-[0.1em] underline cursor-crosshair"
+                        >
+                          Sign Up
+                        </button>
+                        <span className="text-white/30">or</span>
+                        <button
+                          onClick={openLogin}
+                          className="font-mono text-[10px] text-white hover:text-white/70 uppercase tracking-[0.1em] underline cursor-crosshair"
+                        >
+                          Login
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : profile?.role !== 'founder' ? (
+                /* Logged in but not a founder */
+                <div className="border border-amber-500/20 bg-amber-500/5 p-4 inline-block">
+                  <div className="flex flex-wrap items-center gap-4">
+                    <button
+                      onClick={() => toast.error('Posting is limited to founders only', {
+                        description: 'Update your profile role to "Founder" to unlock this feature.',
+                      })}
+                      className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 bg-white/20 text-white/50 border border-white/10 cursor-not-allowed"
+                    >
+                      <Lock className="w-4 h-4" strokeWidth={1.5} />
+                      Post Your Ask
+                    </button>
+                    <div className="flex flex-col gap-1">
+                      <span className="font-mono text-[10px] text-amber-400 uppercase tracking-[0.1em]">
+                        Founders only
+                      </span>
+                      <span className="font-mono text-[10px] text-white/40">
+                        Your role: <span className="text-white/60 capitalize">{profile?.role || 'not set'}</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                /* Logged in as founder - full access */
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={handlePostAsk}
+                    className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair"
+                  >
+                    <Plus className="w-4 h-4" strokeWidth={1.5} />
+                    Post Your Ask
+                  </button>
+                  <div className="flex items-center gap-2 font-mono text-[10px] text-white/30 px-4">
+                    <Lock className="w-3 h-3" strokeWidth={1.5} />
+                    One ask per 14 days
+                  </div>
+                </div>
+              )}
             </motion.div>
 
             {/* Category Filters */}
@@ -297,6 +360,9 @@ export default function Opportunities() {
                   [ERROR]
                 </span>
                 <p className="text-white/40 mt-4">Failed to load asks. Please try again.</p>
+                <p className="text-white/20 text-xs mt-2 font-mono max-w-md mx-auto break-words">
+                  {asksError}
+                </p>
                 <button
                   onClick={refetch}
                   className="mt-4 font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 hover:text-white border border-white/20 px-4 py-2 hover:bg-white hover:text-black transition-colors cursor-crosshair"

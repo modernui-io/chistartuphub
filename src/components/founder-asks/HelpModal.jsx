@@ -72,7 +72,8 @@ export default function HelpModal({ isOpen, onClose, ask }) {
       // This will be handled by a Supabase Edge Function or webhook
 
       toast.success('Your offer to help has been sent!', {
-        description: 'The founder will receive an email and can connect with you on LinkedIn.',
+        description: 'The founder has 48 hours to review and accept your request. You\'ll be notified when they respond.',
+        duration: 6000,
       });
 
       onClose();

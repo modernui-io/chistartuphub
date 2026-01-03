@@ -77,17 +77,47 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
   useEffect(() => {
     const checkCanPost = async () => {
       if (!user) return;
-      
-      const { data, error } = await supabase
-        .rpc('can_create_ask', { user_uuid: user.id });
-      
-      if (!error) {
-        setCanPost(data);
-        
-        if (!data) {
-          const { data: days } = await supabase
-            .rpc('days_until_next_ask', { user_uuid: user.id });
-          setDaysUntilNext(days || 0);
+
+      try {
+        // Try RPC first
+        const { data, error } = await supabase
+          .rpc('can_create_ask', { user_uuid: user.id });
+
+        if (!error) {
+          setCanPost(data);
+
+          if (!data) {
+            const { data: days } = await supabase
+              .rpc('days_until_next_ask', { user_uuid: user.id });
+            setDaysUntilNext(days || 0);
+          }
+          return;
+        }
+      } catch (rpcError) {
+        console.warn('RPC not available, using fallback query');
+      }
+
+      // Fallback: query directly
+      const fourteenDaysAgo = new Date();
+      fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+
+      const { data: recentAsks, error: queryError } = await supabase
+        .from('founder_asks')
+        .select('created_at')
+        .eq('user_id', user.id)
+        .eq('is_active', true)
+        .gte('created_at', fourteenDaysAgo.toISOString())
+        .order('created_at', { ascending: false })
+        .limit(1);
+
+      if (!queryError) {
+        if (recentAsks && recentAsks.length > 0) {
+          setCanPost(false);
+          const lastAskDate = new Date(recentAsks[0].created_at);
+          const daysPassed = Math.floor((Date.now() - lastAskDate.getTime()) / (1000 * 60 * 60 * 24));
+          setDaysUntilNext(Math.max(0, 14 - daysPassed));
+        } else {
+          setCanPost(true);
         }
       }
     };

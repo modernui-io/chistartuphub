@@ -21,7 +21,10 @@ async function fetchFounderAsks() {
     .eq('is_active', true)
     .order('created_at', { ascending: false });
 
-  if (error) throw error;
+  if (error) {
+    console.error('[ERROR] Failed to fetch founder asks:', error.message);
+    throw error;
+  }
 
   // Transform data for UI
   return (data || []).map(ask => ({
