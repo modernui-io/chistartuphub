@@ -53,6 +53,15 @@ const STAGES = [
 ];
 
 // ============================================
+// ADMIN EMAILS (bypass posting restrictions)
+// ============================================
+const ADMIN_EMAILS = [
+  'admin@test.chistartuphub.com',
+  'hello@chistartuphub.com',
+  'billy@chistartuphub.com',
+];
+
+// ============================================
 // POST ASK MODAL COMPONENT
 // ============================================
 
@@ -62,6 +71,9 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [canPost, setCanPost] = useState(true);
   const [daysUntilNext, setDaysUntilNext] = useState(0);
+
+  // Check if user is admin (bypasses restrictions)
+  const isAdmin = user && ADMIN_EMAILS.includes(user.email);
 
   // Form state
   const [category, setCategory] = useState('');
@@ -73,10 +85,16 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [allowAmplification, setAllowAmplification] = useState(true);
 
-  // Check if user can post (one ask per 14 days)
+  // Check if user can post (one ask per 14 days, unless admin)
   useEffect(() => {
     const checkCanPost = async () => {
       if (!user) return;
+
+      // Admins can always post
+      if (ADMIN_EMAILS.includes(user.email)) {
+        setCanPost(true);
+        return;
+      }
 
       try {
         // Try RPC first
@@ -208,8 +226,8 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
 
   if (!isOpen) return null;
 
-  // Check if user is a founder
-  const isFounder = profile?.role === 'founder';
+  // Check if user is a founder (or admin - admins can always post)
+  const isFounder = profile?.role === 'founder' || isAdmin;
 
   return (
     <AnimatePresence>
@@ -262,8 +280,25 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
 
           {/* Content */}
           <div className="p-6 max-h-[60vh] overflow-y-auto">
+            {/* Admin notice */}
+            {isAdmin && (
+              <div className="mb-6 p-4 border border-green-500/30 bg-green-500/5">
+                <div className="flex items-start gap-3">
+                  <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                  <div>
+                    <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-green-400 mb-1">
+                      Admin Mode
+                    </p>
+                    <p className="text-sm text-white/50">
+                      You're posting as an admin. Rate limits and founder restrictions are bypassed.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Not a founder warning */}
-            {!isFounder && (
+            {!isFounder && !isAdmin && (
               <div className="mb-6 p-4 border border-amber-500/30 bg-amber-500/5">
                 <div className="flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
@@ -279,8 +314,8 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
               </div>
             )}
 
-            {/* Can't post yet warning */}
-            {isFounder && !canPost && (
+            {/* Can't post yet warning (not shown for admins) */}
+            {isFounder && !canPost && !isAdmin && (
               <div className="mb-6 p-4 border border-blue-500/30 bg-blue-500/5">
                 <div className="flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />

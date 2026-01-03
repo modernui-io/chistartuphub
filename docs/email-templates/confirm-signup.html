@@ -1,0 +1,104 @@
+<!--
+  SUPABASE EMAIL TEMPLATE: Confirm Sign Up
+  Subject: Welcome to ChiStartup Hub - Confirm Your Email
+
+  Paste this into: Supabase Dashboard > Authentication > Email Templates > Confirm signup
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirm Your Email</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #050A14; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #050A14; padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width: 600px; width: 100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="padding-bottom: 32px; border-bottom: 1px solid rgba(255,255,255,0.1);">
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td>
+                    <div style="display: inline-block; width: 44px; height: 44px; border: 1px solid rgba(255,255,255,0.2); text-align: center; line-height: 44px; background-color: transparent;">
+                      <span style="color: white; font-weight: bold; font-size: 14px; font-family: monospace;">CS</span>
+                    </div>
+                  </td>
+                  <td align="right">
+                    <span style="font-family: monospace; font-size: 10px; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 2px;">
+                      [VERIFY: EMAIL]
+                    </span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Main Content -->
+          <tr>
+            <td style="padding: 40px 0;">
+              <h1 style="margin: 0 0 16px 0; font-size: 32px; font-weight: 400; color: white; font-family: Georgia, 'Times New Roman', serif;">
+                Welcome to ChiStartup Hub
+              </h1>
+
+              <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.6; color: rgba(255,255,255,0.7);">
+                You're one step away from joining Chicago's startup ecosystem. Confirm your email address to get started.
+              </p>
+
+              <!-- CTA Button -->
+              <table cellpadding="0" cellspacing="0" style="margin: 32px 0;">
+                <tr>
+                  <td style="background-color: white; padding: 0;">
+                    <a href="{{ .ConfirmationURL }}" style="display: inline-block; padding: 16px 32px; background-color: white; color: #050A14; text-decoration: none; font-family: monospace; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">
+                      Confirm Email Address
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Secondary Link -->
+              <p style="margin: 24px 0 0 0; font-size: 13px; color: rgba(255,255,255,0.4);">
+                Or copy this link:
+              </p>
+              <p style="margin: 8px 0 0 0; font-size: 12px; color: rgba(255,255,255,0.5); word-break: break-all; font-family: monospace; background: rgba(255,255,255,0.05); padding: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                {{ .ConfirmationURL }}
+              </p>
+
+              <!-- Security Notice -->
+              <div style="margin-top: 32px; padding: 16px; background: rgba(251, 191, 36, 0.05); border: 1px solid rgba(251, 191, 36, 0.2);">
+                <p style="margin: 0; font-size: 13px; color: rgba(251, 191, 36, 0.8);">
+                  ⏰ This link expires in 24 hours for security reasons.
+                </p>
+              </div>
+
+              <p style="margin: 24px 0 0 0; font-size: 13px; color: rgba(255,255,255,0.4);">
+                Didn't create an account? You can safely ignore this email.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.1);">
+              <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.3); font-family: monospace; text-align: center;">
+                ChiStartup Hub • Chicago's Startup Ecosystem
+              </p>
+              <p style="margin: 12px 0 0 0; font-size: 11px; color: rgba(255,255,255,0.2); text-align: center;">
+                © 2026 ChiStartup Hub. All rights reserved.
+              </p>
+              <p style="margin: 8px 0 0 0; font-size: 11px; color: rgba(255,255,255,0.2); text-align: center;">
+                Need help? <a href="mailto:hello@chistartuphub.com" style="color: rgba(255,255,255,0.4);">hello@chistartuphub.com</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

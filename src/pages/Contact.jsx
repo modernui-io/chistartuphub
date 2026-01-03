@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Send, MessageSquare, CheckCircle2, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { entities } from "@/api/supabaseClient";
 import SEO from "@/components/SEO";
 import BureauFooter from "@/components/bureau/BureauFooter";
 
@@ -31,21 +32,32 @@ export default function Contact() {
     setSubmitStatus(null);
 
     try {
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject || 'Contact from ChiStartup Hub',
-          message: formData.message
-        }),
+      // Save to database for admin review
+      await entities.ContactSubmission.create({
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject || 'Contact from ChiStartup Hub',
+        message: formData.message,
+        status: 'new'
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to send message');
+      // Also send email notification
+      try {
+        await fetch('/api/send-email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject || 'Contact from ChiStartup Hub',
+            message: formData.message
+          }),
+        });
+      } catch (emailError) {
+        // Email failed but database save succeeded - still show success
+        console.warn('Email notification failed, but message was saved:', emailError);
       }
 
       setSubmitStatus('success');

@@ -8,8 +8,16 @@ import {
   Bookmark,
   Settings,
   LogOut,
-  ArrowUpRight
+  ArrowUpRight,
+  Shield
 } from "lucide-react";
+
+// Admin access list
+const ADMIN_EMAILS = [
+  'admin@test.chistartuphub.com',
+  'hello@chistartuphub.com',
+  'billy@chistartuphub.com',
+];
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -254,6 +262,16 @@ export default function Header({
                           <Settings className="w-4 h-4" />
                           <span className="font-mono text-[11px] uppercase tracking-wider">Settings</span>
                         </Link>
+                        {ADMIN_EMAILS.includes(user?.email) && (
+                          <Link
+                            to="/admin"
+                            onClick={() => setIsUserMenuOpen(false)}
+                            className="flex items-center gap-3 px-5 py-3 text-amber-400/70 hover:bg-amber-500/10 hover:text-amber-400 transition-none cursor-crosshair"
+                          >
+                            <Shield className="w-4 h-4" />
+                            <span className="font-mono text-[11px] uppercase tracking-wider">Admin Dashboard</span>
+                          </Link>
+                        )}
                       </div>
 
                       {/* Section 3: Sign Out */}
@@ -328,10 +346,10 @@ export default function Header({
             />
             {/* Mobile menu content */}
             <div className="fixed inset-x-0 top-[73px] bottom-0 bg-[#050A14] z-50 md:hidden overflow-y-auto">
-              <div className="px-6 py-8 space-y-6">
+              <div className="px-6 py-6 space-y-4">
               {navDropdowns.map((dropdown) => (
                 <div key={dropdown.name}>
-                  <div className="px-2 py-2 text-white/30 text-[10px] font-mono font-semibold uppercase tracking-[0.2em]">
+                  <div className="px-3 py-2 text-white/30 text-[11px] font-mono font-semibold uppercase tracking-[0.2em]">
                     [{dropdown.name}]
                   </div>
                   {dropdown.items.map((item) => (
@@ -340,10 +358,10 @@ export default function Header({
                       to={item.path}
                       onClick={() => setMobileMenuOpen(false)}
                       className={`
-                        block px-2 py-3 font-mono text-sm uppercase tracking-wider transition-none
+                        block px-3 py-4 font-mono text-base uppercase tracking-wider transition-none border-b border-white/5
                         ${location.pathname === item.path
-                          ? 'text-white'
-                          : 'text-white/50 hover:text-white'
+                          ? 'text-white bg-white/5'
+                          : 'text-white/60 hover:text-white active:bg-white/10'
                         }
                       `}
                     >
@@ -353,17 +371,17 @@ export default function Header({
                 </div>
               ))}
 
-              <div className="px-2 py-2 text-white/30 text-[10px] font-mono font-semibold uppercase tracking-[0.2em]">
+              <div className="px-3 py-2 text-white/30 text-[11px] font-mono font-semibold uppercase tracking-[0.2em]">
                 [More]
               </div>
               <Link
                 to={createPageUrl("Stories")}
                 onClick={() => setMobileMenuOpen(false)}
                 className={`
-                  block px-2 py-3 font-mono text-sm uppercase tracking-wider transition-none
+                  block px-3 py-4 font-mono text-base uppercase tracking-wider transition-none border-b border-white/5
                   ${location.pathname === createPageUrl("Stories")
-                    ? 'text-white'
-                    : 'text-white/50 hover:text-white'
+                    ? 'text-white bg-white/5'
+                    : 'text-white/60 hover:text-white active:bg-white/10'
                   }
                 `}
               >
@@ -373,10 +391,10 @@ export default function Header({
                 to={createPageUrl("About")}
                 onClick={() => setMobileMenuOpen(false)}
                 className={`
-                  block px-2 py-3 font-mono text-sm uppercase tracking-wider transition-none
+                  block px-3 py-4 font-mono text-base uppercase tracking-wider transition-none border-b border-white/5
                   ${location.pathname === createPageUrl("About")
-                    ? 'text-white'
-                    : 'text-white/50 hover:text-white'
+                    ? 'text-white bg-white/5'
+                    : 'text-white/60 hover:text-white active:bg-white/10'
                   }
                 `}
               >
@@ -404,27 +422,37 @@ export default function Header({
                     <Link
                       to={createPageUrl("Profile")}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-2 py-3 text-white/50 hover:text-white transition-none"
+                      className="flex items-center gap-4 px-3 py-4 text-white/60 hover:text-white active:bg-white/10 transition-none border-b border-white/5"
                     >
-                      <User className="w-4 h-4" />
-                      <span className="font-mono text-sm uppercase tracking-wider">Your Profile</span>
+                      <User className="w-5 h-5" />
+                      <span className="font-mono text-base uppercase tracking-wider">Your Profile</span>
                     </Link>
                     <Link
                       to="/profile?tab=bookmarks"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-2 py-3 text-white/50 hover:text-white transition-none"
+                      className="flex items-center gap-4 px-3 py-4 text-white/60 hover:text-white active:bg-white/10 transition-none border-b border-white/5"
                     >
-                      <Bookmark className="w-4 h-4" />
-                      <span className="font-mono text-sm uppercase tracking-wider">Saved Resources</span>
+                      <Bookmark className="w-5 h-5" />
+                      <span className="font-mono text-base uppercase tracking-wider">Saved Resources</span>
                     </Link>
                     <Link
                       to={createPageUrl("Settings")}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-3 px-2 py-3 text-white/50 hover:text-white transition-none"
+                      className="flex items-center gap-4 px-3 py-4 text-white/60 hover:text-white active:bg-white/10 transition-none border-b border-white/5"
                     >
-                      <Settings className="w-4 h-4" />
-                      <span className="font-mono text-sm uppercase tracking-wider">Settings</span>
+                      <Settings className="w-5 h-5" />
+                      <span className="font-mono text-base uppercase tracking-wider">Settings</span>
                     </Link>
+                    {ADMIN_EMAILS.includes(user?.email) && (
+                      <Link
+                        to="/admin"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center gap-4 px-3 py-4 text-amber-400/70 hover:text-amber-400 active:bg-amber-400/10 transition-none border-b border-white/5"
+                      >
+                        <Shield className="w-5 h-5" />
+                        <span className="font-mono text-base uppercase tracking-wider">Admin Dashboard</span>
+                      </Link>
+                    )}
 
                     <div className="pt-4 border-t border-white/[0.08] space-y-4">
                       <Link to={createPageUrl("Opportunities")} onClick={() => setMobileMenuOpen(false)} className="block">

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/api/supabaseClient';
+import { sendConnectionAcceptedEmail, sendConnectionDeclinedEmail } from '@/lib/email';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -146,7 +147,7 @@ export default function ConnectionRequests() {
     }
 
     setProcessingId(selectedRequest.id);
-    
+
     try {
       // Call the database function to accept
       const { error } = await supabase.rpc('accept_connection_request', {
@@ -156,10 +157,20 @@ export default function ConnectionRequests() {
 
       if (error) throw error;
 
-      // Trigger email notification to helper
-      await supabase.functions.invoke('notify-helper-accepted', {
-        body: { connection_request_id: selectedRequest.id }
-      });
+      // Send email notification to helper
+      if (selectedRequest.requester_email) {
+        const emailResult = await sendConnectionAcceptedEmail(selectedRequest.requester_email, {
+          helperName: selectedRequest.requester_name || 'Helper',
+          founderName: profile?.full_name || 'Founder',
+          founderEmail: user.email,
+          founderLinkedIn: linkedInUrl.trim(),
+          askDescription: selectedRequest.founder_asks?.description || 'Your ask',
+        });
+
+        if (!emailResult.success) {
+          console.warn('[CONNECTION] Email notification failed:', emailResult.error);
+        }
+      }
 
       toast.success('Request accepted!', {
         description: 'Your LinkedIn has been shared with the helper'
@@ -180,7 +191,7 @@ export default function ConnectionRequests() {
   // Handle decline request
   const handleDecline = async (request) => {
     setProcessingId(request.id);
-    
+
     try {
       // Call the database function to decline
       const { error } = await supabase.rpc('decline_connection_request', {
@@ -189,10 +200,18 @@ export default function ConnectionRequests() {
 
       if (error) throw error;
 
-      // Trigger email notification to helper
-      await supabase.functions.invoke('notify-helper-declined', {
-        body: { connection_request_id: request.id }
-      });
+      // Send email notification to helper
+      if (request.requester_email) {
+        const emailResult = await sendConnectionDeclinedEmail(request.requester_email, {
+          helperName: request.requester_name || 'Helper',
+          founderName: profile?.full_name || 'Founder',
+          askDescription: request.founder_asks?.description || 'The ask',
+        });
+
+        if (!emailResult.success) {
+          console.warn('[CONNECTION] Decline email failed:', emailResult.error);
+        }
+      }
 
       toast.success('Request declined');
       fetchRequests();

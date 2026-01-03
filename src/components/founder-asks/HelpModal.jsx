@@ -4,6 +4,7 @@ import { X, Linkedin, Mail, Send, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { supabase } from '@/api/supabaseClient';
+import { sendConnectionRequestEmail } from '@/lib/email';
 
 // ============================================
 // HELP MODAL COMPONENT
@@ -68,8 +69,30 @@ export default function HelpModal({ isOpen, onClose, ask }) {
       // Increment connection request count
       await supabase.rpc('increment_connection_count', { ask_uuid: ask.id });
 
-      // TODO: Send email notification to founder
-      // This will be handled by a Supabase Edge Function or webhook
+      // Get founder's email and send notification
+      if (ask.userId) {
+        const { data: founderProfile } = await supabase
+          .from('user_profiles')
+          .select('email, full_name')
+          .eq('id', ask.userId)
+          .single();
+
+        if (founderProfile?.email) {
+          const emailResult = await sendConnectionRequestEmail(founderProfile.email, {
+            founderName: founderProfile.full_name || 'Founder',
+            helperName: profile?.full_name || user.email,
+            helperEmail: user.email,
+            helperLinkedIn: linkedinUrl,
+            helperMessage: message,
+            askDescription: ask.description,
+          });
+
+          if (!emailResult.success) {
+            console.warn('[HELP] Email notification failed:', emailResult.error);
+            // Don't block the flow - the connection request was created
+          }
+        }
+      }
 
       toast.success('Your offer to help has been sent!', {
         description: 'The founder has 48 hours to review and accept your request. You\'ll be notified when they respond.',

@@ -51,6 +51,15 @@ import { supabase } from '@/api/supabaseClient';
 import { PostAskModal } from '@/components/founder-asks';
 
 // ============================================
+// ADMIN EMAILS (can access founder features)
+// ============================================
+const ADMIN_EMAILS = [
+  'admin@test.chistartuphub.com',
+  'hello@chistartuphub.com',
+  'billy@chistartuphub.com',
+];
+
+// ============================================
 // STANDARDIZED OPTIONS FOR NO-ALGORITHM SEARCH
 // ============================================
 
@@ -178,6 +187,10 @@ export default function Profile() {
   const [myAsks, setMyAsks] = useState([]);
   const [asksLoading, setAsksLoading] = useState(false);
   const [showPostAskModal, setShowPostAskModal] = useState(false);
+
+  // Check if user is admin (can access founder features)
+  const isAdmin = user && ADMIN_EMAILS.includes(user.email);
+  const isFounderOrAdmin = profile?.role === 'founder' || isAdmin;
   const [myOffers, setMyOffers] = useState([]);
   const [offersLoading, setOffersLoading] = useState(false);
 
@@ -344,13 +357,56 @@ export default function Profile() {
 
   if (!user) {
     return (
-      <div className="min-h-screen py-20 px-6 flex flex-col items-center justify-center">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
-          <p className="text-white/60 mb-4 text-lg">Please log in to view your profile</p>
-          <Button onClick={() => navigate('/')} className="bg-blue-600 hover:bg-blue-700">
-            Go Home
-          </Button>
-        </motion.div>
+      <div className="min-h-screen relative" data-page="profile-auth">
+        <BureauAtmosphere />
+        <div className="relative z-10 min-h-screen flex items-center justify-center px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center max-w-md"
+          >
+            {/* Bureau Header Tag */}
+            <span className="font-mono text-[10px] text-white/20 uppercase tracking-[0.2em] block mb-6">
+              [ACCESS: RESTRICTED]
+            </span>
+
+            {/* Icon */}
+            <div className="w-20 h-20 border border-white/10 flex items-center justify-center mx-auto mb-8">
+              <User className="w-10 h-10 text-white/20" strokeWidth={1} />
+            </div>
+
+            {/* Title */}
+            <h1 className="font-serif text-3xl md:text-4xl text-white mb-4">
+              Sign In Required
+            </h1>
+
+            <p className="text-white/50 text-sm leading-relaxed mb-8">
+              Please sign in to access your profile, manage your asks, and connect with the Chicago startup ecosystem.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => navigate('/')}
+                className="font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair"
+              >
+                Sign In
+              </button>
+              <button
+                onClick={() => navigate('/')}
+                className="font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 border border-white/20 text-white/50 hover:bg-white/5 transition-colors cursor-crosshair"
+              >
+                Go Home
+              </button>
+            </div>
+
+            {/* Help text */}
+            <p className="text-white/30 text-xs mt-8 font-mono">
+              New to ChiStartup Hub? <Link to="/" className="text-white/50 hover:text-white underline">Create an account</Link>
+            </p>
+          </motion.div>
+        </div>
+        <BureauFooter />
       </div>
     );
   }
@@ -380,85 +436,95 @@ export default function Profile() {
 
       <div className="max-w-5xl mx-auto">
 
-        {/* Tab Switcher */}
+        {/* Tab Switcher - Mobile Optimized */}
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex justify-center mb-8"
+          className="mb-8 -mx-4 md:mx-0"
         >
-          <div className="inline-flex bg-black/40 backdrop-blur-sm border border-white/10 p-1">
-            <button
-              onClick={() => setActiveTab('preview')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                activeTab === 'preview'
-                  ? 'bg-white text-black'
-                  : 'text-white/60 hover:text-white'
-              }`}
-            >
-              <Eye size={16} />
-              Preview
-            </button>
-            <button
-              onClick={() => setActiveTab('edit')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                activeTab === 'edit'
-                  ? 'bg-white text-black'
-                  : 'text-white/60 hover:text-white'
-              }`}
-            >
-              <Edit3 size={16} />
-              Edit Profile
-            </button>
-            <button
-              onClick={() => setActiveTab('bookmarks')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                activeTab === 'bookmarks'
-                  ? 'bg-white text-black'
-                  : 'text-white/60 hover:text-white'
-              }`}
-            >
-              <Bookmark size={16} />
-              Saved ({bookmarks.length})
-            </button>
-            {/* My Offers tab - for all users who have sent help offers */}
-            <button
-              onClick={() => setActiveTab('offers')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                activeTab === 'offers'
-                  ? 'bg-white text-black'
-                  : 'text-white/60 hover:text-white'
-              }`}
-            >
-              <HandHelping size={16} />
-              My Offers
-            </button>
-            {profile?.role === 'founder' && (
-              <>
+          {/* Horizontal scroll container for mobile */}
+          <div className="overflow-x-auto scrollbar-hide px-4 md:px-0">
+            <div className="flex md:justify-center min-w-max md:min-w-0">
+              <div className="inline-flex bg-black/40 backdrop-blur-sm border border-white/10 p-1.5 md:p-1 gap-1">
                 <button
-                  onClick={() => setActiveTab('asks')}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === 'asks'
+                  onClick={() => setActiveTab('preview')}
+                  className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                    activeTab === 'preview'
                       ? 'bg-white text-black'
                       : 'text-white/60 hover:text-white'
                   }`}
                 >
-                  <MessageSquarePlus size={16} />
-                  My Asks
+                  <Eye size={16} className="flex-shrink-0" />
+                  <span className="hidden sm:inline">Preview</span>
                 </button>
                 <button
-                  onClick={() => setActiveTab('requests')}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === 'requests'
+                  onClick={() => setActiveTab('edit')}
+                  className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                    activeTab === 'edit'
                       ? 'bg-white text-black'
                       : 'text-white/60 hover:text-white'
                   }`}
                 >
-                  <Inbox size={16} />
-                  Requests
+                  <Edit3 size={16} className="flex-shrink-0" />
+                  <span className="hidden sm:inline">Edit</span>
                 </button>
-              </>
-            )}
+                <button
+                  onClick={() => setActiveTab('bookmarks')}
+                  className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                    activeTab === 'bookmarks'
+                      ? 'bg-white text-black'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  <Bookmark size={16} className="flex-shrink-0" />
+                  <span className="hidden sm:inline">Saved</span>
+                  <span className="text-[10px] md:text-xs opacity-60">({bookmarks.length})</span>
+                </button>
+                {/* My Offers tab - for all users who have sent help offers */}
+                <button
+                  onClick={() => setActiveTab('offers')}
+                  className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                    activeTab === 'offers'
+                      ? 'bg-white text-black'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  <HandHelping size={16} className="flex-shrink-0" />
+                  <span className="hidden sm:inline">Offers</span>
+                </button>
+                {isFounderOrAdmin && (
+                  <>
+                    <button
+                      onClick={() => setActiveTab('asks')}
+                      className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                        activeTab === 'asks'
+                          ? 'bg-white text-black'
+                          : 'text-white/60 hover:text-white'
+                      }`}
+                    >
+                      <MessageSquarePlus size={16} className="flex-shrink-0" />
+                      <span className="hidden sm:inline">Asks</span>
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('requests')}
+                      className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                        activeTab === 'requests'
+                          ? 'bg-white text-black'
+                          : 'text-white/60 hover:text-white'
+                      }`}
+                    >
+                      <Inbox size={16} className="flex-shrink-0" />
+                      <span className="hidden sm:inline">Requests</span>
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
+          {/* Mobile hint for scrolling */}
+          <p className="text-center text-[10px] text-white/30 mt-2 md:hidden">
+            Swipe to see more tabs →
+          </p>
         </motion.div>
 
         {/* PREVIEW TAB - Bento Grid Profile Card */}
@@ -921,7 +987,7 @@ export default function Profile() {
         )}
 
         {/* MY ASKS TAB - Founder's posted asks */}
-        {activeTab === 'asks' && profile?.role === 'founder' && (
+        {activeTab === 'asks' && isFounderOrAdmin && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             {/* Header with Post Ask button */}
             <div className="flex items-center justify-between mb-6">
@@ -1046,7 +1112,7 @@ export default function Profile() {
         )}
 
         {/* REQUESTS TAB - Connection Requests for Founders */}
-        {activeTab === 'requests' && profile?.role === 'founder' && (
+        {activeTab === 'requests' && isFounderOrAdmin && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

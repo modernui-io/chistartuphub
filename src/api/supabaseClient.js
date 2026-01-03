@@ -133,6 +133,7 @@ export const entities = {
   UpcomingOpportunity: createEntity('upcoming_opportunities'),
   EmailSignup: createEntity('email_signups'),
   ResourceSubmission: createEntity('resource_submissions'),
+  ContactSubmission: createEntity('contact_submissions'),
   // Authentication entities
   UserProfile: createEntity('user_profiles'),
   Bookmark: createEntity('bookmarks'),

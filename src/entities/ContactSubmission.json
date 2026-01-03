@@ -1,0 +1,42 @@
+{
+  "name": "ContactSubmission",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the person reaching out"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email of the person"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Subject of the message"
+    },
+    "message": {
+      "type": "string",
+      "description": "The message content"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "read",
+        "replied",
+        "archived"
+      ],
+      "default": "new",
+      "description": "Status of the contact submission"
+    },
+    "admin_notes": {
+      "type": "string",
+      "description": "Internal notes by admin"
+    }
+  },
+  "required": [
+    "name",
+    "email",
+    "message"
+  ]
+}

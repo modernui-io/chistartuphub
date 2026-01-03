@@ -5,6 +5,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide scrollbar utility for horizontal scroll containers */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    THE CHICAGO BUREAU - PREMIUM DESIGN SYSTEM
    Systematic Modernism | Precision over Decoration
