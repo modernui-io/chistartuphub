@@ -32,13 +32,19 @@ import {
   Edit3,
   Eye,
   Inbox,
-  GraduationCap
+  GraduationCap,
+  MessageSquarePlus,
+  RefreshCw,
+  Clock,
+  Plus
 } from 'lucide-react';
 import { toast } from 'sonner';
 import SEO from '@/components/SEO';
 import { BureauAtmosphere, BureauFooter } from '@/components/bureau';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { MultiSelect, SingleSelect } from '@/components/ui/multi-select';
+import { supabase } from '@/api/supabaseClient';
+import { PostAskModal } from '@/components/founder-asks';
 
 // ============================================
 // STANDARDIZED OPTIONS FOR NO-ALGORITHM SEARCH
@@ -165,6 +171,9 @@ export default function Profile() {
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'preview');
   const [copied, setCopied] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [myAsks, setMyAsks] = useState([]);
+  const [asksLoading, setAsksLoading] = useState(false);
+  const [showPostAskModal, setShowPostAskModal] = useState(false);
 
   const [formData, setFormData] = useState({
     full_name: '',
@@ -183,6 +192,35 @@ export default function Profile() {
 
   // Check if tech stack should be visible (user selected Technical Founder or Full Stack Dev)
   const showTechStack = formData.badges?.some(badge => TECH_BADGES.includes(badge));
+
+  // Fetch user's asks when asks tab is active
+  useEffect(() => {
+    const fetchMyAsks = async () => {
+      if (!user || activeTab !== 'asks') return;
+
+      setAsksLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('founder_asks')
+          .select(`
+            *,
+            connection_requests:connection_requests(count)
+          `)
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        setMyAsks(data || []);
+      } catch (error) {
+        console.error('Error fetching asks:', error);
+        toast.error('Failed to load your asks');
+      } finally {
+        setAsksLoading(false);
+      }
+    };
+
+    fetchMyAsks();
+  }, [user, activeTab]);
 
   useEffect(() => {
     if (profile || user) {
@@ -337,17 +375,30 @@ export default function Profile() {
               Saved ({bookmarks.length})
             </button>
             {profile?.role === 'founder' && (
-              <button
-                onClick={() => setActiveTab('requests')}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                  activeTab === 'requests'
-                    ? 'bg-white text-black'
-                    : 'text-white/60 hover:text-white'
-                }`}
-              >
-                <Inbox size={16} />
-                Requests
-              </button>
+              <>
+                <button
+                  onClick={() => setActiveTab('asks')}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    activeTab === 'asks'
+                      ? 'bg-white text-black'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  <MessageSquarePlus size={16} />
+                  My Asks
+                </button>
+                <button
+                  onClick={() => setActiveTab('requests')}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                    activeTab === 'requests'
+                      ? 'bg-white text-black'
+                      : 'text-white/60 hover:text-white'
+                  }`}
+                >
+                  <Inbox size={16} />
+                  Requests
+                </button>
+              </>
             )}
           </div>
         </motion.div>
@@ -811,6 +862,131 @@ export default function Profile() {
           </motion.div>
         )}
 
+        {/* MY ASKS TAB - Founder's posted asks */}
+        {activeTab === 'asks' && profile?.role === 'founder' && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            {/* Header with Post Ask button */}
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h2 className="text-xl font-semibold text-white">My Asks</h2>
+                <p className="text-sm text-white/50 mt-1">Manage your asks to the Chicago ecosystem</p>
+              </div>
+              <Button
+                onClick={() => setShowPostAskModal(true)}
+                className="bg-white text-black hover:bg-white/90 rounded-none"
+              >
+                <Plus size={16} className="mr-2" />
+                Post New Ask
+              </Button>
+            </div>
+
+            {asksLoading ? (
+              <div className="flex justify-center py-16">
+                <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
+              </div>
+            ) : myAsks.length === 0 ? (
+              <Card className="bg-black/40 backdrop-blur-sm border-white/10 p-16 text-center rounded-none">
+                <div className="w-16 h-16 rounded-none bg-black/40 backdrop-blur-sm flex items-center justify-center mx-auto mb-6">
+                  <MessageSquarePlus className="w-8 h-8 text-white/30" />
+                </div>
+                <p className="text-white/60 mb-2 text-lg">No asks yet</p>
+                <p className="text-white/40 text-sm mb-8">
+                  Share what you need with Chicago's startup ecosystem
+                </p>
+                <Button
+                  onClick={() => setShowPostAskModal(true)}
+                  className="bg-white text-black hover:bg-white/90 rounded-none px-6"
+                >
+                  <Plus size={16} className="mr-2" />
+                  Post Your First Ask
+                </Button>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {myAsks.map((ask) => {
+                  const isActive = ask.is_active;
+                  const expiresAt = new Date(ask.expires_at);
+                  const isExpired = expiresAt < new Date();
+                  const daysLeft = Math.max(0, Math.ceil((expiresAt - new Date()) / (1000 * 60 * 60 * 24)));
+                  const helpersCount = ask.connection_requests?.[0]?.count || 0;
+
+                  return (
+                    <motion.div
+                      key={ask.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-none p-6"
+                    >
+                      {/* Status + Category */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                          <span className={`px-3 py-1 text-xs font-medium rounded-full border ${
+                            isExpired
+                              ? 'bg-gray-500/10 text-gray-400 border-gray-500/20'
+                              : isActive
+                                ? 'bg-green-500/10 text-green-400 border-green-500/20'
+                                : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
+                          }`}>
+                            {isExpired ? 'Expired' : isActive ? 'Active' : 'Pending'}
+                          </span>
+                          <span className="text-xs text-white/40 uppercase tracking-wider">
+                            {ask.category === 'fundraising' ? 'Fundraising' :
+                             ask.category === 'cofounder' ? 'Co-founder' : 'General Advice'}
+                          </span>
+                        </div>
+                        {!isExpired && (
+                          <div className="flex items-center gap-1.5 text-xs text-white/40">
+                            <Clock size={12} />
+                            {daysLeft} days left
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Description */}
+                      <p className="text-white/80 text-sm leading-relaxed mb-4">
+                        {ask.description}
+                      </p>
+
+                      {/* Meta info */}
+                      <div className="flex flex-wrap items-center gap-4 text-xs text-white/40">
+                        <span className="px-2 py-1 bg-white/5 rounded">{ask.sector}</span>
+                        {ask.amount && (
+                          <span className="flex items-center gap-1">
+                            <DollarSign size={12} />
+                            {ask.amount}
+                          </span>
+                        )}
+                        {ask.stage && <span>{ask.stage}</span>}
+                      </div>
+
+                      {/* Helpers count + View requests */}
+                      <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Users size={14} className="text-white/40" />
+                          <span className="text-sm text-white/60">
+                            {helpersCount} {helpersCount === 1 ? 'person' : 'people'} offered to help
+                          </span>
+                        </div>
+                        {helpersCount > 0 && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setActiveTab('requests')}
+                            className="border-white/10 text-white/60 hover:bg-white/5 rounded-none text-xs"
+                          >
+                            View Requests
+                            <ArrowRight size={12} className="ml-2" />
+                          </Button>
+                        )}
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
+          </motion.div>
+        )}
+
         {/* REQUESTS TAB - Connection Requests for Founders */}
         {activeTab === 'requests' && profile?.role === 'founder' && (
           <motion.div
@@ -823,6 +999,24 @@ export default function Profile() {
       </div>
       </div>
       <BureauFooter />
+
+      {/* Post Ask Modal */}
+      <PostAskModal
+        isOpen={showPostAskModal}
+        onClose={() => setShowPostAskModal(false)}
+        onSuccess={() => {
+          setShowPostAskModal(false);
+          // Refresh asks list
+          if (user) {
+            supabase
+              .from('founder_asks')
+              .select('*, connection_requests:connection_requests(count)')
+              .eq('user_id', user.id)
+              .order('created_at', { ascending: false })
+              .then(({ data }) => setMyAsks(data || []));
+          }
+        }}
+      />
     </div>
   );
 }

@@ -48,8 +48,8 @@ const SECTORS = [
 // MAIN PAGE
 // ============================================
 
-export default function Opportunities({ onOpenSignup }) {
-  const { user, profile } = useAuth();
+export default function Opportunities() {
+  const { user, profile, openSignup } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSector, setSelectedSector] = useState('All Sectors');
@@ -89,7 +89,7 @@ export default function Opportunities({ onOpenSignup }) {
       toast.error('Please sign in to help', {
         action: {
           label: 'Sign Up',
-          onClick: () => onOpenSignup && onOpenSignup(),
+          onClick: openSignup,
         },
       });
       return;
@@ -104,7 +104,7 @@ export default function Opportunities({ onOpenSignup }) {
         description: 'Create an account to share your ask with the Chicago startup community.',
         action: {
           label: 'Sign Up',
-          onClick: () => onOpenSignup && onOpenSignup(),
+          onClick: openSignup,
         },
       });
       return;

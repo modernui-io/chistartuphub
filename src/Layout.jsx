@@ -20,11 +20,16 @@ export default function Layout({ children }) {
   const hideLayoutFooter = isHomePage || location.pathname === '/funding' || location.pathname === '/about' || location.pathname === '/community' || location.pathname === '/workspaces' || location.pathname === '/events' || location.pathname === '/resources' || location.pathname === '/before-you-start' || location.pathname === '/service-resources' || location.pathname === '/small-business-resources' || location.pathname === '/business-type-explorer' || location.pathname === '/opportunities' || location.pathname === '/stories' || location.pathname.startsWith('/stories/') || location.pathname === '/WhyChicago' || location.pathname === '/SubmitResource';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(!window.hasShownLoader);
-  const [showLogin, setShowLogin] = useState(false);
-  const [showSignup, setShowSignup] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
   const [welcomeUserData, setWelcomeUserData] = useState({ name: '', role: '' });
-  const { user, signOut } = useAuth();
+  const {
+    user,
+    signOut,
+    showSignupModal: showSignup,
+    setShowSignupModal: setShowSignup,
+    showLoginModal: showLogin,
+    setShowLoginModal: setShowLogin,
+  } = useAuth();
 
   const handleLoadComplete = () => {
     setIsLoading(false);

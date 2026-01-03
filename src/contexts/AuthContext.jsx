@@ -17,6 +17,10 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState(null);
 
+  // Modal triggers - allows any component to open auth modals
+  const [showSignupModal, setShowSignupModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
   // Load profile separately - don't block auth
   const loadUserProfile = async (userId) => {
     try {
@@ -116,6 +120,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Helper functions for opening modals
+  const openSignup = () => setShowSignupModal(true);
+  const openLogin = () => setShowLoginModal(true);
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -127,6 +135,13 @@ export const AuthProvider = ({ children }) => {
       signInWithOAuth,
       signOut,
       updateProfile,
+      // Modal controls
+      showSignupModal,
+      setShowSignupModal,
+      showLoginModal,
+      setShowLoginModal,
+      openSignup,
+      openLogin,
     }}>
       {children}
     </AuthContext.Provider>
