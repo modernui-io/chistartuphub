@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Bookmark, Shield, Eye, EyeOff, Check } from 'lucide-react';
+import { Bookmark, Shield, Eye, EyeOff, Check, MessageSquarePlus } from 'lucide-react';
 import { toast } from 'sonner';
 
 const ROLES = [
@@ -264,11 +264,20 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-6 h-6 border border-white/20 flex items-center justify-center flex-shrink-0">
+                    <MessageSquarePlus className="w-3 h-3 text-white/50" strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-white/90">Post an Ask</p>
+                    <p className="font-mono text-[10px] text-white/40">Share what you need with Chicago's startup ecosystem and get help from the community</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 border border-white/20 flex items-center justify-center flex-shrink-0">
                     <Shield className="w-3 h-3 text-white/50" strokeWidth={1.5} />
                   </div>
                   <div>
                     <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-white/90">Your Privacy Matters</p>
-                    <p className="font-mono text-[10px] text-white/40">We take your privacy seriously and never share your data without permission</p>
+                    <p className="font-mono text-[10px] text-white/40">We never share your data without permission</p>
                   </div>
                 </div>
               </div>
