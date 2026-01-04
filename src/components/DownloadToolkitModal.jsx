@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import { X, Download, Mail, Loader2, CheckCircle, ExternalLink } from "lucide-react";
 import { supabase } from "@/api/supabaseClient";

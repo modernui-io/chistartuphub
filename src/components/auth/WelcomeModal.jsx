@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { X, Sparkles, BookOpen, MessageSquarePlus, ArrowRight, Heart, HandHelping } from "lucide-react";
+import { useState } from "react";
+import { X, Sparkles, BookOpen, MessageSquarePlus, ArrowRight, HandHelping } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 

@@ -1,4 +1,3 @@
-import React from "react";
 
 /**
  * BureauAtmosphere - The Ghost City Background Layer

@@ -1,4 +1,4 @@
-import { Clock, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Clock, AlertTriangle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function VerificationBanner() {

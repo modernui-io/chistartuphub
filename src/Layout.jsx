@@ -11,7 +11,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import LoginModal from "@/components/auth/LoginModal";
 import SignupModal from "@/components/auth/SignupModal";
 import WelcomeModal from "@/components/auth/WelcomeModal";
-import AIAssistant from "@/components/AIAssistant";
 import VerificationBanner from "@/components/VerificationBanner";
 
 export default function Layout({ children }) {

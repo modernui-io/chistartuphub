@@ -34,7 +34,7 @@ const TECH_ICONS = {
 
 const ProfileCard = ({
   user = null, // Can pass user data as prop
-  variant = 'full' // 'full' | 'compact'
+  _variant = 'full' // 'full' | 'compact'
 }) => {
   const [copied, setCopied] = useState(false);
 

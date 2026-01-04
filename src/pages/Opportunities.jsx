@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { supabase } from "@/api/supabaseClient";
 import { motion } from 'framer-motion';
 import {
   Search,

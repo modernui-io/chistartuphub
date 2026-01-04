@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { MessageCircle, X, Send, Loader2, Sparkles, Bot } from 'lucide-react';
+import { MessageCircle, X, Send, Loader2, Bot } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const STAGE_CONTEXT = {
@@ -39,7 +39,7 @@ export default function AIAssistant() {
   // Don't render if user is not logged in (must be after all hooks)
   if (!user) return null;
 
-  const getSystemPrompt = () => {
+  const _getSystemPrompt = () => {
     const stageContext = profile?.stage ? STAGE_CONTEXT[profile.stage] : 'at an early stage';
     const interests = profile?.interests?.join(', ') || 'general startup resources';
     const role = profile?.role || 'founder';

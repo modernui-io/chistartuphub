@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -9,7 +9,6 @@ import {
   Bookmark,
   Settings,
   LogOut,
-  ArrowUpRight,
   Shield,
   Bell
 } from "lucide-react";
