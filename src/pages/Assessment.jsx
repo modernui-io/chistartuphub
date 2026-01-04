@@ -178,74 +178,74 @@ const getPhaseFromScore = (score) => {
 };
 
 // Resource recommendations by dimension and phase
-// Format: 2 Founder Guides + 1 Chicago Community/Hub per dimension/phase
+// Format: 2 Founder Guides + 1 Chicago Ecosystem Link per dimension/phase
 const RECOMMENDATIONS = {
   problem: {
     1: [
       { title: "Customer Discovery Guide", link: "/Resources#guides", type: "guide", description: "The Mom Test workshop & YC's How to Talk to Users" },
       { title: "Product Development", link: "/Resources#guides", type: "guide", description: "Superhuman's Product/Market Fit Engine" },
-      { title: "1871", link: "/Directory", type: "community", description: "Chicago's tech hub — find early users and get feedback" },
+      { title: "Chicago Communities", link: "/Community", type: "chicago", description: "Find founders to interview and get early feedback" },
     ],
     2: [
       { title: "Metrics & Analytics", link: "/Resources#guides", type: "guide", description: "a16z's 16 Metrics for Growth" },
       { title: "Product Development", link: "/Resources#guides", type: "guide", description: "Shape Up by Basecamp" },
-      { title: "Polsky Center", link: "/Directory", type: "community", description: "UChicago's innovation hub for research-backed startups" },
+      { title: "Innovation Hubs", link: "/Directory", type: "chicago", description: "Explore Chicago's startup hubs and resources" },
     ],
     3: [
       { title: "Growth & Acquisition", link: "/Resources#guides", type: "guide", description: "Emerging Startup Playbook" },
       { title: "Metrics & Analytics", link: "/Resources#guides", type: "guide", description: "Guide to Growth Metrics" },
-      { title: "P33 Chicago", link: "/Directory", type: "community", description: "Connect with Chicago's tech leadership network" },
+      { title: "Ecosystem Directory", link: "/Directory", type: "chicago", description: "Connect with Chicago's tech ecosystem" },
     ],
   },
   growth: {
     1: [
       { title: "Go-to-Market Guide", link: "/Resources#guides", type: "guide", description: "First Round's GTM Fit Framework" },
       { title: "Storytelling & Design", link: "/Resources#guides", type: "guide", description: "YC's How to Build a Pitch Deck" },
-      { title: "Techstars Chicago", link: "/AcceleratorsIncubators", type: "community", description: "Accelerator with mentor network for early traction" },
+      { title: "Accelerators", link: "/AcceleratorsIncubators", type: "chicago", description: "Chicago accelerators for early traction and mentorship" },
     ],
     2: [
       { title: "Growth & Acquisition", link: "/Resources#guides", type: "guide", description: "Growth tactics from FB, Twitter, Wealthfront" },
       { title: "Monetization & Pricing", link: "/Resources#guides", type: "guide", description: "SaaS Pricing Strategy Guide" },
-      { title: "MATTER", link: "/Directory", type: "community", description: "Healthcare startup hub with industry connections" },
+      { title: "Chicago Communities", link: "/Community", type: "chicago", description: "Network with founders who've scaled acquisition" },
     ],
     3: [
       { title: "Metrics & Analytics", link: "/Resources#guides", type: "guide", description: "16 Metrics for Growth at scale" },
       { title: "Team & Talent", link: "/Resources#guides", type: "guide", description: "How to Scale a Growth Strategy and Team" },
-      { title: "World Business Chicago", link: "/Directory", type: "community", description: "Economic development for scaling companies" },
+      { title: "Funding Resources", link: "/Funding", type: "chicago", description: "Chicago investors and growth-stage funding" },
     ],
   },
   operations: {
     1: [
       { title: "Product Development", link: "/Resources#guides", type: "guide", description: "Ship your MVP with Shape Up" },
       { title: "Customer Discovery", link: "/Resources#guides", type: "guide", description: "Validate before you build" },
-      { title: "mHUB", link: "/Directory", type: "community", description: "Hardtech innovation center with prototyping facilities" },
+      { title: "Workspaces", link: "/Workspaces", type: "chicago", description: "Find your first office or coworking space" },
     ],
     2: [
       { title: "Team & Talent", link: "/Resources#guides", type: "guide", description: "Equity Compensation guide" },
       { title: "Culture & Values", link: "/Resources#guides", type: "guide", description: "Netflix Culture Deck" },
-      { title: "Chicago Booth", link: "/Directory", type: "community", description: "Polsky + New Venture Challenge for ops talent" },
+      { title: "Innovation Hubs", link: "/Directory", type: "chicago", description: "Chicago hubs with talent and ops resources" },
     ],
     3: [
       { title: "Culture & Values", link: "/Resources#guides", type: "guide", description: "Give Away Your Legos" },
       { title: "Team & Talent", link: "/Resources#guides", type: "guide", description: "Scale your team structure" },
-      { title: "Illinois Tech Association", link: "/Directory", type: "community", description: "Tech community for scaling companies" },
+      { title: "Chicago Communities", link: "/Community", type: "chicago", description: "Connect with ops leaders at scaled companies" },
     ],
   },
   brand: {
     1: [
       { title: "Storytelling & Design", link: "/Resources#guides", type: "guide", description: "Sequoia's Business Plan format" },
       { title: "The Art of the Pitch", link: "/Resources#guides", type: "guide", description: "How to Pitch Your Startup" },
-      { title: "Founder Asks", link: "/Opportunities", type: "community", description: "Get feedback on your pitch from Chicago founders" },
+      { title: "Founder Asks", link: "/Opportunities", type: "chicago", description: "Get feedback on your pitch from Chicago founders" },
     ],
     2: [
       { title: "The Art of the Pitch", link: "/Resources#guides", type: "guide", description: "Master the Art of Influence" },
       { title: "Go-to-Market Guide", link: "/Resources#guides", type: "guide", description: "Positioning and market entry" },
-      { title: "Built In Chicago", link: "/Directory", type: "community", description: "Tech media platform for brand visibility" },
+      { title: "Chicago Communities", link: "/Community", type: "chicago", description: "Build relationships and brand awareness" },
     ],
     3: [
       { title: "Fundraising Strategy", link: "/Resources#guides", type: "guide", description: "Non-Obvious Guide to Fundraising" },
       { title: "Monetization & Pricing", link: "/Resources#guides", type: "guide", description: "Pricing for category leaders" },
-      { title: "Chicago Venture Summit", link: "/Events", type: "community", description: "Connect with investors and industry leaders" },
+      { title: "Startup Events", link: "/Events", type: "chicago", description: "Connect with investors and industry leaders" },
     ],
   },
 };
@@ -743,7 +743,7 @@ export default function Assessment() {
                                     ? 'bg-blue-500/20 text-blue-400'
                                     : 'bg-amber-500/20 text-amber-400'
                                 }`}>
-                                  {rec.type === 'community' ? 'chicago' : rec.type}
+                                  {rec.type}
                                 </span>
                                 <div>
                                   <p className="font-mono text-[10px] text-white/70 group-hover:text-white transition-colors">
