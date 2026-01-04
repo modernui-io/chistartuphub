@@ -738,7 +738,7 @@ export default function Assessment() {
                               className="block w-full text-left group"
                             >
                               <div className="flex items-start gap-2">
-                                <span className={`font-mono text-[8px] uppercase tracking-wider px-1.5 py-0.5 flex-shrink-0 ${
+                                <span className={`font-mono text-[10px] uppercase tracking-wider px-1.5 py-0.5 flex-shrink-0 ${
                                   rec.type === 'guide'
                                     ? 'bg-blue-500/20 text-blue-400'
                                     : 'bg-amber-500/20 text-amber-400'
