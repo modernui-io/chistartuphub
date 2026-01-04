@@ -1,0 +1,303 @@
+/* ChiStartupHub Startup Maturity Workbook - PDF Styles */
+
+/* Page setup */
+@page {
+  size: letter;
+  margin: 0.75in 0.75in 1in 0.75in;
+
+  /* Header bar */
+  @top-left {
+    content: "ChiStartupHub Startup Toolkit";
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 9pt;
+    font-weight: 600;
+    color: white;
+    background-color: #050A14;
+    padding: 8px 16px;
+    margin-left: -0.75in;
+    width: calc(100% + 1.5in);
+  }
+
+  @top-right {
+    content: "v2.0";
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 9pt;
+    font-weight: 400;
+    color: white;
+    background-color: #050A14;
+    padding: 8px 16px;
+  }
+
+  /* Page numbers */
+  @bottom-center {
+    content: counter(page);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 10pt;
+    color: #666;
+  }
+}
+
+/* First page (title) - no header/footer */
+@page:first {
+  @top-left { content: none; background: none; }
+  @top-right { content: none; background: none; }
+  @bottom-center { content: none; }
+}
+
+/* Body styles */
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 11pt;
+  line-height: 1.6;
+  color: #1a1a1a;
+  max-width: none;
+}
+
+/* Title page styling */
+.title-page {
+  page-break-after: always;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 90vh;
+  text-align: center;
+}
+
+.title-page h1 {
+  font-size: 36pt;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  letter-spacing: -0.02em;
+}
+
+.title-page .subtitle {
+  font-size: 14pt;
+  font-weight: 400;
+  color: #666;
+  margin-bottom: 3em;
+}
+
+.title-page .author {
+  font-size: 12pt;
+  color: #333;
+  margin-top: 2em;
+}
+
+.title-page .brand {
+  font-size: 10pt;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #050A14;
+  margin-top: 4em;
+  padding: 12px 24px;
+  border: 2px solid #050A14;
+}
+
+.title-page .version {
+  font-size: 10pt;
+  color: #999;
+  margin-top: 1em;
+}
+
+/* Blank page */
+.blank-page {
+  page-break-after: always;
+  min-height: 100vh;
+}
+
+/* Force page break */
+.page-break {
+  page-break-after: always;
+}
+
+/* Headers */
+h1 {
+  font-size: 24pt;
+  font-weight: 700;
+  margin-top: 2em;
+  margin-bottom: 0.75em;
+  padding-bottom: 0.25em;
+  border-bottom: 3px solid #050A14;
+  page-break-after: avoid;
+}
+
+h2 {
+  font-size: 18pt;
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  color: #050A14;
+  page-break-after: avoid;
+}
+
+h3 {
+  font-size: 14pt;
+  font-weight: 600;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+  color: #333;
+  page-break-after: avoid;
+}
+
+h4 {
+  font-size: 12pt;
+  font-weight: 600;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+
+/* Paragraphs */
+p {
+  margin-bottom: 1em;
+  orphans: 3;
+  widows: 3;
+}
+
+/* Emphasis text */
+em {
+  font-style: italic;
+}
+
+strong {
+  font-weight: 600;
+}
+
+/* Lists */
+ul, ol {
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+
+li {
+  margin-bottom: 0.4em;
+}
+
+/* Checkboxes - style the list items with checkboxes */
+li input[type="checkbox"] {
+  margin-right: 0.5em;
+  transform: scale(1.2);
+}
+
+/* Code blocks for the map display */
+code {
+  font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+  font-size: 10pt;
+  background-color: #f5f5f5;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+pre {
+  background-color: #f5f5f5;
+  padding: 1em;
+  border-radius: 4px;
+  border-left: 4px solid #050A14;
+  overflow-x: auto;
+  font-size: 10pt;
+  margin: 1.5em 0;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+/* Horizontal rules - section dividers */
+hr {
+  border: none;
+  border-top: 1px solid #ddd;
+  margin: 2em 0;
+}
+
+/* Block quotes for callouts */
+blockquote {
+  border-left: 4px solid #050A14;
+  margin: 1.5em 0;
+  padding: 0.5em 1em;
+  background-color: #fafafa;
+  font-style: italic;
+}
+
+/* Table of Contents styling */
+.toc h2 {
+  font-size: 20pt;
+  margin-bottom: 1em;
+}
+
+.toc ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.toc li {
+  margin-bottom: 0.3em;
+}
+
+.toc strong {
+  display: block;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+  font-size: 11pt;
+}
+
+/* Part headers - major sections */
+h1:contains("Part") {
+  page-break-before: always;
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 0.75em;
+  text-align: left;
+}
+
+th {
+  background-color: #050A14;
+  color: white;
+  font-weight: 600;
+}
+
+/* Links */
+a {
+  color: #050A14;
+  text-decoration: underline;
+}
+
+/* Footer area styling */
+.closing {
+  margin-top: 3em;
+  padding-top: 2em;
+  border-top: 2px solid #050A14;
+  text-align: center;
+}
+
+.closing em {
+  display: block;
+  font-style: normal;
+  margin-top: 1em;
+}
+
+/* Print optimizations */
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+  }
+
+  ul, ol, pre, blockquote {
+    page-break-inside: avoid;
+  }
+}

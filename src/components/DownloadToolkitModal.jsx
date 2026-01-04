@@ -4,7 +4,7 @@ import { X, Download, Mail, Loader2, CheckCircle, ExternalLink } from "lucide-re
 import { supabase } from "@/api/supabaseClient";
 import { toast } from "sonner";
 
-const PDF_URL = "https://fbgxeinarhbrqatrsuoj.supabase.co/storage/v1/object/public/toolkit/Startup-Maturity-Workbook-v2.pdf";
+const PDF_URL = "https://fbgxeinarhbrqatrsuoj.supabase.co/storage/v1/object/public/toolkit/Startup-Maturity-Workbook-v2.1.pdf";
 
 /**
  * DownloadToolkitModal - Bureau Design System

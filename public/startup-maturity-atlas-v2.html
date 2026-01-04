@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Startup Maturity Atlas | ChiStartupHub v2.0</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --chi-navy: #050A14;
+      --chi-midnight: #0A1220;
+      --chi-slate: #1A2332;
+      --chi-white: rgba(255, 255, 255, 0.95);
+      --chi-silver: rgba(255, 255, 255, 0.70);
+      --chi-muted: rgba(255, 255, 255, 0.50);
+      --chi-dim: rgba(255, 255, 255, 0.30);
+      --chi-grid: rgba(255, 255, 255, 0.12);
+      --chi-signal: #3B82F6;
+      --font-editorial: 'Playfair Display', Georgia, serif;
+      --font-mono: 'JetBrains Mono', Menlo, Monaco, Consolas, monospace;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--chi-navy);
+      color: var(--chi-white);
+      font-family: var(--font-body);
+      font-size: 11pt;
+      line-height: 1.6;
+    }
+
+    .page {
+      width: 8.5in;
+      min-height: 11in;
+      padding: 0.75in;
+      margin: 0 auto;
+      background: var(--chi-navy);
+      page-break-after: always;
+    }
+
+    @media print {
+      body { background: white; }
+      .page {
+        padding: 0.5in;
+        background: white;
+        color: #1a1a1a;
+      }
+      h1, h2, h3 { color: #050A14 !important; }
+      .header-bar { background: #050A14 !important; }
+      blockquote { border-color: #050A14 !important; }
+      .matrix-table th { background: #050A14 !important; color: white !important; }
+      .matrix-table td { border-color: #ddd !important; }
+      .phase-header { background: #f5f5f5 !important; color: #050A14 !important; }
+      .checklist-item { border-color: #ddd !important; }
+    }
+
+    /* Header */
+    .header-bar {
+      background: var(--chi-slate);
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      border-left: 4px solid var(--chi-signal);
+    }
+
+    .header-bar h1 {
+      font-family: var(--font-editorial);
+      font-size: 28pt;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+
+    .header-bar .subtitle {
+      font-family: var(--font-mono);
+      font-size: 9pt;
+      color: var(--chi-silver);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* Typography */
+    h1 {
+      font-family: var(--font-editorial);
+      font-size: 24pt;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--chi-white);
+    }
+
+    h2 {
+      font-family: var(--font-editorial);
+      font-size: 16pt;
+      font-weight: 600;
+      margin: 1.5rem 0 0.75rem;
+      color: var(--chi-white);
+      border-bottom: 1px solid var(--chi-grid);
+      padding-bottom: 0.5rem;
+    }
+
+    h3 {
+      font-family: var(--font-mono);
+      font-size: 11pt;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--chi-signal);
+      margin: 1rem 0 0.5rem;
+    }
+
+    p {
+      margin-bottom: 0.75rem;
+      color: var(--chi-silver);
+    }
+
+    blockquote {
+      border-left: 3px solid var(--chi-signal);
+      padding-left: 1rem;
+      font-style: italic;
+      color: var(--chi-silver);
+      margin: 1rem 0;
+    }
+
+    /* Matrix Table */
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 9pt;
+    }
+
+    .matrix-table th {
+      background: var(--chi-slate);
+      color: var(--chi-white);
+      padding: 0.5rem;
+      text-align: left;
+      font-family: var(--font-mono);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 8pt;
+    }
+
+    .matrix-table td {
+      padding: 0.5rem;
+      border: 1px solid var(--chi-grid);
+      vertical-align: top;
+    }
+
+    .matrix-table .dimension {
+      font-weight: 600;
+      background: var(--chi-midnight);
+    }
+
+    /* Phase Headers */
+    .phase-header {
+      background: var(--chi-slate);
+      color: var(--chi-white);
+      padding: 0.75rem 1rem;
+      margin: 2rem 0 1rem;
+      font-family: var(--font-mono);
+      font-size: 10pt;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .phase-header .phase-num {
+      background: var(--chi-signal);
+      color: white;
+      padding: 0.25rem 0.5rem;
+      font-size: 9pt;
+    }
+
+    /* Sections */
+    .section {
+      margin: 1.5rem 0;
+      padding: 1rem;
+      background: var(--chi-midnight);
+      border: 1px solid var(--chi-grid);
+    }
+
+    .section-title {
+      font-family: var(--font-editorial);
+      font-size: 14pt;
+      margin-bottom: 0.5rem;
+      color: var(--chi-white);
+    }
+
+    .question {
+      font-family: var(--font-mono);
+      font-size: 10pt;
+      color: var(--chi-signal);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Checklists */
+    .checklist {
+      list-style: none;
+      padding: 0;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--chi-grid);
+    }
+
+    .checklist-item:last-child {
+      border-bottom: none;
+    }
+
+    .checkbox {
+      width: 14px;
+      height: 14px;
+      border: 1px solid var(--chi-silver);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    /* Warning Box */
+    .warning-box {
+      background: rgba(248, 113, 113, 0.1);
+      border-left: 3px solid #F87171;
+      padding: 0.75rem 1rem;
+      margin: 0.75rem 0;
+    }
+
+    .warning-box h4 {
+      font-family: var(--font-mono);
+      font-size: 9pt;
+      color: #F87171;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+    }
+
+    /* Resource Lists */
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+      margin: 0.75rem 0;
+    }
+
+    .resource-item {
+      padding: 0.5rem;
+      background: var(--chi-slate);
+      border: 1px solid var(--chi-grid);
+    }
+
+    .resource-item strong {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 9pt;
+      color: var(--chi-white);
+    }
+
+    .resource-item span {
+      font-size: 8pt;
+      color: var(--chi-muted);
+    }
+
+    /* Metrics */
+    .metrics-row {
+      display: flex;
+      gap: 1rem;
+      margin: 0.75rem 0;
+    }
+
+    .metric {
+      flex: 1;
+      padding: 0.5rem;
+      background: var(--chi-slate);
+      text-align: center;
+    }
+
+    .metric-label {
+      font-family: var(--font-mono);
+      font-size: 8pt;
+      color: var(--chi-muted);
+      text-transform: uppercase;
+    }
+
+    .metric-value {
+      font-family: var(--font-editorial);
+      font-size: 14pt;
+      color: var(--chi-signal);
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--chi-grid);
+      font-family: var(--font-mono);
+      font-size: 8pt;
+      color: var(--chi-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Two Column Layout */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* Glossary */
+    .glossary-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .glossary-item dt {
+      font-family: var(--font-mono);
+      font-weight: 500;
+      color: var(--chi-white);
+      font-size: 10pt;
+    }
+
+    .glossary-item dd {
+      color: var(--chi-silver);
+      font-size: 9pt;
+      margin-left: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- PAGE 1: Cover -->
+<div class="page">
+  <div class="header-bar">
+    <h1>STARTUP MATURITY ATLAS</h1>
+    <div class="subtitle">ChiStartupHub | Version 2.0 | January 2026</div>
+  </div>
+
+  <blockquote style="margin: 3rem 0; font-size: 14pt;">
+    "The best founders don't just build products—they build systems for learning faster than everyone else."
+  </blockquote>
+
+  <h2>How to Use This Guide</h2>
+
+  <p><strong>Think of your startup like a house.</strong> You wouldn't install the roof before pouring the foundation. This atlas helps you identify which "floor" you're building and what support beams need strengthening.</p>
+
+  <div class="two-col" style="margin-top: 1.5rem;">
+    <div class="section">
+      <h3>Diagnostic Mode</h3>
+      <p>Find where you are today. Identify gaps in your foundation. See what's holding you back.</p>
+    </div>
+    <div class="section">
+      <h3>Roadmap Mode</h3>
+      <p>See what comes next. Prepare for future challenges. Build ahead of your needs.</p>
+    </div>
+  </div>
+
+  <h2 style="margin-top: 2rem;">The Framework</h2>
+  <p>Your startup operates across <strong>4 dimensions</strong>. Each dimension evolves through <strong>3 phases</strong>.</p>
+
+  <table class="matrix-table">
+    <tr>
+      <th style="width: 20%">Dimension</th>
+      <th style="width: 26%">Phase 1: Foundation</th>
+      <th style="width: 27%">Phase 2: Traction</th>
+      <th style="width: 27%">Phase 3: Scale</th>
+    </tr>
+    <tr>
+      <td class="dimension">Product</td>
+      <td>Problem-Fit<br><em>Is this problem real?</em></td>
+      <td>Product-Market Fit<br><em>Do people love it?</em></td>
+      <td>Market Expansion<br><em>Can it grow 10x?</em></td>
+    </tr>
+    <tr>
+      <td class="dimension">Team</td>
+      <td>Solo/Co-founders<br><em>Right founding team?</em></td>
+      <td>Core Team (3-10)<br><em>Can you delegate?</em></td>
+      <td>Organization<br><em>Does it outlast you?</em></td>
+    </tr>
+    <tr>
+      <td class="dimension">Funding</td>
+      <td>Bootstrap/Pre-seed<br><em>< $100K</em></td>
+      <td>Seed/Angel<br><em>$500K - $2M</em></td>
+      <td>Series A+<br><em>$5M+</em></td>
+    </tr>
+    <tr>
+      <td class="dimension">Operations</td>
+      <td>Manual/Ad-hoc<br><em>In your head</em></td>
+      <td>Process Building<br><em>Documented</em></td>
+      <td>Automated Systems<br><em>Self-running</em></td>
+    </tr>
+  </table>
+
+  <div class="footer">
+    <span>chistartuphub.com</span>
+    <span>Page 1</span>
+  </div>
+</div>
+
+<!-- PAGE 2: Phase 1 Foundation -->
+<div class="page">
+  <div class="phase-header">
+    <span>Phase 1: Foundation</span>
+    <span class="phase-num">Testing if the problem is real</span>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Product — Problem-Fit</div>
+    <div class="question">The Question: Do people actually have this problem?</div>
+
+    <h3>You're Here If:</h3>
+    <ul class="checklist">
+      <li class="checklist-item"><span class="checkbox"></span> You're talking to potential customers weekly</li>
+      <li class="checklist-item"><span class="checkbox"></span> You have a hypothesis but no paying customers yet</li>
+      <li class="checklist-item"><span class="checkbox"></span> Your "product" might just be a landing page or prototype</li>
+    </ul>
+
+    <div class="warning-box">
+      <h4>Warning Signs</h4>
+      <p>Building features no one asked for. Avoiding customer conversations. Assuming you know what people want.</p>
+    </div>
+
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-label">Interviews</div>
+        <div class="metric-value">50+</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Validation</div>
+        <div class="metric-value">Their Words</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">WTP Signals</div>
+        <div class="metric-value">3+</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Team — Solo/Co-founders</div>
+    <div class="question">The Question: Do you have the right people to start this journey?</div>
+
+    <ul class="checklist">
+      <li class="checklist-item"><span class="checkbox"></span> 1-2 founders doing everything</li>
+      <li class="checklist-item"><span class="checkbox"></span> Roles are fluid, everyone does everything</li>
+      <li class="checklist-item"><span class="checkbox"></span> No formal structure yet</li>
+    </ul>
+
+    <h3>Action Items</h3>
+    <ul class="checklist">
+      <li class="checklist-item"><span class="checkbox"></span> Draft co-founder agreement (equity, roles, vesting)</li>
+      <li class="checklist-item"><span class="checkbox"></span> Identify your #1 skill gap</li>
+      <li class="checklist-item"><span class="checkbox"></span> Define who makes final decisions in each area</li>
+    </ul>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <div class="section-title">Funding</div>
+      <p>Self-funded or friends & family. <$100K raised. 6-12 months runway.</p>
+      <h3>Chicago Resources</h3>
+      <p style="font-size: 9pt;">• Illinois SBDC (free counseling)<br>• Chicago:Blend pre-accelerator<br>• SCORE Chicago mentorship</p>
+    </div>
+    <div class="section">
+      <div class="section-title">Operations</div>
+      <p>Processes exist in your head. Using free tools. No formal metrics.</p>
+      <h3>Starter Stack</h3>
+      <p style="font-size: 9pt;">• Slack (free tier)<br>• Notion or Google Docs<br>• Spreadsheet CRM<br>• Google Analytics</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>chistartuphub.com</span>
+    <span>Page 2</span>
+  </div>
+</div>
+
+<!-- PAGE 3: Phase 2 Traction -->
+<div class="page">
+  <div class="phase-header">
+    <span>Phase 2: Traction</span>
+    <span class="phase-num">Making it repeatable</span>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Product — Product-Market Fit</div>
+    <div class="question">The Question: Do people love this enough to pay and tell others?</div>
+
+    <ul class="checklist">
+      <li class="checklist-item"><span class="checkbox"></span> Revenue is growing (even if small)</li>
+      <li class="checklist-item"><span class="checkbox"></span> Users are sticking around (retention > 40%)</li>
+      <li class="checklist-item"><span class="checkbox"></span> Word-of-mouth is happening</li>
+    </ul>
+
+    <div class="warning-box">
+      <h4>Warning Signs</h4>
+      <p>Users sign up but don't come back. Sales require heavy discounting. Every customer wants something different.</p>
+    </div>
+
+    <h3>PMF Indicators</h3>
+    <div class="metrics-row">
+      <div class="metric">
+        <div class="metric-label">NPS Score</div>
+        <div class="metric-value">> 40</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Sign</div>
+        <div class="metric-value">Angry if down</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Growth</div>
+        <div class="metric-value">Organic</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Team — Core Team (3-10)</div>
+    <div class="question">The Question: Can you build a team that executes without you in every meeting?</div>
+
+    <ul class="checklist">
+      <li class="checklist-item"><span class="checkbox"></span> First 3-5 employees hired</li>
+      <li class="checklist-item"><span class="checkbox"></span> Some specialization emerging</li>
+      <li class="checklist-item"><span class="checkbox"></span> Starting to think about culture</li>
+    </ul>
+
+    <h3>Action Items</h3>
+    <ul class="checklist">
+      <li class="checklist-item"><span class="checkbox"></span> Document your values (actually live them)</li>
+      <li class="checklist-item"><span class="checkbox"></span> Create onboarding process</li>
+      <li class="checklist-item"><span class="checkbox"></span> Delegate one major area completely</li>
+    </ul>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <div class="section-title">Funding — Seed/Angel</div>
+      <p>Raising $500K-$2M with some traction.</p>
+      <h3>Chicago Investors</h3>
+      <p style="font-size: 9pt;">• Chicago Ventures<br>• M25<br>• Hyde Park Venture Partners<br>• LOUD Capital<br>• Lightbank</p>
+    </div>
+    <div class="section">
+      <div class="section-title">Operations — Process</div>
+      <p>Some processes documented. Real tools in use.</p>
+      <h3>Process Priorities</h3>
+      <p style="font-size: 9pt;">1. Sales process (lead → close)<br>2. Customer support workflow<br>3. Product development cycle<br>4. Hiring process</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>chistartuphub.com</span>
+    <span>Page 3</span>
+  </div>
+</div>
+
+<!-- PAGE 4: Phase 3 + Diagnostic -->
+<div class="page">
+  <div class="phase-header">
+    <span>Phase 3: Scale</span>
+    <span class="phase-num">Doing it 10x bigger</span>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <div class="section-title">Product — Expansion</div>
+      <p>Core product stable. Exploring adjacent markets. Building platform plays.</p>
+      <div class="warning-box" style="margin-top: 0.5rem;">
+        <h4>Warning</h4>
+        <p style="font-size: 9pt;">Don't expand before core is solid.</p>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Team — Organization</div>
+      <p>20+ employees. Multiple management layers. Formal HR and operations.</p>
+      <div class="warning-box" style="margin-top: 0.5rem;">
+        <h4>Warning</h4>
+        <p style="font-size: 9pt;">Culture dilutes with growth. A-players leave.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <div class="section-title">Funding — Series A+</div>
+      <p>Raising $5M+. Clear path to $10M+ ARR.</p>
+      <h3>Chicago Growth VCs</h3>
+      <p style="font-size: 9pt;">• Pritzker Group<br>• OCA Ventures<br>• Valor Equity Partners<br>• Jump Capital</p>
+    </div>
+    <div class="section">
+      <div class="section-title">Operations — Automated</div>
+      <p>Significant automation. Data-driven decisions. Predictable processes.</p>
+      <h3>Goal</h3>
+      <p style="font-size: 9pt;">Systems scale without linear headcount growth.</p>
+    </div>
+  </div>
+
+  <h2 style="margin-top: 1.5rem;">The Diagnostic Tool</h2>
+  <p>Answer honestly for each dimension:</p>
+
+  <div class="two-col">
+    <div class="section">
+      <h3>Product</h3>
+      <ul class="checklist" style="font-size: 9pt;">
+        <li class="checklist-item"><span class="checkbox"></span> Can you describe your ICP in one sentence?</li>
+        <li class="checklist-item"><span class="checkbox"></span> What's your activation & retention rate?</li>
+        <li class="checklist-item"><span class="checkbox"></span> Where does growth come from?</li>
+      </ul>
+    </div>
+    <div class="section">
+      <h3>Team</h3>
+      <ul class="checklist" style="font-size: 9pt;">
+        <li class="checklist-item"><span class="checkbox"></span> Who makes final decisions in each area?</li>
+        <li class="checklist-item"><span class="checkbox"></span> How long until new hire is productive?</li>
+        <li class="checklist-item"><span class="checkbox"></span> What if a key person leaves?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <h3>Funding</h3>
+      <ul class="checklist" style="font-size: 9pt;">
+        <li class="checklist-item"><span class="checkbox"></span> How many months of runway?</li>
+        <li class="checklist-item"><span class="checkbox"></span> What milestones unlock next funding?</li>
+        <li class="checklist-item"><span class="checkbox"></span> What's your CAC and LTV?</li>
+      </ul>
+    </div>
+    <div class="section">
+      <h3>Operations</h3>
+      <ul class="checklist" style="font-size: 9pt;">
+        <li class="checklist-item"><span class="checkbox"></span> Can someone else do your job for a week?</li>
+        <li class="checklist-item"><span class="checkbox"></span> How long to onboard new employee?</li>
+        <li class="checklist-item"><span class="checkbox"></span> Where do you waste the most time?</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>chistartuphub.com</span>
+    <span>Page 4</span>
+  </div>
+</div>
+
+<!-- PAGE 5: Founder Checklist + AI Tools -->
+<div class="page">
+  <h2>Founder Focus Checklist</h2>
+
+  <div class="two-col">
+    <div class="section">
+      <h3>Weekly</h3>
+      <ul class="checklist">
+        <li class="checklist-item"><span class="checkbox"></span> Talk to at least 3 customers</li>
+        <li class="checklist-item"><span class="checkbox"></span> Review key metrics dashboard</li>
+        <li class="checklist-item"><span class="checkbox"></span> One-on-ones with direct reports</li>
+        <li class="checklist-item"><span class="checkbox"></span> Update investors (if applicable)</li>
+      </ul>
+    </div>
+    <div class="section">
+      <h3>Monthly</h3>
+      <ul class="checklist">
+        <li class="checklist-item"><span class="checkbox"></span> Full team all-hands</li>
+        <li class="checklist-item"><span class="checkbox"></span> Financial review (cash position)</li>
+        <li class="checklist-item"><span class="checkbox"></span> Competitive landscape check</li>
+        <li class="checklist-item"><span class="checkbox"></span> Personal energy audit</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Quarterly</h3>
+    <ul class="checklist" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0;">
+      <li class="checklist-item"><span class="checkbox"></span> OKR/goal setting</li>
+      <li class="checklist-item"><span class="checkbox"></span> Board meeting (if applicable)</li>
+      <li class="checklist-item"><span class="checkbox"></span> Team retrospective</li>
+      <li class="checklist-item"><span class="checkbox"></span> Strategic planning session</li>
+    </ul>
+  </div>
+
+  <h2 style="margin-top: 1.5rem;">AI Tools for Founders</h2>
+
+  <div class="two-col">
+    <div class="section">
+      <h3>Research & Analysis</h3>
+      <div class="resource-item" style="margin-bottom: 0.5rem;">
+        <strong>ChatGPT / Claude</strong>
+        <span>Customer interview synthesis, market research</span>
+      </div>
+      <div class="resource-item" style="margin-bottom: 0.5rem;">
+        <strong>Perplexity</strong>
+        <span>Real-time market data, competitor analysis</span>
+      </div>
+      <div class="resource-item">
+        <strong>Gong / Fireflies</strong>
+        <span>Call recording and analysis</span>
+      </div>
+    </div>
+    <div class="section">
+      <h3>Content & Marketing</h3>
+      <div class="resource-item" style="margin-bottom: 0.5rem;">
+        <strong>Jasper</strong>
+        <span>Marketing copy generation</span>
+      </div>
+      <div class="resource-item" style="margin-bottom: 0.5rem;">
+        <strong>Midjourney</strong>
+        <span>Visual assets and imagery</span>
+      </div>
+      <div class="resource-item">
+        <strong>Descript</strong>
+        <span>Video/podcast editing</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <h3>Development</h3>
+      <div class="resource-item" style="margin-bottom: 0.5rem;">
+        <strong>GitHub Copilot</strong>
+        <span>Code assistance</span>
+      </div>
+      <div class="resource-item" style="margin-bottom: 0.5rem;">
+        <strong>Cursor / Claude Code</strong>
+        <span>AI-native IDEs</span>
+      </div>
+      <div class="resource-item">
+        <strong>Vercel v0</strong>
+        <span>UI prototyping</span>
+      </div>
+    </div>
+    <div class="section">
+      <h3>Operations</h3>
+      <div class="resource-item" style="margin-bottom: 0.5rem;">
+        <strong>Notion AI</strong>
+        <span>Documentation</span>
+      </div>
+      <div class="resource-item" style="margin-bottom: 0.5rem;">
+        <strong>Zapier</strong>
+        <span>Workflow automation</span>
+      </div>
+      <div class="resource-item">
+        <strong>Otter.ai</strong>
+        <span>Meeting transcription</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>chistartuphub.com</span>
+    <span>Page 5</span>
+  </div>
+</div>
+
+<!-- PAGE 6: Chicago Resources + Glossary -->
+<div class="page">
+  <h2>Chicago Ecosystem Resources</h2>
+
+  <div class="two-col">
+    <div class="section">
+      <h3>Accelerators & Incubators</h3>
+      <div class="resource-grid" style="grid-template-columns: 1fr;">
+        <div class="resource-item">
+          <strong>1871</strong>
+          <span>Tech & entrepreneurship center</span>
+        </div>
+        <div class="resource-item">
+          <strong>mHUB</strong>
+          <span>Manufacturing & hardtech</span>
+        </div>
+        <div class="resource-item">
+          <strong>MATTER</strong>
+          <span>Healthcare innovation</span>
+        </div>
+        <div class="resource-item">
+          <strong>The Hatchery</strong>
+          <span>Food & beverage</span>
+        </div>
+        <div class="resource-item">
+          <strong>2112</strong>
+          <span>Creative industries</span>
+        </div>
+        <div class="resource-item">
+          <strong>Techstars Chicago</strong>
+          <span>Accelerator program</span>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <h3>Funding Sources</h3>
+      <div class="resource-grid" style="grid-template-columns: 1fr;">
+        <div class="resource-item">
+          <strong>Illinois Ventures</strong>
+          <span>University spin-outs</span>
+        </div>
+        <div class="resource-item">
+          <strong>CEC</strong>
+          <span>Chicagoland Entrepreneurial Center</span>
+        </div>
+        <div class="resource-item">
+          <strong>Illinois SBIR/STTR</strong>
+          <span>Grant funding</span>
+        </div>
+        <div class="resource-item">
+          <strong>Keiretsu Forum</strong>
+          <span>Angel network</span>
+        </div>
+      </div>
+      <h3 style="margin-top: 1rem;">Community</h3>
+      <p style="font-size: 9pt;">Technori • Chicago Founders Network • Built In Chicago • ChiStartupHub.com</p>
+    </div>
+  </div>
+
+  <h2 style="margin-top: 1.5rem;">Glossary</h2>
+
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+    <dl class="glossary-item">
+      <dt>ARR</dt>
+      <dd>Annual Recurring Revenue</dd>
+    </dl>
+    <dl class="glossary-item">
+      <dt>Burn Rate</dt>
+      <dd>Monthly cash spent</dd>
+    </dl>
+    <dl class="glossary-item">
+      <dt>CAC</dt>
+      <dd>Customer Acquisition Cost</dd>
+    </dl>
+    <dl class="glossary-item">
+      <dt>Churn</dt>
+      <dd>Rate customers leave</dd>
+    </dl>
+    <dl class="glossary-item">
+      <dt>ICP</dt>
+      <dd>Ideal Customer Profile</dd>
+    </dl>
+    <dl class="glossary-item">
+      <dt>LTV</dt>
+      <dd>Lifetime Value</dd>
+    </dl>
+    <dl class="glossary-item">
+      <dt>MRR</dt>
+      <dd>Monthly Recurring Revenue</dd>
+    </dl>
+    <dl class="glossary-item">
+      <dt>NPS</dt>
+      <dd>Net Promoter Score</dd>
+    </dl>
+    <dl class="glossary-item">
+      <dt>PMF</dt>
+      <dd>Product-Market Fit</dd>
+    </dl>
+    <dl class="glossary-item">
+      <dt>Runway</dt>
+      <dd>Months of cash left</dd>
+    </dl>
+    <dl class="glossary-item">
+      <dt>TAM/SAM/SOM</dt>
+      <dd>Market size metrics</dd>
+    </dl>
+    <dl class="glossary-item">
+      <dt>Unit Economics</dt>
+      <dd>Profit per customer</dd>
+    </dl>
+  </div>
+
+  <div class="section" style="margin-top: 2rem; text-align: center;">
+    <div class="section-title" style="font-size: 18pt;">Final Thought</div>
+    <blockquote style="border: none; font-size: 12pt; margin: 1rem 0;">
+      Building a startup is hard. You'll feel lost most days. That's normal.<br><br>
+      The founders who succeed aren't smarter—they're better at:<br>
+      <strong>Learning fast</strong> • <strong>Admitting mistakes</strong> • <strong>Building support</strong>
+    </blockquote>
+    <p style="font-family: var(--font-mono); font-size: 10pt; color: var(--chi-signal);">
+      This atlas is a compass, not a map. Your journey will look different. Keep playing.
+    </p>
+  </div>
+
+  <div class="footer" style="margin-top: 1rem;">
+    <span>chistartuphub.com</span>
+    <span>v2.0 | January 2026</span>
+  </div>
+</div>
+
+</body>
+</html>
