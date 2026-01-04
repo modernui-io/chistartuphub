@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
-import { Box, Megaphone, Settings, Brain, X, ChevronRight, ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Box, Megaphone, Settings, Brain, X, ChevronRight, ArrowUpRight, ArrowRight, Compass } from "lucide-react";
 
 const phases = [
   {
@@ -389,6 +390,27 @@ export default function MaturityMatrix() {
           between stages constantly. This matrix is meant to orient, not prescribe. Use it as a compass, not a
           schedule.
         </p>
+      </div>
+
+      {/* Assessment CTA */}
+      <div className="mt-4 p-4 border border-white/20 bg-white/[0.03] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <Compass className="w-5 h-5 text-white/50" strokeWidth={1.5} />
+          <div>
+            <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-white">
+              Find Your Position
+            </p>
+            <p className="text-white/40 text-xs">
+              Take a quick assessment to see where you are on the matrix
+            </p>
+          </div>
+        </div>
+        <Link to="/assessment">
+          <button className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2.5 bg-white text-black hover:bg-white/90 transition-colors flex items-center gap-2 cursor-crosshair whitespace-nowrap">
+            Take Assessment
+            <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
+          </button>
+        </Link>
       </div>
 
       <MatrixCellModal

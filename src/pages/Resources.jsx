@@ -114,13 +114,19 @@ export default function Resources() {
               className={`flex flex-wrap items-center gap-3 ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
               style={{ animationDelay: '400ms' }}
             >
+              <Link to="/assessment">
+                <button className="font-mono text-[10px] uppercase tracking-[0.15em] px-5 py-3 bg-white text-black hover:bg-white/90 transition-colors flex items-center gap-2 cursor-crosshair">
+                  <Compass className="w-3 h-3" strokeWidth={1.5} />
+                  Take Assessment
+                  <span className="bg-black/10 text-black/70 text-[9px] px-1.5 py-0.5">NEW</span>
+                </button>
+              </Link>
               <button
                 onClick={() => setShowDownloadModal(true)}
-                className="font-mono text-[10px] uppercase tracking-[0.15em] px-5 py-3 bg-white text-black hover:bg-white/90 transition-colors flex items-center gap-2 cursor-crosshair"
+                className="font-mono text-[10px] uppercase tracking-[0.15em] px-5 py-3 border border-white/20 text-white/70 hover:bg-white hover:text-black hover:border-white transition-colors flex items-center gap-2 cursor-crosshair"
               >
                 <Download className="w-3 h-3" strokeWidth={1.5} />
                 Download Toolkit
-                <span className="bg-black/10 text-black/70 text-[9px] px-1.5 py-0.5">FREE</span>
               </button>
               <Link to={createPageUrl("SubmitResource")}>
                 <button className="font-mono text-[10px] uppercase tracking-[0.15em] px-5 py-3 border border-white/20 text-white/70 hover:bg-white hover:text-black hover:border-white transition-colors flex items-center gap-2 cursor-crosshair">

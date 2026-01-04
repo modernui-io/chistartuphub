@@ -5,12 +5,12 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const STARTER_ACTIONS = [
   {
-    id: "framework",
+    id: "assessment",
     icon: Compass,
-    title: "Assess Your Stage",
-    description: "Use the Maturity Matrix to identify where you are and what to focus on next",
-    action: "Scroll down",
-    internal: true,
+    title: "Take the Assessment",
+    description: "Answer 12 questions to discover your strengths, gaps, and where to focus next",
+    action: "Start Quiz",
+    link: "/assessment",
   },
   {
     id: "community",
@@ -51,13 +51,6 @@ export default function OnboardingGuide() {
     setIsVisible(false);
     localStorage.setItem("chistartuphub_onboarding_dismissed", "true");
     setTimeout(() => setIsDismissed(true), 300);
-  };
-
-  const scrollToFramework = () => {
-    const frameworkSection = document.querySelector('[data-section="framework"]');
-    if (frameworkSection) {
-      frameworkSection.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
   };
 
   if (isDismissed) return null;
@@ -120,14 +113,6 @@ export default function OnboardingGuide() {
               </span>
             </div>
           );
-
-          if (action.internal) {
-            return (
-              <button key={action.id} onClick={scrollToFramework} className="text-left">
-                {content}
-              </button>
-            );
-          }
 
           return (
             <Link key={action.id} to={action.link}>
