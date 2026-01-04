@@ -178,61 +178,74 @@ const getPhaseFromScore = (score) => {
 };
 
 // Resource recommendations by dimension and phase
+// Format: 2 Founder Guides + 1 Tool per dimension/phase
 const RECOMMENDATIONS = {
   problem: {
     1: [
-      { title: "Customer Interview Template", link: "/resources#guides" },
-      { title: "Chicago Founder Communities", link: "/community" },
+      { title: "Customer Discovery Guide", link: "/Resources#guides", type: "guide", description: "The Mom Test workshop & YC's How to Talk to Users" },
+      { title: "Product Development", link: "/Resources#guides", type: "guide", description: "Superhuman's Product/Market Fit Engine" },
+      { title: "Perplexity AI", link: "/Resources#tools", type: "tool", description: "AI-powered research with citations" },
     ],
     2: [
-      { title: "Feedback Loop Guide", link: "/resources#guides" },
-      { title: "Polsky Center Resources", link: "/directory" },
+      { title: "Metrics & Analytics", link: "/Resources#guides", type: "guide", description: "a16z's 16 Metrics for Growth" },
+      { title: "Product Development", link: "/Resources#guides", type: "guide", description: "Shape Up by Basecamp" },
+      { title: "Notion AI", link: "/Resources#tools", type: "tool", description: "Organize feedback and insights" },
     ],
     3: [
-      { title: "Market Research Tools", link: "/resources#tools" },
-      { title: "P33 Chicago Connections", link: "/directory" },
+      { title: "Growth & Acquisition", link: "/Resources#guides", type: "guide", description: "Emerging Startup Playbook" },
+      { title: "Metrics & Analytics", link: "/Resources#guides", type: "guide", description: "Guide to Growth Metrics" },
+      { title: "Elicit", link: "/Resources#tools", type: "tool", description: "AI research assistant for market analysis" },
     ],
   },
   growth: {
     1: [
-      { title: "1871 Founder Network", link: "/directory" },
-      { title: "Initial Traction Resources", link: "/resources#guides" },
+      { title: "Go-to-Market Guide", link: "/Resources#guides", type: "guide", description: "First Round's GTM Fit Framework" },
+      { title: "Storytelling & Design", link: "/Resources#guides", type: "guide", description: "YC's How to Build a Pitch Deck" },
+      { title: "Copy.ai", link: "/Resources#tools", type: "tool", description: "AI copywriting for early marketing" },
     ],
     2: [
-      { title: "Acquisition Playbook", link: "/resources#guides" },
-      { title: "Chicago Accelerators", link: "/AcceleratorsIncubators" },
+      { title: "Growth & Acquisition", link: "/Resources#guides", type: "guide", description: "Growth tactics from FB, Twitter, Wealthfront" },
+      { title: "Monetization & Pricing", link: "/Resources#guides", type: "guide", description: "SaaS Pricing Strategy Guide" },
+      { title: "Zapier", link: "/Resources#tools", type: "tool", description: "Automate acquisition workflows" },
     ],
     3: [
-      { title: "Scaling Channels Guide", link: "/resources#tools" },
-      { title: "Growth Stage Funding", link: "/Funding" },
+      { title: "Metrics & Analytics", link: "/Resources#guides", type: "guide", description: "16 Metrics for Growth at scale" },
+      { title: "Team & Talent", link: "/Resources#guides", type: "guide", description: "How to Scale a Growth Strategy and Team" },
+      { title: "Airtable", link: "/Resources#tools", type: "tool", description: "Scale your growth operations" },
     ],
   },
   operations: {
     1: [
-      { title: "MVP Delivery Checklist", link: "/resources#guides" },
-      { title: "Coworking Spaces", link: "/Workspaces" },
+      { title: "Product Development", link: "/Resources#guides", type: "guide", description: "Ship your MVP with Shape Up" },
+      { title: "Customer Discovery", link: "/Resources#guides", type: "guide", description: "Validate before you build" },
+      { title: "Stripe Atlas", link: "/Resources#tools", type: "tool", description: "Incorporate and get started" },
     ],
     2: [
-      { title: "SOP Templates", link: "/resources#tools" },
-      { title: "mHub for Hardware", link: "/directory" },
+      { title: "Team & Talent", link: "/Resources#guides", type: "guide", description: "Equity Compensation guide" },
+      { title: "Culture & Values", link: "/Resources#guides", type: "guide", description: "Netflix Culture Deck" },
+      { title: "Gusto", link: "/Resources#tools", type: "tool", description: "Payroll and HR management" },
     ],
     3: [
-      { title: "Scaling Operations", link: "/resources#guides" },
-      { title: "Chicago Tech Infrastructure", link: "/resources#tools" },
+      { title: "Culture & Values", link: "/Resources#guides", type: "guide", description: "Give Away Your Legos" },
+      { title: "Team & Talent", link: "/Resources#guides", type: "guide", description: "Scale your team structure" },
+      { title: "Rippling", link: "/Resources#tools", type: "tool", description: "All-in-one HR, IT, Finance" },
     ],
   },
   brand: {
     1: [
-      { title: "Messaging Framework", link: "/resources#guides" },
-      { title: "Chicago PR Resources", link: "/resources" },
+      { title: "Storytelling & Design", link: "/Resources#guides", type: "guide", description: "Sequoia's Business Plan format" },
+      { title: "The Art of the Pitch", link: "/Resources#guides", type: "guide", description: "How to Pitch Your Startup" },
+      { title: "Canva Magic Studio", link: "/Resources#tools", type: "tool", description: "AI-powered design tools" },
     ],
     2: [
-      { title: "Brand Guidelines Template", link: "/resources#tools" },
-      { title: "Content Strategy Guide", link: "/resources#guides" },
+      { title: "The Art of the Pitch", link: "/Resources#guides", type: "guide", description: "Master the Art of Influence" },
+      { title: "Go-to-Market Guide", link: "/Resources#guides", type: "guide", description: "Positioning and market entry" },
+      { title: "Gamma", link: "/Resources#tools", type: "tool", description: "AI-powered presentations" },
     ],
     3: [
-      { title: "Category Design Resources", link: "/resources#guides" },
-      { title: "Chicago Media Connections", link: "/directory" },
+      { title: "Fundraising Strategy", link: "/Resources#guides", type: "guide", description: "Non-Obvious Guide to Fundraising" },
+      { title: "Monetization & Pricing", link: "/Resources#guides", type: "guide", description: "Pricing for category leaders" },
+      { title: "Synthesia", link: "/Resources#tools", type: "tool", description: "AI video for brand content" },
     ],
   },
 };
@@ -714,17 +727,33 @@ export default function Assessment() {
                       <p className="text-white/40 text-xs mb-4">{dim.description}</p>
 
                       {recs.length > 0 && (
-                        <div className="space-y-2">
+                        <div className="space-y-3">
                           <p className="font-mono text-[9px] text-white/30 uppercase tracking-[0.15em]">
-                            Recommended:
+                            Your Next Steps:
                           </p>
                           {recs.map((rec, i) => (
                             <button
                               key={i}
                               onClick={() => navigate(rec.link)}
-                              className="block w-full text-left font-mono text-[10px] text-white/60 hover:text-white transition-colors"
+                              className="block w-full text-left group"
                             >
-                              → {rec.title}
+                              <div className="flex items-start gap-2">
+                                <span className={`font-mono text-[8px] uppercase tracking-wider px-1.5 py-0.5 flex-shrink-0 ${
+                                  rec.type === 'guide'
+                                    ? 'bg-blue-500/20 text-blue-400'
+                                    : 'bg-purple-500/20 text-purple-400'
+                                }`}>
+                                  {rec.type}
+                                </span>
+                                <div>
+                                  <p className="font-mono text-[10px] text-white/70 group-hover:text-white transition-colors">
+                                    {rec.title}
+                                  </p>
+                                  <p className="text-[9px] text-white/40 group-hover:text-white/60 transition-colors">
+                                    {rec.description}
+                                  </p>
+                                </div>
+                              </div>
                             </button>
                           ))}
                         </div>

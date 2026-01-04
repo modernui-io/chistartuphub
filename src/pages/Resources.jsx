@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Send, Download, HelpCircle, Search, X, ChevronDown, ChevronRight, ArrowUpRight, Compass, BookOpen, Wrench, TrendingUp, FileText } from "lucide-react";
+import { Send, Download, HelpCircle, Search, X, ChevronDown, ChevronRight, Compass, BookOpen, Wrench, TrendingUp, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import SEO from "@/components/SEO";
 import { BureauAtmosphere, BureauFooter } from "@/components/bureau";
-import MaturityMatrix from "@/components/resources/MaturityMatrix";
 import FounderGuidesSection from "@/components/resources/FounderGuidesSection";
 import AIToolsSection from "@/components/resources/AIToolsSection";
 import OperationalToolsSection from "@/components/resources/OperationalToolsSection";
@@ -15,20 +14,12 @@ import OnboardingGuide from "@/components/resources/OnboardingGuide";
 
 const SECTIONS = [
   {
-    id: "framework",
-    icon: Compass,
-    title: "Framework",
-    subtitle: "Startup Maturity Matrix",
-    description: "A framework to diagnose where you are and identify your next focus area",
-    defaultOpen: true
-  },
-  {
     id: "guides",
     icon: BookOpen,
-    title: "Guides",
+    title: "Founder Guides",
     subtitle: "Core Pillars",
-    description: "Master the essential pillars of startup success",
-    defaultOpen: false
+    description: "Master the essential pillars of startup success — from pitching to scaling",
+    defaultOpen: true
   },
   {
     id: "tools",
@@ -60,7 +51,7 @@ export default function Resources() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [expandedSections, setExpandedSections] = useState(["framework"]);
+  const [expandedSections, setExpandedSections] = useState(["guides"]);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoaded(true), 100);
@@ -226,12 +217,6 @@ export default function Resources() {
                     {/* Section Content */}
                     {expanded && (
                       <div className="px-6 md:px-8 pb-8">
-                        {section.id === "framework" && (
-                          <div className="ml-11 md:ml-16">
-                            <MaturityMatrix />
-                          </div>
-                        )}
-                        
                         {section.id === "guides" && (
                           <div className="ml-11 md:ml-16">
                             <FounderGuidesSection searchQuery={searchQuery} />
