@@ -178,74 +178,74 @@ const getPhaseFromScore = (score) => {
 };
 
 // Resource recommendations by dimension and phase
-// Format: 2 Founder Guides + 1 Tool per dimension/phase
+// Format: 2 Founder Guides + 1 Chicago Community/Hub per dimension/phase
 const RECOMMENDATIONS = {
   problem: {
     1: [
       { title: "Customer Discovery Guide", link: "/Resources#guides", type: "guide", description: "The Mom Test workshop & YC's How to Talk to Users" },
       { title: "Product Development", link: "/Resources#guides", type: "guide", description: "Superhuman's Product/Market Fit Engine" },
-      { title: "Perplexity AI", link: "/Resources#tools", type: "tool", description: "AI-powered research with citations" },
+      { title: "1871", link: "/Directory", type: "community", description: "Chicago's tech hub — find early users and get feedback" },
     ],
     2: [
       { title: "Metrics & Analytics", link: "/Resources#guides", type: "guide", description: "a16z's 16 Metrics for Growth" },
       { title: "Product Development", link: "/Resources#guides", type: "guide", description: "Shape Up by Basecamp" },
-      { title: "Notion AI", link: "/Resources#tools", type: "tool", description: "Organize feedback and insights" },
+      { title: "Polsky Center", link: "/Directory", type: "community", description: "UChicago's innovation hub for research-backed startups" },
     ],
     3: [
       { title: "Growth & Acquisition", link: "/Resources#guides", type: "guide", description: "Emerging Startup Playbook" },
       { title: "Metrics & Analytics", link: "/Resources#guides", type: "guide", description: "Guide to Growth Metrics" },
-      { title: "Elicit", link: "/Resources#tools", type: "tool", description: "AI research assistant for market analysis" },
+      { title: "P33 Chicago", link: "/Directory", type: "community", description: "Connect with Chicago's tech leadership network" },
     ],
   },
   growth: {
     1: [
       { title: "Go-to-Market Guide", link: "/Resources#guides", type: "guide", description: "First Round's GTM Fit Framework" },
       { title: "Storytelling & Design", link: "/Resources#guides", type: "guide", description: "YC's How to Build a Pitch Deck" },
-      { title: "Copy.ai", link: "/Resources#tools", type: "tool", description: "AI copywriting for early marketing" },
+      { title: "Techstars Chicago", link: "/AcceleratorsIncubators", type: "community", description: "Accelerator with mentor network for early traction" },
     ],
     2: [
       { title: "Growth & Acquisition", link: "/Resources#guides", type: "guide", description: "Growth tactics from FB, Twitter, Wealthfront" },
       { title: "Monetization & Pricing", link: "/Resources#guides", type: "guide", description: "SaaS Pricing Strategy Guide" },
-      { title: "Zapier", link: "/Resources#tools", type: "tool", description: "Automate acquisition workflows" },
+      { title: "MATTER", link: "/Directory", type: "community", description: "Healthcare startup hub with industry connections" },
     ],
     3: [
       { title: "Metrics & Analytics", link: "/Resources#guides", type: "guide", description: "16 Metrics for Growth at scale" },
       { title: "Team & Talent", link: "/Resources#guides", type: "guide", description: "How to Scale a Growth Strategy and Team" },
-      { title: "Airtable", link: "/Resources#tools", type: "tool", description: "Scale your growth operations" },
+      { title: "World Business Chicago", link: "/Directory", type: "community", description: "Economic development for scaling companies" },
     ],
   },
   operations: {
     1: [
       { title: "Product Development", link: "/Resources#guides", type: "guide", description: "Ship your MVP with Shape Up" },
       { title: "Customer Discovery", link: "/Resources#guides", type: "guide", description: "Validate before you build" },
-      { title: "Stripe Atlas", link: "/Resources#tools", type: "tool", description: "Incorporate and get started" },
+      { title: "mHUB", link: "/Directory", type: "community", description: "Hardtech innovation center with prototyping facilities" },
     ],
     2: [
       { title: "Team & Talent", link: "/Resources#guides", type: "guide", description: "Equity Compensation guide" },
       { title: "Culture & Values", link: "/Resources#guides", type: "guide", description: "Netflix Culture Deck" },
-      { title: "Gusto", link: "/Resources#tools", type: "tool", description: "Payroll and HR management" },
+      { title: "Chicago Booth", link: "/Directory", type: "community", description: "Polsky + New Venture Challenge for ops talent" },
     ],
     3: [
       { title: "Culture & Values", link: "/Resources#guides", type: "guide", description: "Give Away Your Legos" },
       { title: "Team & Talent", link: "/Resources#guides", type: "guide", description: "Scale your team structure" },
-      { title: "Rippling", link: "/Resources#tools", type: "tool", description: "All-in-one HR, IT, Finance" },
+      { title: "Illinois Tech Association", link: "/Directory", type: "community", description: "Tech community for scaling companies" },
     ],
   },
   brand: {
     1: [
       { title: "Storytelling & Design", link: "/Resources#guides", type: "guide", description: "Sequoia's Business Plan format" },
       { title: "The Art of the Pitch", link: "/Resources#guides", type: "guide", description: "How to Pitch Your Startup" },
-      { title: "Canva Magic Studio", link: "/Resources#tools", type: "tool", description: "AI-powered design tools" },
+      { title: "Founder Asks", link: "/Opportunities", type: "community", description: "Get feedback on your pitch from Chicago founders" },
     ],
     2: [
       { title: "The Art of the Pitch", link: "/Resources#guides", type: "guide", description: "Master the Art of Influence" },
       { title: "Go-to-Market Guide", link: "/Resources#guides", type: "guide", description: "Positioning and market entry" },
-      { title: "Gamma", link: "/Resources#tools", type: "tool", description: "AI-powered presentations" },
+      { title: "Built In Chicago", link: "/Directory", type: "community", description: "Tech media platform for brand visibility" },
     ],
     3: [
       { title: "Fundraising Strategy", link: "/Resources#guides", type: "guide", description: "Non-Obvious Guide to Fundraising" },
       { title: "Monetization & Pricing", link: "/Resources#guides", type: "guide", description: "Pricing for category leaders" },
-      { title: "Synthesia", link: "/Resources#tools", type: "tool", description: "AI video for brand content" },
+      { title: "Chicago Venture Summit", link: "/Events", type: "community", description: "Connect with investors and industry leaders" },
     ],
   },
 };
@@ -741,9 +741,9 @@ export default function Assessment() {
                                 <span className={`font-mono text-[8px] uppercase tracking-wider px-1.5 py-0.5 flex-shrink-0 ${
                                   rec.type === 'guide'
                                     ? 'bg-blue-500/20 text-blue-400'
-                                    : 'bg-purple-500/20 text-purple-400'
+                                    : 'bg-amber-500/20 text-amber-400'
                                 }`}>
-                                  {rec.type}
+                                  {rec.type === 'community' ? 'chicago' : rec.type}
                                 </span>
                                 <div>
                                   <p className="font-mono text-[10px] text-white/70 group-hover:text-white transition-colors">
