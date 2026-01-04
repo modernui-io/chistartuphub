@@ -11,6 +11,7 @@ import OperationalToolsSection from "@/components/resources/OperationalToolsSect
 import LearningResourcesSection from "@/components/resources/LearningResourcesSection";
 import GlossarySection from "@/components/resources/GlossarySection";
 import DownloadToolkitModal from "@/components/DownloadToolkitModal";
+import OnboardingGuide from "@/components/resources/OnboardingGuide";
 
 const SECTIONS = [
   {
@@ -137,10 +138,20 @@ export default function Resources() {
           </div>
         </section>
 
+        {/* Onboarding Guide - shows once for new users */}
+        <section className="px-6 pb-8">
+          <div
+            className={`max-w-5xl mx-auto ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
+            style={{ animationDelay: '450ms' }}
+          >
+            <OnboardingGuide />
+          </div>
+        </section>
+
         {/* Search Bar */}
         <section className="px-6 pb-8">
           <div className="max-w-5xl mx-auto">
-            <div 
+            <div
               className={`border border-white/10 ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
               style={{ animationDelay: '500ms' }}
             >
@@ -178,8 +189,9 @@ export default function Resources() {
                 const expanded = isExpanded(section.id);
                 
                 return (
-                  <div 
+                  <div
                     key={section.id}
+                    data-section={section.id}
                     className={`border-b border-white/10 last:border-b-0 ${expanded ? 'bg-white/[0.02]' : ''}`}
                   >
                     {/* Section Header */}
