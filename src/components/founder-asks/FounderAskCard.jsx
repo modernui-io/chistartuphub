@@ -10,6 +10,8 @@ import {
   Megaphone,
   EyeOff,
   HandHelping,
+  Eye,
+  Sparkles,
 } from 'lucide-react';
 
 // ============================================
@@ -44,14 +46,26 @@ const CATEGORY_CONFIG = {
 // FOUNDER ASK CARD COMPONENT
 // ============================================
 
+// Helper to check if created within last 24 hours
+function isNewToday(createdAtRaw) {
+  if (!createdAtRaw) return false;
+  const createdDate = new Date(createdAtRaw);
+  const now = new Date();
+  const hoursDiff = (now - createdDate) / (1000 * 60 * 60);
+  return hoursDiff <= 24;
+}
+
 export default function FounderAskCard({ ask, index, onHelp }) {
   const categoryConfig = CATEGORY_CONFIG[ask.category] || CATEGORY_CONFIG.general_advice;
   const CategoryIcon = categoryConfig.icon;
 
   // Calculate days remaining
-  const daysRemaining = ask.expiresAt 
+  const daysRemaining = ask.expiresAt
     ? Math.max(0, Math.ceil((new Date(ask.expiresAt) - new Date()) / (1000 * 60 * 60 * 24)))
     : null;
+
+  // Check if new today
+  const isNew = isNewToday(ask.createdAtRaw);
 
   return (
     <motion.div
@@ -85,6 +99,12 @@ export default function FounderAskCard({ ask, index, onHelp }) {
 
         {/* Badges */}
         <div className="flex items-center gap-2">
+          {isNew && (
+            <div className="flex items-center gap-1 px-2 py-0.5 bg-amber-400/20 border border-amber-400/30 text-amber-400" title="Posted today">
+              <Sparkles className="w-3 h-3" strokeWidth={1.5} />
+              <span className="font-mono text-[9px] uppercase tracking-wider">New</span>
+            </div>
+          )}
           {ask.isAnonymous && (
             <div className="flex items-center gap-1 text-white/30" title="Anonymous">
               <EyeOff className="w-3 h-3" strokeWidth={1.5} />
@@ -152,9 +172,17 @@ export default function FounderAskCard({ ask, index, onHelp }) {
 
         {/* Meta Row */}
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2 text-white/30">
-            <Clock className="w-3 h-3" strokeWidth={1.5} />
-            <span className="font-mono text-[10px]">{ask.createdAt}</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-white/30">
+              <Clock className="w-3 h-3" strokeWidth={1.5} />
+              <span className="font-mono text-[10px]">{ask.createdAt}</span>
+            </div>
+            {ask.viewCount > 0 && (
+              <div className="flex items-center gap-1.5 text-white/30" title="Views">
+                <Eye className="w-3 h-3" strokeWidth={1.5} />
+                <span className="font-mono text-[10px]">{ask.viewCount}</span>
+              </div>
+            )}
           </div>
           {daysRemaining !== null && (
             <span className={`font-mono text-[10px] ${daysRemaining <= 2 ? 'text-amber-400' : 'text-white/30'}`}>

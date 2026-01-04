@@ -45,6 +45,7 @@ async function fetchFounderAsks() {
     viewCount: ask.view_count,
     connectionCount: ask.connection_request_count,
     createdAt: formatTimeAgo(ask.created_at),
+    createdAtRaw: ask.created_at,
     expiresAt: ask.expires_at,
     isActive: ask.is_active,
     userId: ask.user_id,

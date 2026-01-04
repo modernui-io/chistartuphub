@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Linkedin, Mail, Send, AlertCircle } from 'lucide-react';
+import { X, Linkedin, Mail, Send, AlertCircle, Heart, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { supabase } from '@/api/supabaseClient';
 import { sendConnectionRequestEmail } from '@/lib/email';
@@ -12,9 +13,17 @@ import { sendConnectionRequestEmail } from '@/lib/email';
 
 export default function HelpModal({ isOpen, onClose, ask }) {
   const { user, profile } = useAuth();
+  const navigate = useNavigate();
   const [linkedinUrl, setLinkedinUrl] = useState(profile?.linkedin_url || '');
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const handleClose = () => {
+    setShowSuccess(false);
+    setMessage('');
+    onClose();
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -94,13 +103,8 @@ export default function HelpModal({ isOpen, onClose, ask }) {
         }
       }
 
-      toast.success('Your offer to help has been sent!', {
-        description: 'The founder has 48 hours to review and accept your request. You\'ll be notified when they respond.',
-        duration: 6000,
-      });
-
-      onClose();
-      setMessage('');
+      // Show success state instead of closing
+      setShowSuccess(true);
     } catch (error) {
       console.error('Error sending help offer:', error);
       toast.error('Failed to send', {
@@ -125,7 +129,7 @@ export default function HelpModal({ isOpen, onClose, ask }) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-          onClick={onClose}
+          onClick={handleClose}
         />
 
         {/* Modal */}
@@ -133,30 +137,71 @@ export default function HelpModal({ isOpen, onClose, ask }) {
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-lg bg-[#0a0f1a] border border-white/10"
+          className="relative w-full max-w-[95vw] sm:max-w-lg bg-[#0a0f1a] border border-white/10 max-h-[90vh] overflow-y-auto"
         >
           {/* Header */}
-          <div className="p-6 border-b border-white/10">
+          <div className="p-4 sm:p-6 border-b border-white/10">
             <div className="flex items-center justify-between">
               <div>
                 <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block">
-                  [OFFER: HELP]
+                  {showSuccess ? '[STATUS: SENT]' : '[OFFER: HELP]'}
                 </span>
-                <h2 className="font-serif text-2xl text-white mt-1">I Can Help</h2>
+                <h2 className="font-serif text-2xl text-white mt-1">
+                  {showSuccess ? 'Offer Sent!' : 'I Can Help'}
+                </h2>
               </div>
               <button
-                onClick={onClose}
-                className="w-8 h-8 flex items-center justify-center border border-white/10 hover:bg-white hover:text-black transition-colors cursor-crosshair"
+                onClick={handleClose}
+                className="w-11 h-11 flex items-center justify-center border border-white/10 hover:bg-white hover:text-black transition-colors cursor-crosshair"
               >
-                <X className="w-4 h-4" strokeWidth={1.5} />
+                <X className="w-5 h-5" strokeWidth={1.5} />
               </button>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
+            {/* Success State */}
+            {showSuccess && (
+              <div className="text-center py-6">
+                <div className="w-16 h-16 mx-auto mb-6 border-2 border-green-400 flex items-center justify-center">
+                  <Heart className="w-8 h-8 text-green-400" strokeWidth={1.5} />
+                </div>
+
+                <h3 className="font-serif text-2xl text-white mb-2">
+                  Thank You for Helping
+                </h3>
+                <p className="text-white/50 text-sm max-w-sm mx-auto mb-8">
+                  The founder will be notified of your offer. They have 48 hours to review and accept. We'll let you know when they respond.
+                </p>
+
+                <div className="space-y-3">
+                  <button
+                    onClick={() => {
+                      handleClose();
+                      navigate('/profile?tab=connections');
+                    }}
+                    className="w-full font-mono text-[11px] uppercase tracking-[0.1em] py-4 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair flex items-center justify-center gap-2"
+                  >
+                    View Your Offers
+                    <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
+                  </button>
+                  <button
+                    onClick={handleClose}
+                    className="w-full font-mono text-[11px] uppercase tracking-[0.1em] py-3 border border-white/20 text-white/50 hover:bg-white/5 transition-colors cursor-crosshair"
+                  >
+                    Help More Founders
+                  </button>
+                </div>
+
+                <p className="mt-6 text-[11px] text-white/30 font-mono">
+                  Every connection strengthens the ecosystem
+                </p>
+              </div>
+            )}
+
             {/* Own ask warning */}
-            {isOwnAsk && (
+            {!showSuccess && isOwnAsk && (
               <div className="mb-6 p-4 border border-amber-500/30 bg-amber-500/5">
                 <div className="flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
@@ -168,6 +213,7 @@ export default function HelpModal({ isOpen, onClose, ask }) {
             )}
 
             {/* Ask Summary */}
+            {!showSuccess && (
             <div className="mb-6 p-4 bg-white/5 border border-white/10">
               <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block mb-2">
                 [ASK]
@@ -186,8 +232,10 @@ export default function HelpModal({ isOpen, onClose, ask }) {
                 )}
               </div>
             </div>
+            )}
 
             {/* How it works */}
+            {!showSuccess && (
             <div className="mb-6 p-4 border border-white/10">
               <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block mb-3">
                 [HOW_IT_WORKS]
@@ -219,8 +267,10 @@ export default function HelpModal({ isOpen, onClose, ask }) {
                 </div>
               </div>
             </div>
+            )}
 
             {/* Form */}
+            {!showSuccess && (
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* LinkedIn URL */}
               <div>
@@ -264,7 +314,7 @@ export default function HelpModal({ isOpen, onClose, ask }) {
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
-                  onClick={onClose}
+                  onClick={handleClose}
                   className="flex-1 font-mono text-[11px] uppercase tracking-[0.1em] py-3 border border-white/20 text-white/50 hover:bg-white/5 transition-colors cursor-crosshair"
                 >
                   Cancel
@@ -279,6 +329,7 @@ export default function HelpModal({ isOpen, onClose, ask }) {
                 </button>
               </div>
             </form>
+            )}
           </div>
         </motion.div>
       </div>

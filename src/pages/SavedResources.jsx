@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Bookmark, ExternalLink, Trash2, Filter, Search, FolderOpen, Download } from "lucide-react";
+import { Bookmark, ExternalLink, Trash2, Filter, Search, FolderOpen, Download, StickyNote, X, Check } from "lucide-react";
 import ExportResourcesModal from "@/components/ExportResourcesModal";
 import { BureauAtmosphere, BureauFooter } from "@/components/bureau";
 import SEO from "@/components/SEO";
 import { supabase } from "@/api/supabaseClient";
+import { toast } from "sonner";
 
 export default function SavedResources() {
   const { user, profile } = useAuth();
@@ -16,6 +17,31 @@ export default function SavedResources() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
+  const [editingNoteId, setEditingNoteId] = useState(null);
+  const [noteText, setNoteText] = useState("");
+
+  const updateNote = async (bookmarkId, notes) => {
+    try {
+      const { error } = await supabase
+        .from("bookmarks")
+        .update({ notes })
+        .eq("id", bookmarkId);
+
+      if (error) throw error;
+
+      // Update local state
+      setSavedItems(items =>
+        items.map(item =>
+          item.id === bookmarkId ? { ...item, notes } : item
+        )
+      );
+      setEditingNoteId(null);
+      toast.success("Note saved");
+    } catch (error) {
+      console.error("Error updating note:", error);
+      toast.error("Failed to save note");
+    }
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoaded(true), 100);
@@ -154,29 +180,31 @@ export default function SavedResources() {
         <section className="px-6 pb-24">
           <div className="max-w-6xl mx-auto">
             {/* Filter Tabs */}
-            <div className="flex items-center gap-0 border border-white/20 w-fit mb-8 bg-black/40 backdrop-blur-sm">
-              {resourceTypes.map((type) => {
-                const count = type.id === "all"
-                  ? savedItems.length
-                  : savedItems.filter((i) => i.resource_type === type.id).length;
-                const isActive = filter === type.id;
-                return (
-                  <button
-                    key={type.id}
-                    onClick={() => setFilter(type.id)}
-                    className={`font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-3 flex items-center gap-2 transition-colors cursor-crosshair border-r border-white/20 last:border-r-0 ${
-                      isActive
-                        ? "bg-white text-black"
-                        : "text-white/50 hover:text-white hover:bg-white/[0.02]"
-                    }`}
-                  >
-                    <span>{type.label}</span>
-                    <span className={`text-[9px] px-1.5 py-0.5 ${isActive ? 'bg-black/20' : 'bg-white/10'}`}>
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
+            <div className="overflow-x-auto -mx-6 px-6 mb-8 scrollbar-hide">
+              <div className="flex items-center gap-0 border border-white/20 w-fit bg-black/40 backdrop-blur-sm">
+                {resourceTypes.map((type) => {
+                  const count = type.id === "all"
+                    ? savedItems.length
+                    : savedItems.filter((i) => i.resource_type === type.id).length;
+                  const isActive = filter === type.id;
+                  return (
+                    <button
+                      key={type.id}
+                      onClick={() => setFilter(type.id)}
+                      className={`font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.15em] px-3 sm:px-4 py-3 flex items-center gap-2 transition-colors cursor-crosshair border-r border-white/20 last:border-r-0 whitespace-nowrap ${
+                        isActive
+                          ? "bg-white text-black"
+                          : "text-white/50 hover:text-white hover:bg-white/[0.02]"
+                      }`}
+                    >
+                      <span>{type.label}</span>
+                      <span className={`text-[9px] px-1.5 py-0.5 ${isActive ? 'bg-black/20' : 'bg-white/10'}`}>
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
             {/* Search */}
@@ -242,9 +270,64 @@ export default function SavedResources() {
                       {item.resource_name}
                     </h3>
 
-                    <p className="text-white/60 text-sm leading-relaxed mb-4 flex-grow line-clamp-2">
+                    <p className="text-white/60 text-sm leading-relaxed mb-3 flex-grow line-clamp-2">
                       {item.resource_description || `Saved ${getTypeLabel(item.resource_type).toLowerCase()}`}
                     </p>
+
+                    {/* Notes Section */}
+                    <div className="mb-4">
+                      {editingNoteId === item.id ? (
+                        <div className="space-y-2">
+                          <textarea
+                            value={noteText}
+                            onChange={(e) => setNoteText(e.target.value)}
+                            placeholder="Add a personal note..."
+                            className="w-full bg-black/40 border border-white/20 p-2 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-white/40 resize-none font-mono"
+                            rows={2}
+                            maxLength={200}
+                            autoFocus
+                          />
+                          <div className="flex items-center justify-between">
+                            <span className="font-mono text-[9px] text-white/30">
+                              {noteText.length}/200
+                            </span>
+                            <div className="flex items-center gap-1">
+                              <button
+                                onClick={() => setEditingNoteId(null)}
+                                className="p-1.5 text-white/40 hover:text-white transition-colors"
+                              >
+                                <X className="w-3 h-3" strokeWidth={1.5} />
+                              </button>
+                              <button
+                                onClick={() => updateNote(item.id, noteText)}
+                                className="p-1.5 text-green-400 hover:text-green-300 transition-colors"
+                              >
+                                <Check className="w-3 h-3" strokeWidth={2} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setEditingNoteId(item.id);
+                            setNoteText(item.notes || "");
+                          }}
+                          className="w-full text-left"
+                        >
+                          {item.notes ? (
+                            <p className="text-xs text-amber-400/70 italic line-clamp-2 hover:text-amber-400 transition-colors">
+                              "{item.notes}"
+                            </p>
+                          ) : (
+                            <p className="text-[10px] text-white/30 hover:text-white/50 transition-colors flex items-center gap-1.5">
+                              <StickyNote className="w-3 h-3" strokeWidth={1.5} />
+                              Add note...
+                            </p>
+                          )}
+                        </button>
+                      )}
+                    </div>
 
                     <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
                       <span className="font-mono text-xs text-white/40">

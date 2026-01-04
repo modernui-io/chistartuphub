@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { useNotifications } from "@/hooks/useNotifications";
 import {
   ChevronDown,
   Plus,
@@ -9,7 +10,8 @@ import {
   Settings,
   LogOut,
   ArrowUpRight,
-  Shield
+  Shield,
+  Bell
 } from "lucide-react";
 
 // Admin access list
@@ -44,6 +46,9 @@ export default function Header({
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const userMenuRef = useRef(null);
+
+  // Notification count for badge
+  const { total: notificationCount } = useNotifications();
 
   // Scroll listener for header background (RAF throttled for performance)
   useEffect(() => {
@@ -219,12 +224,17 @@ export default function Header({
                 <div className="relative" ref={userMenuRef}>
                   <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="w-10 h-10 border border-white/20 bg-transparent flex items-center justify-center cursor-crosshair hover:bg-white hover:border-white transition-none group"
-                    aria-label="User menu"
+                    className="relative w-11 h-11 border border-white/20 bg-transparent flex items-center justify-center cursor-crosshair hover:bg-white hover:border-white transition-none group"
+                    aria-label={notificationCount > 0 ? `User menu - ${notificationCount} notifications` : "User menu"}
                   >
                     <span className="text-white text-xs font-mono font-medium uppercase group-hover:text-black">
                       {userInitial}
                     </span>
+                    {notificationCount > 0 && (
+                      <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-mono font-bold rounded-full flex items-center justify-center px-1">
+                        {notificationCount > 9 ? '9+' : notificationCount}
+                      </span>
+                    )}
                   </button>
 
                   {/* User Dropdown Menu */}
@@ -247,7 +257,22 @@ export default function Header({
                           <span className="font-mono text-[11px] uppercase tracking-wider">Your Profile</span>
                         </Link>
                         <Link
-                          to="/profile?tab=bookmarks"
+                          to="/profile?tab=connections"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center justify-between px-5 py-3 text-white/50 hover:bg-white hover:text-black transition-none cursor-crosshair"
+                        >
+                          <div className="flex items-center gap-3">
+                            <Bell className="w-4 h-4" />
+                            <span className="font-mono text-[11px] uppercase tracking-wider">Requests</span>
+                          </div>
+                          {notificationCount > 0 && (
+                            <span className="min-w-[20px] h-5 bg-red-500 text-white text-[10px] font-mono font-bold rounded-full flex items-center justify-center px-1.5">
+                              {notificationCount > 9 ? '9+' : notificationCount}
+                            </span>
+                          )}
+                        </Link>
+                        <Link
+                          to="/saved"
                           onClick={() => setIsUserMenuOpen(false)}
                           className="flex items-center gap-3 px-5 py-3 text-white/50 hover:bg-white hover:text-black transition-none cursor-crosshair"
                         >
@@ -311,7 +336,7 @@ export default function Header({
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden relative w-10 h-10 flex items-center justify-center border border-white/20 hover:bg-white hover:border-white transition-none cursor-crosshair group"
+              className="md:hidden relative w-11 h-11 flex items-center justify-center border border-white/20 hover:bg-white hover:border-white transition-none cursor-crosshair group"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
             >
@@ -408,8 +433,13 @@ export default function Header({
                     {/* Mobile User Info */}
                     <div className="px-2 py-4 bg-white/[0.03] border border-white/[0.08]">
                       <div className="flex items-center gap-4">
-                        <div className="w-11 h-11 border border-white/20 flex items-center justify-center">
+                        <div className="relative w-11 h-11 border border-white/20 flex items-center justify-center">
                           <span className="text-white font-mono font-medium uppercase">{userInitial}</span>
+                          {notificationCount > 0 && (
+                            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-[10px] font-mono font-bold rounded-full flex items-center justify-center px-1">
+                              {notificationCount > 9 ? '9+' : notificationCount}
+                            </span>
+                          )}
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-white font-mono text-sm truncate">{userName}</p>
@@ -428,7 +458,22 @@ export default function Header({
                       <span className="font-mono text-base uppercase tracking-wider">Your Profile</span>
                     </Link>
                     <Link
-                      to="/profile?tab=bookmarks"
+                      to="/profile?tab=connections"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center justify-between px-3 py-4 text-white/60 hover:text-white active:bg-white/10 transition-none border-b border-white/5"
+                    >
+                      <div className="flex items-center gap-4">
+                        <Bell className="w-5 h-5" />
+                        <span className="font-mono text-base uppercase tracking-wider">Requests</span>
+                      </div>
+                      {notificationCount > 0 && (
+                        <span className="min-w-[22px] h-[22px] bg-red-500 text-white text-[11px] font-mono font-bold rounded-full flex items-center justify-center px-1.5">
+                          {notificationCount > 9 ? '9+' : notificationCount}
+                        </span>
+                      )}
+                    </Link>
+                    <Link
+                      to="/saved"
                       onClick={() => setMobileMenuOpen(false)}
                       className="flex items-center gap-4 px-3 py-4 text-white/60 hover:text-white active:bg-white/10 transition-none border-b border-white/5"
                     >

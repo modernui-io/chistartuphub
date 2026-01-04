@@ -40,7 +40,8 @@ import {
   HandHelping,
   CheckCircle,
   XCircle,
-  Clock3
+  Clock3,
+  Download
 } from 'lucide-react';
 import { toast } from 'sonner';
 import SEO from '@/components/SEO';
@@ -892,6 +893,20 @@ export default function Profile() {
               </Card>
             ) : (
               <div className="space-y-8">
+                {/* Export CTA */}
+                <div className="flex items-center justify-between p-4 bg-black/40 backdrop-blur-sm border border-white/10">
+                  <div>
+                    <p className="text-white/80 text-sm font-medium">Want to export or filter your saved resources?</p>
+                    <p className="text-white/40 text-xs mt-1">Use the full Saved Resources page for advanced features</p>
+                  </div>
+                  <Button asChild variant="outline" className="border-white/20 text-white/60 hover:bg-white hover:text-black rounded-none">
+                    <Link to="/saved" className="flex items-center gap-2">
+                      <Download size={14} />
+                      Open Full View
+                    </Link>
+                  </Button>
+                </div>
+
                 {Object.entries(bookmarksByType).map(([type, items]) => {
                   // Category badge colors
                   const categoryColors = {

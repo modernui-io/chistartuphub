@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { X, Download, Check, FileText, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import jsPDF from "jspdf";
 
 export default function ExportResourcesModal({ isOpen, onClose, resources, getTypeLabel }) {
   const { profile } = useAuth();
@@ -34,284 +35,178 @@ export default function ExportResourcesModal({ isOpen, onClose, resources, getTy
 
   const handleExport = async () => {
     setExporting(true);
-    
+
     try {
-      // Create a new window for printing
-      const printWindow = window.open('', '_blank');
-      
-      const htmlContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <title>ChiStartupHub - Saved Resources</title>
-          <style>
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Mono&display=swap');
-            
-            * {
-              margin: 0;
-              padding: 0;
-              box-sizing: border-box;
-            }
-            
-            body {
-              font-family: 'Inter', sans-serif;
-              background: #0a0a0a;
-              color: #ffffff;
-              padding: 40px;
-              min-height: 100vh;
-            }
-            
-            .container {
-              max-width: 800px;
-              margin: 0 auto;
-            }
-            
-            .header {
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              padding-bottom: 32px;
-              border-bottom: 1px solid rgba(255,255,255,0.1);
-              margin-bottom: 32px;
-            }
-            
-            .logo {
-              display: flex;
-              align-items: center;
-              gap: 12px;
-            }
-            
-            .logo-box {
-              width: 40px;
-              height: 40px;
-              border: 2px solid rgba(255,255,255,0.3);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-family: 'Space Mono', monospace;
-              font-weight: 700;
-              font-size: 14px;
-            }
-            
-            .logo-text {
-              font-family: 'Space Mono', monospace;
-              font-size: 14px;
-              letter-spacing: 0.1em;
-              text-transform: uppercase;
-            }
-            
-            .date {
-              font-family: 'Space Mono', monospace;
-              font-size: 11px;
-              color: rgba(255,255,255,0.4);
-              text-transform: uppercase;
-              letter-spacing: 0.15em;
-            }
-            
-            .title-section {
-              margin-bottom: 40px;
-            }
-            
-            .label {
-              font-family: 'Space Mono', monospace;
-              font-size: 10px;
-              color: rgba(255,255,255,0.4);
-              text-transform: uppercase;
-              letter-spacing: 0.2em;
-              margin-bottom: 12px;
-            }
-            
-            h1 {
-              font-size: 32px;
-              font-weight: 400;
-              letter-spacing: -0.02em;
-              margin-bottom: 8px;
-            }
-            
-            .subtitle {
-              color: rgba(255,255,255,0.5);
-              font-size: 14px;
-            }
-            
-            .stats {
-              display: flex;
-              gap: 32px;
-              margin-bottom: 40px;
-              padding: 20px;
-              background: rgba(255,255,255,0.02);
-              border: 1px solid rgba(255,255,255,0.1);
-            }
-            
-            .stat-value {
-              font-family: 'Space Mono', monospace;
-              font-size: 24px;
-              font-weight: 700;
-            }
-            
-            .stat-label {
-              font-family: 'Space Mono', monospace;
-              font-size: 10px;
-              color: rgba(255,255,255,0.4);
-              text-transform: uppercase;
-              letter-spacing: 0.15em;
-            }
-            
-            .resources-grid {
-              display: grid;
-              gap: 0;
-              border: 1px solid rgba(255,255,255,0.1);
-            }
-            
-            .resource-card {
-              padding: 24px;
-              border-bottom: 1px solid rgba(255,255,255,0.1);
-              background: rgba(0,0,0,0.3);
-            }
-            
-            .resource-card:last-child {
-              border-bottom: none;
-            }
-            
-            .resource-header {
-              display: flex;
-              justify-content: space-between;
-              align-items: flex-start;
-              margin-bottom: 12px;
-            }
-            
-            .resource-number {
-              font-family: 'Space Mono', monospace;
-              font-size: 11px;
-              color: rgba(255,255,255,0.2);
-            }
-            
-            .resource-type {
-              font-family: 'Space Mono', monospace;
-              font-size: 9px;
-              color: rgba(255,255,255,0.5);
-              text-transform: uppercase;
-              letter-spacing: 0.15em;
-              padding: 4px 8px;
-              border: 1px solid rgba(255,255,255,0.2);
-            }
-            
-            .resource-name {
-              font-family: 'Space Mono', monospace;
-              font-size: 13px;
-              text-transform: uppercase;
-              letter-spacing: 0.1em;
-              margin-bottom: 8px;
-            }
-            
-            .resource-description {
-              color: rgba(255,255,255,0.6);
-              font-size: 13px;
-              line-height: 1.6;
-              margin-bottom: 12px;
-            }
-            
-            .resource-url {
-              font-family: 'Space Mono', monospace;
-              font-size: 11px;
-              color: rgba(255,255,255,0.4);
-              word-break: break-all;
-            }
-            
-            .footer {
-              margin-top: 40px;
-              padding-top: 24px;
-              border-top: 1px solid rgba(255,255,255,0.1);
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-            }
-            
-            .footer-text {
-              font-family: 'Space Mono', monospace;
-              font-size: 10px;
-              color: rgba(255,255,255,0.3);
-              text-transform: uppercase;
-              letter-spacing: 0.15em;
-            }
-            
-            .footer-url {
-              font-family: 'Space Mono', monospace;
-              font-size: 10px;
-              color: rgba(255,255,255,0.5);
-            }
-            
-            @media print {
-              body {
-                background: #0a0a0a !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-              }
-              
-              .resource-card {
-                break-inside: avoid;
-              }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <div class="logo">
-                <div class="logo-box">CS</div>
-                <span class="logo-text">ChiStartup Hub</span>
-              </div>
-              <span class="date">Exported ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
-            </div>
-            
-            <div class="title-section">
-              <div class="label">[Export: Saved_Resources]</div>
-              <h1>Curated Resources</h1>
-              <p class="subtitle">Prepared by ${profile?.full_name || 'ChiStartupHub Member'}</p>
-            </div>
-            
-            <div class="stats">
-              <div>
-                <div class="stat-value">${selectedResources.length}</div>
-                <div class="stat-label">Resources</div>
-              </div>
-              <div>
-                <div class="stat-value">${[...new Set(selectedResources.map(r => r.resource_type))].length}</div>
-                <div class="stat-label">Categories</div>
-              </div>
-            </div>
-            
-            <div class="resources-grid">
-              ${selectedResources.map((item, index) => `
-                <div class="resource-card">
-                  <div class="resource-header">
-                    <span class="resource-number">${String(index + 1).padStart(2, '0')}</span>
-                    <span class="resource-type">${getTypeLabel(item.resource_type)}</span>
-                  </div>
-                  <div class="resource-name">${item.resource_name}</div>
-                  <div class="resource-description">${item.resource_description || `A curated ${getTypeLabel(item.resource_type).toLowerCase()} from Chicago's startup ecosystem.`}</div>
-                  ${item.resource_url ? `<div class="resource-url">${item.resource_url}</div>` : ''}
-                </div>
-              `).join('')}
-            </div>
-            
-            <div class="footer">
-              <span class="footer-text">ChiStartupHub — Build Your Vision in Chicago</span>
-              <span class="footer-url">chistartuphub.com</span>
-            </div>
-          </div>
-          
-          <script>
-            window.onload = function() {
-              window.print();
-            }
-          </script>
-        </body>
-        </html>
-      `;
-      
-      printWindow.document.write(htmlContent);
-      printWindow.document.close();
-      
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 20;
+      const contentWidth = pageWidth - (margin * 2);
+      let yPos = margin;
+
+      // Colors
+      const bgColor = [10, 10, 10];
+      const textWhite = [255, 255, 255];
+      const textGray = [150, 150, 150];
+      const textDark = [100, 100, 100];
+      const borderColor = [50, 50, 50];
+
+      // Draw dark background
+      doc.setFillColor(...bgColor);
+      doc.rect(0, 0, pageWidth, pageHeight, 'F');
+
+      // Header
+      doc.setDrawColor(...borderColor);
+      doc.setLineWidth(0.5);
+
+      // Logo box
+      doc.setDrawColor(...textGray);
+      doc.rect(margin, yPos, 12, 12);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(...textWhite);
+      doc.text('CS', margin + 6, yPos + 7, { align: 'center' });
+
+      // Logo text
+      doc.setFontSize(9);
+      doc.text('CHISTARTUPHUB', margin + 16, yPos + 7);
+
+      // Date
+      doc.setFontSize(8);
+      doc.setTextColor(...textDark);
+      const dateText = `EXPORTED ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}`;
+      doc.text(dateText, pageWidth - margin, yPos + 7, { align: 'right' });
+
+      yPos += 20;
+
+      // Separator line
+      doc.setDrawColor(...borderColor);
+      doc.line(margin, yPos, pageWidth - margin, yPos);
+      yPos += 15;
+
+      // Title section
+      doc.setFontSize(8);
+      doc.setTextColor(...textDark);
+      doc.text('[EXPORT: SAVED_RESOURCES]', margin, yPos);
+      yPos += 8;
+
+      doc.setFontSize(24);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...textWhite);
+      doc.text('Curated Resources', margin, yPos);
+      yPos += 8;
+
+      doc.setFontSize(11);
+      doc.setTextColor(...textGray);
+      doc.text(`Prepared by ${profile?.full_name || 'ChiStartupHub Member'}`, margin, yPos);
+      yPos += 15;
+
+      // Stats box
+      doc.setFillColor(15, 15, 15);
+      doc.setDrawColor(...borderColor);
+      doc.roundedRect(margin, yPos, contentWidth, 20, 0, 0, 'FD');
+
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...textWhite);
+      doc.text(String(selectedResources.length), margin + 10, yPos + 13);
+
+      doc.setFontSize(7);
+      doc.setTextColor(...textDark);
+      doc.text('RESOURCES', margin + 10, yPos + 17);
+
+      const uniqueCategories = [...new Set(selectedResources.map(r => r.resource_type))].length;
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...textWhite);
+      doc.text(String(uniqueCategories), margin + 50, yPos + 13);
+
+      doc.setFontSize(7);
+      doc.setTextColor(...textDark);
+      doc.text('CATEGORIES', margin + 50, yPos + 17);
+
+      yPos += 30;
+
+      // Resources list
+      selectedResources.forEach((item, index) => {
+        // Check if we need a new page
+        if (yPos > pageHeight - 50) {
+          doc.addPage();
+          doc.setFillColor(...bgColor);
+          doc.rect(0, 0, pageWidth, pageHeight, 'F');
+          yPos = margin;
+        }
+
+        const cardHeight = 35;
+
+        // Card background
+        doc.setFillColor(12, 12, 12);
+        doc.setDrawColor(...borderColor);
+        doc.rect(margin, yPos, contentWidth, cardHeight, 'FD');
+
+        // Number
+        doc.setFontSize(8);
+        doc.setTextColor(...textDark);
+        doc.text(String(index + 1).padStart(2, '0'), margin + 5, yPos + 8);
+
+        // Type badge
+        const typeText = getTypeLabel(item.resource_type).toUpperCase();
+        doc.setFontSize(6);
+        doc.setTextColor(...textGray);
+        const typeWidth = doc.getTextWidth(typeText) + 6;
+        doc.setDrawColor(...borderColor);
+        doc.rect(pageWidth - margin - typeWidth - 5, yPos + 3, typeWidth, 8);
+        doc.text(typeText, pageWidth - margin - typeWidth / 2 - 5, yPos + 8, { align: 'center' });
+
+        // Name
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...textWhite);
+        const name = item.resource_name.substring(0, 50) + (item.resource_name.length > 50 ? '...' : '');
+        doc.text(name.toUpperCase(), margin + 15, yPos + 15);
+
+        // Description
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...textGray);
+        const description = (item.resource_description || `A curated ${getTypeLabel(item.resource_type).toLowerCase()} from Chicago's startup ecosystem.`).substring(0, 80);
+        doc.text(description + (description.length >= 80 ? '...' : ''), margin + 5, yPos + 23);
+
+        // URL if present
+        if (item.resource_url) {
+          doc.setFontSize(7);
+          doc.setTextColor(...textDark);
+          const url = item.resource_url.substring(0, 60) + (item.resource_url.length > 60 ? '...' : '');
+          doc.text(url, margin + 5, yPos + 30);
+        }
+
+        yPos += cardHeight + 2;
+      });
+
+      // Footer
+      yPos = pageHeight - 15;
+      doc.setDrawColor(...borderColor);
+      doc.line(margin, yPos - 5, pageWidth - margin, yPos - 5);
+
+      doc.setFontSize(7);
+      doc.setTextColor(...textDark);
+      doc.text('CHISTARTUPHUB — BUILD YOUR VISION IN CHICAGO', margin, yPos);
+      doc.text('chistartuphub.com', pageWidth - margin, yPos, { align: 'right' });
+
+      // Save the PDF with direct download
+      const fileName = `chistartuphub-resources-${new Date().toISOString().split('T')[0]}.pdf`;
+      doc.save(fileName);
+
+      // Close modal after successful export
+      setTimeout(() => {
+        onClose();
+      }, 500);
+
     } catch (error) {
       console.error('Export error:', error);
     } finally {
@@ -328,16 +223,16 @@ export default function ExportResourcesModal({ isOpen, onClose, resources, getTy
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-4xl max-h-[90vh] bg-[#0a0a0a] border border-white/10 overflow-hidden flex flex-col">
+      <div className="relative w-full max-w-[95vw] sm:max-w-2xl lg:max-w-4xl max-h-[90vh] bg-[#0a0a0a] border border-white/10 overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-white/10">
-          <div className="flex items-center gap-4">
-            <FileText className="w-5 h-5 text-white/50" strokeWidth={1.5} />
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-white/10">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <FileText className="w-5 h-5 text-white/50 hidden sm:block" strokeWidth={1.5} />
             <div>
-              <h2 className="font-mono text-sm uppercase tracking-[0.15em] text-white">
+              <h2 className="font-mono text-xs sm:text-sm uppercase tracking-[0.15em] text-white">
                 Export Resources
               </h2>
-              <p className="text-white/40 text-xs mt-1">
+              <p className="text-white/40 text-xs mt-1 hidden sm:block">
                 {step === "select"
                   ? `Select up to ${MAX_EXPORT} resources to export`
                   : "Preview your export before downloading"}
@@ -346,7 +241,7 @@ export default function ExportResourcesModal({ isOpen, onClose, resources, getTy
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-white/40 hover:text-white transition-colors"
+            className="w-11 h-11 flex items-center justify-center text-white/40 hover:text-white transition-colors"
           >
             <X className="w-5 h-5" strokeWidth={1.5} />
           </button>
@@ -355,19 +250,19 @@ export default function ExportResourcesModal({ isOpen, onClose, resources, getTy
         {/* Content */}
         <div className="flex-1 overflow-y-auto">
           {step === "select" ? (
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               {/* Selection Controls */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                <div className="flex items-center gap-2 sm:gap-4">
                   <button
                     onClick={selectAll}
-                    className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2 border border-white/20 text-white/60 hover:bg-white hover:text-black transition-colors"
+                    className="font-mono text-[10px] uppercase tracking-[0.15em] px-3 sm:px-4 py-2 border border-white/20 text-white/60 hover:bg-white hover:text-black transition-colors"
                   >
                     Select First 10
                   </button>
                   <button
                     onClick={clearSelection}
-                    className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2 border border-white/20 text-white/40 hover:text-white transition-colors"
+                    className="font-mono text-[10px] uppercase tracking-[0.15em] px-3 sm:px-4 py-2 border border-white/20 text-white/40 hover:text-white transition-colors"
                   >
                     Clear
                   </button>
@@ -547,11 +442,11 @@ export default function ExportResourcesModal({ isOpen, onClose, resources, getTy
                 className="font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 bg-white text-black hover:bg-white/90 transition-colors flex items-center gap-2 disabled:opacity-50"
               >
                 {exporting ? (
-                  "Exporting..."
+                  "Generating PDF..."
                 ) : (
                   <>
                     <Download className="w-3 h-3" strokeWidth={1.5} />
-                    Export PDF
+                    Download PDF
                   </>
                 )}
               </button>

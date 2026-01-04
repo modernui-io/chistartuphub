@@ -84,7 +84,7 @@ export default function Opportunities() {
     });
   }, [asks, selectedCategory, selectedSector, searchQuery]);
 
-  const handleHelp = (ask) => {
+  const handleHelp = async (ask) => {
     if (!user) {
       toast('Sign up to connect with founders', {
         description: 'Create an account to offer your help and expertise.',
@@ -96,6 +96,10 @@ export default function Opportunities() {
       });
       return;
     }
+
+    // Increment view count (fire and forget)
+    supabase.rpc('increment_ask_view_count', { ask_uuid: ask.id }).catch(() => {});
+
     setSelectedAsk(ask);
     setShowHelpModal(true);
   };
@@ -268,13 +272,13 @@ export default function Opportunities() {
                   <button
                     key={cat.value}
                     onClick={() => setSelectedCategory(cat.value)}
-                    className={`flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] px-4 py-2 border transition-colors cursor-crosshair ${
+                    className={`flex items-center gap-2 font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.1em] px-3 sm:px-4 py-2.5 sm:py-2 border transition-colors cursor-crosshair ${
                       selectedCategory === cat.value
                         ? 'bg-white text-black border-white'
                         : 'bg-transparent text-white/50 border-white/20 hover:border-white/40 hover:text-white/70'
                     }`}
                   >
-                    <Icon className="w-3 h-3" strokeWidth={1.5} />
+                    <Icon className="w-3.5 h-3.5 sm:w-3 sm:h-3" strokeWidth={1.5} />
                     {cat.label}
                     <span className={`ml-1 ${selectedCategory === cat.value ? 'text-black/50' : 'text-white/30'}`}>
                       ({count})
@@ -289,21 +293,23 @@ export default function Opportunities() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.45 }}
-              className="flex flex-wrap gap-2 mb-6"
+              className="overflow-x-auto -mx-6 px-6 scrollbar-hide"
             >
-              {SECTORS.map((sector) => (
-                <button
-                  key={sector}
-                  onClick={() => setSelectedSector(sector)}
-                  className={`font-mono text-[10px] uppercase tracking-[0.1em] px-4 py-2.5 border transition-colors cursor-crosshair ${
-                    selectedSector === sector
-                      ? 'bg-white/10 text-white border-white/40'
-                      : 'bg-transparent text-white/30 border-white/10 hover:border-white/20 hover:text-white/50'
-                  }`}
-                >
-                  {sector}
-                </button>
-              ))}
+              <div className="flex flex-nowrap sm:flex-wrap gap-2 mb-6 pb-2 sm:pb-0">
+                {SECTORS.map((sector) => (
+                  <button
+                    key={sector}
+                    onClick={() => setSelectedSector(sector)}
+                    className={`font-mono text-[10px] sm:text-[11px] uppercase tracking-[0.1em] px-3 sm:px-4 py-2.5 border transition-colors cursor-crosshair whitespace-nowrap ${
+                      selectedSector === sector
+                        ? 'bg-white/10 text-white border-white/40'
+                        : 'bg-transparent text-white/30 border-white/10 hover:border-white/20 hover:text-white/50'
+                    }`}
+                  >
+                    {sector}
+                  </button>
+                ))}
+              </div>
             </motion.div>
 
             {/* Search */}

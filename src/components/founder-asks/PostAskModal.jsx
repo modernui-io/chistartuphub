@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, AlertCircle, Megaphone, EyeOff, DollarSign, Users, MessageCircle, Linkedin } from 'lucide-react';
+import { X, Check, AlertCircle, Megaphone, EyeOff, DollarSign, Users, MessageCircle, Linkedin, ArrowRight, Sparkles, Share2 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { supabase } from '@/api/supabaseClient';
 
@@ -67,10 +68,12 @@ const ADMIN_EMAILS = [
 
 export default function PostAskModal({ isOpen, onClose, onSuccess }) {
   const { user, profile } = useAuth();
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [canPost, setCanPost] = useState(true);
   const [daysUntilNext, setDaysUntilNext] = useState(0);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   // Check if user is admin (bypasses restrictions)
   const isAdmin = user && ADMIN_EMAILS.includes(user.email);
@@ -161,6 +164,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
     setStage('');
     setIsAnonymous(false);
     setAllowAmplification(true);
+    setShowSuccess(false);
   };
 
   const handleClose = () => {
@@ -207,12 +211,8 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
 
       if (error) throw error;
 
-      toast.success('Your ask is live! 🎉', {
-        description: 'Community helpers can now reach out. We\'ll notify you when someone offers to help. In the meantime, explore resources and save what\'s helpful.',
-        duration: 8000,
-      });
-
-      handleClose();
+      // Show success state instead of closing immediately
+      setShowSuccess(true);
       if (onSuccess) onSuccess(data);
     } catch (error) {
       console.error('Error posting ask:', error);
@@ -246,42 +246,46 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-lg bg-[#0a0f1a] border border-white/10 overflow-hidden"
+          className="relative w-full max-w-[95vw] sm:max-w-lg bg-[#0a0f1a] border border-white/10 overflow-hidden max-h-[90vh] sm:max-h-none"
         >
           {/* Header */}
-          <div className="p-6 border-b border-white/10">
+          <div className="p-4 sm:p-6 border-b border-white/10">
             <div className="flex items-center justify-between">
               <div>
                 <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block">
-                  [CREATE: ASK]
+                  {showSuccess ? '[STATUS: LIVE]' : '[CREATE: ASK]'}
                 </span>
-                <h2 className="font-serif text-2xl text-white mt-1">Post Your Ask</h2>
+                <h2 className="font-serif text-2xl text-white mt-1">
+                  {showSuccess ? 'Success!' : 'Post Your Ask'}
+                </h2>
               </div>
               <button
                 onClick={handleClose}
-                className="w-8 h-8 flex items-center justify-center border border-white/10 hover:bg-white hover:text-black transition-colors cursor-crosshair"
+                className="w-11 h-11 flex items-center justify-center border border-white/10 hover:bg-white hover:text-black transition-colors cursor-crosshair"
               >
-                <X className="w-4 h-4" strokeWidth={1.5} />
+                <X className="w-5 h-5" strokeWidth={1.5} />
               </button>
             </div>
 
-            {/* Progress */}
-            <div className="flex gap-2 mt-4">
-              {[1, 2, 3].map((s) => (
-                <div
-                  key={s}
-                  className={`h-1 flex-1 transition-colors ${
-                    step >= s ? 'bg-white' : 'bg-white/10'
-                  }`}
-                />
-              ))}
-            </div>
+            {/* Progress - hide on success */}
+            {!showSuccess && (
+              <div className="flex gap-2 mt-4">
+                {[1, 2, 3].map((s) => (
+                  <div
+                    key={s}
+                    className={`h-1 flex-1 transition-colors ${
+                      step >= s ? 'bg-white' : 'bg-white/10'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Content */}
-          <div className="p-6 max-h-[60vh] overflow-y-auto">
+          <div className="p-4 sm:p-6 max-h-[60vh] overflow-y-auto">
             {/* Admin notice */}
-            {isAdmin && (
+            {!showSuccess && isAdmin && (
               <div className="mb-6 p-4 border border-green-500/30 bg-green-500/5">
                 <div className="flex items-start gap-3">
                   <Check className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
@@ -298,7 +302,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
             )}
 
             {/* Not a founder warning */}
-            {!isFounder && !isAdmin && (
+            {!showSuccess && !isFounder && !isAdmin && (
               <div className="mb-6 p-4 border border-amber-500/30 bg-amber-500/5">
                 <div className="flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
@@ -315,7 +319,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
             )}
 
             {/* Can't post yet warning (not shown for admins) */}
-            {isFounder && !canPost && !isAdmin && (
+            {!showSuccess && isFounder && !canPost && !isAdmin && (
               <div className="mb-6 p-4 border border-blue-500/30 bg-blue-500/5">
                 <div className="flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
@@ -332,7 +336,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
             )}
 
             {/* Step 1: Category & Sector */}
-            {step === 1 && (
+            {!showSuccess && step === 1 && (
               <div className="space-y-6">
                 {/* Category Selection */}
                 <div>
@@ -410,7 +414,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
             )}
 
             {/* Step 2: Details */}
-            {step === 2 && (
+            {!showSuccess && step === 2 && (
               <div className="space-y-6">
                 {/* Description */}
                 <div>
@@ -518,7 +522,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
             )}
 
             {/* Step 3: Privacy & Amplification */}
-            {step === 3 && (
+            {!showSuccess && step === 3 && (
               <div className="space-y-6">
                 {/* Anonymous Toggle */}
                 <div className="p-4 border border-white/10">
@@ -627,6 +631,59 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                     {loading ? 'Posting...' : 'Post Ask'}
                   </button>
                 </div>
+              </div>
+            )}
+
+            {/* Success State */}
+            {showSuccess && (
+              <div className="text-center py-6">
+                <div className="w-16 h-16 mx-auto mb-6 border-2 border-green-400 flex items-center justify-center">
+                  <Sparkles className="w-8 h-8 text-green-400" strokeWidth={1.5} />
+                </div>
+
+                <h3 className="font-serif text-2xl text-white mb-2">
+                  Your Ask is Live
+                </h3>
+                <p className="text-white/50 text-sm max-w-sm mx-auto mb-8">
+                  Community helpers can now see your ask and reach out. We'll notify you when someone offers to help.
+                </p>
+
+                <div className="space-y-3">
+                  <button
+                    onClick={() => {
+                      handleClose();
+                      navigate('/profile?tab=connections');
+                    }}
+                    className="w-full font-mono text-[11px] uppercase tracking-[0.1em] py-4 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair flex items-center justify-center gap-2"
+                  >
+                    View Your Asks
+                    <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
+                  </button>
+
+                  {/* Share to LinkedIn */}
+                  <button
+                    onClick={() => {
+                      const shareText = `I just posted an ask on @ChiStartupHub - looking for ${CATEGORIES.find(c => c.value === category)?.label.toLowerCase() || 'help'} in the ${sector} space. If you can help or know someone who can, check it out!`;
+                      const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://chistartuphub.com/opportunities')}&title=${encodeURIComponent(shareText)}`;
+                      window.open(shareUrl, '_blank', 'width=600,height=400');
+                    }}
+                    className="w-full font-mono text-[11px] uppercase tracking-[0.1em] py-3 border border-blue-500/30 text-blue-400 hover:bg-blue-500/10 transition-colors cursor-crosshair flex items-center justify-center gap-2"
+                  >
+                    <Linkedin className="w-4 h-4" strokeWidth={1.5} />
+                    Share on LinkedIn
+                  </button>
+
+                  <button
+                    onClick={handleClose}
+                    className="w-full font-mono text-[11px] uppercase tracking-[0.1em] py-3 border border-white/20 text-white/50 hover:bg-white/5 transition-colors cursor-crosshair"
+                  >
+                    Keep Browsing
+                  </button>
+                </div>
+
+                <p className="mt-6 text-[11px] text-white/30 font-mono">
+                  Tip: Sharing amplifies your reach beyond the platform
+                </p>
               </div>
             )}
           </div>
