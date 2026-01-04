@@ -69,7 +69,7 @@ export default function LearningResourcesSection({ searchQuery = "" }) {
     <section className="mb-8">
       {/* Header */}
       <div className="mb-4">
-        <p className="text-white/40 text-sm">
+        <p className="text-white/50 text-sm">
           Founder voices, market insights, and community resources to stay current on trends
         </p>
       </div>

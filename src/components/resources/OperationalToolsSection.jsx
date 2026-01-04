@@ -100,7 +100,7 @@ export default function OperationalToolsSection({ searchQuery = "" }) {
     <section className="mb-8">
       {/* Header */}
       <div className="mb-4">
-        <p className="text-white/40 text-sm">
+        <p className="text-white/50 text-sm">
           Operational tools for business formation, legal compliance, finance, hiring, and productivity
         </p>
       </div>

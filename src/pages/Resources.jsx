@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Send, Download, HelpCircle, Search, X, ChevronDown, ChevronRight, Compass, BookOpen, Wrench, TrendingUp, FileText } from "lucide-react";
+import { Send, Download, Search, X, ChevronDown, ChevronRight, Compass, BookOpen, Wrench, TrendingUp, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import SEO from "@/components/SEO";
@@ -125,12 +125,6 @@ export default function Resources() {
                   Submit Resource
                 </button>
               </Link>
-              <Link to="/before-you-start">
-                <button className="font-mono text-[10px] uppercase tracking-[0.15em] px-5 py-3 border border-white/10 text-white/40 hover:text-white hover:border-white/30 transition-colors flex items-center gap-2 cursor-crosshair">
-                  <HelpCircle className="w-3 h-3" strokeWidth={1.5} />
-                  Where to Start?
-                </button>
-              </Link>
             </div>
           </div>
         </section>
@@ -149,11 +143,11 @@ export default function Resources() {
         <section className="px-6 pb-8">
           <div className="max-w-5xl mx-auto">
             <div
-              className={`border border-white/10 ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
+              className={`border border-white/10 bg-black/40 backdrop-blur-sm ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
               style={{ animationDelay: '500ms' }}
             >
               <div className="p-4 flex items-center gap-4">
-                <Search className="w-4 h-4 text-white/30" strokeWidth={1.5} />
+                <Search className="w-4 h-4 text-white/40" strokeWidth={1.5} />
                 <input
                   type="text"
                   placeholder="SEARCH_RESOURCES..."
@@ -177,8 +171,8 @@ export default function Resources() {
         {/* Collapsible Sections */}
         <section className="px-6 pb-24">
           <div className="max-w-5xl mx-auto">
-            <div 
-              className={`border border-white/10 ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
+            <div
+              className={`border border-white/10 bg-black/40 backdrop-blur-sm ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
               style={{ animationDelay: '600ms' }}
             >
               {SECTIONS.map((section, index) => {
@@ -205,7 +199,7 @@ export default function Resources() {
                             {section.subtitle}
                           </span>
                         </div>
-                        <p className="text-white/40 text-sm">{section.description}</p>
+                        <p className="text-white/60 text-sm">{section.description}</p>
                       </div>
                       {expanded ? (
                         <ChevronDown className="w-4 h-4 text-white/30 mt-2" strokeWidth={1.5} />

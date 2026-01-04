@@ -131,7 +131,7 @@ export default function AIToolsSection({ searchQuery = "" }) {
 
       {/* Header */}
       <div className="mb-4">
-        <p className="text-white/40 text-sm">
+        <p className="text-white/50 text-sm">
           Production AI tools organized by workflow and use case
         </p>
       </div>

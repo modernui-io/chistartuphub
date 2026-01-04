@@ -173,7 +173,7 @@ export default function FounderGuidesSection({ searchQuery = "" }) {
     <section className="mb-8">
       {/* Header */}
       <div className="mb-4">
-        <p className="text-white/40 text-sm">
+        <p className="text-white/50 text-sm">
           Master the essential pillars of startup success—organized by what you need to build
         </p>
       </div>
@@ -219,14 +219,14 @@ export default function FounderGuidesSection({ searchQuery = "" }) {
                       className={`p-4 pl-16 ${guideIndex < category.guides.length - 1 ? 'border-b border-white/10' : ''}`}
                     >
                       <div className="flex gap-4">
-                        <span className="font-mono text-[10px] text-white/20 pt-0.5">
+                        <span className="font-mono text-[10px] text-white/30 pt-0.5">
                           {String(guideIndex + 1).padStart(2, '0')}
                         </span>
                         <div className="flex-1">
                           <h4 className="font-mono text-xs uppercase tracking-[0.05em] text-white mb-1">
                             {guide.title}
                           </h4>
-                          <p className="text-xs text-white/40 mb-3">{guide.description}</p>
+                          <p className="text-xs text-white/50 mb-3">{guide.description}</p>
                           
                           {/* Topics */}
                           <div className="flex flex-wrap gap-1 mb-3">

@@ -107,7 +107,7 @@ export default function GlossarySection({ searchQuery = "" }) {
     <section className="mb-8">
       {/* Header */}
       <div className="mb-4">
-        <p className="text-white/40 text-sm">
+        <p className="text-white/50 text-sm">
           The language of fundraising and growth, decoded
         </p>
       </div>
