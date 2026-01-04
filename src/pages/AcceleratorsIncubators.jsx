@@ -158,7 +158,7 @@ export default function AcceleratorsIncubators() {
                   <Filter className="w-3 h-3" strokeWidth={1.5} />
                   Filter by Category
                   {activeFilterCount > 0 && (
-                    <span className="bg-white/20 px-2 py-0.5 text-[9px]">{activeFilterCount}</span>
+                    <span className="bg-white/20 px-2 py-0.5 text-[10px]">{activeFilterCount}</span>
                   )}
                 </button>
               </div>
@@ -251,7 +251,7 @@ export default function AcceleratorsIncubators() {
                         </h3>
                       </div>
                       {program.featured && (
-                        <span className="font-mono text-[9px] uppercase tracking-[0.15em] px-2 py-1 bg-white text-black">
+                        <span className="font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-1 bg-white text-black">
                           Featured
                         </span>
                       )}
@@ -271,7 +271,7 @@ export default function AcceleratorsIncubators() {
                       {program.category?.map((cat, i) => (
                         <span
                           key={i}
-                          className="font-mono text-[9px] uppercase tracking-[0.1em] px-2 py-1 border border-white/10 text-white/40"
+                          className="font-mono text-[10px] uppercase tracking-[0.1em] px-2 py-1 border border-white/10 text-white/40"
                         >
                           {cat}
                         </span>

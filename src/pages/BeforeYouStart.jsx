@@ -189,7 +189,7 @@ export default function BeforeYouStart() {
                     {/* Index Number + Recommended Badge */}
                     <div className="absolute top-4 right-4 flex items-center gap-2">
                       {path.recommended && (
-                        <span className={`font-mono text-[9px] uppercase tracking-wider px-2 py-0.5 transition-colors duration-0 ${isHovered ? 'bg-black text-white' : 'bg-white/10 text-white/50'}`}>
+                        <span className={`font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 transition-colors duration-0 ${isHovered ? 'bg-black text-white' : 'bg-white/10 text-white/50'}`}>
                           Popular
                         </span>
                       )}
@@ -220,7 +220,7 @@ export default function BeforeYouStart() {
 
                     {/* What You Get */}
                     <div className={`mb-6 py-3 border-t transition-colors duration-0 ${isHovered ? 'border-black/10' : 'border-white/10'}`}>
-                      <p className={`font-mono text-[9px] uppercase tracking-[0.2em] mb-2 transition-colors duration-0 ${isHovered ? 'text-black/40' : 'text-white/30'}`}>
+                      <p className={`font-mono text-[10px] uppercase tracking-[0.2em] mb-2 transition-colors duration-0 ${isHovered ? 'text-black/40' : 'text-white/30'}`}>
                         What you'll get:
                       </p>
                       <ul className="space-y-1">

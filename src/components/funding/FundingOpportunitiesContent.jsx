@@ -195,7 +195,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
             >
               {tab.id === "hot" && <Flame className="w-3 h-3" strokeWidth={1.5} />}
               <span>{tab.label}</span>
-              <span className={`text-[9px] px-1.5 py-0.5 ${isActive ? 'bg-black/20' : 'bg-white/10'}`}>
+              <span className={`text-[10px] px-1.5 py-0.5 ${isActive ? 'bg-black/20' : 'bg-white/10'}`}>
                 {count}
               </span>
             </button>
@@ -221,7 +221,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
             <Filter className="w-3 h-3" strokeWidth={1.5} />
             Filters
             {activeFilterCount > 0 && (
-              <span className="bg-white text-black px-1.5 py-0.5 text-[9px]">{activeFilterCount}</span>
+              <span className="bg-white text-black px-1.5 py-0.5 text-[10px]">{activeFilterCount}</span>
             )}
           </button>
           <span className="font-mono text-xs text-white/50">
@@ -345,7 +345,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], upcomi
                   {sectors.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-4">
                       {sectors.slice(0, 3).map((sector, idx) => (
-                        <span key={idx} className="font-mono text-[9px] text-white/50 uppercase tracking-[0.1em] px-2 py-1 border border-white/20">
+                        <span key={idx} className="font-mono text-[10px] text-white/50 uppercase tracking-[0.1em] px-2 py-1 border border-white/20">
                           {sector}
                         </span>
                       ))}

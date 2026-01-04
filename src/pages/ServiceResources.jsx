@@ -188,7 +188,7 @@ export default function ServiceResources() {
                             >
                               <div>
                                 <span className="block text-white group-hover:text-black text-sm font-medium transition-colors">{resource.name}</span>
-                                <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-white/30 group-hover:text-black/50 transition-colors">{resource.type}</span>
+                                <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-white/30 group-hover:text-black/50 transition-colors">{resource.type}</span>
                               </div>
                               <ArrowUpRight className="w-3 h-3 text-white/30 group-hover:text-black transition-colors" strokeWidth={1.5} />
                             </a>

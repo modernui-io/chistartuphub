@@ -198,7 +198,7 @@ export default function SavedResources() {
                       }`}
                     >
                       <span>{type.label}</span>
-                      <span className={`text-[9px] px-1.5 py-0.5 ${isActive ? 'bg-black/20' : 'bg-white/10'}`}>
+                      <span className={`text-[10px] px-1.5 py-0.5 ${isActive ? 'bg-black/20' : 'bg-white/10'}`}>
                         {count}
                       </span>
                     </button>
@@ -288,7 +288,7 @@ export default function SavedResources() {
                             autoFocus
                           />
                           <div className="flex items-center justify-between">
-                            <span className="font-mono text-[9px] text-white/30">
+                            <span className="font-mono text-[10px] text-white/30">
                               {noteText.length}/200
                             </span>
                             <div className="flex items-center gap-1">

@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Sparkles, ArrowUpRight, DollarSign, Users } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { entities } from '@/api/supabaseClient';
+import OptimizedImage from "@/components/OptimizedImage";
 
 const STAGE_LABELS = {
   'idea': 'Idea Stage Founder',
@@ -159,7 +160,7 @@ export default function PersonalizedWelcome() {
 
         {/* Chicago Bean Image */}
         <div className="relative w-full h-32 rounded-xl overflow-hidden">
-          <img
+          <OptimizedImage
             src="/images/chicago-skyline.jpg"
             alt="Chicago skyline"
             className="w-full h-full object-cover brightness-75"

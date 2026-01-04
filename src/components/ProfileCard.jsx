@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import OptimizedImage from "@/components/OptimizedImage";
 
 // Tech stack icon mapping (could be expanded with actual logos)
 const TECH_ICONS = {
@@ -105,7 +106,7 @@ const ProfileCard = ({
           {/* Avatar */}
           <div className="relative mb-4">
             {profileData.avatar_url ? (
-              <img
+              <OptimizedImage
                 src={profileData.avatar_url}
                 alt={profileData.name}
                 className="w-24 h-24 rounded-full object-cover border-2 border-white/10 shadow-xl"

@@ -109,7 +109,7 @@ export default function Resources() {
                 <button className="font-mono text-[10px] uppercase tracking-[0.15em] px-5 py-3 bg-white text-black hover:bg-white/90 transition-colors flex items-center gap-2 cursor-crosshair">
                   <Compass className="w-3 h-3" strokeWidth={1.5} />
                   Take Assessment
-                  <span className="bg-black/10 text-black/70 text-[9px] px-1.5 py-0.5">NEW</span>
+                  <span className="bg-black/10 text-black/70 text-[10px] px-1.5 py-0.5">NEW</span>
                 </button>
               </Link>
               <button
@@ -195,7 +195,7 @@ export default function Resources() {
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-1">
                           <h2 className="font-serif text-xl md:text-2xl text-white">{section.title}</h2>
-                          <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-white/30 border border-white/10 px-2 py-0.5">
+                          <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-white/30 border border-white/10 px-2 py-0.5">
                             {section.subtitle}
                           </span>
                         </div>

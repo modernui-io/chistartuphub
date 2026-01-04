@@ -250,7 +250,7 @@ export default function WhyChicago() {
                       </div>
                       <div className="text-right">
                         <span className="font-serif text-2xl text-white">{section.stats}</span>
-                        <span className="font-mono text-[9px] text-white/30 uppercase tracking-[0.1em] block">{section.statsLabel}</span>
+                        <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.1em] block">{section.statsLabel}</span>
                       </div>
                     </div>
 
@@ -265,7 +265,7 @@ export default function WhyChicago() {
                     </p>
 
                     {/* Source */}
-                    <span className="font-mono text-[9px] text-white/20 uppercase tracking-[0.1em]">
+                    <span className="font-mono text-[10px] text-white/20 uppercase tracking-[0.1em]">
                       Source: {section.source}
                     </span>
                   </motion.div>
@@ -302,7 +302,7 @@ export default function WhyChicago() {
               </span>
             </motion.button>
 
-            <p className="font-mono text-[9px] text-white/20 uppercase tracking-[0.1em] mt-4">
+            <p className="font-mono text-[10px] text-white/20 uppercase tracking-[0.1em] mt-4">
               Click to discover something special
             </p>
           </div>
@@ -363,7 +363,7 @@ export default function WhyChicago() {
 
                 {/* Close Instruction */}
                 <div className="absolute bottom-4 right-4">
-                  <span className="font-mono text-[9px] text-white/30 uppercase tracking-[0.1em]">
+                  <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.1em]">
                     Click or press ESC to close
                   </span>
                 </div>

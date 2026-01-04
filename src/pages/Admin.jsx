@@ -647,7 +647,7 @@ export default function Admin() {
                   <Icon className="w-4 h-4" strokeWidth={1.5} />
                   {tab.label}
                   {tab.badge > 0 && (
-                    <span className={`ml-1 px-1.5 py-0.5 text-[9px] rounded-full ${
+                    <span className={`ml-1 px-1.5 py-0.5 text-[10px] rounded-full ${
                       activeTab === tab.id
                         ? 'bg-black/20 text-black'
                         : 'bg-amber-500/20 text-amber-400'

@@ -353,12 +353,12 @@ export default function Workspaces() {
                         <div className="mb-4">
                           <div className="flex flex-wrap gap-1">
                             {workspace.amenities.slice(0, 3).map((item, i) => (
-                              <span key={i} className="font-mono text-[9px] text-white/30 uppercase tracking-[0.1em] px-2 py-1 border border-white/5">
+                              <span key={i} className="font-mono text-[10px] text-white/30 uppercase tracking-[0.1em] px-2 py-1 border border-white/5">
                                 {item}
                               </span>
                             ))}
                             {workspace.amenities.length > 3 && (
-                              <span className="font-mono text-[9px] text-white/20 uppercase tracking-[0.1em] px-2 py-1">
+                              <span className="font-mono text-[10px] text-white/20 uppercase tracking-[0.1em] px-2 py-1">
                                 +{workspace.amenities.length - 3}
                               </span>
                             )}

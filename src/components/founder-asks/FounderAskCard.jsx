@@ -13,6 +13,7 @@ import {
   Eye,
   Sparkles,
 } from 'lucide-react';
+import OptimizedImage from "@/components/OptimizedImage";
 
 // ============================================
 // CATEGORY CONFIG
@@ -102,7 +103,7 @@ export default function FounderAskCard({ ask, index, onHelp }) {
           {isNew && (
             <div className="flex items-center gap-1 px-2 py-0.5 bg-amber-400/20 border border-amber-400/30 text-amber-400" title="Posted today">
               <Sparkles className="w-3 h-3" strokeWidth={1.5} />
-              <span className="font-mono text-[9px] uppercase tracking-wider">New</span>
+              <span className="font-mono text-[10px] uppercase tracking-wider">New</span>
             </div>
           )}
           {ask.isAnonymous && (
@@ -124,8 +125,8 @@ export default function FounderAskCard({ ask, index, onHelp }) {
         {!ask.isAnonymous && ask.founderName && (
           <div className="flex items-center gap-3 mb-3">
             {ask.founderAvatar ? (
-              <img 
-                src={ask.founderAvatar} 
+              <OptimizedImage
+                src={ask.founderAvatar}
                 alt={ask.founderName}
                 className="w-8 h-8 rounded-full object-cover border border-white/10"
               />

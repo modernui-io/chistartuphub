@@ -390,7 +390,7 @@ export default function ExportResourcesModal({ isOpen, onClose, resources, getTy
                         <span className="font-mono text-[10px] text-white/20">
                           {String(index + 1).padStart(2, "0")}
                         </span>
-                        <span className="font-mono text-[9px] text-white/50 uppercase tracking-[0.15em] px-2 py-0.5 border border-white/20">
+                        <span className="font-mono text-[10px] text-white/50 uppercase tracking-[0.15em] px-2 py-0.5 border border-white/20">
                           {getTypeLabel(item.resource_type)}
                         </span>
                       </div>

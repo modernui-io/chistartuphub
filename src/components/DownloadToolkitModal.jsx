@@ -171,7 +171,7 @@ export default function DownloadToolkitModal({ isOpen, onClose }) {
                   <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white">
                     Startup Maturity Workbook
                   </span>
-                  <span className="font-mono text-[9px] uppercase tracking-[0.1em] px-2 py-0.5 border border-green-500/30 text-green-400">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.1em] px-2 py-0.5 border border-green-500/30 text-green-400">
                     FREE
                   </span>
                 </div>
@@ -238,7 +238,7 @@ export default function DownloadToolkitModal({ isOpen, onClose }) {
                 </button>
               </div>
 
-              <p className="font-mono text-[9px] text-white/30 text-center uppercase tracking-[0.05em]">
+              <p className="font-mono text-[10px] text-white/30 text-center uppercase tracking-[0.05em]">
                 We'll only use your email to send you helpful startup resources
               </p>
             </form>

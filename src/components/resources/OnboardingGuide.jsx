@@ -124,7 +124,7 @@ export default function OnboardingGuide() {
 
       {/* Dismiss Hint */}
       <div className="px-4 md:px-6 py-3 border-t border-white/10 flex items-center justify-between">
-        <p className="font-mono text-[9px] text-white/20 uppercase tracking-[0.15em]">
+        <p className="font-mono text-[10px] text-white/20 uppercase tracking-[0.15em]">
           This guide won't show again once dismissed
         </p>
         <button

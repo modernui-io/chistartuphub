@@ -509,7 +509,7 @@ export default function Assessment() {
                           <button
                             key={option.value}
                             onClick={() => handleAnswer(question.id, option.value)}
-                            className={`p-4 text-left transition-all border-b md:border-b-0 border-r border-white/10 last:border-r-0 cursor-crosshair ${
+                            className={`p-4 min-h-[44px] text-left transition-all border-b md:border-b-0 border-r border-white/10 last:border-r-0 cursor-crosshair ${
                               oIndex < 2 ? 'md:border-b border-white/10' : ''
                             } ${
                               isSelected
@@ -554,7 +554,7 @@ export default function Assessment() {
               <div className="flex items-center justify-between">
                 <button
                   onClick={handleBack}
-                  className="font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 border border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white transition-colors flex items-center gap-2 cursor-crosshair"
+                  className="font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 min-h-[44px] border border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white transition-colors flex items-center gap-2 cursor-crosshair"
                 >
                   <ArrowLeft className="w-3 h-3" strokeWidth={1.5} />
                   Back
@@ -563,7 +563,7 @@ export default function Assessment() {
                 <button
                   onClick={handleNext}
                   disabled={!allCurrentQuestionsAnswered}
-                  className={`font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 flex items-center gap-2 cursor-crosshair transition-all ${
+                  className={`font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 min-h-[44px] flex items-center gap-2 cursor-crosshair transition-all ${
                     allCurrentQuestionsAnswered
                       ? 'bg-white text-black hover:bg-white/90'
                       : 'bg-white/10 text-white/30 cursor-not-allowed'
@@ -683,7 +683,7 @@ export default function Assessment() {
                   <div className="flex gap-1 pt-2 ml-28">
                     {PHASES.map((phase) => (
                       <div key={phase.id} className="flex-1 text-center">
-                        <span className="font-mono text-[9px] text-white/30 uppercase">
+                        <span className="font-mono text-[10px] text-white/30 uppercase">
                           {phase.name}
                         </span>
                       </div>
@@ -728,7 +728,7 @@ export default function Assessment() {
 
                       {recs.length > 0 && (
                         <div className="space-y-3">
-                          <p className="font-mono text-[9px] text-white/30 uppercase tracking-[0.15em]">
+                          <p className="font-mono text-[10px] text-white/30 uppercase tracking-[0.15em]">
                             Your Next Steps:
                           </p>
                           {recs.map((rec, i) => (
@@ -749,7 +749,7 @@ export default function Assessment() {
                                   <p className="font-mono text-[10px] text-white/70 group-hover:text-white transition-colors">
                                     {rec.title}
                                   </p>
-                                  <p className="text-[9px] text-white/40 group-hover:text-white/60 transition-colors">
+                                  <p className="text-[10px] text-white/40 group-hover:text-white/60 transition-colors">
                                     {rec.description}
                                   </p>
                                 </div>
@@ -795,7 +795,7 @@ export default function Assessment() {
               <div className="flex flex-wrap items-center gap-4 justify-center mb-12">
                 <button
                   onClick={handleReset}
-                  className="font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 border border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white transition-colors flex items-center gap-2 cursor-crosshair"
+                  className="font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 min-h-[44px] border border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white transition-colors flex items-center gap-2 cursor-crosshair"
                 >
                   <RotateCcw className="w-3 h-3" strokeWidth={1.5} />
                   Retake
@@ -805,7 +805,7 @@ export default function Assessment() {
                   <button
                     onClick={handleSaveResults}
                     disabled={saving}
-                    className="font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 border border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white transition-colors flex items-center gap-2 cursor-crosshair disabled:opacity-50"
+                    className="font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 min-h-[44px] border border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white transition-colors flex items-center gap-2 cursor-crosshair disabled:opacity-50"
                   >
                     <Bookmark className="w-3 h-3" strokeWidth={1.5} />
                     {saving ? 'Saving...' : 'Save Results'}
@@ -814,7 +814,7 @@ export default function Assessment() {
 
                 <button
                   onClick={() => navigate('/resources')}
-                  className="font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 bg-white text-black hover:bg-white/90 transition-colors flex items-center gap-2 cursor-crosshair"
+                  className="font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 min-h-[44px] bg-white text-black hover:bg-white/90 transition-colors flex items-center gap-2 cursor-crosshair"
                 >
                   Explore Resources
                   <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
@@ -839,19 +839,19 @@ export default function Assessment() {
                   <div className="flex items-center justify-center gap-3">
                     <button
                       onClick={() => handleFeedback(true)}
-                      className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2 border border-white/20 text-white/60 hover:bg-green-500/20 hover:text-green-400 hover:border-green-500/50 transition-colors cursor-crosshair"
+                      className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-3 min-h-[44px] border border-white/20 text-white/60 hover:bg-green-500/20 hover:text-green-400 hover:border-green-500/50 transition-colors cursor-crosshair"
                     >
                       Very helpful
                     </button>
                     <button
                       onClick={() => handleFeedback(true)}
-                      className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2 border border-white/20 text-white/60 hover:bg-white/10 hover:text-white transition-colors cursor-crosshair"
+                      className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-3 min-h-[44px] border border-white/20 text-white/60 hover:bg-white/10 hover:text-white transition-colors cursor-crosshair"
                     >
                       Somewhat
                     </button>
                     <button
                       onClick={() => handleFeedback(false)}
-                      className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-2 border border-white/20 text-white/60 hover:bg-amber-500/20 hover:text-amber-400 hover:border-amber-500/50 transition-colors cursor-crosshair"
+                      className="font-mono text-[10px] uppercase tracking-[0.15em] px-4 py-3 min-h-[44px] border border-white/20 text-white/60 hover:bg-amber-500/20 hover:text-amber-400 hover:border-amber-500/50 transition-colors cursor-crosshair"
                     >
                       Not really
                     </button>

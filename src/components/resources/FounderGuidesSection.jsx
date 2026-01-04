@@ -233,7 +233,7 @@ export default function FounderGuidesSection({ searchQuery = "" }) {
                             {guide.topics.map((topic) => (
                               <span
                                 key={topic}
-                                className="font-mono text-[9px] px-2 py-0.5 border border-white/10 text-white/30 uppercase tracking-wider"
+                                className="font-mono text-[10px] px-2 py-0.5 border border-white/10 text-white/30 uppercase tracking-wider"
                               >
                                 {topic}
                               </span>

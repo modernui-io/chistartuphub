@@ -159,12 +159,54 @@ const AnimatedCounter = ({ value, label, delay = 0 }) => {
 // ============================================
 // MOUSE SPOTLIGHT COMPONENT
 // Subtle glow that follows the cursor
+// Only renders on devices with fine pointer (mouse/trackpad)
+// Respects prefers-reduced-motion preference
 // ============================================
 const MouseSpotlight = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
 
+  // Check for fine pointer (mouse/trackpad) and motion preference
   useEffect(() => {
+    // SSR safety check
+    if (typeof window === 'undefined') return;
+
+    // Check if device has a fine pointer (mouse/trackpad)
+    const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+
+    // Check if user prefers reduced motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Only render if device has fine pointer AND user doesn't prefer reduced motion
+    setShouldRender(hasFinePointer && !prefersReducedMotion);
+
+    // Listen for changes in pointer capability (e.g., connecting/disconnecting mouse)
+    const pointerQuery = window.matchMedia('(pointer: fine)');
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    const updateRenderState = () => {
+      const hasFine = pointerQuery.matches;
+      const reducedMotion = motionQuery.matches;
+      setShouldRender(hasFine && !reducedMotion);
+    };
+
+    pointerQuery.addEventListener('change', updateRenderState);
+    motionQuery.addEventListener('change', updateRenderState);
+
+    return () => {
+      pointerQuery.removeEventListener('change', updateRenderState);
+      motionQuery.removeEventListener('change', updateRenderState);
+    };
+  }, []);
+
+  // Mouse tracking effect - only runs if shouldRender is true
+  useEffect(() => {
+    if (!shouldRender) return;
+
+    // SSR safety check
+    if (typeof window === 'undefined') return;
+
     let ticking = false;
 
     const handleMouseMove = (e) => {
@@ -189,7 +231,10 @@ const MouseSpotlight = () => {
       window.removeEventListener('mousemove', handleMouseMove);
       document.body.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, []);
+  }, [shouldRender]);
+
+  // Don't render anything on touch devices or when reduced motion is preferred
+  if (!shouldRender) return null;
 
   return (
     <motion.div

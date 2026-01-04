@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import SEO from "@/components/SEO";
 import { generateSlug } from "@/lib/utils";
 import BureauFooter from "@/components/bureau/BureauFooter";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function Stories() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -316,7 +317,7 @@ export default function Stories() {
                 <Filter className="w-3 h-3" strokeWidth={1.5} />
                 Filters
                 {activeFilterCount > 0 && (
-                  <span className="px-1.5 py-0.5 bg-white/10 text-white text-[9px]">{activeFilterCount}</span>
+                  <span className="px-1.5 py-0.5 bg-white/10 text-white text-[10px]">{activeFilterCount}</span>
                 )}
                 <ChevronDown className={`w-3 h-3 transition-transform ${showFilters ? 'rotate-180' : ''}`} strokeWidth={1.5} />
               </button>
@@ -436,8 +437,8 @@ export default function Stories() {
                   {/* Image */}
                   <div className="aspect-video md:aspect-auto bg-white/5 relative overflow-hidden">
                     {featuredStory.image_url ? (
-                      <img 
-                        src={featuredStory.image_url} 
+                      <OptimizedImage
+                        src={featuredStory.image_url}
                         alt={featuredStory.company_name}
                         className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
                       />
@@ -539,13 +540,13 @@ export default function Stories() {
                         </span>
                         <div className="flex items-center gap-2">
                           {isUnicorn(story) && (
-                            <div className="flex items-center gap-1 font-mono text-[9px] text-amber-400">
+                            <div className="flex items-center gap-1 font-mono text-[10px] text-amber-400">
                               <Sparkles className="w-2.5 h-2.5" strokeWidth={1.5} />
                               UNICORN
                             </div>
                           )}
                           {isExit(story) && (
-                            <div className="flex items-center gap-1 font-mono text-[9px] text-emerald-400">
+                            <div className="flex items-center gap-1 font-mono text-[10px] text-emerald-400">
                               <DollarSign className="w-2.5 h-2.5" strokeWidth={1.5} />
                               EXIT
                             </div>
@@ -563,11 +564,11 @@ export default function Stories() {
 
                       {/* Meta */}
                       <div className="flex flex-wrap gap-2 mb-4">
-                        <span className="font-mono text-[9px] text-white/40 px-2 py-0.5 border border-white/10 uppercase">
+                        <span className="font-mono text-[10px] text-white/40 px-2 py-0.5 border border-white/10 uppercase">
                           {getCategory(story)}
                         </span>
                         {getFounded(story) && (
-                          <span className="font-mono text-[9px] text-white/40 px-2 py-0.5 border border-white/10 uppercase">
+                          <span className="font-mono text-[10px] text-white/40 px-2 py-0.5 border border-white/10 uppercase">
                             {getFounded(story)}
                           </span>
                         )}
@@ -584,7 +585,7 @@ export default function Stories() {
                           {getPrimaryPower(story) && (
                             <div className="flex items-center gap-1">
                               <Shield className="w-3 h-3 text-white/20" strokeWidth={1.5} />
-                              <span className="font-mono text-[9px] text-white/30 uppercase">{getPrimaryPower(story).split(' ')[0]}</span>
+                              <span className="font-mono text-[10px] text-white/30 uppercase">{getPrimaryPower(story).split(' ')[0]}</span>
                             </div>
                           )}
                         </div>

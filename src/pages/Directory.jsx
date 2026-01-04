@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import ProfileCard from '@/components/ProfileCard';
 import SEO from '@/components/SEO';
 import { supabase } from '@/api/supabaseClient';
+import OptimizedImage from "@/components/OptimizedImage";
 
 const STAGE_FILTERS = [
   { value: 'all', label: 'All Stages' },
@@ -258,7 +259,7 @@ export default function Directory() {
                     <div className="flex items-start gap-4">
                       {/* Avatar */}
                       {profile.avatar_url ? (
-                        <img
+                        <OptimizedImage
                           src={profile.avatar_url}
                           alt={profile.name}
                           className="w-12 h-12 rounded-full object-cover flex-shrink-0"

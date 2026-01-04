@@ -232,7 +232,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
                       s.num
                     )}
                   </div>
-                  <span className={`font-mono text-[9px] uppercase tracking-[0.1em] mt-1.5 transition-none duration-0 ${step >= s.num ? 'text-white/80' : 'text-white/40'}`}>
+                  <span className={`font-mono text-[10px] uppercase tracking-[0.1em] mt-1.5 transition-none duration-0 ${step >= s.num ? 'text-white/80' : 'text-white/40'}`}>
                     {s.label}
                   </span>
                 </div>
