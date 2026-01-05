@@ -5,7 +5,7 @@ const FROM_EMAIL = "ChiStartup Hub <notifications@chistartuphub.com>";
 
 // CORS headers
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://chistartuphub.com",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 

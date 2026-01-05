@@ -13,14 +13,14 @@ export function BureauFooter({ className = "" }) {
     { label: "CAPITAL", href: createPageUrl("Funding") },
     { label: "SPACES", href: createPageUrl("Workspaces") },
     { label: "COMMUNITY", href: createPageUrl("Community") },
-    { label: "EVENTS", href: createPageUrl("Events") },
+    { label: "INNOVATION HUBS", href: createPageUrl("Events") },
     { label: "TOOLKIT", href: createPageUrl("Resources") },
   ];
 
   const network = [
-    { label: "LINKEDIN", href: "https://linkedin.com/company/chistartuphub", external: true },
-    { label: "TWITTER", href: "https://twitter.com/chistartuphub", external: true },
-    { label: "EMAIL", href: "mailto:hello@chistartuphub.com", external: true },
+    { label: "LINKEDIN", href: "https://linkedin.com/company/chistartup-hub", external: true },
+    { label: "X", href: "https://x.com/Chistartuphub", external: true },
+    { label: "CONTACT", href: createPageUrl("Contact"), external: false },
   ];
 
   const currentYear = new Date().getFullYear();

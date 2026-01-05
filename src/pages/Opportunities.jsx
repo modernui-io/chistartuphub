@@ -197,15 +197,18 @@ export default function Opportunities() {
                       Post Your Ask
                     </button>
                     <div className="flex flex-col gap-1">
-                      <span className="font-mono text-[10px] text-white/50 uppercase tracking-[0.1em]">
-                        Sign up or login to post
+                      <span className="font-mono text-[10px] text-white/40 tracking-[0.02em]">
+                        Free account required to post
                       </span>
-                      <div className="flex items-center gap-2">
+                      <span className="font-mono text-[10px] text-white/30 tracking-[0.02em]">
+                        We verify founders to maintain community trust
+                      </span>
+                      <div className="flex items-center gap-2 mt-1">
                         <button
                           onClick={openSignup}
                           className="font-mono text-[10px] text-white hover:text-white/70 uppercase tracking-[0.1em] underline cursor-crosshair"
                         >
-                          Sign Up
+                          Join Free
                         </button>
                         <span className="text-white/30">or</span>
                         <button

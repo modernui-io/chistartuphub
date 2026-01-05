@@ -94,17 +94,12 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
     setLoading(true);
 
     try {
-      console.log('Starting signup process...');
-
       // Sign up
       const { data, error: signUpError } = await signUp(email, password, {
         full_name: fullName,
       });
 
-      console.log('Signup response:', { data, error: signUpError });
-
       if (signUpError) {
-        console.error('Signup error:', signUpError);
         toast.error('Signup failed', {
           description: signUpError.message,
         });
@@ -114,7 +109,6 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
 
       // Create profile - even if email confirmation is required, we want to store profile data
       if (data?.user) {
-        console.log('Creating profile for user:', data.user.id);
         const { error: profileError } = await updateProfile({
           email,
           full_name: fullName,
@@ -130,12 +124,9 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
         });
 
         if (profileError) {
-          console.error('Profile creation error:', profileError);
           toast.error('Profile creation failed', {
             description: profileError.message,
           });
-        } else {
-          console.log('Profile created successfully');
         }
       }
 
@@ -161,7 +152,6 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
       resetForm();
       onClose();
     } catch (error) {
-      console.error('Unexpected error during signup:', error);
       toast.error('Signup failed', {
         description: 'An unexpected error occurred. Please try again.',
       });

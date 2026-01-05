@@ -359,7 +359,7 @@ export default function Home() {
         >
           
           {/* System Status Badge */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
@@ -400,7 +400,7 @@ export default function Home() {
           </h1>
 
           {/* Subtext - Monospace System Style */}
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}

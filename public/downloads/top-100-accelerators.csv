@@ -1,0 +1,102 @@
+Rank,Accelerator Name & Link,Companies,Program Leader & LinkedIn Link,Typical Investment Terms,Program Fee,Program Length,Cohorts/Batches Per year,Company Types,Acceptance Rate (estimate),HQ Location,In-person Vs. Virtual,Top 3 Alumni,# of Alumni Exits,Rating
+1,Y Combinator,7089,Garry Tan,$125K for 7% + $375K (uncapped),Free,12 weeks,4x per year,All,<1%,"Mountain View, CA, USA",In-person required,"Airbnb, Stripe, Dropbox",1500,25
+2,A16Z Speedrun,224,Andrew Chen,"$750,000 for unknown equity stake",Free,12 weeks,2x per year,Gaming+,<1%,"Los Angeles, CA, USA",In-person required for specific program events,"Opendoor, Brex, Caffeine",Unknown,24
+3,Sequioia Arc,2215,Alfred Lin,Investment terms not public,Free,12 weeks,1x per year,All,<1%,"San Francisco, CA, USA",In-person required for specific program events,"Pydantic, Flagship, Mindy",Unknown,22
+4,Techstars,6168,David Cohen,"$20,000 for 6% (+ optional $100K on $3M)",Free,13 weeks,1-4x per year,All,1%,"Boulder, CO, USA",In-person required,"SendGrid, ClassPass, DigitalOcean",350,20
+5,500 Global,3163,Christine Tsai,"$150,000 for 6%","$37,500",16 weeks,3x per year,All,<1%,"San Francisco, CA, USA",In-person required,"Canva, Grab, Talkdesk",110,20
+6,Dreamit Ventures,321,Darren Sandberg,"$500,000 for 8%","$2,500",13 weeks,2x per year,All,3%,"Philadelphia, PA, USA",In-person required for specific program events,"LevelUp, HouseCall Pro, Elevate",70,20
+7,Surge,208,Rajan Anandan,Up to $3 million for up to 15%,Free,16 weeks,2x per year,All,Unknown,"Bengaluru, India",In-person required,"Unacademy, OYO, Tejas Networks",23,19
+8,HAX,610,Duncan Turner,"$250,000 for 10%",Free,20 weeks,2x per year,Hardware,<3%,"Shenzhen, China",In-person required,"Lumos, Makeblock, Simbe Robotics",30,19
+,mHUB,,,"$200,000 for 6.5% ",Free,Varies,2x per year,Hardware,unknown,"Chicago, IL",Hybrid,N/A,n/a,
+9,Seedcamp,606,Carlos Eduardo Espinal,"£120,000 for 7.5%",Free,12 weeks,2x per year,All,<1%,"London, United Kingdom",Virtual,"TransferWise, Revolut, UiPath",60,19
+10,NFX,407,James Currier,$120K for 8%,No fee information available,12 weeks,3x per year,All,2%,"San Francisco, CA, USA",Virtual,"DoorDash, Mammoth Biosciences, Patreon",24,19
+11,Cedars-Sinai Accelerator,88,Nirdesh K Gupta,"$100,000 for unknown terms",Free,12 weeks,Unknown,BioTech,Unknown,"Los Angeles, CA, USA",Hybrid (specifics not public),"LIVONGO, WELL Health, AppliedVR",25,19
+12,Disney Accelerator,55,Bonnie Rosen,Investment terms not public,Free,30 weeks,1x per year,Media,<1%,"Los Angeles, CA, USA",In-person required for specific program events,"Epic Games, Playbuzz, Wakie",19,19
+13,Soma Fellows,40,Aneel Ranadive,"Up to $1,000,000 for unknown equity",Free,12 weeks,2x per year,All,<1%,"San Francisco, CA, USA",In-person required,Unknown,Unknown,18
+14,AI2 Incubator,50,Jacob Colker,"Up to $500,000 for unknown equity",Free,12 weeks,1x per year,Artificial Intelligence,<1%,"Seattle, WA, USA",In-person required,Unknown,Unknown,18
+15,IndieBio,529,Po Bronson,$275K for 8%,"$50,000",16 weeks,2x per year,BioTech,5%,"San Francisco, CA, USA",In-person required 1 day/week,"NotCo, Memphis Meats, Geltor",20,18
+16,Plug and Play,1948,Saeed Amidi,Investment terms not public.,Free,12 weeks,4x per year,All,<1%,"Sunnyvale, CA, USA",In-person required,"PayPal, Dropbox, N26",140,18
+17,SkyDeck Berkeley,485,Caroline Winnett,$200K for 7.5%,"$5,000",24 weeks,2x per year,All,<3%,"Berkeley, CA, USA",In-person required,"Lime, Cerebras Systems, Flutterwave",30,18
+18,Entrepreneur First,451,Alice Bentinck,$125K for 8%,Free,12 weeks,2x per year,All,3%,"London, United Kingdom",In-person required,"Tractable, Magic Pony Technology, Bloomsbury AI",100,18
+19,MIT delta v,226,Lea Gabrielle Potts,"$20,000 grant",Free,14 weeks,1x per year,All,Unknown,"Boston, MA, USA",In-person required,"Ginkgo Bioworks, Formlabs, New Valence Robotics (NVBots)",24,18
+20,HF0,25,Dave Fontenot,"$1,000,000 for 5% equity",Free,12 weeks,1x per year,All,<1%,"San Francisco, CA, USA",In-person required,Unknown,Unknown,17
+21,SOSV,2816,William Bao Bean,"$250,000 for 8%","$40,000+ (varies by program)",16 weeks,2x per year,Deep Tech,<2%,"Princeton, NJ, USA",In-person required,"Revolut, NotCo, Formlabs",180,17
+22,AngelPad,184,Thomas Korte,Investment terms not public.,Free,10 weeks,2x per year,All,Unknown,"San Francisco, CA, USA",In-person required,"Postmates, CoverHound, Grovo",60,17
+23,Startmate,263,Michael Batko,$120K for 8%,Free,12 weeks,2x per year,All,5%,"Sydney, Australia",Hybrid (specifics not public),"Zoox, Morse Micro, Bright",40,17
+24,MassChallenge,3205,Cait Brumme,Investment terms not public.,Free (non-profit),16 weeks,1x per year,All,<10%,"Boston, MA, USA",In-person required for specific program events,"Ginkgo Bioworks, Toast, Soofa",213,17
+25,Antler,1560,Magnus Grimeland ,"$250,000 for 9% + matches 1:1 additional capital raised up to $250,000","$70,000",10 weeks,2x per year,All,<3%,Singapore,In-person required,"Fiverr, Flutterwave, Prospa",23,17
+26,LAUNCH,554,Jason Calacanis,$100K for 6%,Free,6 weeks,4x per year,All,<1%,"San Francisco, CA, USA",Virtual,"Udemy, Marqeta, Thumbtack",10,17
+27,Forum Ventures,474,Michael Cardamone,$100K for 7.5%,Free,12 weeks,2x per year,B2B SaaS,<3%,"New York City, NY, USA",Virtual,"Auth0, Buffer, MileIQ",25,17
+28,StartX (Stanford-StartX Fund),338,Kyle Wong,Does not invest.,Free (non-profit),10 weeks,3x per year,All,8%,"Palo Alto, CA, USA",In-person required last 2 weeks of program,"Healthcare.ai, Kodiak Sciences, Lemonade",90,17
+29,Mucker Capital,277,Erik Rannala,$100K for 10%,Free,12 weeks,1x per year,All,<5%,"Santa Monica, CA, USA",Hybrid (specifics not public),"Honey, ServiceTitan, Next Insurance",43,17
+30,AlphaLab,156,Aaron Tainter,"Up to $100,000 for unknown terms",2% equity,Undisclosed,Unknown,All,Unknown,"Pittsburgh, PA, USA",In-person required for specific program events,"Duolingo, JazzHR, NoWait",13,17
+31,Google for Startups,1642,Ashley Francisco,Not able to obtain information.,Free,10 weeks,2x per year,All,<2%,"San Francisco, CA, USA",Virtual,"Carta, Stripe, Airbnb",Unknown,16
+32,South Park Commons,714,Ruchi Sanghvi,"$400,000 for 7%",Free,24 weeks,2x per year,All,<2%,"San Francisco, CA, USA",In-person required,"Applied Intuition, PostHog, Apoorva Mehta",4,16
+33,East Ventures,643,Willson Cuaca,Investment terms not public.,Free,14 weeks,2x per year,All,Unknown,"Jakarta, Indonesia",Unknown,"Tokopedia, Traveloka, Ruangguru",48,16
+34,Alchemist Accelerator,605,Ravi Belani ,$25K for 5%,Free,12 weeks,2x per year,Enterprise Tech,<3%,"San Francisco, CA, USA",Virtual,"Rigetti Computing, LaunchDarkly, RigUp",12,16
+35,Startupbootcamp,605,Nektarios Liolios,$40K for 8%,Free,12 weeks,2x per year,All,<2%,"Amsterdam, Netherlands",Hybrid (specifics not public),"Revolut, WeFarm, Relay42",62,16
+36,Pioneer Fund,568,Jason Gray,Investment terms not public,Free,8 weeks,2x per year,All,<3%,"San Francisco, CA, USA",Virtual,"Loom, Mixpanel, Rippling",20,16
+37,(ERA) Entrepreneurs Roundtable Accelerator,395,Jonathan Axelrod,$100K for 8%,4% equity,14 weeks,2x per year,All,2%,"New York City, NY, USA",Virtual,"Triplemint, Hungryroot, Floating Point",79,16
+38,Outlier Ventures,327,Stephan Apel,Up to $100K stipend,Free,12 weeks,2x per year,Web3,2%,"London, United Kingdom",Virtual,"Boson Protocol, Fetch.ai, Blockchain.com",16,16
+39,CyberAgent Capital,278,Nguyen Minh Tuan,Investment terms not public,Free,Undisclosed,Unknown,CyberSecurity,Unknown,"Tokyo, Japan",In-person required,"17LIVE, TikTok, Kuaishou",77,16
+40,Springcamp,257,inQ CHOI,$50K for 7%,No fee information available,Undisclosed,4x per year,All,Unknown,"Seoul, South Korea",Virtual,"Coupang, Toss, Baemin",70,16
+41,Elemental Impact,211,Dawn Lippert,"Up to $1,000,000 grant",Free (non-profit),24 weeks,1x per year,Clean Tech,Unknown,"Oakland, CA, USA",Virtual,"Spanx, Goodr, PopSockets",21,16
+42,EIT InnoEnergy,211,Ryan Dings,Investment terms not public,"€18,000",24 weeks,1x per year,Clean Tech,Unknown,"Eindhoven, Netherlands",Hybrid (specifics not public),"Northvolt, Skeleton Technologies, Tado",21,16
+43,NDRC,207,Malaika Judd,€100k uncapped with 20% discount,Free,24 weeks,2x per year,All,Unknown,"Dublin, Ireland",Virtual,"Stripe, Revolut, Remitly",27,16
+44,MetaProp,176,Aaron Block,"$150,000 for 6%",Free,13 weeks,4x per year,Real Estate Tech,Unknown,"New York City, NY, USA",In-person required,"Haven, VergeSense, Spruce",25,16
+45,Founder Friendly Labs,176,Mendel Chuang,Investment terms not public,No fee information available,8 weeks,Unknown,Unknown,Unknown,"San Francisco, CA, USA",Virtual,"Coinbase, Soylent, Cruise",4,16
+46,Future Fifty,174,Carolyn Dawson,Investment terms not public,No fee information available,52 weeks,1x per year,All,Unknown,"London, United Kingdom",Virtual,"Skyscanner, Deliveroo, TransferWise",60,16
+47,Betaworks,232,John Borthwick,$250K uncapped with 25% discount,No fee information available,12 weeks,Unknown,Media,Unknown,"New York City, NY, USA",Virtual,"Giphy, Bitly, Dots",12,15
+48,Startup Wise Guys,598,Cristobal Alonso,£100K for 9%,"£35,000",13 weeks,3x per year,B2B SaaS,18%,"Tallinn, Estonia",Hybrid (specifics not public),"Bolt, Sun Finance Group, Modash",30,15
+49,MedTech Innovator,391,Paul Grand,Does not invest.,Free (non-profit),16 weeks,1x per year,MedTech,5%,"Los Angeles, CA, USA",Virtual,"AliveCor, Eko, AdvaMed",62,15
+50,Flat6Labs,370,Ramez El-Serafy,$150K for 6%,Free,16 weeks,2x per year,All,<10%,"Cairo, Egypt",Hybrid (specifics not public),"Instabug, FlexxPay, Chefaa",30,15
+51,Village Capital,359,Allie Burns,Investment terms not public.,Free,2 weeks,3x per year,Impact,5-10%,"Washington, DC, USA",Virtual,"Lendable, FarmDrive, InVenture",19,15
+52,IQT,315,Steve Bowsher,"The accelerator program by IQT (In-Q-Tel) does not follow the traditional accelerator model that involves providing investment in exchange for equity in participant companies. Rather, In-Q-Tel is a strategic investor specifically targeting technologies that meet national security needs, often through customized contract vehicles or technology transfer agreements. As such, it is more accurate to provide ""Does not invest"" in the context of standard accelerator deal terms.",Free (non-profit),14 weeks,2x per year,CyberSecurity,3%,"Arlington, VA, USA",In-person required,"Palantir Technologies, Rebellion Defense, HawkEye 360",Unknown,15
+53,gener8tor,273,Joe Kirgues,$100K for 7%,Free,12 weeks,2x per year,All,Unknown,"Madison, Wisconsin, USA",Hybrid (specifics not public),"Curate, EatStreet, dotloop",75,15
+54,Rockstart,243,Rune Theill,"€165,000 for 8%","€65,000",10 weeks,2x per year,"Energy, AgTech",Unknown,"Amsterdam, Netherlands",In-person required for specific program events,"Wercker, 3D Hubs, Kipenzi",11,15
+55,Eurasante,237,Olivier Coupier,$120K for 8%,No fee information available,36 weeks,1x per year,BioTech,Unknown,"Lille, France",In-person required 1 day/week,"Ynsect, Delibio, Eligo Bioscience",60,15
+56,SAP.iO,234,Christian Klein,Investment terms not public.,Free,12 weeks,2x per year,All,Unknown,"San Francisco, CA, USA",Virtual,"NannyML, Airwallex, BigID",12,15
+57,SparkLabs Accelerator,222,Bernard Moon,$100K for 6%,Free,12 weeks,2x per year,IoT,<3%,"Seoul, South Korea",In-person required 1st week,"Memebox, Knowre, fintechOS",15,15
+58,Orange DAO,220,Ben Huh,$100K uncapped,2% equity stake,8 weeks,5x per year,Web3,Unknown,Undisclosed,Virtual,"Sublime Finance, Orange DAO Members Pool, Bloom Filter",22,15
+59,SVG Ventures,214,John Hartnett,Investment terms not public,Free,12 weeks,1x per year,AgTech,Unknown,"Santa Clara, CA, USA",Virtual,"Farmers Business Network, ProducePay, Root AI",8,15
+60,Accelerator Centre,210,Ruth Casselman,Investment terms not public.,"$3,000",52 weeks,Unknown,All,Unknown,"Waterloo, Ontario, Canada",In-person required 1 day/week,"ApplyBoard, Magnet Forensics, Miovision",26,15
+61,Innovation Capital,201,Matt Sodl,Investment terms not public,No fee information available,Undisclosed,Unknown,Unknown,Unknown,"Palo Alto, CA, USA",Virtual,"SoFi, Quincy Data, Zocdoc",22,15
+62,NC IDEA,187,Thom Ruhe,Various grant funding,Free (non-profit),8 weeks,Unknown,All,Unknown,"Durham, North Carolina, USA",Virtual,"TransLoc, Reel Surge, Durham Distillery",58,15
+63,SixThirty,178,Atul Kamra,Investment terms not public.,Free,12 weeks,2x per year,FinTech,Unknown,"St Louis, Missouri, USA",Hybrid (specifics not public),"Dwolla, New Constructs, DataTribe",7,15
+64,India Accelerator,172,Ashish Bhatia,"$150,000 for 10%",No fee information available,16 weeks,4x per year,All,Unknown,"Gurgaon, Haryana, India",Hybrid (specifics not public),"Airmeet, Hesa, Knorish",24,15
+65,Quake Capital Partners,166,Glenn Argenbright,"$200,000 for 15%",Free,12 weeks,Unknown,All,Unknown,"New York City, NY, USA",Hybrid (specifics not public),"Home61, Breinify, Ready Responders",13,15
+66,Stadia Ventures,63,Alex Chalmers,"Up to $100,000 for unknown terms",$50,14 weeks,1x per year,Sports Tech,<3%,"St. Louis, MO, USA",In-person required for specific program events,"FanFood, LeagueApps, SportsCastr",9,15
+67,Ben Franklin Technology Partners of Southeastern Pennsylvania,230,Scott Nissenbaum,"Matches 1:1 additional capital raised up to $1,000,000",$250 application fee,52 weeks,Unknown,FinTech,Unknown,"Philadelphia, PA, USA",In-person required,"Life Sciences Partners, InstaMed, Spark Therapeutics",60,14
+68,Founder Institute,2000,Adeo Ressi,Does not invest.,$599,14 weeks,4x per year,All,30%,"Palo Alto, CA, USA",Virtual,"Udemy, Udacity, Realty Mogul",50,14
+69,European Innovation Council,1125,Michiel Scheffer,Grant up to £2.5M,Free (non-profit),52 weeks,Unknown,All,<3%,"Brussels, Belgium",Virtual with in-person demo day,"Revolut, UiPath, Glovo",Unknown,14
+70,Internet Initiatives Development Fund (IIDF),448,Kirill Varlamov,Investment terms not public.,Free,12 weeks,3x per year,All,3%,"Moscow, Russia",In-person required,"Amocrm, Segmento, Ubic.",15,14
+71,AGORANOV,438,Jean Charles Pomerol,Not able to obtain information.,5% equity,52 weeks,Unknown,France Startups,Unknown,"Paris, France",In-person required,"Doctolib, ManoMano, Algolia",80,14
+72,Tenity,319,Andreas Iten,Investment terms not public.,"£12,000",12 weeks,2x per year,FinTech,3%,"Zurich, Switzerland",In-person required for specific program events,"Canopy, Tradeplus24, Relio",11,14
+73,NEXT Canada,312,Reza Satchu,Does not invest.,Free,16 weeks,1x per year,All,3%,"Toronto, Ontario, Canada",Hybrid (specifics not public),"Wealthsimple, Clearco, Ada",9,14
+74,Sting,309,Krim Talia,$20K for 4-6%,Free,20 weeks,2x per year,Clean Tech,5%,"Stockholm, Sweden",In-person required,"Peloton, Twitter, Square",26,14
+75,EXPERT DOJO,305,Brian Mac Mahon,$50K for 3.5%,"$20,000",8 weeks,4x per year,All,Unknown,"Santa Monica, CA, USA",Virtual,"Obligo, ArmorCode, Contrast Security",11,14
+76,DMZ,278,Abdullah Snobar,Investment terms not public,2.5% equity stake,12 weeks,4x per year,All,Unknown,"Toronto, Ontario, Canada",In-person required,"Ritual, Snapcommerce, Nudge",90,14
+77,Brinc,257,Manav Gupta,Investment terms not public.,"$35,000",12 weeks,Unknown,Hardware,Unknown,Hong Kong,Hybrid (specifics not public),"Animoca Brands, Yumi, Carbon Infinity",5,14
+78,100Unicorns,235,Manoj Aheeray,Investment terms not public.,Unknown equity stake,8 weeks,2x per year,All,Unknown,"Gurugram, Haryana, India",Virtual,"Darwinbox, Rippling, Airmeet",Unknown,14
+79,Capital Factory,215,Joshua Baer,$100K for 7%,1% equity stake,12 weeks,Unknown,All,Unknown,"Austin, TX, USA",Hybrid (specifics not public),"Iconeme, Self Lender (now SeedFi), Outdoorsy",55,14
+80,FuturePlay,210,Oh-Hyoung Kwon,Investment terms not public.,$99/month,16 weeks,Unknown,All,Unknown,"Seoul, South Korea",Virtual,"Huuuge Games, Two Dots, Deliver Us The Moon",6,14
+81,Bethnal Green Ventures,198,Paul Miller OBE,Investment terms not public,Free,12 weeks,2x per year,Impact,Unknown,"London, United Kingdom",Hybrid (specifics not public),"Fairphone, DrDoctor, Organise",13,14
+82,JioGenNext,183,Amey Mashelkar,Investment terms not public,Free,12 weeks,Unknown,All,Unknown,"Mumbai, India",Hybrid (specifics not public),"Jumbotail, Niki.ai, Fynd",5,14
+83,WOW Aceleradora,182,Filipe Garcia,Investment terms not public,No fee information available,16 weeks,Unknown,Clean Tech,Unknown,"Porto Alegre, Brazil",Hybrid (specifics not public),"Hotmart, Samba Tech, Beblue",17,14
+84,Normandie Incubation,177,Sophie Le Bricquir,Investment terms not public,No fee information available.,52 weeks,Unknown,All,Unknown,"Caen, France",Hybrid (specifics not public),"Dental Monitoring, Intent, Incepto",42,14
+85,Boomtown Accelerators,175,Toby Krout,"$20,000 for unknown percentage",No fee information available,12 weeks,2x per year,All,Unknown,"Boulder, Colorado, USA",In-person required,"Samsung SmartThings, Bitsbox, Cardboard Live",16,14
+86,Samurai Incubate,173,Kentaro Sakakibara,"$20,000 for 5%",No fee information available,12 weeks,4x per year,All,Unknown,"Tokyo, Japan",In-person required,"Raksul, Wantedly, CADDi",17,14
+87,XRC Ventures,166,Pano Anthos,"$200,000 for 7%","$50,000",8 weeks,Unknown,Consumer Tech,Unknown,"New York City, NY, USA",In-person required,"Verishop, Terez, UpWest",14,14
+88,Accel Atoms,30,Prayank Swaroop,"Up to $1,000,000 for unknown equity",Free,12 weeks,1x per year,Artificial Intelligence,<1%,India,In-person required,Unknown,Unknown,13
+89,Start-Up Chile,959,Fernando G,"Up to $30,000 in grant funding",Free,24 weeks,2x per year,All,5-10%,"Santiago, Chile",Virtual,"Cornershop, Houm, SimpliRoute",195,13
+90,Ontario Centres of Excellence,434,Claudia Krywiak,Investment terms not public.,Free,Unknown,Unknown,All,Unknown,"Toronto, Ontario, Canada",Hybrid (specifics not public),"Clearpath, ecobee, Ritual",Unknown,13
+91,EIT Digital Accelerator,235,Federico Menna,Does not invest.,Free,52 weeks,1x per year,Deep Tech,Unknown,"Brussels, Belgium",Virtual,"Konux, SidekickHealth, Relimetrics",12,13
+92,EvoNexus,228,Rory Moore,Does not invest.,1% equity stake,24 weeks,2x per year,BioTech,Unknown,"San Diego, CA, USA",Hybrid (specifics not public),"Fate Therapeutics, MDRevolution, EcoATM",27,13
+93,MassChallenge Switzerland,215,Ian Roberts,Does not invest.,Free (non-profit),16 weeks,1x per year,All,Unknown,"Renens, Switzerland",In-person required,"Flyability, Beekeeper, Arianee",5,13
+94,Lotte Ventures,212,Leo Junyoung Ahn,Investment terms not public.,Unknown equity stake,Undisclosed,Unknown,All,Unknown,"Seoul, South Korea",Hybrid (specifics not public),"FEMTech, Artisans, 42Maru",Unknown,13
+95,LaunchVic,183,Kate Cornick,Does not invest.,Free,Undisclosed,Unknown,All,Unknown,"Melbourne, Victoria, Australia",Virtual,"Mr Yum, Carbar, Airwallex",Unknown,13
+96,Cleantech Open,679,Ken Hayes,Does not invest.,Free (non-profit),32 weeks,1x per year,Clean Tech,30%,"Los Angeles, CA, USA",Virtual,"ConnectDER, FreeWire Technologies, Enbala",100,12
+97,VentureOut,1095,Brian Frumberg,Does not invest.,6% equity,12 weeks,12x per year,Non-US Startups,<3%,"New York City, NY, USA",In-person required,"Vroom, Simplifeye, Parcel",14,11
+98,Newchip Accelerator,1291,Andrew Ryan,Investment terms not public,"$9,000",12 weeks,4x per year,All,<2%,"Austin, TX, USA",Virtual,"DigsFact, Perks, StoryFit",4,10
+99,gbeta,537,Joe Kirgues,Does not invest.,Free,7 weeks,2x per year,All,<3%,"Madison, Wisconsin, USA",In-person required,"Exit, Fetch Rewards, Captivate",26,10
+100,FasterCapital,826,Hesham Zreik,Does not invest.,Free,16 weeks,2x per year,All,<2%,"Dubai, United Arab Emirates",Virtual,"Soukare, EATbilbao, Gener.diabetes",19,9
