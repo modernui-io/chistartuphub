@@ -436,17 +436,11 @@ export default function Stories() {
                 <div className="grid md:grid-cols-2">
                   {/* Image */}
                   <div className="aspect-video md:aspect-auto bg-white/5 relative overflow-hidden">
-                    {featuredStory.image_url ? (
-                      <OptimizedImage
-                        src={featuredStory.image_url}
-                        alt={featuredStory.company_name}
-                        className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Building2 className="w-16 h-16 text-white/10" strokeWidth={1} />
-                      </div>
-                    )}
+                    <OptimizedImage
+                      src={featuredStory.image_url || "https://images.unsplash.com/photo-1548260616-b71c60ccea3a?w=800&q=80"}
+                      alt={featuredStory.company_name}
+                      className="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity"
+                    />
                     {isUnicorn(featuredStory) && (
                       <div className="absolute top-4 left-4 flex items-center gap-1 font-mono text-[10px] text-amber-400 bg-black/50 px-2 py-1">
                         <Sparkles className="w-3 h-3" strokeWidth={1.5} />
