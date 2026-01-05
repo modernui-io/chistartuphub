@@ -1,15 +1,12 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
-import { Download, Users } from "lucide-react";
 import FundingOpportunitiesContent from "../components/funding/FundingOpportunitiesContent";
 import SEO from "@/components/SEO";
 import { BureauAtmosphere, BureauFooter } from "@/components/bureau";
-import DownloadInvestorListModal from "@/components/DownloadInvestorListModal";
 
 export default function Funding() {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [showInvestorModal, setShowInvestorModal] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsLoaded(true), 100);
@@ -138,7 +135,7 @@ export default function Funding() {
         </section>
 
         {/* Funding Content */}
-        <section className="px-6 pb-16">
+        <section className="px-6 pb-24">
           <div className="max-w-6xl mx-auto">
             <FundingOpportunitiesContent
               opportunities={opportunities}
@@ -147,49 +144,9 @@ export default function Funding() {
           </div>
         </section>
 
-        {/* Lead Magnet Banner */}
-        <section className="px-6 pb-24">
-          <div className="max-w-6xl mx-auto">
-            <div className="border border-white/10 bg-gradient-to-r from-white/[0.03] to-transparent p-6 md:p-8">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 border border-white/20 flex items-center justify-center flex-shrink-0">
-                    <Users className="w-5 h-5 text-white/50" strokeWidth={1.5} />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-3 mb-2 flex-wrap">
-                      <h3 className="font-serif text-lg md:text-xl text-white">
-                        Top 50 Chicago Investors
-                      </h3>
-                      <span className="font-mono text-[10px] uppercase tracking-[0.1em] px-2 py-0.5 border border-green-500/30 text-green-400">
-                        FREE
-                      </span>
-                    </div>
-                    <p className="text-white/40 text-sm max-w-md">
-                      Active VCs and angels investing in Chicago startups. Check sizes, stage focus, sector preferences, and portfolio highlights.
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowInvestorModal(true)}
-                  className="font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-4 bg-white text-black hover:bg-transparent hover:text-white border border-white transition-colors cursor-crosshair flex items-center justify-center gap-2 flex-shrink-0"
-                >
-                  <Download className="w-4 h-4" strokeWidth={1.5} />
-                  Download List
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* Footer */}
         <BureauFooter />
       </div>
-
-      <DownloadInvestorListModal
-        isOpen={showInvestorModal}
-        onClose={() => setShowInvestorModal(false)}
-      />
     </div>
   );
 }
