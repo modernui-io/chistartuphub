@@ -3,12 +3,11 @@ import { Link, useParams } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Clock, Play, Loader2, TrendingUp, Award, Shield, Zap, Users, Lock, Star, Target, Cog, BookOpen, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import StoryCard from "../components/stories/StoryCard";
+import { ArrowLeft, Clock, Play, Loader2, TrendingUp, Award, Shield, Zap, Users, Lock, Star, Target, Cog, BookOpen, ExternalLink, ArrowUpRight } from "lucide-react";
 import SEO from "@/components/SEO";
 import { generateSlug } from "@/lib/utils";
+import { BureauAtmosphere, BureauFooter } from "@/components/bureau";
+import OptimizedImage from "@/components/OptimizedImage";
 
 export default function StoryDetail() {
   const { slug } = useParams();
@@ -18,37 +17,29 @@ export default function StoryDetail() {
   const { data: stories = [], isLoading, error } = useQuery({
     queryKey: ['stories'],
     queryFn: () => entities.Story.list('-created_date'),
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5,
   });
 
-  // Find story by slug or fallback to ID
   const story = React.useMemo(() => {
     if (slug) {
-      // First try exact slug match
       const slugMatch = stories.find(s => generateSlug(s.company_name) === slug);
       if (slugMatch) return slugMatch;
-
-      // Fallback: try case-insensitive company name match
       const nameMatch = stories.find(s =>
         s.company_name?.toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug.toLowerCase()
       );
       if (nameMatch) return nameMatch;
     }
-
-    // Fallback to ID-based lookup for backwards compatibility
     if (storyId) {
       return stories.find(s => s.id === storyId);
     }
-
     return null;
   }, [stories, slug, storyId]);
 
-  // Helper functions to map between Supabase and old schema field names
+  // Helper functions
   const getFounderName = (s) => {
     if (s.founders && Array.isArray(s.founders)) return s.founders.join(', ');
     return s.founder_name || 'Unknown Founder';
   };
-
   const getJourneySummary = (s) => s.description || s.journey_summary || s.tagline || '';
   const getCategory = (s) => s.sector || s.category || 'Technology';
   const getFounded = (s) => s.founded_year || s.founded || '';
@@ -66,41 +57,55 @@ export default function StoryDetail() {
     "Process Power": Cog
   };
 
-  const getRatingColor = (rating) => {
+  const getRatingLevel = (rating) => {
     switch(rating) {
-      case "Very High": return "text-green-400 bg-green-500/20 border-green-400/30";
-      case "High": return "text-blue-400 bg-blue-500/20 border-blue-400/30";
-      case "Medium": return "text-yellow-400 bg-yellow-500/20 border-yellow-400/30";
-      case "Low": return "text-gray-400 bg-gray-500/20 border-gray-400/30";
-      default: return "text-white/50 bg-white/5 border-white/10";
+      case "Very High": return "text-white bg-white/10";
+      case "High": return "text-white/80 bg-white/5";
+      case "Medium": return "text-white/60 bg-white/[0.02]";
+      case "Low": return "text-white/40 bg-transparent";
+      default: return "text-white/30 bg-transparent";
     }
   };
 
+  // Loading State
   if (isLoading) {
     return (
-      <div className="min-h-screen py-20 px-6 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 text-white animate-spin mx-auto mb-4" />
-          <p className="text-white/70 text-lg">Loading story...</p>
+      <div className="min-h-screen relative" data-page="story-detail">
+        <BureauAtmosphere />
+        <div className="relative z-10 flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 text-white/50 animate-spin mx-auto mb-4" strokeWidth={1.5} />
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/40">
+              Loading blueprint...
+            </p>
+          </div>
         </div>
       </div>
     );
   }
 
+  // Error State
   if (error || !story) {
     return (
-      <div className="min-h-screen py-20 px-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl font-bold text-white mb-6">Story Not Found</h1>
-          <p className="text-white/70 text-lg mb-8">
-            The story you're looking for doesn't exist or has been removed.
-          </p>
-          <Link to={createPageUrl("Stories")}>
-            <Button className="accent-button">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Chicago Lore
-            </Button>
-          </Link>
+      <div className="min-h-screen relative" data-page="story-detail">
+        <BureauAtmosphere />
+        <div className="relative z-10 flex items-center justify-center min-h-screen">
+          <div className="text-center border border-white/10 p-12 max-w-md">
+            <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block mb-6">
+              [ERROR: NOT_FOUND]
+            </span>
+            <h1 className="font-serif text-3xl text-white mb-4">Blueprint Not Found</h1>
+            <p className="text-white/50 text-sm mb-8">
+              The story you're looking for doesn't exist or has been removed.
+            </p>
+            <Link
+              to={createPageUrl("Stories")}
+              className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 border border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white transition-colors cursor-crosshair"
+            >
+              <ArrowLeft className="w-3 h-3" strokeWidth={1.5} />
+              Back to Blueprints
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -117,234 +122,328 @@ export default function StoryDetail() {
   ].filter(metric => metric.value);
 
   return (
-    <div className="min-h-screen py-20 px-6">
-      {story && (
-        <SEO
-          title={`${story.company_name} - ${getFounderName(story)} | Chicago Lore`}
-          description={getJourneySummary(story)?.substring(0, 160) + "..."}
-          image={story.image_url || story.logo_url}
-          type="article"
-        />
-      )}
-      <div className="max-w-4xl mx-auto">
-        {/* Back Button */}
-        <Link to={createPageUrl("Stories")}>
-          <Button className="glass-button mb-8">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Chicago Lore
-          </Button>
-        </Link>
+    <div className="min-h-screen relative" data-page="story-detail">
+      <SEO
+        title={`${story.company_name} - ${getFounderName(story)} | Chicago Blueprints`}
+        description={getJourneySummary(story)?.substring(0, 160) + "..."}
+        image={story.image_url || story.logo_url}
+        type="article"
+      />
 
-        {/* Header */}
-        <div className="glass-card p-8 md:p-12 rounded-3xl border border-white/10 mb-8">
-          <div className="flex flex-wrap gap-2 mb-4">
-            <Badge className="bg-white/10 text-white border-white/20">
-              {getCategory(story)}
-            </Badge>
-            {getFounded(story) && <Badge className="bg-white/10 text-white border-white/20">Founded {getFounded(story)}</Badge>}
-            {story.exit_status && <Badge className="bg-purple-500/20 text-purple-300 border-purple-400/30">{story.exit_status}</Badge>}
-            {getExitValue(story) && <Badge className="bg-green-500/20 text-green-300 border-green-400/30">{getExitValue(story)}</Badge>}
-          </div>
+      <BureauAtmosphere />
 
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            {story.company_name}
-          </h1>
-          <p className="text-2xl text-white/80 mb-6">{getFounderName(story)}</p>
-          
-          {story.website && (
-            <a href={story.website} target="_blank" rel="noopener noreferrer" className="inline-block mb-4 mr-4">
-              <Button className="glass-button">
-                Visit Website
-                <ExternalLink className="w-4 h-4 ml-2" />
-              </Button>
-            </a>
-          )}
-          
-          {story.read_time && (
-            <div className="flex items-center gap-4 text-white/60">
-              <Clock className="w-5 h-5" />
-              <span>{story.read_time}</span>
+      <div className="relative z-10">
+        {/* Hero Section */}
+        <section className="pt-32 pb-12 px-6">
+          <div className="max-w-4xl mx-auto">
+            {/* Back Link */}
+            <Link
+              to={createPageUrl("Stories")}
+              className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em] text-white/40 hover:text-white transition-colors mb-8 cursor-crosshair"
+            >
+              <ArrowLeft className="w-3 h-3" strokeWidth={1.5} />
+              Back to Blueprints
+            </Link>
+
+            {/* Label */}
+            <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block mb-4">
+              [BLUEPRINT: {story.company_name?.toUpperCase().replace(/\s+/g, '_')}]
+            </span>
+
+            {/* Company Name */}
+            <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl text-white tracking-tight mb-4">
+              {story.company_name}
+            </h1>
+
+            {/* Founder */}
+            <p className="font-mono text-sm uppercase tracking-[0.1em] text-white/50 mb-8">
+              {getFounderName(story)}
+            </p>
+
+            {/* Meta Tags */}
+            <div className="flex flex-wrap gap-2 mb-8">
+              <span className="font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-1.5 border border-white/20 text-white/60">
+                {getCategory(story)}
+              </span>
+              {getFounded(story) && (
+                <span className="font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-1.5 border border-white/10 text-white/40">
+                  Founded {getFounded(story)}
+                </span>
+              )}
+              {story.exit_status && (
+                <span className="font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-1.5 border border-white/20 text-white/60">
+                  {story.exit_status}
+                </span>
+              )}
+              {getExitValue(story) && (
+                <span className="font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-1.5 bg-white/10 border border-white/20 text-white">
+                  {getExitValue(story)}
+                </span>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* Hero Card */}
-        <div className="mb-8">
-          <StoryCard story={story} size="large" />
-        </div>
+            {/* Actions */}
+            <div className="flex items-center gap-4">
+              {story.website && (
+                <a
+                  href={story.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair"
+                >
+                  Visit Website
+                  <ExternalLink className="w-3 h-3" strokeWidth={1.5} />
+                </a>
+              )}
+              {story.read_time && (
+                <div className="flex items-center gap-2 text-white/40">
+                  <Clock className="w-4 h-4" strokeWidth={1.5} />
+                  <span className="font-mono text-[10px] uppercase tracking-[0.1em]">{story.read_time}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
 
-        {/* Journey Summary */}
-        <div className="glass-card p-8 rounded-3xl border border-white/10 mb-8">
-          <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-            <TrendingUp className="w-8 h-8 text-blue-400" />
-            The Journey
-          </h2>
-          {getJourneySummary(story) ? (
-            <div className="text-lg text-white/80 leading-relaxed whitespace-pre-line">{getJourneySummary(story)}</div>
-          ) : (
-            <p className="text-white/50 italic">Story details coming soon. Check back for the full journey of {story.company_name}.</p>
-          )}
-        </div>
+        {/* Image Section */}
+        {story.image_url && (
+          <section className="px-6 pb-12">
+            <div className="max-w-4xl mx-auto">
+              <div className="border border-white/10 overflow-hidden">
+                <OptimizedImage
+                  src={story.image_url}
+                  alt={story.company_name}
+                  className="w-full aspect-video object-cover opacity-80"
+                  width={1200}
+                />
+              </div>
+            </div>
+          </section>
+        )}
 
-        {/* Competitive Moats */}
+        {/* Journey Section */}
+        <section className="px-6 pb-12">
+          <div className="max-w-4xl mx-auto">
+            <div className="border border-white/10 p-8 md:p-12">
+              <div className="flex items-center gap-3 mb-6">
+                <TrendingUp className="w-5 h-5 text-white/40" strokeWidth={1.5} />
+                <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em]">
+                  [THE_JOURNEY]
+                </span>
+              </div>
+
+              {getJourneySummary(story) ? (
+                <div className="text-white/70 leading-relaxed whitespace-pre-line">
+                  {getJourneySummary(story)}
+                </div>
+              ) : (
+                <p className="text-white/40 italic">
+                  Story details coming soon. Check back for the full journey of {story.company_name}.
+                </p>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* Competitive Moats Section */}
         {(getPrimaryPower(story) || getSecondaryPower(story)) && (
-          <div className="glass-card p-8 rounded-3xl border border-white/10 mb-8">
-            <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-              <Award className="w-8 h-8 text-yellow-400" />
-              Competitive Moats
-            </h2>
-            <div className="grid md:grid-cols-2 gap-4 mb-6">
-              {getPrimaryPower(story) && (
-                <div className="glass-card p-6 rounded-2xl border border-blue-400/30 bg-blue-500/10">
-                  <p className="text-blue-400 text-sm font-semibold mb-2">PRIMARY MOAT</p>
-                  <p className="text-2xl font-bold text-white">{getPrimaryPower(story)}</p>
+          <section className="px-6 pb-12">
+            <div className="max-w-4xl mx-auto">
+              <div className="border border-white/10 p-8 md:p-12">
+                <div className="flex items-center gap-3 mb-8">
+                  <Shield className="w-5 h-5 text-white/40" strokeWidth={1.5} />
+                  <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em]">
+                    [COMPETITIVE_MOATS]
+                  </span>
                 </div>
-              )}
-              {getSecondaryPower(story) && (
-                <div className="glass-card p-6 rounded-2xl border border-purple-400/30 bg-purple-500/10">
-                  <p className="text-purple-400 text-sm font-semibold mb-2">MOAT DESCRIPTION</p>
-                  <p className="text-base text-white/90 leading-relaxed">{getSecondaryPower(story)}</p>
-                </div>
-              )}
-            </div>
 
-            {/* Power Metrics Grid */}
-            {powerMetrics.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {powerMetrics.map((metric, index) => {
-                  const Icon = metric.icon;
-                  return (
-                    <div key={index} className={`p-4 rounded-xl border ${getRatingColor(metric.value)}`}>
-                      <Icon className="w-6 h-6 mb-2" />
-                      <p className="text-xs font-semibold mb-1">{metric.name}</p>
-                      <p className="text-sm font-bold">{metric.value}</p>
+                <div className="grid md:grid-cols-2 gap-6 mb-8">
+                  {getPrimaryPower(story) && (
+                    <div className="border border-white/20 p-6">
+                      <span className="font-mono text-[10px] text-white/40 uppercase tracking-[0.15em] block mb-3">
+                        Primary Moat
+                      </span>
+                      <p className="font-serif text-2xl text-white">{getPrimaryPower(story)}</p>
                     </div>
-                  );
-                })}
+                  )}
+                  {getSecondaryPower(story) && (
+                    <div className="border border-white/10 p-6">
+                      <span className="font-mono text-[10px] text-white/40 uppercase tracking-[0.15em] block mb-3">
+                        Moat Description
+                      </span>
+                      <p className="text-white/60 text-sm leading-relaxed">{getSecondaryPower(story)}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Power Metrics Grid */}
+                {powerMetrics.length > 0 && (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/10">
+                    {powerMetrics.map((metric, index) => {
+                      const Icon = metric.icon;
+                      return (
+                        <div key={index} className={`p-4 ${getRatingLevel(metric.value)} border-r border-b border-white/10 last:border-r-0`}>
+                          <Icon className="w-4 h-4 mb-2 opacity-60" strokeWidth={1.5} />
+                          <p className="font-mono text-[10px] uppercase tracking-[0.1em] mb-1 opacity-60">{metric.name}</p>
+                          <p className="font-mono text-xs font-medium">{metric.value}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          </section>
         )}
 
-        {/* Power Analysis */}
+        {/* Power Analysis Section */}
         {story.power_analysis && (
-          <div className="glass-card p-8 rounded-3xl border border-white/10 mb-8">
-            <h2 className="text-3xl font-bold text-white mb-6">Power Analysis</h2>
-            <p className="text-white/70 leading-relaxed text-lg">{story.power_analysis}</p>
-          </div>
+          <section className="px-6 pb-12">
+            <div className="max-w-4xl mx-auto">
+              <div className="border border-white/10 p-8 md:p-12">
+                <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block mb-6">
+                  [POWER_ANALYSIS]
+                </span>
+                <p className="text-white/60 leading-relaxed">{story.power_analysis}</p>
+              </div>
+            </div>
+          </section>
         )}
 
-        {/* Resources & Interviews */}
+        {/* Resources Section */}
         {(story.podcast_links?.length > 0 || story.article_links?.length > 0 || story.resource_links?.length > 0) && (
-          <div className="glass-card p-8 rounded-3xl border border-white/10 mb-8">
-            <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-3">
-              <BookOpen className="w-8 h-8 text-white" />
-              Resources & Interviews
-            </h2>
-
-            {/* Podcasts */}
-            {story.podcast_links?.length > 0 && (
-              <div className="mb-6">
-                <h3 className="text-xl font-semibold text-white mb-4">Podcasts</h3>
-                <div className="space-y-3">
-                  {story.podcast_links.map((podcast, index) => (
-                    <a
-                      key={index}
-                      href={podcast.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:scale-105 transition-all duration-300 group"
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-white group-hover:text-blue-300 transition-colors">{podcast.title}</span>
-                        <ExternalLink className="w-4 h-4 text-white/40 flex-shrink-0 group-hover:text-blue-300 transition-colors" />
-                      </div>
-                    </a>
-                  ))}
+          <section className="px-6 pb-12">
+            <div className="max-w-4xl mx-auto">
+              <div className="border border-white/10 p-8 md:p-12">
+                <div className="flex items-center gap-3 mb-8">
+                  <BookOpen className="w-5 h-5 text-white/40" strokeWidth={1.5} />
+                  <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em]">
+                    [RESOURCES]
+                  </span>
                 </div>
-              </div>
-            )}
 
-            {/* Articles */}
-            {story.article_links?.length > 0 && (
-              <div className="mb-6">
-                <h3 className="text-xl font-semibold text-white mb-4">Articles & Interviews</h3>
-                <div className="space-y-3">
-                  {story.article_links.map((article, index) => (
-                    <a
-                      key={index}
-                      href={article.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:scale-105 transition-all duration-300 group"
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-white group-hover:text-blue-300 transition-colors">{article.title}</span>
-                        <ExternalLink className="w-4 h-4 text-white/40 flex-shrink-0 group-hover:text-blue-300 transition-colors" />
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              </div>
-            )}
+                {/* Podcasts */}
+                {story.podcast_links?.length > 0 && (
+                  <div className="mb-8">
+                    <span className="font-mono text-[10px] text-white/40 uppercase tracking-[0.15em] block mb-4">
+                      Podcasts
+                    </span>
+                    <div className="space-y-2">
+                      {story.podcast_links.map((podcast, index) => (
+                        <a
+                          key={index}
+                          href={podcast.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between p-4 border border-white/10 hover:border-white/30 hover:bg-white/[0.02] transition-colors group cursor-crosshair"
+                        >
+                          <span className="text-white/70 text-sm group-hover:text-white transition-colors">{podcast.title}</span>
+                          <ArrowUpRight className="w-4 h-4 text-white/30 group-hover:text-white transition-colors" strokeWidth={1.5} />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
-            {/* Other Resources */}
-            {story.resource_links?.length > 0 && (
-              <div>
-                <h3 className="text-xl font-semibold text-white mb-4">Additional Resources</h3>
-                <div className="space-y-3">
-                  {story.resource_links.map((resource, index) => (
-                    <a
-                      key={index}
-                      href={resource.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block p-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:scale-105 transition-all duration-300 group"
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-white group-hover:text-blue-300 transition-colors">{resource.title}</span>
-                        <ExternalLink className="w-4 h-4 text-white/40 flex-shrink-0 group-hover:text-blue-300 transition-colors" />
-                      </div>
-                    </a>
-                  ))}
-                </div>
+                {/* Articles */}
+                {story.article_links?.length > 0 && (
+                  <div className="mb-8">
+                    <span className="font-mono text-[10px] text-white/40 uppercase tracking-[0.15em] block mb-4">
+                      Articles & Interviews
+                    </span>
+                    <div className="space-y-2">
+                      {story.article_links.map((article, index) => (
+                        <a
+                          key={index}
+                          href={article.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between p-4 border border-white/10 hover:border-white/30 hover:bg-white/[0.02] transition-colors group cursor-crosshair"
+                        >
+                          <span className="text-white/70 text-sm group-hover:text-white transition-colors">{article.title}</span>
+                          <ArrowUpRight className="w-4 h-4 text-white/30 group-hover:text-white transition-colors" strokeWidth={1.5} />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Other Resources */}
+                {story.resource_links?.length > 0 && (
+                  <div>
+                    <span className="font-mono text-[10px] text-white/40 uppercase tracking-[0.15em] block mb-4">
+                      Additional Resources
+                    </span>
+                    <div className="space-y-2">
+                      {story.resource_links.map((resource, index) => (
+                        <a
+                          key={index}
+                          href={resource.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between p-4 border border-white/10 hover:border-white/30 hover:bg-white/[0.02] transition-colors group cursor-crosshair"
+                        >
+                          <span className="text-white/70 text-sm group-hover:text-white transition-colors">{resource.title}</span>
+                          <ArrowUpRight className="w-4 h-4 text-white/30 group-hover:text-white transition-colors" strokeWidth={1.5} />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          </section>
         )}
 
-        {/* Video (if available) */}
+        {/* Video Section */}
         {story.video_url && (
-          <div className="glass-card p-6 rounded-3xl border border-white/10 mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <Play className="w-6 h-6 text-white" />
-              <h3 className="text-xl font-bold text-white">Watch the Story</h3>
+          <section className="px-6 pb-12">
+            <div className="max-w-4xl mx-auto">
+              <div className="border border-white/10 p-8">
+                <div className="flex items-center gap-3 mb-6">
+                  <Play className="w-5 h-5 text-white/40" strokeWidth={1.5} />
+                  <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em]">
+                    [VIDEO]
+                  </span>
+                </div>
+                <div className="aspect-video border border-white/10 overflow-hidden">
+                  <iframe
+                    src={story.video_url}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
             </div>
-            <div className="aspect-video rounded-2xl overflow-hidden">
-              <iframe
-                src={story.video_url}
-                className="w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
-          </div>
+          </section>
         )}
 
-        {/* Call to Action */}
-        <div className="glass-card p-8 rounded-3xl border border-white/10 text-center">
-          <h3 className="text-2xl font-bold text-white mb-4">
-            Inspired by {getFounderName(story)}'s Journey?
-          </h3>
-          <p className="text-white/70 mb-6">
-            Explore more founder stories and discover the resources that helped them succeed.
-          </p>
-          <Link to={createPageUrl("Stories")}>
-            <Button className="accent-button">
-              Read More Stories
-            </Button>
-          </Link>
-        </div>
+        {/* CTA Section */}
+        <section className="px-6 pb-24">
+          <div className="max-w-4xl mx-auto">
+            <div className="border border-white/10 p-8 md:p-12 text-center">
+              <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block mb-4">
+                [NEXT_STEPS]
+              </span>
+              <h3 className="font-serif text-2xl text-white mb-4">
+                Inspired by {getFounderName(story)}'s Journey?
+              </h3>
+              <p className="text-white/50 text-sm mb-8 max-w-md mx-auto">
+                Explore more founder blueprints and discover the patterns behind Chicago's most successful startups.
+              </p>
+              <Link
+                to={createPageUrl("Stories")}
+                className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em] px-8 py-4 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair"
+              >
+                Explore More Blueprints
+                <ArrowUpRight className="w-3 h-3" strokeWidth={1.5} />
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <BureauFooter />
       </div>
     </div>
   );
