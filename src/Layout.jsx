@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { ExternalLink } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
-import GoogleAnalytics from "@/components/GoogleAnalytics";
 import LoadingScreen from "@/components/LoadingScreen";
 import SmoothScrollProvider from "@/components/SmoothScrollProvider";
 import Header from "@/components/Header";
@@ -68,8 +67,7 @@ export default function Layout({ children }) {
       <AnimatePresence mode="wait">
         {isLoading && <LoadingScreen onComplete={handleLoadComplete} />}
       </AnimatePresence>
-      <GoogleAnalytics />
-      
+
       <style>{`
         * {
           font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;

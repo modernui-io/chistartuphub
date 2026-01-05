@@ -1,7 +1,6 @@
 import { useState, useRef } from "react";
 import { X, Download, Check, FileText, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import jsPDF from "jspdf";
 
 export default function ExportResourcesModal({ isOpen, onClose, resources, getTypeLabel }) {
   const { profile } = useAuth();
@@ -37,6 +36,8 @@ export default function ExportResourcesModal({ isOpen, onClose, resources, getTy
     setExporting(true);
 
     try {
+      // Lazy-load jsPDF only when user exports (saves 350KB from initial bundle)
+      const jsPDF = (await import('jspdf')).default;
       const doc = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
