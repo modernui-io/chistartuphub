@@ -338,7 +338,7 @@ export default function Opportunities() {
         {/* Stats Bar */}
         <section className="border-y border-white/10 py-4 px-6">
           <div className="max-w-6xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-8">
+            <div className="flex items-center gap-4 sm:gap-8 flex-wrap">
               <div className="flex items-center gap-2">
                 <span className="font-mono text-[10px] text-white/30 uppercase">Active Asks</span>
                 <span className="font-mono text-sm text-white">{filteredAsks.length}</span>
@@ -347,8 +347,15 @@ export default function Opportunities() {
                 <span className="font-mono text-[10px] text-white/30 uppercase">Sectors</span>
                 <span className="font-mono text-sm text-white">{new Set(asks.map(a => a.sector)).size}</span>
               </div>
+              <div className="flex items-center gap-2">
+                <HandHelping className="w-3 h-3 text-green-400" strokeWidth={1.5} />
+                <span className="font-mono text-[10px] text-white/30 uppercase">Founders Helped</span>
+                <span className="font-mono text-sm text-green-400">
+                  {asks.reduce((acc, ask) => acc + (ask.connection_request_count || 0), 0)}
+                </span>
+              </div>
             </div>
-            <div className="font-mono text-[10px] text-white/20 uppercase">
+            <div className="font-mono text-[10px] text-white/20 uppercase hidden sm:block">
               Sorted by most recent
             </div>
           </div>

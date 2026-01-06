@@ -47,7 +47,6 @@ const RESOURCE_CATEGORIES = [
     resources: [
       { name: "LinkedIn Sales Navigator", url: "https://business.linkedin.com/sales-solutions", type: "Tool" },
       { name: "Upwork", url: "https://www.upwork.com/", type: "Marketplace" },
-      { name: "1871 Chicago", url: "https://1871.com/", type: "Community" },
       { name: "Chicago Freelancers Union", url: "https://www.freelancersunion.org/", type: "Community" }
     ]
   },

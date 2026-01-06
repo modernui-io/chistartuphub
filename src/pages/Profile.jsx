@@ -21,10 +21,7 @@ import {
   Rocket,
   ArrowRight,
   Trash2,
-  MapPin,
   Globe,
-  Copy,
-  Check,
   Layers,
   Award,
   ExternalLink,
@@ -37,10 +34,6 @@ import {
   RefreshCw,
   Clock,
   Plus,
-  HandHelping,
-  CheckCircle,
-  XCircle,
-  Clock3,
   Download
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -192,8 +185,8 @@ export default function Profile() {
   // Check if user is admin (can access founder features)
   const isAdmin = user && ADMIN_EMAILS.includes(user.email);
   const isFounderOrAdmin = profile?.role === 'founder' || isAdmin;
-  const [myOffers, setMyOffers] = useState([]);
-  const [offersLoading, setOffersLoading] = useState(false);
+  const [assessmentResults, setAssessmentResults] = useState(null);
+  const [resultsLoading, setResultsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     full_name: '',
@@ -242,44 +235,31 @@ export default function Profile() {
     fetchMyAsks();
   }, [user, activeTab]);
 
-  // Fetch user's sent help offers when offers tab is active
+  // Fetch assessment results when results tab is active
   useEffect(() => {
-    const fetchMyOffers = async () => {
-      if (!user || activeTab !== 'offers') return;
+    const fetchAssessmentResults = async () => {
+      if (!user || activeTab !== 'results') return;
 
-      setOffersLoading(true);
+      setResultsLoading(true);
       try {
         const { data, error } = await supabase
-          .from('connection_requests')
-          .select(`
-            *,
-            founder_asks (
-              id,
-              description,
-              sector,
-              category,
-              amount,
-              is_active,
-              user_profiles (
-                full_name,
-                company_name
-              )
-            )
-          `)
-          .eq('requester_id', user.id)
-          .order('created_at', { ascending: false });
+          .from('assessment_results')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('saved_at', { ascending: false })
+          .limit(1)
+          .single();
 
-        if (error) throw error;
-        setMyOffers(data || []);
+        if (error && error.code !== 'PGRST116') throw error; // PGRST116 = no rows
+        setAssessmentResults(data);
       } catch (error) {
-        console.error('Error fetching offers:', error);
-        toast.error('Failed to load your help offers');
+        console.error('Error fetching assessment results:', error);
       } finally {
-        setOffersLoading(false);
+        setResultsLoading(false);
       }
     };
 
-    fetchMyOffers();
+    fetchAssessmentResults();
   }, [user, activeTab]);
 
   useEffect(() => {
@@ -324,7 +304,11 @@ export default function Profile() {
     if (error) {
       toast.error('Error', { description: 'Failed to update profile' });
     } else {
-      toast.success('Profile updated!', { description: 'Your changes have been saved' });
+      toast.success('Profile updated!', { description: 'Switching to preview...' });
+      // After successful save, switch to preview to show changes
+      setTimeout(() => {
+        setActiveTab('preview');
+      }, 500);
     }
     setSaving(false);
   };
@@ -449,73 +433,78 @@ export default function Profile() {
               <div className="inline-flex bg-black/40 backdrop-blur-sm border border-white/10 p-1.5 md:p-1 gap-1">
                 <button
                   onClick={() => setActiveTab('preview')}
-                  className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                  aria-label="Preview"
+                  className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 font-mono text-[10px] md:text-xs uppercase tracking-[0.1em] transition-all whitespace-nowrap ${
                     activeTab === 'preview'
                       ? 'bg-white text-black'
                       : 'text-white/60 hover:text-white'
                   }`}
                 >
                   <Eye size={16} className="flex-shrink-0" />
-                  <span className="hidden sm:inline">Preview</span>
+                  <span className="sm:hidden">View</span><span className="hidden sm:inline">Preview</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('edit')}
-                  className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                  aria-label="Edit"
+                  className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 font-mono text-[10px] md:text-xs uppercase tracking-[0.1em] transition-all whitespace-nowrap ${
                     activeTab === 'edit'
                       ? 'bg-white text-black'
                       : 'text-white/60 hover:text-white'
                   }`}
                 >
                   <Edit3 size={16} className="flex-shrink-0" />
-                  <span className="hidden sm:inline">Edit</span>
+                  <span className="sm:hidden">Edit</span><span className="hidden sm:inline">Edit</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('bookmarks')}
-                  className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                  aria-label="Saved"
+                  className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 font-mono text-[10px] md:text-xs uppercase tracking-[0.1em] transition-all whitespace-nowrap ${
                     activeTab === 'bookmarks'
                       ? 'bg-white text-black'
                       : 'text-white/60 hover:text-white'
                   }`}
                 >
                   <Bookmark size={16} className="flex-shrink-0" />
-                  <span className="hidden sm:inline">Saved</span>
+                  <span className="sm:hidden">Save</span><span className="hidden sm:inline">Saved</span>
                   <span className="text-[10px] md:text-xs opacity-60">({bookmarks.length})</span>
                 </button>
-                {/* My Offers tab - for all users who have sent help offers */}
                 <button
-                  onClick={() => setActiveTab('offers')}
-                  className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
-                    activeTab === 'offers'
+                  onClick={() => setActiveTab('results')}
+                  aria-label="Results"
+                  className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 font-mono text-[10px] md:text-xs uppercase tracking-[0.1em] transition-all whitespace-nowrap ${
+                    activeTab === 'results'
                       ? 'bg-white text-black'
                       : 'text-white/60 hover:text-white'
                   }`}
                 >
-                  <HandHelping size={16} className="flex-shrink-0" />
-                  <span className="hidden sm:inline">Offers</span>
+                  <GraduationCap size={16} className="flex-shrink-0" />
+                  <span className="sm:hidden">Score</span><span className="hidden sm:inline">Results</span>
                 </button>
                 {isFounderOrAdmin && (
                   <>
                     <button
                       onClick={() => setActiveTab('asks')}
-                      className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                      aria-label="Asks"
+                      className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 font-mono text-[10px] md:text-xs uppercase tracking-[0.1em] transition-all whitespace-nowrap ${
                         activeTab === 'asks'
                           ? 'bg-white text-black'
                           : 'text-white/60 hover:text-white'
                       }`}
                     >
                       <MessageSquarePlus size={16} className="flex-shrink-0" />
-                      <span className="hidden sm:inline">Asks</span>
+                      <span className="sm:hidden">Asks</span><span className="hidden sm:inline">Asks</span>
                     </button>
                     <button
                       onClick={() => setActiveTab('requests')}
-                      className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 rounded-lg text-xs md:text-sm font-medium transition-all whitespace-nowrap ${
+                      aria-label="Requests"
+                      className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 font-mono text-[10px] md:text-xs uppercase tracking-[0.1em] transition-all whitespace-nowrap ${
                         activeTab === 'requests'
                           ? 'bg-white text-black'
                           : 'text-white/60 hover:text-white'
                       }`}
                     >
                       <Inbox size={16} className="flex-shrink-0" />
-                      <span className="hidden sm:inline">Requests</span>
+                      <span className="sm:hidden">Inbox</span><span className="hidden sm:inline">Requests</span>
                     </button>
                   </>
                 )}
@@ -541,13 +530,13 @@ export default function Profile() {
               {/* Avatar */}
               <div className="relative mb-4">
                 {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt={displayName} className="w-24 h-24 rounded-full object-cover border-2 border-white/10" />
+                  <img src={profile.avatar_url} alt={displayName} className="w-24 h-24 object-cover border border-white/10" />
                 ) : (
-                  <div className="w-24 h-24 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center text-2xl font-bold border-2 border-white/10">
+                  <div className="w-24 h-24 bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-2xl font-bold border border-white/10">
                     {getInitials(displayName)}
                   </div>
                 )}
-                <div className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-[#0a0a0a]" />
+                <div className="absolute bottom-1 right-1 w-3 h-3 bg-green-500 border border-[#0a0a0a]" />
               </div>
 
               {/* Name, Company, Location */}
@@ -559,7 +548,7 @@ export default function Profile() {
 
               {/* Stage Badge */}
               {stageBadge && (
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r ${stageBadge.color} text-white mb-3`}>
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.1em] border border-white/20 bg-white/5 text-white mb-3`}>
                   <Sparkles size={10} />
                   {stageBadge.label}
                 </span>
@@ -567,7 +556,7 @@ export default function Profile() {
 
               {/* Student Builder Badge */}
               {profile?.role === 'student' && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-amber-500 to-orange-500 text-white mb-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 text-[10px] font-mono uppercase tracking-[0.1em] border border-amber-500/30 bg-amber-500/10 text-amber-400 mb-3">
                   <GraduationCap size={10} />
                   Student Builder
                 </span>
@@ -575,7 +564,7 @@ export default function Profile() {
 
               {/* Opportunity Category */}
               {formData.opportunity_category && (
-                <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-full text-xs font-medium text-green-400 mb-6">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/20 text-[10px] font-mono uppercase tracking-[0.1em] text-green-400 mb-6">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                   {formData.opportunity_category}
                 </div>
@@ -609,11 +598,11 @@ export default function Profile() {
                   <div className="mb-6">
                     <div className="flex items-center gap-2 mb-3">
                       <Rocket size={14} className="text-purple-500" />
-                      <span className="text-xs font-semibold text-white/50 uppercase tracking-wider">Sectors</span>
+                      <span className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">Sectors</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {formData.sectors.map((sector, i) => (
-                        <span key={i} className="px-3 py-1.5 bg-purple-500/10 border border-purple-500/20 text-xs font-medium rounded-full text-purple-300">
+                        <span key={i} className="px-3 py-1.5 bg-purple-500/10 border border-purple-500/20 text-[10px] font-mono text-purple-300">
                           {sector}
                         </span>
                       ))}
@@ -630,11 +619,11 @@ export default function Profile() {
                   <div className="mb-6">
                     <div className="flex items-center gap-2 mb-3">
                       <Award size={14} className="text-yellow-500" />
-                      <span className="text-xs font-semibold text-white/50 uppercase tracking-wider">Identity & Badges</span>
+                      <span className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">Identity & Badges</span>
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {formData.badges.map((badge, i) => (
-                        <span key={i} className="px-3 py-1.5 bg-black/40 backdrop-blur-sm border border-white/[0.08] text-xs font-medium rounded-full text-white/70">
+                        <span key={i} className="px-3 py-1.5 bg-black/40 backdrop-blur-sm border border-white/[0.08] text-[10px] font-mono text-white/70">
                           {badge}
                         </span>
                       ))}
@@ -651,7 +640,7 @@ export default function Profile() {
                   <div>
                     <div className="flex items-center gap-2 mb-3">
                       <Layers size={14} className="text-blue-500" />
-                      <span className="text-xs font-semibold text-white/50 uppercase tracking-wider">Tool Stack</span>
+                      <span className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em]">Tool Stack</span>
                     </div>
                     <div className="flex gap-3 overflow-x-auto pb-2">
                       {formData.tech_stack.map((tool, i) => (
@@ -680,7 +669,7 @@ export default function Profile() {
                   <div className="max-w-md">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                      <span className="text-xs font-bold text-green-400 uppercase tracking-widest">Current Focus</span>
+                      <span className="text-[10px] font-mono text-green-400 uppercase tracking-[0.2em]">Current Focus</span>
                     </div>
                     <h3 className="text-lg font-bold text-white mb-2">
                       {formData.current_focus || 'Create an ask'}
@@ -716,7 +705,7 @@ export default function Profile() {
                     const Icon = resource.icon;
                     return (
                       <Link key={i} to={resource.link}
-                        className="flex items-center gap-2 px-4 py-2 bg-black/40 backdrop-blur-sm border border-white/10 rounded-none text-sm text-white/60 hover:text-white hover:border-white/[0.1] transition-all">
+                        className="flex items-center gap-2 px-4 py-2 bg-black/40 backdrop-blur-sm border border-white/10 rounded-none text-sm font-mono text-white/60 hover:text-white hover:border-white/20 cursor-crosshair transition-all">
                         <Icon size={14} />
                         {resource.title}
                       </Link>
@@ -736,25 +725,25 @@ export default function Profile() {
 
                 {/* Basic Info */}
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-4">Basic Information</h3>
+                  <h3 className="text-lg font-serif text-white mb-4">Basic Information</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-white/60 text-sm">Full Name</Label>
+                      <Label className="text-white/40 text-[10px] font-mono uppercase tracking-[0.15em]">Full Name</Label>
                       <Input value={formData.full_name} onChange={(e) => handleInputChange('full_name', e.target.value)}
                         className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none h-11" />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-white/60 text-sm">Company/Startup</Label>
+                      <Label className="text-white/40 text-[10px] font-mono uppercase tracking-[0.15em]">Company/Startup</Label>
                       <Input value={formData.company_name} onChange={(e) => handleInputChange('company_name', e.target.value)}
                         className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none h-11" />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-white/60 text-sm">Location</Label>
+                      <Label className="text-white/40 text-[10px] font-mono uppercase tracking-[0.15em]">Location</Label>
                       <Input value={formData.location} onChange={(e) => handleInputChange('location', e.target.value)}
                         placeholder="Chicago, IL" className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none h-11" />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-white/60 text-sm">Website URL</Label>
+                      <Label className="text-white/40 text-[10px] font-mono uppercase tracking-[0.15em]">Website URL</Label>
                       <Input value={formData.website_url} onChange={(e) => handleInputChange('website_url', e.target.value)}
                         placeholder="https://..." className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none h-11" />
                     </div>
@@ -763,7 +752,7 @@ export default function Profile() {
 
                 {/* Bio */}
                 <div className="space-y-2">
-                  <Label className="text-white/60 text-sm">Bio / One-Line Pitch</Label>
+                  <Label className="text-white/40 text-[10px] font-mono uppercase tracking-[0.15em]">Bio / One-Line Pitch</Label>
                   <Textarea value={formData.bio} onChange={(e) => handleInputChange('bio', e.target.value)}
                     placeholder="Building the Stripe for Africa..." rows={3}
                     className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none" />
@@ -771,10 +760,10 @@ export default function Profile() {
 
                 {/* Current Focus */}
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-4">Current Focus / The Ask</h3>
+                  <h3 className="text-lg font-serif text-white mb-4">Current Focus / The Ask</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-white/60 text-sm">What do you need help with?</Label>
+                      <Label className="text-white/40 text-[10px] font-mono uppercase tracking-[0.15em]">What do you need help with?</Label>
                       <select
                         value={formData.current_focus}
                         onChange={(e) => handleInputChange('current_focus', e.target.value)}
@@ -787,13 +776,13 @@ export default function Profile() {
                       </select>
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-white/60 text-sm">LinkedIn URL</Label>
+                      <Label className="text-white/40 text-[10px] font-mono uppercase tracking-[0.15em]">LinkedIn URL</Label>
                       <Input value={formData.linkedin_url} onChange={(e) => handleInputChange('linkedin_url', e.target.value)}
                         placeholder="https://linkedin.com/in/..." className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none h-11" />
                     </div>
                   </div>
                   <div className="mt-4 space-y-2">
-                    <Label className="text-white/60 text-sm">Focus Description</Label>
+                    <Label className="text-white/40 text-[10px] font-mono uppercase tracking-[0.15em]">Focus Description</Label>
                     <Textarea value={formData.focus_description} onChange={(e) => handleInputChange('focus_description', e.target.value)}
                       placeholder="Looking for strategic angels with deep networks in..." rows={2}
                       className="bg-black/40 backdrop-blur-sm border-white/[0.08] text-white rounded-none" />
@@ -802,7 +791,7 @@ export default function Profile() {
 
                 {/* Sectors */}
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Sectors</h3>
+                  <h3 className="text-lg font-serif text-white mb-2">Sectors</h3>
                   <p className="text-white/40 text-sm mb-4">Select the industries you operate in (e.g., "FinTech" + "Web3"). Max 3.</p>
                   <MultiSelect
                     options={SECTOR_OPTIONS}
@@ -815,7 +804,7 @@ export default function Profile() {
 
                 {/* Opportunity Type - What are you here for? */}
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2">What brings you here?</h3>
+                  <h3 className="text-lg font-serif text-white mb-2">What brings you here?</h3>
                   <p className="text-white/40 text-sm mb-4">Select one primary goal. This helps others find you on the Opportunity Board.</p>
                   <SingleSelect
                     options={OPPORTUNITY_TYPES}
@@ -827,7 +816,7 @@ export default function Profile() {
 
                 {/* Badges / Identity */}
                 <div>
-                  <h3 className="text-lg font-semibold text-white mb-2">Identity & Badges</h3>
+                  <h3 className="text-lg font-serif text-white mb-2">Identity & Badges</h3>
                   <div className="bg-blue-500/5 border border-blue-500/10 rounded-none p-4 mb-4">
                     <p className="text-blue-300/80 text-sm">
                       <span className="font-medium">Be Found:</span> Many investors look for specific backgrounds. Select any communities or achievements to help them find you (e.g., "Veteran Founder").
@@ -850,7 +839,7 @@ export default function Profile() {
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <h3 className="text-lg font-semibold text-white mb-2">Tech Stack</h3>
+                    <h3 className="text-lg font-serif text-white mb-2">Tech Stack</h3>
                     <p className="text-white/40 text-sm mb-4">Select up to 8 tools you work with. These are searchable tags.</p>
                     <MultiSelect
                       options={TECH_STACK_OPTIONS}
@@ -916,6 +905,7 @@ export default function Profile() {
                     'accelerator': 'bg-orange-500/20 text-orange-400 border-orange-500/30',
                     'community': 'bg-pink-500/20 text-pink-400 border-pink-500/30',
                     'story': 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
+                    'assessment_resource': 'bg-amber-500/20 text-amber-400 border-amber-500/30',
                   };
                   const categoryLabels = {
                     'funding_opportunity': 'Funding',
@@ -924,6 +914,7 @@ export default function Profile() {
                     'accelerator': 'Accelerator',
                     'community': 'Community',
                     'story': 'Story',
+                    'assessment_resource': 'Assessment',
                   };
 
                   return (
@@ -966,7 +957,7 @@ export default function Profile() {
 
                                   {/* Meta Row: Category Badge + Date */}
                                   <div className="flex items-center gap-3 flex-wrap">
-                                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium border ${categoryColors[type] || 'bg-white/10 text-white/60 border-white/20'}`}>
+                                    <span className={`inline-flex items-center px-2.5 py-1 text-[10px] font-mono uppercase tracking-[0.05em] border ${categoryColors[type] || 'bg-white/10 text-white/60 border-white/20'}`}>
                                       {categoryLabels[type] || type}
                                     </span>
                                     <span className="text-xs text-white/40">
@@ -984,7 +975,7 @@ export default function Profile() {
                                     e.stopPropagation();
                                     removeBookmark(bookmark.id);
                                   }}
-                                  className="text-white/30 hover:text-red-400 hover:bg-red-500/10 rounded-lg flex-shrink-0"
+                                  className="text-white/30 hover:text-red-400 hover:bg-red-500/10 flex-shrink-0"
                                 >
                                   <Trash2 className="w-4 h-4" />
                                 </Button>
@@ -1029,9 +1020,8 @@ export default function Profile() {
                   <MessageSquarePlus className="w-8 h-8 text-white/30" />
                 </div>
                 <p className="text-white/60 mb-2 text-lg">No asks yet</p>
-                <p className="text-white/40 text-sm mb-8">
-                  Share what you need with Chicago's startup ecosystem
-                </p>
+                <p className="text-white/40 text-sm mb-2">Share what you need — fundraising intros, co-founder matching, or expert advice.</p>
+                <p className="text-white/30 text-xs mb-8">Your ask is visible for 14 days. Helpers can offer to connect with you.</p>
                 <Button
                   onClick={() => setShowPostAskModal(true)}
                   className="bg-white text-black hover:bg-white/90 rounded-none px-6"
@@ -1059,7 +1049,7 @@ export default function Profile() {
                       {/* Status + Category */}
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
-                          <span className={`px-3 py-1 text-xs font-medium rounded-full border ${
+                          <span className={`px-3 py-1 text-[10px] font-mono uppercase tracking-[0.1em] border ${
                             isExpired
                               ? 'bg-gray-500/10 text-gray-400 border-gray-500/20'
                               : isActive
@@ -1132,137 +1122,104 @@ export default function Profile() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <ConnectionRequests />
+            <ConnectionRequests
+              hasAsks={myAsks.length > 0}
+              onPostAsk={() => setShowPostAskModal(true)}
+            />
           </motion.div>
         )}
 
-        {/* MY OFFERS TAB - Help offers sent by user */}
-        {activeTab === 'offers' && (
+        {/* RESULTS TAB - Assessment Results */}
+        {activeTab === 'results' && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="mb-6">
-              <h2 className="text-xl font-semibold text-white">My Help Offers</h2>
-              <p className="text-sm text-white/50 mt-1">Track the status of your offers to help founders</p>
-            </div>
-
-            {offersLoading ? (
+            {resultsLoading ? (
               <div className="flex justify-center py-16">
                 <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
               </div>
-            ) : myOffers.length === 0 ? (
+            ) : !assessmentResults ? (
               <Card className="bg-black/40 backdrop-blur-sm border-white/10 p-16 text-center rounded-none">
                 <div className="w-16 h-16 rounded-none bg-black/40 backdrop-blur-sm flex items-center justify-center mx-auto mb-6">
-                  <HandHelping className="w-8 h-8 text-white/30" />
+                  <GraduationCap className="w-8 h-8 text-white/30" />
                 </div>
-                <p className="text-white/60 mb-2 text-lg">No offers sent yet</p>
-                <p className="text-white/40 text-sm mb-8">
-                  Browse asks and offer your help to founders in the ecosystem
-                </p>
-                <Button asChild className="bg-white text-black hover:bg-white/90 rounded-none px-6">
-                  <Link to="/opportunities">Browse Asks</Link>
+                <p className="text-white/60 mb-2 text-lg">No assessment results yet</p>
+                <p className="text-white/40 text-sm mb-8">Take the Founder Readiness Assessment to see your results here</p>
+                <Button asChild className="bg-blue-600 hover:bg-blue-500 rounded-none px-6">
+                  <Link to="/assessment">Take Assessment</Link>
                 </Button>
               </Card>
             ) : (
-              <div className="space-y-4">
-                {myOffers.map((offer) => {
-                  const ask = offer.founder_asks;
-                  const founderName = ask?.user_profiles?.full_name || 'Anonymous Founder';
-                  const companyName = ask?.user_profiles?.company_name;
-                  const createdAt = new Date(offer.created_at);
-                  const hoursAgo = Math.floor((Date.now() - createdAt.getTime()) / (1000 * 60 * 60));
-                  const hoursRemaining = Math.max(0, 48 - hoursAgo);
-
-                  const statusConfig = {
-                    pending: {
-                      icon: Clock3,
-                      label: 'Pending',
-                      color: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
-                      description: hoursRemaining > 0
-                        ? `Founder has ${hoursRemaining}h to respond`
-                        : 'Awaiting response'
-                    },
-                    accepted: {
-                      icon: CheckCircle,
-                      label: 'Accepted',
-                      color: 'bg-green-500/10 text-green-400 border-green-500/20',
-                      description: 'The founder accepted your offer!'
-                    },
-                    declined: {
-                      icon: XCircle,
-                      label: 'Declined',
-                      color: 'bg-red-500/10 text-red-400 border-red-500/20',
-                      description: 'The founder declined this time'
-                    },
-                  };
-
-                  const status = statusConfig[offer.status] || statusConfig.pending;
-                  const StatusIcon = status.icon;
-
-                  return (
-                    <motion.div
-                      key={offer.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-none p-6"
-                    >
-                      {/* Status + Category */}
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <span className={`flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-full border ${status.color}`}>
-                            <StatusIcon size={12} />
-                            {status.label}
-                          </span>
-                          <span className="text-xs text-white/40 uppercase tracking-wider">
-                            {ask?.category === 'fundraising' ? 'Fundraising' :
-                             ask?.category === 'cofounder' ? 'Co-founder' : 'General Advice'}
-                          </span>
-                        </div>
-                        <span className="text-xs text-white/30">
-                          {createdAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                        </span>
-                      </div>
-
-                      {/* Founder info */}
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                          <span className="font-mono text-[10px] text-white/50">
-                            {founderName.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-sm text-white font-medium">{founderName}</span>
-                          {companyName && (
-                            <span className="text-xs text-white/40 ml-2">• {companyName}</span>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Ask description */}
-                      <p className="text-white/60 text-sm leading-relaxed mb-4 line-clamp-2">
-                        {ask?.description || 'Ask no longer available'}
+              <div className="space-y-6">
+                {/* Overall Score Card */}
+                <div className="bg-black/40 backdrop-blur-sm border border-white/10 p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h3 className="text-lg font-semibold text-white mb-1">Your Founder Profile</h3>
+                      <p className="text-sm text-white/40">
+                        Saved {assessmentResults.saved_at
+                          ? new Date(assessmentResults.saved_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' + new Date(assessmentResults.saved_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+                          : 'recently'}
                       </p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-3xl font-bold text-white">{assessmentResults.results?.overall?.score?.toFixed(1) || '—'}</div>
+                      <div className="text-sm text-blue-400">{assessmentResults.results?.overall?.phaseName || 'Unknown'} Phase</div>
+                    </div>
+                  </div>
 
-                      {/* Your message */}
-                      <div className="bg-white/5 border border-white/5 p-3 rounded-none mb-4">
-                        <span className="text-[10px] text-white/30 uppercase tracking-wider block mb-1">Your message</span>
-                        <p className="text-xs text-white/50 line-clamp-2">{offer.requester_context}</p>
-                      </div>
-
-                      {/* Status description */}
-                      <div className="flex items-center gap-2 text-xs text-white/40">
-                        <StatusIcon size={12} />
-                        {status.description}
-                      </div>
-
-                      {/* If accepted, show founder's response */}
-                      {offer.status === 'accepted' && offer.founder_response && (
-                        <div className="mt-4 pt-4 border-t border-white/5">
-                          <span className="text-[10px] text-green-400 uppercase tracking-wider block mb-1">Founder's response</span>
-                          <p className="text-sm text-white/70">{offer.founder_response}</p>
+                  {/* Dimension Scores */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    {assessmentResults.results?.dimensions && Object.entries(assessmentResults.results.dimensions).map(([dimId, dimResult]) => {
+                      const dimLabels = {
+                        problem: 'Problem',
+                        growth: 'Growth',
+                        operations: 'Operations',
+                        brand: 'Brand'
+                      };
+                      const phaseColors = {
+                        'Validate': 'text-amber-400 bg-amber-500/10 border-amber-500/30',
+                        'Systematize': 'text-blue-400 bg-blue-500/10 border-blue-500/30',
+                        'Scale': 'text-green-400 bg-green-500/10 border-green-500/30'
+                      };
+                      const phaseDescriptions = {
+                        'Validate': 'Focus on discovery and validation',
+                        'Systematize': 'Build repeatable processes',
+                        'Scale': 'Ready to expand and grow'
+                      };
+                      return (
+                        <div key={dimId} className="bg-white/5 border border-white/10 p-4">
+                          <div className="text-xs text-white/40 uppercase tracking-wider mb-2">{dimLabels[dimId] || dimId}</div>
+                          <div className="text-xl font-bold text-white mb-1">{dimResult.score?.toFixed(1)}</div>
+                          <span className={`text-[10px] font-mono uppercase px-2 py-0.5 border ${phaseColors[dimResult.phaseName] || 'text-white/60 bg-white/5 border-white/20'}`}>
+                            {dimResult.phaseName}
+                          </span>
+                          <p className="text-[10px] text-white/30 mt-2">{phaseDescriptions[dimResult.phaseName]}</p>
                         </div>
-                      )}
-                    </motion.div>
-                  );
-                })}
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Retake CTA */}
+                <div className="flex items-center justify-between p-4 bg-black/40 backdrop-blur-sm border border-white/10">
+                  <div>
+                    <p className="text-white/80 text-sm font-medium">Want to retake the assessment?</p>
+                    <p className="text-white/40 text-xs mt-1">Track your progress over time by taking it again</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button asChild variant="outline" className="border-white/20 text-white/60 hover:bg-white hover:text-black rounded-none">
+                      <Link to="/assessment" className="flex items-center gap-2">
+                        <RefreshCw size={14} />
+                        Retake
+                      </Link>
+                    </Button>
+                    <Button asChild variant="outline" className="border-white/20 text-white/60 hover:bg-white hover:text-black rounded-none">
+                      <Link to="/resources" className="flex items-center gap-2">
+                        <ArrowRight size={14} />
+                        View Resources
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
               </div>
             )}
           </motion.div>

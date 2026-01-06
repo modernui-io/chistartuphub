@@ -179,11 +179,11 @@ export default function HelpModal({ isOpen, onClose, ask }) {
                   <button
                     onClick={() => {
                       handleClose();
-                      navigate('/profile?tab=connections');
+                      navigate('/profile?tab=requests');
                     }}
                     className="w-full font-mono text-[11px] uppercase tracking-[0.1em] py-4 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair flex items-center justify-center gap-2"
                   >
-                    View Your Offers
+                    View Requests
                     <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
                   </button>
                   <button

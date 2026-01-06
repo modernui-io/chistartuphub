@@ -652,7 +652,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                   <button
                     onClick={() => {
                       handleClose();
-                      navigate('/profile?tab=connections');
+                      navigate('/profile?tab=asks');
                     }}
                     className="w-full font-mono text-[11px] uppercase tracking-[0.1em] py-4 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair flex items-center justify-center gap-2"
                   >

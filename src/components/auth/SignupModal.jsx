@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/api/supabaseClient';
 import {
   Dialog,
   DialogContent,
@@ -8,15 +9,15 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Bookmark, Shield, Eye, EyeOff, Check, MessageSquarePlus } from 'lucide-react';
+import { Bookmark, Shield, Eye, EyeOff, Check, MessageSquarePlus, Mail, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 
 const ROLES = [
-  { value: 'founder', label: 'Founder / Entrepreneur' },
-  { value: 'investor', label: 'Investor' },
-  { value: 'service-provider', label: 'Service Provider' },
-  { value: 'student', label: 'Student' },
-  { value: 'other', label: 'Other' },
+  { value: 'founder', label: 'Founder / Entrepreneur', description: 'Building a startup or have a business idea' },
+  { value: 'investor', label: 'Investor', description: 'Angel investor, VC, or looking to invest' },
+  { value: 'service-provider', label: 'Service Provider', description: 'Offer services to startups (legal, accounting, marketing, etc.)' },
+  { value: 'student', label: 'Student', description: 'Currently in school, exploring entrepreneurship' },
+  { value: 'other', label: 'Other', description: 'Mentor, advisor, ecosystem supporter, or just exploring' },
 ];
 
 const STAGES = [
@@ -45,25 +46,28 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
   const [showPassword, setShowPassword] = useState(false);
   const { signUp, signInWithOAuth, updateProfile } = useAuth();
 
-  // Step 1: Email & Password
+  // Step 1: Account + Role (combined for faster signup)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
-
-  // Step 2: Company/Startup Details
-  const [companyName, setCompanyName] = useState('');
   const [role, setRole] = useState('');
-  const [stage, setStage] = useState('');
-  
-  // Founder vetting fields
+
+  // Founder vetting fields (shown inline when founder selected)
   const [linkedinUrl, setLinkedinUrl] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [stage, setStage] = useState('');
   const [websiteUrl, setWebsiteUrl] = useState('');
 
-  // Step 3: Interests
+  // Step 2: Interests (optional, can skip)
   const [selectedInterests, setSelectedInterests] = useState([]);
-  
+
   // Age verification
   const [isOver18, setIsOver18] = useState(false);
+
+  // Email verification state (step 3)
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
   const resetForm = () => {
     setStep(1);
@@ -77,16 +81,24 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
     setWebsiteUrl('');
     setSelectedInterests([]);
     setIsOver18(false);
+    setShowEmailVerification(false);
+    setResendLoading(false);
+    setResendCooldown(0);
   };
 
   const handleStep1Submit = async (e) => {
     e.preventDefault();
+    // Validate founder fields if founder role selected
+    if (role === 'founder' && !linkedinUrl) {
+      toast.error('LinkedIn URL required for founders');
+      return;
+    }
     setStep(2);
   };
 
-  const handleStep2Submit = (e) => {
-    e.preventDefault();
-    setStep(3);
+  // Skip interests and complete signup directly
+  const handleSkipInterests = async () => {
+    await handleFinalSubmit({ preventDefault: () => {} });
   };
 
   const handleFinalSubmit = async (e) => {
@@ -134,23 +146,21 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
       const needsEmailConfirmation = data?.user && !data.session;
 
       if (needsEmailConfirmation) {
-        toast.success('Check your email!', {
-          description: 'We sent you a confirmation link. Please verify your email to complete signup.',
-          duration: 8000,
-        });
+        // Show in-modal email verification screen instead of just a toast
+        setLoading(false);
+        setShowEmailVerification(true);
       } else {
         // Trigger welcome modal instead of simple toast
         if (onSignupComplete) {
           onSignupComplete({ name: fullName, role: role });
         }
-        
+
         // Navigate to home - welcome modal will guide them
         navigate('/');
+        setLoading(false);
+        resetForm();
+        onClose();
       }
-
-      setLoading(false);
-      resetForm();
-      onClose();
     } catch (error) {
       toast.error('Signup failed', {
         description: 'An unexpected error occurred. Please try again.',
@@ -165,6 +175,52 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
         ? prev.filter((i) => i !== interest)
         : [...prev, interest]
     );
+  };
+
+  // Handle resending verification email
+  const handleResendEmail = async () => {
+    if (resendCooldown > 0) return;
+
+    setResendLoading(true);
+    try {
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email,
+      });
+
+      if (error) {
+        toast.error('Failed to resend email', {
+          description: error.message,
+        });
+      } else {
+        toast.success('Confirmation email resent!', {
+          description: 'Please check your inbox and spam folder.',
+        });
+        // Start 60 second cooldown
+        setResendCooldown(60);
+        const interval = setInterval(() => {
+          setResendCooldown((prev) => {
+            if (prev <= 1) {
+              clearInterval(interval);
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      }
+    } catch (error) {
+      toast.error('Failed to resend email', {
+        description: 'An unexpected error occurred.',
+      });
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
+  // Handle closing after email verification screen
+  const handleCloseAfterVerification = () => {
+    resetForm();
+    onClose();
   };
 
   const handleOAuthSignup = async (provider) => {
@@ -186,24 +242,23 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
       <DialogContent className="sm:max-w-md bg-[#0F0F0F] border border-white/10 rounded-none">
         <DialogHeader>
           <DialogTitle className="font-mono text-xl uppercase tracking-[0.1em] text-white">
-            {step === 1 && 'Create Account'}
-            {step === 2 && 'Tell Us About You'}
-            {step === 3 && 'Your Interests'}
+            {showEmailVerification && 'Check Your Email'}
+            {!showEmailVerification && step === 1 && 'Create Account'}
+            {!showEmailVerification && step === 2 && 'Your Interests'}
           </DialogTitle>
           <DialogDescription className="font-mono text-[11px] text-white/50 uppercase tracking-[0.05em]">
-            {step === 1 && 'Join ChiStartupHub to bookmark resources and connect with the ecosystem'}
-            {step === 2 && 'Help us personalize your experience'}
-            {step === 3 && 'What are you looking for? (Optional)'}
+            {showEmailVerification && 'One more step to activate your account'}
+            {!showEmailVerification && step === 1 && 'Join ChiStartupHub — takes 30 seconds'}
+            {!showEmailVerification && step === 2 && 'What are you looking for? (Optional — you can skip)'}
           </DialogDescription>
         </DialogHeader>
 
-        {/* Bureau Progress indicator - Square steps */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between">
+        {/* Bureau Progress indicator - 2 steps now (hidden during email verification) */}
+        {!showEmailVerification && <div className="mb-6">
+          <div className="flex items-center justify-center gap-4">
             {[
               { num: 1, label: 'ACCOUNT' },
-              { num: 2, label: 'PROFILE' },
-              { num: 3, label: 'INTERESTS' }
+              { num: 2, label: 'INTERESTS' }
             ].map((s, index) => (
               <div key={s.num} className="flex items-center">
                 <div className="flex flex-col items-center">
@@ -226,9 +281,9 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
                     {s.label}
                   </span>
                 </div>
-                {index < 2 && (
+                {index < 1 && (
                   <div
-                    className={`w-12 sm:w-16 h-px mx-2 transition-none duration-0 ${
+                    className={`w-16 sm:w-24 h-px mx-3 transition-none duration-0 ${
                       step > s.num ? 'bg-white' : 'bg-white/10'
                     }`}
                   />
@@ -236,9 +291,9 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
               </div>
             ))}
           </div>
-        </div>
+        </div>}
 
-        {step === 1 && (
+        {!showEmailVerification && step === 1 && (
           <>
             {/* Privacy & Benefits Info - Bureau Style */}
             <div className="border border-white/10 p-4 mb-4">
@@ -345,12 +400,77 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
                 </label>
               </div>
 
+              {/* Role Selection - Inline */}
+              <div>
+                <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
+                  I am a... *
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {ROLES.map((r) => (
+                    <button
+                      key={r.value}
+                      type="button"
+                      onClick={() => setRole(r.value)}
+                      className={`text-left px-3 py-2 border transition-none duration-0 cursor-crosshair rounded-none ${
+                        role === r.value
+                          ? 'bg-white border-white'
+                          : 'bg-transparent border-white/20 hover:border-white/40'
+                      }`}
+                    >
+                      <span className={`font-mono text-[10px] uppercase tracking-[0.1em] block ${
+                        role === r.value ? 'text-black' : 'text-white/70'
+                      }`}>
+                        {r.label}
+                      </span>
+                      <span className={`font-mono text-[9px] block mt-0.5 leading-tight ${
+                        role === r.value ? 'text-black/60' : 'text-white/40'
+                      }`}>
+                        {r.description}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Founder fields - shown when founder selected */}
+              {role === 'founder' && (
+                <div className="space-y-3 p-3 border border-amber-500/30 bg-amber-500/5">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-amber-400">
+                    Founder Verification
+                  </p>
+                  <div>
+                    <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-1">
+                      LinkedIn Profile URL *
+                    </label>
+                    <input
+                      type="url"
+                      value={linkedinUrl}
+                      onChange={(e) => setLinkedinUrl(e.target.value)}
+                      placeholder="https://linkedin.com/in/yourprofile"
+                      className="w-full bg-transparent border border-white/10 py-2 px-3 font-mono text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-none duration-0 rounded-none"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-1">
+                      Company Name (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={companyName}
+                      onChange={(e) => setCompanyName(e.target.value)}
+                      className="w-full bg-transparent border border-white/10 py-2 px-3 font-mono text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-none duration-0 rounded-none"
+                    />
+                  </div>
+                </div>
+              )}
+
               <button
                 type="submit"
-                disabled={!isOver18}
+                disabled={!isOver18 || !role}
                 className={`w-full font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 border border-white transition-none duration-0 cursor-crosshair rounded-none ${
-                  isOver18 
-                    ? 'bg-white text-black hover:bg-transparent hover:text-white' 
+                  isOver18 && role
+                    ? 'bg-white text-black hover:bg-transparent hover:text-white'
                     : 'bg-white/20 text-white/40 border-white/20 cursor-not-allowed'
                 }`}
               >
@@ -393,127 +513,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
           </>
         )}
 
-        {step === 2 && (
-          <form onSubmit={handleStep2Submit} className="space-y-4 mt-4">
-            <div>
-              <label htmlFor="companyName" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
-                Company/Startup Name (Optional)
-              </label>
-              <input
-                id="companyName"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
-                className="w-full bg-transparent border border-white/10 py-3 px-4 font-mono text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-none duration-0 rounded-none"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="role" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
-                Role *
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {ROLES.map((r) => (
-                  <button
-                    key={r.value}
-                    type="button"
-                    onClick={() => setRole(r.value)}
-                    className={`font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 border transition-none duration-0 cursor-crosshair rounded-none ${
-                      role === r.value
-                        ? 'bg-white text-black border-white'
-                        : 'bg-transparent text-white/50 border-white/20 hover:border-white/40 hover:text-white/70'
-                    }`}
-                  >
-                    {r.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {role === 'founder' && (
-              <>
-                {/* Founder Vetting Section */}
-                <div className="p-3 border border-amber-500/30 bg-amber-500/5 mb-4">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-amber-400 mb-1">
-                    Founder Verification
-                  </p>
-                  <p className="text-[11px] text-white/50">
-                    To post asks, we need to verify you're a real founder. This helps maintain trust in our community.
-                  </p>
-                </div>
-                
-                <div>
-                  <label htmlFor="linkedinUrl" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
-                    LinkedIn Profile URL *
-                  </label>
-                  <input
-                    id="linkedinUrl"
-                    type="url"
-                    value={linkedinUrl}
-                    onChange={(e) => setLinkedinUrl(e.target.value)}
-                    placeholder="https://linkedin.com/in/yourprofile"
-                    className="w-full bg-transparent border border-white/10 py-3 px-4 font-mono text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-none duration-0 rounded-none"
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <label htmlFor="websiteUrl" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
-                    Company Website (Optional)
-                  </label>
-                  <input
-                    id="websiteUrl"
-                    type="url"
-                    value={websiteUrl}
-                    onChange={(e) => setWebsiteUrl(e.target.value)}
-                    placeholder="https://yourcompany.com"
-                    className="w-full bg-transparent border border-white/10 py-3 px-4 font-mono text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-none duration-0 rounded-none"
-                  />
-                </div>
-              
-                <div>
-                  <label htmlFor="stage" className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
-                    Startup Stage
-                  </label>
-                  <div className="flex flex-wrap gap-2">
-                    {STAGES.map((s) => (
-                      <button
-                        key={s.value}
-                        type="button"
-                        onClick={() => setStage(s.value)}
-                        className={`font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 border transition-none duration-0 cursor-crosshair rounded-none ${
-                          stage === s.value
-                            ? 'bg-white text-black border-white'
-                            : 'bg-transparent text-white/50 border-white/20 hover:border-white/40 hover:text-white/70'
-                        }`}
-                      >
-                        {s.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
-
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="flex-1 font-mono text-[11px] uppercase tracking-[0.1em] px-4 py-3 bg-transparent text-white hover:bg-white hover:text-black border border-white/10 hover:border-white transition-none duration-0 cursor-crosshair rounded-none"
-              >
-                Back
-              </button>
-              <button
-                type="submit"
-                className="flex-1 font-mono text-[11px] uppercase tracking-[0.1em] px-4 py-3 bg-white text-black hover:bg-transparent hover:text-white border border-white transition-none duration-0 cursor-crosshair disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
-                disabled={!role}
-              >
-                Continue
-              </button>
-            </div>
-          </form>
-        )}
-
-        {step === 3 && (
+        {!showEmailVerification && step === 2 && (
           <form onSubmit={handleFinalSubmit} className="space-y-4 mt-4">
             <div className="space-y-2 max-h-64 overflow-y-auto pr-2">
               {INTERESTS.map((interest) => (
@@ -546,11 +546,19 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
             <div className="flex gap-3">
               <button
                 type="button"
-                onClick={() => setStep(2)}
+                onClick={() => setStep(1)}
                 className="flex-1 font-mono text-[11px] uppercase tracking-[0.1em] px-4 py-3 bg-transparent text-white hover:bg-white hover:text-black border border-white/10 hover:border-white transition-none duration-0 cursor-crosshair disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
                 disabled={loading}
               >
                 Back
+              </button>
+              <button
+                type="button"
+                onClick={handleSkipInterests}
+                className="font-mono text-[11px] uppercase tracking-[0.1em] px-4 py-3 bg-transparent text-white/50 hover:text-white border border-white/10 hover:border-white/30 transition-none duration-0 cursor-crosshair disabled:opacity-50 disabled:cursor-not-allowed rounded-none"
+                disabled={loading}
+              >
+                Skip
               </button>
               <button
                 type="submit"
@@ -563,11 +571,112 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
                     Creating...
                   </span>
                 ) : (
-                  'Complete Signup'
+                  'Complete'
                 )}
               </button>
             </div>
           </form>
+        )}
+
+        {/* Email Verification Screen */}
+        {showEmailVerification && (
+          <div className="space-y-6 py-4">
+            {/* Email Icon */}
+            <div className="flex justify-center">
+              <div className="w-16 h-16 border border-white/20 flex items-center justify-center">
+                <Mail className="w-8 h-8 text-white/70" strokeWidth={1.5} />
+              </div>
+            </div>
+
+            {/* Main Message */}
+            <div className="text-center space-y-3">
+              <p className="font-mono text-[12px] text-white/90 leading-relaxed">
+                We sent a confirmation link to:
+              </p>
+              <p className="font-mono text-[13px] text-white font-medium bg-white/5 border border-white/10 px-4 py-2 inline-block">
+                {email}
+              </p>
+              <p className="font-mono text-[11px] text-white/50 leading-relaxed">
+                Click the link in your email to activate your account.
+              </p>
+            </div>
+
+            {/* Tips */}
+            <div className="border border-white/10 p-4 space-y-2">
+              <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-white/40">
+                Did not receive it?
+              </p>
+              <ul className="space-y-1">
+                <li className="font-mono text-[10px] text-white/60 flex items-start gap-2">
+                  <span className="text-white/30">-</span>
+                  Check your spam or junk folder
+                </li>
+                <li className="font-mono text-[10px] text-white/60 flex items-start gap-2">
+                  <span className="text-white/30">-</span>
+                  Make sure {email} is correct
+                </li>
+                <li className="font-mono text-[10px] text-white/60 flex items-start gap-2">
+                  <span className="text-white/30">-</span>
+                  Wait a few minutes and try again
+                </li>
+              </ul>
+            </div>
+
+            {/* Resend Button */}
+            <button
+              type="button"
+              onClick={handleResendEmail}
+              disabled={resendLoading || resendCooldown > 0}
+              className="w-full font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 bg-transparent text-white border border-white/20 hover:border-white/40 transition-none duration-0 cursor-crosshair disabled:opacity-50 disabled:cursor-not-allowed rounded-none flex items-center justify-center gap-2"
+            >
+              {resendLoading ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  Sending...
+                </>
+              ) : resendCooldown > 0 ? (
+                <>Resend in {resendCooldown}s</>
+              ) : (
+                <>
+                  <RefreshCw className="w-4 h-4" />
+                  Resend Confirmation Email
+                </>
+              )}
+            </button>
+
+            {/* Next Steps */}
+            <div className="border-t border-white/10 pt-4">
+              <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-white/40 mb-2">
+                What happens next
+              </p>
+              <p className="font-mono text-[11px] text-white/70 leading-relaxed">
+                After clicking the confirmation link, return to ChiStartupHub and sign in with your email and password.
+              </p>
+            </div>
+
+            {/* Close Button */}
+            <button
+              type="button"
+              onClick={handleCloseAfterVerification}
+              className="w-full font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 bg-white text-black hover:bg-transparent hover:text-white border border-white transition-none duration-0 cursor-crosshair rounded-none"
+            >
+              Got it, Close
+            </button>
+
+            {/* Switch to Login */}
+            <p className="text-center font-mono text-[10px] text-white/40">
+              Already confirmed?{' '}
+              <button
+                onClick={() => {
+                  resetForm();
+                  onSwitchToLogin();
+                }}
+                className="text-white hover:text-white/70 uppercase tracking-[0.1em] transition-none duration-0 cursor-crosshair"
+              >
+                Sign in
+              </button>
+            </p>
+          </div>
         )}
       </DialogContent>
     </Dialog>

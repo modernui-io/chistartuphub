@@ -17,7 +17,9 @@ import {
   Inbox,
   CheckCircle2,
   XCircle,
-  Timer
+  Timer,
+  Plus,
+  MessageSquarePlus
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -61,7 +63,7 @@ function formatTimeRemaining(expiresAt) {
   return `${minutes}m left`;
 }
 
-export default function ConnectionRequests() {
+export default function ConnectionRequests({ hasAsks = true, onPostAsk }) {
   const { user, profile } = useAuth();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -264,7 +266,7 @@ export default function ConnectionRequests() {
             >
               {status.charAt(0).toUpperCase() + status.slice(1)}
               {status === 'pending' && pendingCount > 0 && (
-                <span className="ml-1.5 px-1.5 py-0.5 bg-yellow-500 text-black text-[10px] rounded-full">
+                <span className="ml-1.5 px-1.5 py-0.5 bg-yellow-500 text-black text-[10px] font-mono">
                   {pendingCount}
                 </span>
               )}
@@ -280,15 +282,40 @@ export default function ConnectionRequests() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center py-16 bg-black/20 border border-white/5 rounded-lg"
         >
-          <Inbox className="w-12 h-12 text-white/20 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-white/60 mb-2">
-            {filter === 'pending' ? 'No pending requests' : `No ${filter} requests`}
-          </h3>
-          <p className="text-sm text-white/40">
-            {filter === 'pending' 
-              ? 'When someone offers to help with your asks, they\'ll appear here'
-              : 'Requests will appear here once you have some'}
-          </p>
+          {!hasAsks ? (
+            <>
+              <div className="w-16 h-16 rounded-none bg-black/40 backdrop-blur-sm flex items-center justify-center mx-auto mb-6">
+                <MessageSquarePlus className="w-8 h-8 text-white/30" />
+              </div>
+              <p className="text-white/60 mb-2 text-lg">No requests yet</p>
+              <p className="text-white/40 text-sm mb-2">This is where you'll manage connection requests from helpers.</p>
+              <p className="text-white/30 text-xs mb-8">Post your first ask to start receiving help from the community.</p>
+              {onPostAsk && (
+                <Button
+                  onClick={onPostAsk}
+                  className="bg-white text-black hover:bg-white/90 rounded-none px-6"
+                >
+                  <Plus size={16} className="mr-2" />
+                  Post an Ask
+                </Button>
+              )}
+            </>
+          ) : (
+            <>
+              <Inbox className="w-12 h-12 text-white/20 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-white/60 mb-2">
+                {filter === 'pending' ? 'No pending requests' : `No ${filter} requests`}
+              </h3>
+              <p className="text-sm text-white/40 mb-2">
+                {filter === 'pending'
+                  ? 'This is where you\'ll manage connection requests from helpers.'
+                  : 'Requests will appear here once you have some'}
+              </p>
+              {filter === 'pending' && (
+                <p className="text-white/30 text-xs">Founders typically receive responses within 48 hours of posting an ask.</p>
+              )}
+            </>
+          )}
         </motion.div>
       )}
 
@@ -311,7 +338,7 @@ export default function ConnectionRequests() {
                     <h3 className="text-lg font-semibold text-white">
                       {request.requester_name || 'Anonymous'}
                     </h3>
-                    <span className={`px-2 py-0.5 text-xs font-medium rounded-full border ${STATUS_STYLES[request.status]}`}>
+                    <span className={`px-2 py-0.5 text-[10px] font-mono uppercase tracking-[0.1em] border ${STATUS_STYLES[request.status]}`}>
                       {request.status === 'pending' && <Clock size={10} className="inline mr-1" />}
                       {request.status === 'accepted' && <CheckCircle2 size={10} className="inline mr-1" />}
                       {request.status === 'declined' && <XCircle size={10} className="inline mr-1" />}
@@ -330,7 +357,7 @@ export default function ConnectionRequests() {
 
                 {/* Time remaining for pending */}
                 {request.status === 'pending' && request.expires_at && (
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 bg-yellow-500/10 border border-yellow-500/20 rounded-full">
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 bg-yellow-500/10 border border-yellow-500/20">
                     <Clock size={12} className="text-yellow-400" />
                     <span className="text-xs font-medium text-yellow-400">
                       {formatTimeRemaining(request.expires_at)}

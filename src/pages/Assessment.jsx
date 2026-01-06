@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Box, Megaphone, Settings, Brain, CheckCircle2, R
 import SEO from "@/components/SEO";
 import { BureauAtmosphere, BureauFooter } from "@/components/bureau";
 import { useAuth } from "@/contexts/AuthContext";
+import { useBookmarks } from "@/hooks/useBookmarks";
 import { supabase } from "@/api/supabaseClient";
 import { toast } from "sonner";
 
@@ -252,16 +253,27 @@ const RECOMMENDATIONS = {
 
 export default function Assessment() {
   const navigate = useNavigate();
-  const { user, profile } = useAuth();
+  const { user, profile, openSignup } = useAuth();
+  const { addBookmark } = useBookmarks();
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentStep, setCurrentStep] = useState("intro"); // intro, questions, results
   const [currentDimension, setCurrentDimension] = useState(0);
   const [answers, setAnswers] = useState({});
   const [results, setResults] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [savedAt, setSavedAt] = useState(null);
   const [feedbackGiven, setFeedbackGiven] = useState(false);
 
+  // Email gate for results
+  const [showEmailGate, setShowEmailGate] = useState(false);
+  const [gateEmail, setGateEmail] = useState('');
+  const [gateName, setGateName] = useState('');
+  const [emailSubmitting, setEmailSubmitting] = useState(false);
+
   useEffect(() => {
+    // Scroll to top on page load
+    window.scrollTo(0, 0);
     const timer = setTimeout(() => setIsLoaded(true), 100);
     return () => clearTimeout(timer);
   }, []);
@@ -311,10 +323,54 @@ export default function Assessment() {
     if (currentDimension < DIMENSIONS.length - 1) {
       setCurrentDimension(currentDimension + 1);
     } else {
-      // Calculate and show results
+      // Calculate results but show email gate first (unless logged in)
       const calculatedResults = calculateResults();
       setResults(calculatedResults);
+
+      if (user) {
+        // Logged in users skip the gate
+        setCurrentStep("results");
+      } else {
+        // Show email gate before results
+        setShowEmailGate(true);
+      }
+    }
+  };
+
+  // Handle email submission for gated results
+  const handleEmailGateSubmit = async (e) => {
+    e.preventDefault();
+    if (!gateEmail) {
+      toast.error("Please enter your email");
+      return;
+    }
+
+    setEmailSubmitting(true);
+    try {
+      // Save email to email_signups
+      const { error } = await supabase
+        .from('email_signups')
+        .insert({
+          email: gateEmail.trim(),
+          name: gateName.trim() || null,
+          source: 'assessment_results'
+        });
+
+      if (error && !error.message.includes('duplicate')) {
+        console.error('Email signup error:', error);
+      }
+
+      // Show results regardless of save success
+      setShowEmailGate(false);
       setCurrentStep("results");
+      toast.success("Results unlocked!");
+    } catch (err) {
+      console.error('Email signup exception:', err);
+      // Still show results
+      setShowEmailGate(false);
+      setCurrentStep("results");
+    } finally {
+      setEmailSubmitting(false);
     }
   };
 
@@ -336,20 +392,58 @@ export default function Assessment() {
 
   const handleSaveResults = async () => {
     if (!user) {
-      toast.info("Sign in to save your results");
+      toast.info("Create an account to save your results", {
+        action: {
+          label: "Sign Up",
+          onClick: openSignup,
+        },
+      });
+      openSignup();
       return;
     }
 
     setSaving(true);
     try {
+      const now = new Date();
+
+      // Save assessment results
       const { error } = await supabase.from("assessment_results").upsert({
         user_id: user.id,
         results: results,
-        taken_at: new Date().toISOString(),
+        taken_at: now.toISOString(),
+        saved_at: now.toISOString(),
       });
 
       if (error) throw error;
-      toast.success("Results saved to your profile");
+
+      // Save recommended resources as bookmarks
+      const allRecs = [];
+      DIMENSIONS.forEach((dim) => {
+        const dimResult = results.dimensions[dim.id];
+        const recs = RECOMMENDATIONS[dim.id]?.[dimResult.phase] || [];
+        recs.forEach((rec) => {
+          allRecs.push({
+            resourceType: 'assessment_resource',
+            resourceId: `${dim.id}-${dimResult.phase}-${rec.title.toLowerCase().replace(/\s+/g, '-')}`,
+            resourceName: rec.title,
+            resourceDescription: `${rec.description} (${dim.label} - ${dimResult.phaseName} phase)`,
+            resourceUrl: rec.link,
+          });
+        });
+      });
+
+      // Save each resource as a bookmark (silently, don't fail if one fails)
+      for (const rec of allRecs) {
+        try {
+          await addBookmark(rec);
+        } catch (e) {
+          console.log('Could not save bookmark:', rec.resourceName, e);
+        }
+      }
+
+      setSaved(true);
+      setSavedAt(now);
+      toast.success(`Results & ${allRecs.length} resources saved to your profile`);
     } catch (error) {
       console.error("Error saving results:", error);
       toast.error("Failed to save results");
@@ -385,7 +479,7 @@ export default function Assessment() {
   };
 
   return (
-    <div className="min-h-screen relative" data-page="assessment">
+    <div className="min-h-screen relative flex flex-col" data-page="assessment">
       <SEO
         title="Startup Maturity Assessment"
         description="Assess where your startup is across Problem, Growth, Operations, and Brand. Get personalized recommendations for your next focus areas."
@@ -394,7 +488,7 @@ export default function Assessment() {
 
       <BureauAtmosphere />
 
-      <div className="relative z-10">
+      <div className="relative z-10 flex-1">
         {/* Intro Screen */}
         {currentStep === "intro" && (
           <section className="pt-32 pb-24 px-6">
@@ -457,7 +551,7 @@ export default function Assessment() {
         )}
 
         {/* Questions Screen */}
-        {currentStep === "questions" && currentDim && (
+        {currentStep === "questions" && currentDim && !showEmailGate && (
           <section className="pt-24 pb-24 px-6">
             <div className="max-w-3xl mx-auto">
               {/* Progress Bar */}
@@ -572,6 +666,85 @@ export default function Assessment() {
                   {currentDimension === DIMENSIONS.length - 1 ? 'See Results' : 'Next'}
                   <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
                 </button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Email Gate Screen */}
+        {showEmailGate && results && (
+          <section className="pt-24 pb-24 px-6">
+            <div className="max-w-md mx-auto">
+              <div className="text-center mb-8">
+                <span className="bureau-label block mb-4">[ASSESSMENT: COMPLETE]</span>
+                <h1 className="font-serif text-3xl md:text-4xl text-white mb-4">
+                  Your Results Are Ready
+                </h1>
+                <p className="text-white/50">
+                  Enter your email to see your personalized startup maturity assessment.
+                </p>
+              </div>
+
+              <form onSubmit={handleEmailGateSubmit} className="border border-white/10 p-6 space-y-4">
+                <div>
+                  <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
+                    Email Address <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={gateEmail}
+                    onChange={(e) => setGateEmail(e.target.value)}
+                    placeholder="you@company.com"
+                    className="w-full bg-transparent border border-white/10 py-3 px-4 font-mono text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-mono text-[10px] uppercase tracking-[0.1em] text-white/50 mb-2">
+                    Name (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={gateName}
+                    onChange={(e) => setGateName(e.target.value)}
+                    placeholder="Your name"
+                    className="w-full bg-transparent border border-white/10 py-3 px-4 font-mono text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={emailSubmitting}
+                  className="w-full font-mono text-[11px] uppercase tracking-[0.15em] px-6 py-4 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair disabled:opacity-50"
+                >
+                  {emailSubmitting ? 'Unlocking...' : 'See My Results'}
+                </button>
+
+                <p className="font-mono text-[10px] text-white/30 text-center">
+                  We'll send you helpful startup resources. No spam.
+                </p>
+              </form>
+
+              {/* Preview teaser */}
+              <div className="mt-8 border border-white/10 p-4 bg-white/[0.02]">
+                <p className="font-mono text-[10px] text-white/40 uppercase tracking-[0.1em] mb-2">
+                  Your results include:
+                </p>
+                <ul className="space-y-2 text-white/50 text-sm">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3 h-3 text-green-400" />
+                    Your overall startup maturity phase
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3 h-3 text-green-400" />
+                    Breakdown across 4 dimensions
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-3 h-3 text-green-400" />
+                    Personalized resource recommendations
+                  </li>
+                </ul>
               </div>
             </div>
           </section>
@@ -802,14 +975,31 @@ export default function Assessment() {
                 </button>
 
                 {user && (
-                  <button
-                    onClick={handleSaveResults}
-                    disabled={saving}
-                    className="font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 min-h-[44px] border border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white transition-colors flex items-center gap-2 cursor-crosshair disabled:opacity-50"
-                  >
-                    <Bookmark className="w-3 h-3" strokeWidth={1.5} />
-                    {saving ? 'Saving...' : 'Save Results'}
-                  </button>
+                  <div className="flex flex-col items-center gap-1">
+                    <button
+                      onClick={handleSaveResults}
+                      disabled={saving || saved}
+                      className={`font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 min-h-[44px] border transition-all duration-300 flex items-center gap-2 ${
+                        saving ? 'opacity-50 cursor-wait' : ''
+                      } ${
+                        saved
+                          ? 'border-green-500 text-green-400 bg-green-500/10 cursor-default'
+                          : 'border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white cursor-crosshair'
+                      }`}
+                    >
+                      <Bookmark className={`w-3 h-3 ${saved ? 'fill-current' : ''}`} strokeWidth={1.5} />
+                      {saving ? 'SAVING...' : saved ? 'SAVED' : 'SAVE ALL'}
+                    </button>
+                    {saved && savedAt ? (
+                      <span className="font-mono text-[9px] text-green-400/70">
+                        {savedAt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} at {savedAt.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}
+                      </span>
+                    ) : !saved && (
+                      <span className="font-mono text-[9px] text-white/40">
+                        Results + Resources
+                      </span>
+                    )}
+                  </div>
                 )}
 
                 <button
@@ -862,8 +1052,9 @@ export default function Assessment() {
           </section>
         )}
 
-        <BureauFooter />
       </div>
+
+      <BureauFooter />
     </div>
   );
 }

@@ -108,7 +108,7 @@ export function BureauFooter({ className = "" }) {
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-white/20" />
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-white/50">
-                BUILT IN CHICAGO
+                PROUDLY BUILT IN CHICAGO
               </span>
             </div>
           </div>

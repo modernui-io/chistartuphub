@@ -8,7 +8,6 @@ const WhyChicago = lazy(() => import('./pages/WhyChicago'));
 const Funding = lazy(() => import('./pages/Funding'));
 const Workspaces = lazy(() => import('./pages/Workspaces'));
 const AcceleratorsIncubators = lazy(() => import('./pages/AcceleratorsIncubators'));
-const CommunityResources = lazy(() => import('./pages/CommunityResources'));
 const Stories = lazy(() => import('./pages/Stories'));
 const StoryDetail = lazy(() => import('./pages/StoryDetail'));
 const Community = lazy(() => import('./pages/Community'));
@@ -17,9 +16,7 @@ const SubmitResource = lazy(() => import('./pages/SubmitResource'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Profile = lazy(() => import('./pages/Profile'));
 const BeforeYouStart = lazy(() => import('./pages/BeforeYouStart'));
-const NavigatePaths = lazy(() => import('./pages/NavigatePaths'));
 const BusinessTypeExplorer = lazy(() => import('./pages/BusinessTypeExplorer'));
-const HumanHelp = lazy(() => import('./pages/HumanHelp'));
 const Directory = lazy(() => import('./pages/Directory'));
 const Opportunities = lazy(() => import('./pages/Opportunities'));
 const ServiceResources = lazy(() => import('./pages/ServiceResources'));
@@ -37,7 +34,6 @@ export const PAGES = {
     "Funding": Funding,
     "Workspaces": Workspaces,
     "AcceleratorsIncubators": AcceleratorsIncubators,
-    "CommunityResources": CommunityResources,
     "Stories": Stories,
     "StoryDetail": StoryDetail,
     "Community": Community,
@@ -46,9 +42,7 @@ export const PAGES = {
     "Contact": Contact,
     "Profile": Profile,
     "before-you-start": BeforeYouStart,
-    "navigate-toolkit": NavigatePaths,
     "business-type-explorer": BusinessTypeExplorer,
-    "human-help": HumanHelp,
     "Directory": Directory,
     "Opportunities": Opportunities,
     "service-resources": ServiceResources,
