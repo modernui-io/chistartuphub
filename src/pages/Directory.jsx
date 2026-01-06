@@ -22,6 +22,7 @@ const transformProfile = (profile) => {
   // Build role string from role + startup/company name
   const roleLabel = {
     'founder': 'Founder',
+    'helper': 'Helper',
     'investor': 'Investor',
     'service-provider': 'Service Provider',
     'student': 'Student',

@@ -73,6 +73,7 @@ export default function BeforeYouStart() {
     if (!profile?.role) return null;
     const roleMessages = {
       founder: "As a founder, you'll find resources to help you build, fund, and scale.",
+      helper: "Connect with founders and share your expertise through our community asks.",
       investor: "Looking to connect with Chicago startups? Browse founder asks or explore the ecosystem.",
       'service-provider': "Find founders who need your expertise through our community asks.",
       student: "Explore what it takes to build in Chicago — resources, communities, and opportunities.",

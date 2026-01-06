@@ -120,6 +120,7 @@ export default function PersonalizedWelcome() {
           {!stage && profile?.role && (
             <p className="text-sm text-white/60">
               {profile.role === 'founder' ? 'Entrepreneur' :
+               profile.role === 'helper' ? 'Helper' :
                profile.role === 'investor' ? 'Investor' :
                profile.role === 'service-provider' ? 'Service Provider' :
                profile.role === 'student' ? 'Student' : 'Member'}
@@ -151,6 +152,7 @@ export default function PersonalizedWelcome() {
           {!stage && profile?.role && (
             <p className="text-sm text-white/60">
               {profile.role === 'founder' ? 'Entrepreneur' :
+               profile.role === 'helper' ? 'Helper' :
                profile.role === 'investor' ? 'Investor' :
                profile.role === 'service-provider' ? 'Service Provider' :
                profile.role === 'student' ? 'Student' : 'Member'}

@@ -67,7 +67,7 @@ const ADMIN_EMAILS = [
 // ============================================
 
 export default function PostAskModal({ isOpen, onClose, onSuccess }) {
-  const { user, profile } = useAuth();
+  const { user, profile, updateProfile } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -77,6 +77,16 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
 
   // Check if user is admin (bypasses restrictions)
   const isAdmin = user && ADMIN_EMAILS.includes(user.email);
+
+  // Profile completion state
+  const [profileLinkedinUrl, setProfileLinkedinUrl] = useState('');
+  const [profileCompanyName, setProfileCompanyName] = useState('');
+  const [profileBio, setProfileBio] = useState('');
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileJustCompleted, setProfileJustCompleted] = useState(false);
+
+  // Check if profile is complete (linkedin_url and company_name required)
+  const isProfileComplete = !!(profile?.linkedin_url && profile?.company_name) || profileJustCompleted;
 
   // Form state
   const [category, setCategory] = useState('');
@@ -165,6 +175,47 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
     setIsAnonymous(false);
     setAllowAmplification(true);
     setShowSuccess(false);
+    // Reset profile completion state
+    setProfileLinkedinUrl('');
+    setProfileCompanyName('');
+    setProfileBio('');
+    setProfileJustCompleted(false);
+  };
+
+  // Handle profile completion before allowing Ask posting
+  const handleProfileComplete = async (e) => {
+    e.preventDefault();
+
+    if (!profileLinkedinUrl.trim() || !profileCompanyName.trim()) {
+      toast.error('Please fill in LinkedIn URL and Company Name');
+      return;
+    }
+
+    setProfileSaving(true);
+
+    try {
+      const { error } = await updateProfile({
+        linkedin_url: profileLinkedinUrl.trim(),
+        company_name: profileCompanyName.trim(),
+        bio: profileBio.trim() || profile?.bio || null,
+        verification_status: 'pending',
+      });
+
+      if (error) throw error;
+
+      // Pre-fill the Ask form with the LinkedIn URL just saved
+      setLinkedinUrl(profileLinkedinUrl.trim());
+      setProfileJustCompleted(true);
+
+      toast.success('Profile updated! You can now post your ask.');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast.error('Failed to update profile', {
+        description: error.message,
+      });
+    } finally {
+      setProfileSaving(false);
+    }
   };
 
   const handleClose = () => {
@@ -253,10 +304,10 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
             <div className="flex items-center justify-between">
               <div>
                 <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block">
-                  {showSuccess ? '[STATUS: LIVE]' : '[CREATE: ASK]'}
+                  {showSuccess ? '[STATUS: LIVE]' : (!isProfileComplete && isFounder ? '[COMPLETE: PROFILE]' : '[CREATE: ASK]')}
                 </span>
                 <h2 className="font-serif text-2xl text-white mt-1">
-                  {showSuccess ? 'Success!' : 'Post Your Ask'}
+                  {showSuccess ? 'Success!' : (!isProfileComplete && isFounder ? 'Complete Your Profile' : 'Post Your Ask')}
                 </h2>
               </div>
               <button
@@ -267,8 +318,8 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
               </button>
             </div>
 
-            {/* Progress - hide on success */}
-            {!showSuccess && (
+            {/* Progress - hide on success and profile completion */}
+            {!showSuccess && isProfileComplete && (
               <div className="flex gap-2 mt-4">
                 {[1, 2, 3].map((s) => (
                   <div
@@ -319,7 +370,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
             )}
 
             {/* Can't post yet warning (not shown for admins) */}
-            {!showSuccess && isFounder && !canPost && !isAdmin && (
+            {!showSuccess && isFounder && !canPost && !isAdmin && isProfileComplete && (
               <div className="mb-6 p-4 border border-blue-500/30 bg-blue-500/5">
                 <div className="flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
@@ -335,8 +386,96 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
               </div>
             )}
 
+            {/* Profile Completion Form - shown when founder profile is incomplete */}
+            {!showSuccess && isFounder && !isProfileComplete && (
+              <div className="py-4">
+                <p className="text-white/50 text-sm mb-6">
+                  To post an Ask, we need a bit more info to verify you're a real founder.
+                </p>
+
+                <form onSubmit={handleProfileComplete} className="space-y-5">
+                  {/* LinkedIn URL */}
+                  <div>
+                    <label className="font-mono text-[10px] text-white/50 uppercase tracking-[0.1em] block mb-2">
+                      LinkedIn URL *
+                    </label>
+                    <div className="relative">
+                      <Linkedin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" strokeWidth={1.5} />
+                      <input
+                        type="url"
+                        value={profileLinkedinUrl}
+                        onChange={(e) => setProfileLinkedinUrl(e.target.value)}
+                        placeholder="https://linkedin.com/in/yourprofile"
+                        required
+                        className="w-full bg-transparent border border-white/20 py-3 pl-10 pr-4 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/40 font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Company Name */}
+                  <div>
+                    <label className="font-mono text-[10px] text-white/50 uppercase tracking-[0.1em] block mb-2">
+                      Company Name *
+                    </label>
+                    <input
+                      type="text"
+                      value={profileCompanyName}
+                      onChange={(e) => setProfileCompanyName(e.target.value)}
+                      placeholder="Your startup or company name"
+                      required
+                      className="w-full bg-transparent border border-white/20 py-3 px-4 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/40 font-mono"
+                    />
+                  </div>
+
+                  {/* Bio (optional) */}
+                  <div>
+                    <label className="font-mono text-[10px] text-white/50 uppercase tracking-[0.1em] block mb-2">
+                      Brief Bio / One-liner
+                    </label>
+                    <textarea
+                      value={profileBio}
+                      onChange={(e) => setProfileBio(e.target.value)}
+                      placeholder="What are you building? Keep it short."
+                      className="w-full h-24 bg-transparent border border-white/20 p-4 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/40 resize-none font-mono"
+                      maxLength={200}
+                    />
+                    <span className="font-mono text-[10px] text-white/30 block mt-1 text-right">
+                      {profileBio.length}/200
+                    </span>
+                  </div>
+
+                  {/* Submit Button */}
+                  <button
+                    type="submit"
+                    disabled={profileSaving || !profileLinkedinUrl.trim() || !profileCompanyName.trim()}
+                    className="w-full font-mono text-[11px] uppercase tracking-[0.1em] py-4 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {profileSaving ? 'Saving...' : 'Save & Continue'}
+                    {!profileSaving && <ArrowRight className="w-4 h-4" strokeWidth={1.5} />}
+                  </button>
+                </form>
+              </div>
+            )}
+
+            {/* Profile Under Review Notice - shown after profile just completed */}
+            {!showSuccess && isFounder && profileJustCompleted && (
+              <div className="mb-6 p-4 border border-amber-500/30 bg-amber-500/5">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                  <div>
+                    <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-amber-400 mb-1">
+                      Profile Under Review
+                    </p>
+                    <p className="text-sm text-white/50">
+                      Your profile is under review. You can still post your ask while we verify your founder status.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Step 1: Category & Sector */}
-            {!showSuccess && step === 1 && (
+            {!showSuccess && isProfileComplete && step === 1 && (
               <div className="space-y-6">
                 {/* Category Selection */}
                 <div>
@@ -414,7 +553,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
             )}
 
             {/* Step 2: Details */}
-            {!showSuccess && step === 2 && (
+            {!showSuccess && isProfileComplete && step === 2 && (
               <div className="space-y-6">
                 {/* Description */}
                 <div>
@@ -522,7 +661,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
             )}
 
             {/* Step 3: Privacy & Amplification */}
-            {!showSuccess && step === 3 && (
+            {!showSuccess && isProfileComplete && step === 3 && (
               <div className="space-y-6">
                 {/* Anonymous Toggle */}
                 <div className="p-4 border border-white/10">
