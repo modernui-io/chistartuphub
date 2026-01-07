@@ -114,7 +114,7 @@ export default function Funding() {
             </p>
 
             {/* Stats */}
-            <div 
+            <div
               className={`flex items-center gap-8 ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
               style={{ animationDelay: '400ms' }}
             >
@@ -130,6 +130,30 @@ export default function Funding() {
                 }).length}</span>
                 <span className="font-mono text-xs text-white/40 uppercase tracking-[0.15em]">Closing Soon</span>
               </div>
+            </div>
+
+            {/* Guidance Note */}
+            <div
+              className={`mt-10 border border-white/10 bg-white/[0.02] p-6 max-w-2xl ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
+              style={{ animationDelay: '500ms' }}
+            >
+              <h2 className="font-mono text-xs uppercase tracking-[0.15em] text-white/60 mb-3">
+                Before You Dive In
+              </h2>
+              <p className="text-white/70 text-sm leading-relaxed mb-4">
+                Raising capital is hard. Finding the <em>right</em> investor is even harder.
+                More options doesn't mean better outcomes—what matters is fit.
+                Stage alignment, sector expertise, check size, and thesis match.
+              </p>
+              <p className="text-white/70 text-sm leading-relaxed mb-4">
+                We provide the information. You do the work. Visit their websites, read their portfolios,
+                check for conflicts, and make sure you're aligned before reaching out.
+              </p>
+              <p className="text-white/50 text-sm">
+                <span className="text-white/70">Use the filters</span> to narrow your search.
+                <span className="text-white/70"> Save</span> the ones that look promising.
+                <span className="text-white/70"> Export</span> your list and discuss with your team.
+              </p>
             </div>
           </div>
         </section>
