@@ -10,6 +10,7 @@ import {
   Lock,
   HandHelping,
   Filter,
+  Info,
 } from 'lucide-react';
 import SEO from '@/components/SEO';
 import { useAuth } from '@/contexts/AuthContext';
@@ -25,7 +26,7 @@ import { FounderAskCard, PostAskModal, HelpModal } from '@/components/founder-as
 
 const CATEGORIES = [
   { value: 'all', label: 'All Asks', icon: Filter },
-  { value: 'fundraising', label: 'Fundraising', icon: DollarSign },
+  { value: 'fundraising', label: 'Fundraising Guidance', icon: DollarSign },
   { value: 'cofounder', label: 'Co-founder', icon: Users },
   { value: 'general_advice', label: 'General Advice', icon: MessageCircle },
 ];
@@ -332,6 +333,28 @@ export default function Opportunities() {
                 className="w-full bg-transparent border border-white/10 py-4 pl-12 pr-4 font-mono text-[11px] uppercase tracking-[0.05em] text-white placeholder:text-white/20 focus:outline-none focus:border-white/30 transition-colors"
               />
             </motion.div>
+
+            {/* SEC Compliance Disclaimer */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.55 }}
+              className="mt-6 p-4 border border-white/10 bg-white/[0.02]"
+            >
+              <div className="flex items-start gap-3">
+                <Info className="w-4 h-4 text-white/30 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                <div>
+                  <p className="text-xs text-white/40 leading-relaxed">
+                    <span className="text-white/60">Founder Asks</span> is a community platform for founders to seek{' '}
+                    <span className="text-white/60">advice, guidance, and introductions</span> — not for investment solicitation.
+                    Fundraising requests are for strategy guidance and warm intros only.{' '}
+                    <a href="/terms#section-7" className="text-white/50 hover:text-white underline">
+                      Read our Terms
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </section>
 
@@ -464,7 +487,7 @@ export default function Opportunities() {
                   </span>
                 </div>
                 <p className="text-sm text-white/40 leading-relaxed">
-                  See an ask you can help with? Click "I Can Help" and share how. The founder gets an email and connects on LinkedIn.
+                  See an ask you can help with? Click "Offer Guidance" and share how. The founder gets an email and connects on LinkedIn.
                 </p>
               </div>
 

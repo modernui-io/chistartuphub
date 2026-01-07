@@ -25,6 +25,7 @@ const SavedResources = lazy(() => import('./pages/SavedResources'));
 const Settings = lazy(() => import('./pages/Settings'));
 const Admin = lazy(() => import('./pages/Admin'));
 const Assessment = lazy(() => import('./pages/Assessment'));
+const Terms = lazy(() => import('./pages/Terms'));
 
 export const PAGES = {
     "Home": Home,
@@ -51,6 +52,7 @@ export const PAGES = {
     "settings": Settings,
     "admin": Admin,
     "assessment": Assessment,
+    "terms": Terms,
 }
 
 export const pagesConfig = {

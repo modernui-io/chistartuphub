@@ -1,21 +1,22 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, AlertCircle, Megaphone, EyeOff, DollarSign, Users, MessageCircle, Linkedin, ArrowRight, Sparkles, Share2 } from 'lucide-react';
+import { X, Check, AlertCircle, Megaphone, EyeOff, DollarSign, Users, MessageCircle, Linkedin, ArrowRight, Sparkles } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { supabase } from '@/api/supabaseClient';
+import FundraisingDisclaimerModal from './FundraisingDisclaimerModal';
 
 // ============================================
 // CONSTANTS
 // ============================================
 
 const CATEGORIES = [
-  { 
-    value: 'fundraising', 
-    label: 'Fundraising', 
-    icon: DollarSign,
-    description: 'Looking for investors, angels, or VCs'
+  {
+    value: 'fundraising',
+    label: 'Fundraising Guidance',
+    icon: Users,
+    description: 'Seek advice and introductions for your raise'
   },
   { 
     value: 'cofounder', 
@@ -98,6 +99,10 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [allowAmplification, setAllowAmplification] = useState(true);
 
+  // SEC Compliance state
+  const [disclaimerAcknowledged, setDisclaimerAcknowledged] = useState(false);
+  const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
+
   // Check if user can post (one ask per 14 days, unless admin)
   useEffect(() => {
     const checkCanPost = async () => {
@@ -124,7 +129,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
           }
           return;
         }
-      } catch (rpcError) {
+      } catch {
         console.warn('RPC not available, using fallback query');
       }
 
@@ -180,6 +185,9 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
     setProfileCompanyName('');
     setProfileBio('');
     setProfileJustCompleted(false);
+    // Reset SEC compliance state
+    setDisclaimerAcknowledged(false);
+    setShowDisclaimerModal(false);
   };
 
   // Handle profile completion before allowing Ask posting
@@ -235,7 +243,9 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
       return;
     }
 
-    if (category === 'fundraising' && !amount) {
+    const isFundraisingCategory = category === 'fundraising' || category === 'fundraising_guidance';
+
+    if (isFundraisingCategory && !amount) {
       toast.error('Please specify your fundraising amount');
       return;
     }
@@ -250,12 +260,18 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
           category,
           sector,
           description,
-          amount: category === 'fundraising' ? amount : null,
-          stage: category === 'fundraising' ? stage : null,
+          amount: isFundraisingCategory ? amount : null,
+          stage: isFundraisingCategory ? stage : null,
           linkedin_url: linkedinUrl,
           is_anonymous: isAnonymous,
           allow_amplification: allowAmplification,
           is_active: true,
+          // SEC Compliance fields
+          disclaimer_acknowledged: isFundraisingCategory ? disclaimerAcknowledged : false,
+          disclaimer_acknowledged_at: isFundraisingCategory && disclaimerAcknowledged ? new Date().toISOString() : null,
+          compliance_type: isFundraisingCategory ? 'intro' : 'advice',
+          amount_visibility: isFundraisingCategory ? 'helpers_only' : 'public',
+          terms_version: '1.0',
         })
         .select()
         .single();
@@ -543,7 +559,14 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
 
                 {/* Next Button */}
                 <button
-                  onClick={() => setStep(2)}
+                  onClick={() => {
+                    // For fundraising, show disclaimer modal first if not acknowledged
+                    if ((category === 'fundraising' || category === 'fundraising_guidance') && !disclaimerAcknowledged) {
+                      setShowDisclaimerModal(true);
+                    } else {
+                      setStep(2);
+                    }
+                  }}
                   disabled={!category || !sector}
                   className="w-full font-mono text-[11px] uppercase tracking-[0.1em] py-4 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair disabled:opacity-30 disabled:cursor-not-allowed"
                 >
@@ -579,7 +602,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                 </div>
 
                 {/* Fundraising-specific fields */}
-                {category === 'fundraising' && (
+                {(category === 'fundraising' || category === 'fundraising_guidance') && (
                   <>
                     <div>
                       <label className="font-mono text-[10px] text-white/50 uppercase tracking-[0.1em] block mb-2">
@@ -651,7 +674,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                   </button>
                   <button
                     onClick={() => setStep(3)}
-                    disabled={!description || (category === 'fundraising' && !amount) || !linkedinUrl}
+                    disabled={!description || ((category === 'fundraising' || category === 'fundraising_guidance') && !amount) || !linkedinUrl}
                     className="flex-1 font-mono text-[11px] uppercase tracking-[0.1em] py-3 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     Continue
@@ -737,7 +760,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                       <span className="text-white/40">Sector</span>
                       <span className="text-white">{sector}</span>
                     </div>
-                    {category === 'fundraising' && amount && (
+                    {(category === 'fundraising' || category === 'fundraising_guidance') && amount && (
                       <div className="flex justify-between">
                         <span className="text-white/40">Raising</span>
                         <span className="text-white">${amount}</span>
@@ -827,6 +850,17 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
             )}
           </div>
         </motion.div>
+
+        {/* SEC Compliance Disclaimer Modal */}
+        <FundraisingDisclaimerModal
+          isOpen={showDisclaimerModal}
+          onClose={() => setShowDisclaimerModal(false)}
+          onAcknowledge={() => {
+            setDisclaimerAcknowledged(true);
+            setShowDisclaimerModal(false);
+            setStep(2); // Proceed to details after acknowledging
+          }}
+        />
       </div>
     </AnimatePresence>
   );

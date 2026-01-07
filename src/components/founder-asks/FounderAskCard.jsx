@@ -6,12 +6,12 @@ import {
   Building2,
   Clock,
   TrendingUp,
-  Linkedin,
   Megaphone,
   EyeOff,
   HandHelping,
   Eye,
   Sparkles,
+  Lock,
 } from 'lucide-react';
 import OptimizedImage from "@/components/OptimizedImage";
 
@@ -22,7 +22,14 @@ import OptimizedImage from "@/components/OptimizedImage";
 const CATEGORY_CONFIG = {
   fundraising: {
     icon: DollarSign,
-    label: 'Fundraising',
+    label: 'Fundraising Guidance',
+    color: 'text-emerald-400',
+    bgColor: 'bg-emerald-400/10',
+    borderColor: 'border-emerald-400/30',
+  },
+  fundraising_guidance: {
+    icon: DollarSign,
+    label: 'Fundraising Guidance',
     color: 'text-emerald-400',
     bgColor: 'bg-emerald-400/10',
     borderColor: 'border-emerald-400/30',
@@ -151,24 +158,27 @@ export default function FounderAskCard({ ask, index, onHelp }) {
           {ask.description}
         </p>
 
-        {/* Fundraising Info */}
-        {ask.category === 'fundraising' && (
-          <div className="flex items-center gap-4 mb-4">
-            {ask.amount && (
-              <div className="flex items-center gap-2">
-                <DollarSign className="w-3 h-3 text-emerald-400/60" strokeWidth={1.5} />
-                <span className="font-mono text-[11px] text-emerald-400 uppercase">
-                  {ask.amount}
-                </span>
-              </div>
-            )}
+        {/* Fundraising Info - SEC Compliance: Hide amounts, show stage only */}
+        {(ask.category === 'fundraising' || ask.category === 'fundraising_guidance') && (
+          <>
+            {/* Show stage only (amount hidden from public for SEC compliance) */}
             {ask.stage && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mb-4">
                 <TrendingUp className="w-3 h-3 text-white/30" strokeWidth={1.5} />
                 <span className="font-mono text-[10px] text-white/40 uppercase">{ask.stage}</span>
               </div>
             )}
-          </div>
+
+            {/* Privacy indicator - amounts shared after connection */}
+            <div className="mb-4 p-3 border border-white/10 bg-white/5">
+              <div className="flex items-center gap-2">
+                <Lock className="w-3 h-3 text-white/30" strokeWidth={1.5} />
+                <p className="text-xs text-white/40 font-mono">
+                  Fundraising details shared after connection
+                </p>
+              </div>
+            </div>
+          </>
         )}
 
         {/* Meta Row */}
@@ -198,7 +208,7 @@ export default function FounderAskCard({ ask, index, onHelp }) {
           className="w-full flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] py-3 border border-white/20 text-white/50 hover:bg-white hover:text-black transition-colors cursor-crosshair group-hover:border-white/40"
         >
           <HandHelping className="w-4 h-4" strokeWidth={1.5} />
-          I Can Help
+          Offer Guidance
         </button>
       </div>
     </motion.div>

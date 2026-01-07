@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Settings as SettingsIcon, Bell, Shield, User, Mail, Trash2, LogOut, Check, X, MessageSquare, HandHelping } from "lucide-react";
+import { User, Trash2, LogOut, Check, MessageSquare, HandHelping } from "lucide-react";
 import { BureauAtmosphere, BureauFooter } from "@/components/bureau";
 import SEO from "@/components/SEO";
 import { supabase } from "@/api/supabaseClient";
+
+const ROLES = [
+  { value: 'founder', label: 'Founder', description: 'Building a startup' },
+  { value: 'other', label: 'Helper', description: 'Investor, mentor, service provider, or supporter' },
+];
 
 export default function Settings() {
   const { user, profile, signOut, refreshProfile } = useAuth();
@@ -12,13 +17,10 @@ export default function Settings() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [selectedRole, setSelectedRole] = useState("");
   
   // Settings state
   const [settings, setSettings] = useState({
-    email_notifications: true,
-    ask_reminders: true,
-    newsletter_subscribed: false,
-    profile_visible: true,
     // Founder notifications - when someone offers to help
     help_offer_email: true,
     help_offer_inapp: true,
@@ -40,15 +42,12 @@ export default function Settings() {
     // Load settings from profile
     if (profile) {
       setSettings({
-        email_notifications: profile.email_notifications ?? true,
-        ask_reminders: profile.ask_reminders ?? true,
-        newsletter_subscribed: profile.newsletter_subscribed ?? false,
-        profile_visible: profile.profile_visible ?? true,
         help_offer_email: profile.help_offer_email ?? true,
         help_offer_inapp: profile.help_offer_inapp ?? true,
         help_response_email: profile.help_response_email ?? true,
         help_response_inapp: profile.help_response_inapp ?? true,
       });
+      setSelectedRole(profile.role || "");
     }
   }, [user, profile, navigate]);
 
@@ -62,10 +61,7 @@ export default function Settings() {
       const { error } = await supabase
         .from("user_profiles")
         .update({
-          email_notifications: settings.email_notifications,
-          ask_reminders: settings.ask_reminders,
-          newsletter_subscribed: settings.newsletter_subscribed,
-          profile_visible: settings.profile_visible,
+          role: selectedRole,
           help_offer_email: settings.help_offer_email,
           help_offer_inapp: settings.help_offer_inapp,
           help_response_email: settings.help_response_email,
@@ -113,25 +109,9 @@ export default function Settings() {
 
   if (!user) return null;
 
-  const isFounder = profile?.role === 'founder';
+  const isFounder = selectedRole === 'founder';
 
   const settingsSections = [
-    {
-      title: "General Notifications",
-      icon: Bell,
-      settings: [
-        {
-          key: "email_notifications",
-          label: "Email Notifications",
-          description: "Receive general updates and announcements",
-        },
-        {
-          key: "newsletter_subscribed",
-          label: "Newsletter",
-          description: "Receive the ChiStartupHub weekly newsletter",
-        },
-      ],
-    },
     // Founder-specific: when someone offers to help
     ...(isFounder ? [{
       title: "When Someone Offers to Help",
@@ -147,11 +127,6 @@ export default function Settings() {
           key: "help_offer_inapp",
           label: "In-App Notification",
           description: "See a notification in your Requests tab",
-        },
-        {
-          key: "ask_reminders",
-          label: "Ask Expiry Reminders",
-          description: "Get reminded when your asks are about to expire",
         },
       ],
     }] : []),
@@ -173,18 +148,7 @@ export default function Settings() {
         },
       ],
     },
-    {
-      title: "Privacy",
-      icon: Shield,
-      settings: [
-        {
-          key: "profile_visible",
-          label: "Profile Visibility",
-          description: "Allow other users to see your profile",
-        },
-      ],
-    },
-  ];
+    ];
 
   return (
     <div className="min-h-screen relative" data-page="settings">
@@ -260,10 +224,27 @@ export default function Settings() {
                     <span className="text-white">{profile?.full_name || "Not set"}</span>
                   </div>
                   <div>
-                    <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40 block mb-1">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/40 block mb-2">
                       Role
                     </span>
-                    <span className="text-white capitalize">{profile?.role || "Not set"}</span>
+                    <div className="flex flex-wrap gap-2">
+                      {ROLES.map((role) => (
+                        <button
+                          key={role.value}
+                          onClick={() => setSelectedRole(role.value)}
+                          className={`font-mono text-[11px] uppercase tracking-[0.1em] px-4 py-2 border transition-colors cursor-crosshair ${
+                            selectedRole === role.value
+                              ? 'bg-white text-black border-white'
+                              : 'bg-transparent text-white/50 border-white/20 hover:border-white/40'
+                          }`}
+                        >
+                          {role.label}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-white/30 text-xs mt-2">
+                      {ROLES.find(r => r.value === selectedRole)?.description || 'Select your role'}
+                    </p>
                   </div>
                 </div>
               </div>

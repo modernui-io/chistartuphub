@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 
 const ROLES = [
   { value: 'founder', label: 'Founder', description: 'Building a startup' },
-  { value: 'helper', label: 'Helper', description: 'Investor, mentor, service provider, or supporter' },
+  { value: 'other', label: 'Helper', description: 'Investor, mentor, service provider, or supporter' },
 ];
 
 // Animation variants for staggered form fields
