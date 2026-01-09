@@ -8,7 +8,7 @@ import { supabase } from "@/api/supabaseClient";
 
 const ROLES = [
   { value: 'founder', label: 'Founder', description: 'Building a startup' },
-  { value: 'other', label: 'Helper', description: 'Investor, mentor, service provider, or supporter' },
+  { value: 'helper', label: 'Helper', description: 'Investor, mentor, service provider, or supporter' },
 ];
 
 export default function Settings() {
@@ -58,7 +58,9 @@ export default function Settings() {
   const saveSettings = async () => {
     try {
       setSaving(true);
-      const { error } = await supabase
+      console.log('[SETTINGS] Saving with role:', selectedRole, 'user.id:', user.id);
+
+      const { data, error } = await supabase
         .from("user_profiles")
         .update({
           role: selectedRole,
@@ -68,17 +70,23 @@ export default function Settings() {
           help_response_inapp: settings.help_response_inapp,
           updated_at: new Date().toISOString(),
         })
-        .eq("id", user.id);
+        .eq("id", user.id)
+        .select();
+
+      console.log('[SETTINGS] Update result:', { data, error });
 
       if (error) throw error;
-      
-      setMessage({ type: "success", text: "Settings saved successfully" });
-      if (refreshProfile) refreshProfile();
-      
-      setTimeout(() => setMessage({ type: "", text: "" }), 3000);
+
+      setMessage({ type: "success", text: `Settings saved! Role set to: ${selectedRole}` });
+      if (refreshProfile) {
+        console.log('[SETTINGS] Refreshing profile...');
+        await refreshProfile();
+      }
+
+      setTimeout(() => setMessage({ type: "", text: "" }), 5000);
     } catch (error) {
-      console.error("Error saving settings:", error);
-      setMessage({ type: "error", text: "Failed to save settings" });
+      console.error("[SETTINGS] Error saving:", error);
+      setMessage({ type: "error", text: `Failed to save: ${error.message}` });
     } finally {
       setSaving(false);
     }
