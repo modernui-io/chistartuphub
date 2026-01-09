@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { MapPin, Building2, Search, Filter, X, Map as MapIcon, List, Loader2, ArrowUpRight } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { MapPin, Building2, Search, Filter, X, Map as MapIcon, List, ArrowUpRight } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
@@ -7,7 +7,7 @@ import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
 import SEO from "@/components/SEO";
 import ShareActions from "@/components/ShareActions";
-import { BureauAtmosphere, BureauButton, BureauFooter } from "@/components/bureau";
+import { BureauAtmosphere, BureauFooter } from "@/components/bureau";
 
 // Fix for default marker icons in react-leaflet
 delete L.Icon.Default.prototype._getIconUrl;

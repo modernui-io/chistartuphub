@@ -9,7 +9,13 @@ import { Analytics } from '@vercel/analytics/react';
 import { AuthProvider } from '@/contexts/AuthContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import PageSkeleton from '@/components/PageSkeleton';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import { BureauAtmosphere, BureauFooter } from '@/components/bureau';
+
+// Routes that require authentication
+const PROTECTED_ROUTES = ['Profile', 'settings', 'saved'];
+// Routes that require admin access
+const ADMIN_ROUTES = ['admin'];
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -29,9 +35,37 @@ function App() {
               <Suspense fallback={<PageSkeleton />}>
                 <Routes>
                   <Route path="/" element={<MainPage />} />
-                  {Object.entries(Pages).map(([path, Page]) => (
-                    <Route key={path} path={`/${path}`} element={<Page />} />
-                  ))}
+                  {Object.entries(Pages).map(([path, Page]) => {
+                    // Wrap protected routes with auth guard
+                    if (ADMIN_ROUTES.includes(path)) {
+                      return (
+                        <Route
+                          key={path}
+                          path={`/${path}`}
+                          element={
+                            <ProtectedRoute requireAdmin>
+                              <Page />
+                            </ProtectedRoute>
+                          }
+                        />
+                      );
+                    }
+                    if (PROTECTED_ROUTES.includes(path)) {
+                      return (
+                        <Route
+                          key={path}
+                          path={`/${path}`}
+                          element={
+                            <ProtectedRoute>
+                              <Page />
+                            </ProtectedRoute>
+                          }
+                        />
+                      );
+                    }
+                    // Public routes
+                    return <Route key={path} path={`/${path}`} element={<Page />} />;
+                  })}
                   <Route path="/stories/:slug" element={<Pages.StoryDetail />} />
                   <Route path="/ecosystem/founder-asks" element={<Navigate to="/Opportunities" replace />} />
                   <Route path="*" element={

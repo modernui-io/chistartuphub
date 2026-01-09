@@ -1,8 +1,8 @@
-import React, { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
-import { Search, Filter, X, Sparkles, Shield, ChevronDown, ArrowUpRight, Building2, Users, TrendingUp, Clock, DollarSign } from "lucide-react";
+import { Search, Filter, X, Sparkles, Shield, ChevronDown, ArrowUpRight, TrendingUp, DollarSign } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import SEO from "@/components/SEO";
 import { generateSlug } from "@/lib/utils";

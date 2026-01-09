@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
-import { Box, Megaphone, Settings, Brain, X, ChevronRight, ArrowUpRight, ArrowRight, Compass } from "lucide-react";
+import { Box, Megaphone, Settings, Brain, X, ArrowUpRight, ArrowRight, Compass } from "lucide-react";
 
 const phases = [
   {

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
 import FundingOpportunitiesContent from "../components/funding/FundingOpportunitiesContent";

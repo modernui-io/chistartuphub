@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Building2, Users, DollarSign, Heart, TrendingUp, Award, Globe, Zap, ArrowDown, X, ExternalLink } from "lucide-react";
+import { Building2, Users, DollarSign, Heart, TrendingUp, Award, Globe, Zap, ArrowDown, X } from "lucide-react";
 import SEO from "@/components/SEO";
 import { motion, AnimatePresence } from "framer-motion";
 import BureauFooter from "@/components/bureau/BureauFooter";

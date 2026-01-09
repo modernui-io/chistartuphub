@@ -85,11 +85,11 @@ export default function FundraisingDisclaimerModal({ isOpen, onClose, onAcknowle
 
           {/* Content */}
           <div className="p-4 sm:p-6">
-            <p className="text-sm text-white/70 mb-6 leading-relaxed">
-              This category is for seeking <span className="text-white font-medium">advice on fundraising strategy</span> and <span className="text-white font-medium">introductions to capital sources</span> — not for public investment solicitation.
+            <p className="text-sm text-white/70 mb-5 leading-relaxed">
+              ChiStartup Hub facilitates <span className="text-white font-medium">introductions and guidance</span> — not investment solicitation. This keeps you compliant with SEC regulations.
             </p>
 
-            <div className="space-y-4 mb-6">
+            <div className="space-y-4 mb-5">
               {/* Checkbox 1 */}
               <label className="flex items-start gap-3 cursor-pointer group">
                 <div className="relative flex-shrink-0 mt-0.5">
@@ -112,7 +112,7 @@ export default function FundraisingDisclaimerModal({ isOpen, onClose, onAcknowle
                   </div>
                 </div>
                 <span className="text-sm text-white/70 leading-snug">
-                  I understand this is for guidance and connections, not investment solicitation
+                  I'm seeking introductions and guidance, not soliciting investment
                 </span>
               </label>
 
@@ -138,7 +138,7 @@ export default function FundraisingDisclaimerModal({ isOpen, onClose, onAcknowle
                   </div>
                 </div>
                 <span className="text-sm text-white/70 leading-snug">
-                  I am responsible for compliance with securities laws
+                  I understand any investment discussions happen privately after connecting
                 </span>
               </label>
 
@@ -164,7 +164,7 @@ export default function FundraisingDisclaimerModal({ isOpen, onClose, onAcknowle
                   </div>
                 </div>
                 <span className="text-sm text-white/70 leading-snug">
-                  I will NOT post specific fundraising terms or amounts publicly
+                  I'm responsible for my own securities law compliance
                 </span>
               </label>
             </div>
@@ -175,7 +175,7 @@ export default function FundraisingDisclaimerModal({ isOpen, onClose, onAcknowle
               <a href="/terms" target="_blank" className="text-amber-400 hover:text-amber-300 underline">
                 Terms of Service
               </a>
-              , including Section 7: Fundraising Disclaimers.
+              .
             </p>
 
             {/* Buttons */}

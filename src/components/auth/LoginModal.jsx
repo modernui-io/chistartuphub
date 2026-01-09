@@ -24,7 +24,9 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
     const { error } = await signIn(email, password);
 
     if (error) {
-      console.error('Login error details:', error);
+      if (import.meta.env.DEV) {
+        console.error('[LOGIN] Error details:', error);
+      }
 
       // Provide better error messages
       let errorMessage = error.message;

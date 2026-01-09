@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, Clock, Play, Loader2, TrendingUp, Award, Shield, Zap, Users, Lock, Star, Target, Cog, BookOpen, ExternalLink, ArrowUpRight } from "lucide-react";
+import { ArrowLeft, Clock, Play, Loader2, TrendingUp, Shield, Zap, Users, Lock, Star, Target, Cog, BookOpen, ExternalLink, ArrowUpRight } from "lucide-react";
 import SEO from "@/components/SEO";
 import { generateSlug } from "@/lib/utils";
 import { BureauAtmosphere, BureauFooter } from "@/components/bureau";
@@ -46,16 +46,6 @@ export default function StoryDetail() {
   const getExitValue = (s) => s.funding_raised || s.valuation || s.exit_value || '';
   const getPrimaryPower = (s) => s.competitive_moat || s.primary_power || '';
   const getSecondaryPower = (s) => s.moat_description || s.secondary_power || '';
-
-  const powerIcons = {
-    "Scale Economies": Zap,
-    "Network Effects": Users,
-    "Switching Costs": Lock,
-    "Branding": Star,
-    "Counter-Positioning": Target,
-    "Cornered Resource": Shield,
-    "Process Power": Cog
-  };
 
   const getRatingLevel = (rating) => {
     switch(rating) {

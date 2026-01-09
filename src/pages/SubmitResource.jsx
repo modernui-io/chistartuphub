@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { entities } from "@/api/supabaseClient";
 import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Send, CheckCircle2, ArrowRight, Plus } from "lucide-react";
+import { Send, CheckCircle2, Plus } from "lucide-react";
 import { toast } from "sonner";
 import SEO from "@/components/SEO";
 import BureauFooter from "@/components/bureau/BureauFooter";

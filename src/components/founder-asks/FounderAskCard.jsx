@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   DollarSign,
@@ -12,8 +13,11 @@ import {
   Eye,
   Sparkles,
   Lock,
+  XCircle,
 } from 'lucide-react';
 import OptimizedImage from "@/components/OptimizedImage";
+import { supabase } from '@/api/supabaseClient';
+import { toast } from 'sonner';
 
 // ============================================
 // CATEGORY CONFIG
@@ -63,7 +67,8 @@ function isNewToday(createdAtRaw) {
   return hoursDiff <= 24;
 }
 
-export default function FounderAskCard({ ask, index, onHelp }) {
+export default function FounderAskCard({ ask, index, onHelp, isAdmin, onModerate }) {
+  const [isDeactivating, setIsDeactivating] = useState(false);
   const categoryConfig = CATEGORY_CONFIG[ask.category] || CATEGORY_CONFIG.general_advice;
   const CategoryIcon = categoryConfig.icon;
 
@@ -74,6 +79,32 @@ export default function FounderAskCard({ ask, index, onHelp }) {
 
   // Check if new today
   const isNew = isNewToday(ask.createdAtRaw);
+
+  // Admin: Deactivate ask
+  const handleDeactivate = async () => {
+    if (!isAdmin) return;
+
+    setIsDeactivating(true);
+    try {
+      const { error } = await supabase
+        .from('founder_asks')
+        .update({ is_active: false })
+        .eq('id', ask.id);
+
+      if (error) throw error;
+
+      toast.success('Ask deactivated', {
+        description: 'The ask has been hidden from public view.',
+      });
+
+      if (onModerate) onModerate();
+    } catch (error) {
+      console.error('Error deactivating ask:', error);
+      toast.error('Failed to deactivate ask');
+    } finally {
+      setIsDeactivating(false);
+    }
+  };
 
   return (
     <motion.div
@@ -210,6 +241,25 @@ export default function FounderAskCard({ ask, index, onHelp }) {
           <HandHelping className="w-4 h-4" strokeWidth={1.5} />
           Offer Guidance
         </button>
+
+        {/* Admin Moderation Controls */}
+        {isAdmin && (
+          <div className="mt-3 pt-3 border-t border-white/10">
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[9px] text-amber-400/60 uppercase tracking-wider">
+                Admin Controls
+              </span>
+              <button
+                onClick={handleDeactivate}
+                disabled={isDeactivating}
+                className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-wider px-2 py-1 text-red-400 hover:bg-red-400/10 border border-red-400/20 transition-colors cursor-crosshair disabled:opacity-50"
+              >
+                <XCircle className="w-3 h-3" strokeWidth={1.5} />
+                {isDeactivating ? 'Deactivating...' : 'Deactivate'}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </motion.div>
   );

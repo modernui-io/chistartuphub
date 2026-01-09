@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/api/supabaseClient';
 import {
   Dialog,
   DialogContent,
@@ -9,12 +10,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Eye, EyeOff, Check, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Check, ArrowRight, Megaphone, Bookmark, Compass } from 'lucide-react';
 import { toast } from 'sonner';
 
 const ROLES = [
   { value: 'founder', label: 'Founder', description: 'Building a startup' },
-  { value: 'other', label: 'Helper', description: 'Investor, mentor, service provider, or supporter' },
+  { value: 'helper', label: 'Helper', description: 'Investor, mentor, service provider, or supporter' },
 ];
 
 // Animation variants for staggered form fields
@@ -75,7 +76,19 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
   const [showPassword, setShowPassword] = useState(false);
   const [signupSuccess, setSignupSuccess] = useState(false);
   const [successName, setSuccessName] = useState('');
-  const { signUp, signInWithOAuth, updateProfile } = useAuth();
+  const { signUp, signInWithOAuth } = useAuth();
+
+  // Use ref to persist signup completion across re-renders from auth state changes
+  const signupCompletedRef = useRef(false);
+  const pendingSuccessDataRef = useRef(null);
+
+  // Sync ref to state after auth state settles
+  useEffect(() => {
+    if (signupCompletedRef.current && pendingSuccessDataRef.current && !signupSuccess) {
+      setSignupSuccess(true);
+      setSuccessName(pendingSuccessDataRef.current.name);
+    }
+  }, [signupSuccess]);
 
   // Form fields
   const [firstName, setFirstName] = useState('');
@@ -94,6 +107,8 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
     setRole('');
     setSignupSuccess(false);
     setSuccessName('');
+    signupCompletedRef.current = false;
+    pendingSuccessDataRef.current = null;
   };
 
   const handleSubmit = async (e) => {
@@ -106,6 +121,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
       // Sign up
       const { data, error: signUpError } = await signUp(email, password, {
         full_name: fullName,
+        role: role,
       });
 
       if (signUpError) {
@@ -116,38 +132,58 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
         return;
       }
 
-      // Create profile - even if email confirmation is required, we want to store profile data
+      // Update profile with extra fields - use data.user.id directly to avoid race condition
+      // (The database trigger already created the profile with role, but we add extra fields here)
       if (data?.user) {
-        const { error: profileError } = await updateProfile({
-          email,
-          full_name: fullName,
-          first_name: firstName,
-          last_name: lastName,
-          company_name: companyName || null,
-          role,
-          verification_status: 'none', // vetting happens later when posting
-        });
+        const { data: profileData, error: profileError } = await supabase
+          .from('user_profiles')
+          .upsert(
+            {
+              id: data.user.id,
+              email,
+              full_name: fullName,
+              first_name: firstName,
+              last_name: lastName,
+              company_name: companyName || null,
+              role,
+            },
+            { onConflict: 'id', ignoreDuplicates: false }
+          )
+          .select('id, email, role, full_name')
+          .single();
 
         if (profileError) {
-          toast.error('Profile creation failed', {
-            description: profileError.message,
+          // Profile update failed - show user-friendly message
+          if (import.meta.env.DEV) {
+            console.error('[SIGNUP] Profile update FAILED:', profileError);
+          }
+          toast.error('Account created but profile setup failed', {
+            description: 'Please try updating your profile in Settings.',
           });
+        } else if (profileData) {
+          // Verify the role was actually written (dev only)
+          if (import.meta.env.DEV && profileData.role !== role) {
+            console.warn('[SIGNUP] Role mismatch! Expected:', role, 'Got:', profileData.role);
+          }
         }
       }
 
       // Check if email confirmation is required
       const needsEmailConfirmation = data?.user && !data.session;
 
-      // Show success state in modal
-      setSuccessName(firstName);
-      setSignupSuccess(true);
       setLoading(false);
 
-      // Trigger welcome modal callback if provided
+      // Close this modal and trigger welcome modal for success experience
       if (!needsEmailConfirmation && onSignupComplete) {
         onSignupComplete({ name: fullName, role: role });
+      } else {
+        // Email confirmation required - show success state in modal
+        signupCompletedRef.current = true;
+        pendingSuccessDataRef.current = { name: firstName, role };
+        setSuccessName(firstName);
+        setSignupSuccess(true);
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error('Signup failed', {
         description: 'An unexpected error occurred. Please try again.',
       });
@@ -174,8 +210,8 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
     <Dialog open={isOpen} onOpenChange={(open) => {
       if (!open) {
         resetForm();
+        onClose();
       }
-      onClose();
     }}>
       <DialogContent className="sm:max-w-md bg-[#0F0F0F] border border-white/10 rounded-none max-h-[90vh] overflow-y-auto">
         <AnimatePresence mode="wait">
@@ -206,9 +242,71 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
                 <h2 className="font-mono text-xl uppercase tracking-[0.1em] text-white mb-2">
                   Welcome to the Hub
                 </h2>
-                <p className="font-mono text-[11px] text-white/50 uppercase tracking-[0.05em] mb-6">
+                <p className="font-mono text-[11px] text-white/50 uppercase tracking-[0.05em] mb-4">
                   {successName ? `Thanks for joining, ${successName}` : 'Thanks for joining'}
                 </p>
+              </motion.div>
+
+              {/* Quick Start Tutorial */}
+              <motion.div variants={successContentVariants} className="mb-6">
+                <p className="font-mono text-[9px] text-white/40 uppercase tracking-[0.15em] mb-3">
+                  Quick Start
+                </p>
+                <div className="space-y-2">
+                  {role === 'founder' && (
+                    <motion.button
+                      type="button"
+                      onClick={() => {
+                        resetForm();
+                        onClose();
+                        navigate('/opportunities');
+                      }}
+                      whileHover={{ scale: 1.01, x: 2 }}
+                      whileTap={{ scale: 0.99 }}
+                      className="w-full flex items-center gap-3 px-4 py-3 border border-white/20 hover:border-white/40 hover:bg-white/[0.02] transition-all duration-150 cursor-crosshair rounded-none text-left"
+                    >
+                      <Megaphone className="w-4 h-4 text-white/60" strokeWidth={1.5} />
+                      <div>
+                        <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white block">Post an Ask</span>
+                        <span className="font-mono text-[9px] text-white/40">Get help from the community</span>
+                      </div>
+                    </motion.button>
+                  )}
+                  <motion.button
+                    type="button"
+                    onClick={() => {
+                      resetForm();
+                      onClose();
+                      navigate('/funding');
+                    }}
+                    whileHover={{ scale: 1.01, x: 2 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="w-full flex items-center gap-3 px-4 py-3 border border-white/20 hover:border-white/40 hover:bg-white/[0.02] transition-all duration-150 cursor-crosshair rounded-none text-left"
+                  >
+                    <Bookmark className="w-4 h-4 text-white/60" strokeWidth={1.5} />
+                    <div>
+                      <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white block">Save Resources</span>
+                      <span className="font-mono text-[9px] text-white/40">Bookmark funding & spaces</span>
+                    </div>
+                  </motion.button>
+                  <motion.button
+                    type="button"
+                    onClick={() => {
+                      resetForm();
+                      onClose();
+                      navigate('/community');
+                    }}
+                    whileHover={{ scale: 1.01, x: 2 }}
+                    whileTap={{ scale: 0.99 }}
+                    className="w-full flex items-center gap-3 px-4 py-3 border border-white/20 hover:border-white/40 hover:bg-white/[0.02] transition-all duration-150 cursor-crosshair rounded-none text-left"
+                  >
+                    <Compass className="w-4 h-4 text-white/60" strokeWidth={1.5} />
+                    <div>
+                      <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white block">Explore Ecosystem</span>
+                      <span className="font-mono text-[9px] text-white/40">Find communities & events</span>
+                    </div>
+                  </motion.button>
+                </div>
               </motion.div>
 
               <motion.button
@@ -216,10 +314,10 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
                 onClick={handleSuccessContinue}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
-                className="w-full flex items-center justify-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 bg-white text-black hover:bg-transparent hover:text-white border border-white transition-colors duration-150 cursor-crosshair rounded-none"
+                className="w-full flex items-center justify-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] px-6 py-2 text-white/50 hover:text-white transition-colors duration-150 cursor-crosshair"
               >
-                Start Exploring
-                <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
+                Skip for now
+                <ArrowRight className="w-3 h-3" strokeWidth={1.5} />
               </motion.button>
             </motion.div>
           ) : (

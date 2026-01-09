@@ -410,6 +410,7 @@ export default function Layout({ children }) {
           setShowLogin(true);
         }}
         onSignupComplete={(userData) => {
+          setShowSignup(false);  // Close signup modal first
           setWelcomeUserData(userData);
           setShowWelcome(true);
         }}

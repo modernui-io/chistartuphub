@@ -11,7 +11,10 @@ import {
   HandHelping,
   Filter,
   Info,
+  Shield,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ADMIN_EMAILS } from '@/constants/adminEmails';
 import SEO from '@/components/SEO';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
@@ -59,6 +62,9 @@ export default function Opportunities() {
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showPostAskModal, setShowPostAskModal] = useState(false);
 
+  // Check if user is admin
+  const isAdmin = user && ADMIN_EMAILS.includes(user.email);
+
   // Fetch real data from Supabase
   const { asks, loading: asksLoading, error: asksError, refetch } = useFounderAsks();
 
@@ -99,8 +105,14 @@ export default function Opportunities() {
       return;
     }
 
-    // Increment view count (fire and forget)
-    supabase.rpc('increment_ask_view_count', { ask_uuid: ask.id }).catch(() => {});
+    // Increment view count (non-blocking analytics - log failures in dev only)
+    supabase.rpc('increment_ask_view_count', { ask_uuid: ask.id })
+      .then(() => {})
+      .catch((err) => {
+        if (import.meta.env.DEV) {
+          console.warn('[OPPORTUNITIES] Failed to increment view count:', err.message);
+        }
+      });
 
     setSelectedAsk(ask);
     setShowHelpModal(true);
@@ -240,7 +252,11 @@ export default function Opportunities() {
                         Founders only
                       </span>
                       <span className="font-mono text-[10px] text-white/40">
-                        Your role: <span className="text-white/60 capitalize">{profile?.role || 'not set'}</span>
+                        Your role: <span className="text-white/60">
+                          {profile?.role === 'founder' ? 'Founder' :
+                           profile?.role === 'helper' || profile?.role === 'other' ? 'Helper' :
+                           profile?.role || 'not set'}
+                        </span>
                       </span>
                     </div>
                   </div>
@@ -257,11 +273,29 @@ export default function Opportunities() {
                   </button>
                   <div className="flex items-center gap-2 font-mono text-[10px] text-white/30 px-4">
                     <Lock className="w-3 h-3" strokeWidth={1.5} />
-                    One ask per 14 days
+                    One ask per 7 days
                   </div>
                 </div>
               )}
             </motion.div>
+
+            {/* Admin Moderation Link */}
+            {isAdmin && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.35 }}
+                className="mb-6"
+              >
+                <Link
+                  to="/admin"
+                  className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] px-4 py-2 border border-amber-500/30 text-amber-400 hover:bg-amber-500/10 transition-colors cursor-crosshair"
+                >
+                  <Shield className="w-3.5 h-3.5" strokeWidth={1.5} />
+                  Moderate Asks
+                </Link>
+              </motion.div>
+            )}
 
             {/* Category Filters */}
             <motion.div
@@ -418,6 +452,8 @@ export default function Opportunities() {
                     ask={ask}
                     index={index}
                     onHelp={handleHelp}
+                    isAdmin={isAdmin}
+                    onModerate={refetch}
                   />
                 ))}
               </div>
@@ -472,7 +508,7 @@ export default function Opportunities() {
                   </span>
                 </div>
                 <p className="text-sm text-white/40 leading-relaxed">
-                  Post what you need: fundraising intros, co-founder search, or general advice. One ask per 14 days keeps it focused.
+                  Post what you need: fundraising intros, co-founder search, or general advice. One ask per 7 days keeps it focused.
                 </p>
               </div>
 

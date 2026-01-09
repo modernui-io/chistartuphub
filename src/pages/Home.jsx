@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import SEO from "@/components/SEO";
-import { motion, useMotionValue, useSpring, useTransform, useInView, AnimatePresence } from "framer-motion";
+import { motion, useMotionValue, useSpring, useInView } from "framer-motion";
 import {
   BureauAtmosphere,
   BureauButton,
@@ -56,8 +56,7 @@ const AnimatedText = ({ children, className = "", delay = 0, isWord = false }) =
 // ============================================
 const MagneticButton = ({ children, className = "", ...props }) => {
   const ref = useRef(null);
-  const [isHovered, setIsHovered] = useState(false);
-  
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   
@@ -82,14 +81,12 @@ const MagneticButton = ({ children, className = "", ...props }) => {
   const handleMouseLeave = () => {
     x.set(0);
     y.set(0);
-    setIsHovered(false);
   };
 
   return (
     <motion.div
       ref={ref}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
       style={{ x: xSpring, y: ySpring }}
       className={`inline-block ${className}`}
@@ -302,14 +299,8 @@ const ScrollProgressLine = () => {
 // MAIN HOME COMPONENT
 // ============================================
 export default function Home() {
-  const [isLoaded, setIsLoaded] = useState(false);
   const heroRef = useRef(null);
 
-  useEffect(() => {
-    // Trigger animations after component mounts
-    const timer = setTimeout(() => setIsLoaded(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <div className="min-h-screen relative" data-page="home">

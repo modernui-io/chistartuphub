@@ -1,5 +1,3 @@
-import React from "react";
-
 /**
  * BureauGrid - The structural grid container
  * Establishes the outer boundary with top and left borders.

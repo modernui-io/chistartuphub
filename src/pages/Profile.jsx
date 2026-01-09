@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBookmarks } from '@/hooks/useBookmarks';
 import ConnectionRequests from '@/components/ConnectionRequests';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,9 +31,9 @@ import {
   GraduationCap,
   MessageSquarePlus,
   RefreshCw,
-  Clock,
   Plus,
-  Download
+  Download,
+  Heart
 } from 'lucide-react';
 import { toast } from 'sonner';
 import SEO from '@/components/SEO';
@@ -43,15 +42,8 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { MultiSelect, SingleSelect } from '@/components/ui/multi-select';
 import { supabase } from '@/api/supabaseClient';
 import { PostAskModal } from '@/components/founder-asks';
-
-// ============================================
-// ADMIN EMAILS (can access founder features)
-// ============================================
-const ADMIN_EMAILS = [
-  'admin@test.chistartuphub.com',
-  'hello@chistartuphub.com',
-  'billy@chistartuphub.com',
-];
+import { ADMIN_EMAILS } from '@/constants/adminEmails';
+import { ProfileOffersTab, ProfileAsksTab } from '@/components/profile';
 
 // ============================================
 // STANDARDIZED OPTIONS FOR NO-ALGORITHM SEARCH
@@ -176,11 +168,13 @@ export default function Profile() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'preview');
-  const [copied, setCopied] = useState(false);
   const [saving, setSaving] = useState(false);
   const [myAsks, setMyAsks] = useState([]);
   const [asksLoading, setAsksLoading] = useState(false);
   const [showPostAskModal, setShowPostAskModal] = useState(false);
+  const [isEditingInline, setIsEditingInline] = useState(false);
+  const [myOffers, setMyOffers] = useState([]);
+  const [offersLoading, setOffersLoading] = useState(false);
 
   // Check if user is admin (can access founder features)
   const isAdmin = user && ADMIN_EMAILS.includes(user.email);
@@ -233,6 +227,41 @@ export default function Profile() {
     };
 
     fetchMyAsks();
+  }, [user, activeTab]);
+
+  // Fetch helper's sent offers when offers tab is active
+  useEffect(() => {
+    const fetchMyOffers = async () => {
+      if (!user || activeTab !== 'offers') return;
+
+      setOffersLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('connection_requests')
+          .select(`
+            *,
+            founder_asks (
+              id,
+              category,
+              sector,
+              description,
+              user_id
+            )
+          `)
+          .eq('requester_id', user.id)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        setMyOffers(data || []);
+      } catch (error) {
+        console.error('Error fetching offers:', error);
+        toast.error('Failed to load your offers');
+      } finally {
+        setOffersLoading(false);
+      }
+    };
+
+    fetchMyOffers();
   }, [user, activeTab]);
 
   // Fetch assessment results when results tab is active
@@ -317,11 +346,38 @@ export default function Profile() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleCopyEmail = () => {
-    navigator.clipboard.writeText(user?.email || '');
-    setCopied(true);
-    toast.success('Email copied!', { description: user?.email });
-    setTimeout(() => setCopied(false), 2000);
+  const handleInlineSave = async () => {
+    setSaving(true);
+    const { error } = await updateProfile({
+      full_name: formData.full_name,
+      company_name: formData.company_name,
+      bio: formData.bio,
+      linkedin_url: formData.linkedin_url,
+      location: formData.location,
+    });
+
+    if (error) {
+      toast.error('Error', { description: 'Failed to update profile' });
+    } else {
+      toast.success('Profile updated!');
+      setIsEditingInline(false);
+    }
+    setSaving(false);
+  };
+
+  const handleCancelInlineEdit = () => {
+    // Reset form data to profile values
+    if (profile || user) {
+      setFormData(prev => ({
+        ...prev,
+        full_name: profile?.full_name || user?.user_metadata?.full_name || '',
+        company_name: profile?.company_name || '',
+        bio: profile?.bio || '',
+        linkedin_url: profile?.linkedin_url || '',
+        location: profile?.location || 'Chicago, IL',
+      }));
+    }
+    setIsEditingInline(false);
   };
 
   const getInitials = (name) => {
@@ -404,7 +460,6 @@ export default function Profile() {
 
   const stageBadge = STAGE_CONFIG[profile?.stage];
   const displayName = formData.full_name || user?.email?.split('@')[0] || 'Founder';
-  const firstName = displayName.split(' ')[0];
 
   // Group bookmarks by type
   const bookmarksByType = bookmarks.reduce((acc, bookmark) => {
@@ -508,6 +563,23 @@ export default function Profile() {
                     </button>
                   </>
                 )}
+                {!isFounderOrAdmin && (
+                  <button
+                    onClick={() => setActiveTab('offers')}
+                    aria-label="My Offers"
+                    className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-5 py-3 md:py-2.5 font-mono text-[10px] md:text-xs uppercase tracking-[0.1em] transition-all whitespace-nowrap ${
+                      activeTab === 'offers'
+                        ? 'bg-white text-black'
+                        : 'text-white/60 hover:text-white'
+                    }`}
+                  >
+                    <Heart size={16} className="flex-shrink-0" />
+                    <span className="sm:hidden">Offers</span><span className="hidden sm:inline">My Offers</span>
+                    {myOffers.length > 0 && (
+                      <span className="text-[10px] md:text-xs opacity-60">({myOffers.length})</span>
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -525,10 +597,39 @@ export default function Profile() {
             className="grid grid-cols-1 md:grid-cols-3 gap-4"
           >
             {/* LEFT: Identity Card */}
-            <div className="md:col-span-1 bg-black/40 backdrop-blur-sm border border-white/10 p-6 flex flex-col items-center text-center">
+            <div className="md:col-span-1 bg-black/40 backdrop-blur-sm border border-white/10 p-6 flex flex-col items-center text-center relative">
+
+              {/* Edit Toggle Button */}
+              {!isEditingInline ? (
+                <button
+                  onClick={() => setIsEditingInline(true)}
+                  className="absolute top-4 right-4 p-2 text-white/30 hover:text-white hover:bg-white/10 transition-colors"
+                  title="Edit profile"
+                >
+                  <Edit3 size={16} />
+                </button>
+              ) : (
+                <div className="absolute top-4 right-4 flex gap-2">
+                  <button
+                    onClick={handleCancelInlineEdit}
+                    className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-[0.1em] text-white/50 hover:text-white border border-white/10 hover:border-white/20 transition-colors"
+                    disabled={saving}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleInlineSave}
+                    disabled={saving}
+                    className="px-3 py-1.5 text-[10px] font-mono uppercase tracking-[0.1em] bg-white text-black hover:bg-white/90 transition-colors flex items-center gap-2"
+                  >
+                    {saving ? <Loader2 size={12} className="animate-spin" /> : null}
+                    Save
+                  </button>
+                </div>
+              )}
 
               {/* Avatar */}
-              <div className="relative mb-4">
+              <div className="relative mb-4 mt-6">
                 {profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt={displayName} className="w-24 h-24 object-cover border border-white/10" />
                 ) : (
@@ -539,12 +640,37 @@ export default function Profile() {
                 <div className="absolute bottom-1 right-1 w-3 h-3 bg-green-500 border border-[#0a0a0a]" />
               </div>
 
-              {/* Name, Company, Location */}
-              <h1 className="text-xl font-bold text-white mb-1">{displayName}</h1>
-              <p className="text-sm text-white/60 mb-3">
-                {formData.company_name && `${formData.company_name} • `}
-                {formData.location || 'Chicago, IL'}
-              </p>
+              {/* Name, Company, Location - Editable */}
+              {isEditingInline ? (
+                <div className="w-full space-y-3 mb-3">
+                  <Input
+                    value={formData.full_name}
+                    onChange={(e) => handleInputChange('full_name', e.target.value)}
+                    placeholder="Full Name"
+                    className="bg-black/40 border-white/20 text-white text-center rounded-none h-10"
+                  />
+                  <Input
+                    value={formData.company_name}
+                    onChange={(e) => handleInputChange('company_name', e.target.value)}
+                    placeholder="Company / Startup"
+                    className="bg-black/40 border-white/20 text-white text-center rounded-none h-9 text-sm"
+                  />
+                  <Input
+                    value={formData.location}
+                    onChange={(e) => handleInputChange('location', e.target.value)}
+                    placeholder="Location"
+                    className="bg-black/40 border-white/20 text-white text-center rounded-none h-9 text-sm"
+                  />
+                </div>
+              ) : (
+                <>
+                  <h1 className="text-xl font-bold text-white mb-1">{displayName}</h1>
+                  <p className="text-sm text-white/60 mb-3">
+                    {formData.company_name && `${formData.company_name} • `}
+                    {formData.location || 'Chicago, IL'}
+                  </p>
+                </>
+              )}
 
               {/* Stage Badge */}
               {stageBadge && (
@@ -570,20 +696,54 @@ export default function Profile() {
                 </div>
               )}
 
-              {/* Bio/Pitch */}
-              {formData.bio && (
+              {/* Bio/Pitch - Editable */}
+              {isEditingInline ? (
+                <div className="w-full mb-3">
+                  <Textarea
+                    value={formData.bio}
+                    onChange={(e) => handleInputChange('bio', e.target.value)}
+                    placeholder="Your one-line pitch or bio..."
+                    rows={3}
+                    className="bg-black/40 border-white/20 text-white rounded-none text-sm"
+                  />
+                </div>
+              ) : formData.bio ? (
                 <div className="bg-black/40 backdrop-blur-sm border border-white/10 p-4 rounded-none w-full">
                   <p className="text-sm text-white/70 leading-relaxed italic">"{formData.bio}"</p>
                 </div>
-              )}
+              ) : null}
 
-              {/* Social Links */}
-              {formData.linkedin_url && (
+              {/* LinkedIn - Editable */}
+              {isEditingInline ? (
+                <div className="w-full">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Linkedin size={12} className="text-white/40" />
+                    <span className="text-[10px] text-white/40 uppercase tracking-wider">LinkedIn URL</span>
+                  </div>
+                  <Input
+                    value={formData.linkedin_url}
+                    onChange={(e) => handleInputChange('linkedin_url', e.target.value)}
+                    placeholder="https://linkedin.com/in/..."
+                    className="bg-black/40 border-white/20 text-white rounded-none h-9 text-sm"
+                  />
+                </div>
+              ) : formData.linkedin_url ? (
                 <a href={formData.linkedin_url} target="_blank" rel="noopener noreferrer"
                   className="mt-4 flex items-center gap-2 text-xs text-white/40 hover:text-blue-400 transition-colors">
                   <Linkedin size={14} />
                   <span>LinkedIn Profile</span>
                 </a>
+              ) : null}
+
+              {/* Prompt to add info when empty and not editing */}
+              {!isEditingInline && !formData.bio && !formData.linkedin_url && (
+                <button
+                  onClick={() => setIsEditingInline(true)}
+                  className="mt-4 text-xs text-white/40 hover:text-white/60 transition-colors flex items-center gap-2"
+                >
+                  <Plus size={12} />
+                  Add bio & LinkedIn
+                </button>
               )}
             </div>
 
@@ -994,126 +1154,12 @@ export default function Profile() {
 
         {/* MY ASKS TAB - Founder's posted asks */}
         {activeTab === 'asks' && isFounderOrAdmin && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            {/* Header with Post Ask button */}
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-semibold text-white">My Asks</h2>
-                <p className="text-sm text-white/50 mt-1">Manage your asks to the Chicago ecosystem</p>
-              </div>
-              <Button
-                onClick={() => setShowPostAskModal(true)}
-                className="bg-white text-black hover:bg-white/90 rounded-none"
-              >
-                <Plus size={16} className="mr-2" />
-                Post New Ask
-              </Button>
-            </div>
-
-            {asksLoading ? (
-              <div className="flex justify-center py-16">
-                <Loader2 className="w-8 h-8 text-blue-400 animate-spin" />
-              </div>
-            ) : myAsks.length === 0 ? (
-              <Card className="bg-black/40 backdrop-blur-sm border-white/10 p-16 text-center rounded-none">
-                <div className="w-16 h-16 rounded-none bg-black/40 backdrop-blur-sm flex items-center justify-center mx-auto mb-6">
-                  <MessageSquarePlus className="w-8 h-8 text-white/30" />
-                </div>
-                <p className="text-white/60 mb-2 text-lg">No asks yet</p>
-                <p className="text-white/40 text-sm mb-2">Share what you need — fundraising intros, co-founder matching, or expert advice.</p>
-                <p className="text-white/30 text-xs mb-8">Your ask is visible for 14 days. Helpers can offer to connect with you.</p>
-                <Button
-                  onClick={() => setShowPostAskModal(true)}
-                  className="bg-white text-black hover:bg-white/90 rounded-none px-6"
-                >
-                  <Plus size={16} className="mr-2" />
-                  Post Your First Ask
-                </Button>
-              </Card>
-            ) : (
-              <div className="space-y-4">
-                {myAsks.map((ask) => {
-                  const isActive = ask.is_active;
-                  const expiresAt = new Date(ask.expires_at);
-                  const isExpired = expiresAt < new Date();
-                  const daysLeft = Math.max(0, Math.ceil((expiresAt - new Date()) / (1000 * 60 * 60 * 24)));
-                  const helpersCount = ask.connection_requests?.[0]?.count || 0;
-
-                  return (
-                    <motion.div
-                      key={ask.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-none p-6"
-                    >
-                      {/* Status + Category */}
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <span className={`px-3 py-1 text-[10px] font-mono uppercase tracking-[0.1em] border ${
-                            isExpired
-                              ? 'bg-gray-500/10 text-gray-400 border-gray-500/20'
-                              : isActive
-                                ? 'bg-green-500/10 text-green-400 border-green-500/20'
-                                : 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
-                          }`}>
-                            {isExpired ? 'Expired' : isActive ? 'Active' : 'Pending'}
-                          </span>
-                          <span className="text-xs text-white/40 uppercase tracking-wider">
-                            {ask.category === 'fundraising' ? 'Fundraising' :
-                             ask.category === 'cofounder' ? 'Co-founder' : 'General Advice'}
-                          </span>
-                        </div>
-                        {!isExpired && (
-                          <div className="flex items-center gap-1.5 text-xs text-white/40">
-                            <Clock size={12} />
-                            {daysLeft} days left
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Description */}
-                      <p className="text-white/80 text-sm leading-relaxed mb-4">
-                        {ask.description}
-                      </p>
-
-                      {/* Meta info */}
-                      <div className="flex flex-wrap items-center gap-4 text-xs text-white/40">
-                        <span className="px-2 py-1 bg-white/5 rounded">{ask.sector}</span>
-                        {ask.amount && (
-                          <span className="flex items-center gap-1">
-                            <DollarSign size={12} />
-                            {ask.amount}
-                          </span>
-                        )}
-                        {ask.stage && <span>{ask.stage}</span>}
-                      </div>
-
-                      {/* Helpers count + View requests */}
-                      <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Users size={14} className="text-white/40" />
-                          <span className="text-sm text-white/60">
-                            {helpersCount} {helpersCount === 1 ? 'person' : 'people'} offered to help
-                          </span>
-                        </div>
-                        {helpersCount > 0 && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setActiveTab('requests')}
-                            className="border-white/10 text-white/60 hover:bg-white/5 rounded-none text-xs"
-                          >
-                            View Requests
-                            <ArrowRight size={12} className="ml-2" />
-                          </Button>
-                        )}
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </div>
-            )}
-          </motion.div>
+          <ProfileAsksTab
+            asks={myAsks}
+            loading={asksLoading}
+            onPostAsk={() => setShowPostAskModal(true)}
+            onViewRequests={() => setActiveTab('requests')}
+          />
         )}
 
         {/* REQUESTS TAB - Connection Requests for Founders */}
@@ -1127,6 +1173,14 @@ export default function Profile() {
               onPostAsk={() => setShowPostAskModal(true)}
             />
           </motion.div>
+        )}
+
+        {/* MY OFFERS TAB - Helper's sent offers */}
+        {activeTab === 'offers' && !isFounderOrAdmin && (
+          <ProfileOffersTab
+            offers={myOffers}
+            loading={offersLoading}
+          />
         )}
 
         {/* RESULTS TAB - Assessment Results */}

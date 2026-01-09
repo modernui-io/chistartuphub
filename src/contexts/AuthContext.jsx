@@ -22,10 +22,11 @@ export const AuthProvider = ({ children }) => {
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   // Load profile separately - don't block auth
+  // Uses decrypted view for PII fields (email, name, etc.)
   const loadUserProfile = async (userId) => {
     try {
       const { data } = await supabase
-        .from('user_profiles')
+        .from('user_profiles_decrypted')
         .select('*')
         .eq('id', userId)
         .maybeSingle();
@@ -108,7 +109,10 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data, error } = await supabase
         .from('user_profiles')
-        .upsert({ id: user.id, email: user.email, ...updates })
+        .upsert(
+          { id: user.id, email: user.email, ...updates },
+          { onConflict: 'id', ignoreDuplicates: false }
+        )
         .select()
         .single();
 
@@ -124,6 +128,13 @@ export const AuthProvider = ({ children }) => {
   const openSignup = () => setShowSignupModal(true);
   const openLogin = () => setShowLoginModal(true);
 
+  // Refresh profile from database (useful after signup/updates)
+  const refreshProfile = async () => {
+    if (user?.id) {
+      await loadUserProfile(user.id);
+    }
+  };
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -135,6 +146,7 @@ export const AuthProvider = ({ children }) => {
       signInWithOAuth,
       signOut,
       updateProfile,
+      refreshProfile,
       // Modal controls
       showSignupModal,
       setShowSignupModal,

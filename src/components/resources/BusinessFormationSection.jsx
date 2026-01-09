@@ -1,4 +1,3 @@
-import React from "react";
 import { Users, Globe, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";

@@ -79,7 +79,7 @@ export default function Directory() {
         setError(null);
 
         const { data, error: fetchError } = await supabase
-          .from('user_profiles')
+          .from('user_profiles_decrypted')
           .select('*')
           .order('created_at', { ascending: false });
 

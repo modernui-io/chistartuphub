@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ArrowUpRight, ChevronDown, ChevronRight } from "lucide-react";
 
 const insightsResources = [

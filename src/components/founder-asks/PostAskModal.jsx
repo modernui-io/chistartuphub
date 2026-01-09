@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, AlertCircle, Megaphone, EyeOff, DollarSign, Users, MessageCircle, Linkedin, ArrowRight, Sparkles } from 'lucide-react';
+import { X, Check, AlertCircle, Megaphone, EyeOff, Users, MessageCircle, Linkedin, ArrowRight, Sparkles } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { supabase } from '@/api/supabaseClient';
+import { ADMIN_EMAILS } from '@/constants/adminEmails';
 import FundraisingDisclaimerModal from './FundraisingDisclaimerModal';
 
 // ============================================
@@ -54,14 +55,67 @@ const STAGES = [
   'Revenue-based',
 ];
 
-// ============================================
-// ADMIN EMAILS (bypass posting restrictions)
-// ============================================
-const ADMIN_EMAILS = [
-  'admin@test.chistartuphub.com',
-  'hello@chistartuphub.com',
-  'billy@chistartuphub.com',
+// Guidance types for Fundraising Guidance category (SEC-compliant options)
+const GUIDANCE_TYPES = [
+  { value: 'warm_intro', label: 'Warm introduction to investors' },
+  { value: 'pitch_review', label: 'Pitch deck review & feedback' },
+  { value: 'strategy', label: 'Fundraising strategy advice' },
+  { value: 'data_room', label: 'Data room organization help' },
+  { value: 'due_diligence', label: 'Due diligence preparation' },
+  { value: 'term_sheet', label: 'Term sheet review guidance' },
 ];
+
+// ============================================
+// SEC COMPLIANCE VALIDATION
+// ============================================
+// Auto-detect prohibited content in fundraising asks
+
+const SEC_PROHIBITED_PATTERNS = [
+  // Dollar amounts - various formats
+  { pattern: /\$\d+[\d,]*(?:\.\d+)?(?:\s*(?:k|m|mm|b|bn|million|billion|thousand))?/gi, reason: 'dollar amounts' },
+  { pattern: /\b\d+(?:\.\d+)?\s*(?:k|m|mm|b|bn|million|billion|thousand)\b/gi, reason: 'monetary amounts' },
+  { pattern: /raising\s+\$?\d+/gi, reason: 'specific fundraising amounts' },
+
+  // Valuation terms
+  { pattern: /\b(?:pre-?money|post-?money)\s*(?:valuation)?/gi, reason: 'valuation terms' },
+  { pattern: /\bvaluation\s*(?:of|at|is)?\s*\$?\d+/gi, reason: 'specific valuation' },
+  { pattern: /\bcap\s+(?:of\s+)?\$?\d+/gi, reason: 'cap amounts' },
+
+  // Direct solicitation phrases
+  { pattern: /\b(?:looking|searching|seeking)\s+(?:for\s+)?(?:investors?|investment|capital|funding)\b/gi, reason: 'investment solicitation' },
+  { pattern: /\binvest(?:ment)?\s+(?:in|into)\s+(?:us|my|our)\b/gi, reason: 'investment solicitation' },
+  { pattern: /\bopen\s+(?:for|to)\s+investment\b/gi, reason: 'investment solicitation' },
+  { pattern: /\b(?:invest|put\s+money)\s+in\s+(?:us|my|our|the)\b/gi, reason: 'investment solicitation' },
+  { pattern: /\bequity\s+(?:for|in\s+exchange)\b/gi, reason: 'equity offering' },
+  { pattern: /\bsafe\s+(?:note|agreement)\b/gi, reason: 'investment instrument terms' },
+  { pattern: /\bconvertible\s+note\b/gi, reason: 'investment instrument terms' },
+];
+
+/**
+ * Validates description text for SEC compliance violations
+ * @param {string} text - The description text to validate
+ * @returns {{ isValid: boolean, violations: string[] }}
+ */
+function validateSECCompliance(text) {
+  if (!text) return { isValid: true, violations: [] };
+
+  const violations = [];
+  const seenReasons = new Set();
+
+  for (const { pattern, reason } of SEC_PROHIBITED_PATTERNS) {
+    // Reset lastIndex for global patterns
+    pattern.lastIndex = 0;
+    if (pattern.test(text) && !seenReasons.has(reason)) {
+      seenReasons.add(reason);
+      violations.push(reason);
+    }
+  }
+
+  return {
+    isValid: violations.length === 0,
+    violations,
+  };
+}
 
 // ============================================
 // POST ASK MODAL COMPONENT
@@ -93,7 +147,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
   const [category, setCategory] = useState('');
   const [sector, setSector] = useState('');
   const [description, setDescription] = useState('');
-  const [amount, setAmount] = useState('');
+  const [guidanceType, setGuidanceType] = useState('');
   const [stage, setStage] = useState('');
   const [linkedinUrl, setLinkedinUrl] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
@@ -102,8 +156,9 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
   // SEC Compliance state
   const [disclaimerAcknowledged, setDisclaimerAcknowledged] = useState(false);
   const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
+  const [secViolations, setSecViolations] = useState([]);
 
-  // Check if user can post (one ask per 14 days, unless admin)
+  // Check if user can post (one ask per 7 days, unless admin)
   useEffect(() => {
     const checkCanPost = async () => {
       if (!user) return;
@@ -134,15 +189,15 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
       }
 
       // Fallback: query directly
-      const fourteenDaysAgo = new Date();
-      fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
       const { data: recentAsks, error: queryError } = await supabase
         .from('founder_asks')
         .select('created_at')
         .eq('user_id', user.id)
         .eq('is_active', true)
-        .gte('created_at', fourteenDaysAgo.toISOString())
+        .gte('created_at', sevenDaysAgo.toISOString())
         .order('created_at', { ascending: false })
         .limit(1);
 
@@ -151,7 +206,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
           setCanPost(false);
           const lastAskDate = new Date(recentAsks[0].created_at);
           const daysPassed = Math.floor((Date.now() - lastAskDate.getTime()) / (1000 * 60 * 60 * 24));
-          setDaysUntilNext(Math.max(0, 14 - daysPassed));
+          setDaysUntilNext(Math.max(0, 7 - daysPassed));
         } else {
           setCanPost(true);
         }
@@ -175,7 +230,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
     setCategory('');
     setSector('');
     setDescription('');
-    setAmount('');
+    setGuidanceType('');
     setStage('');
     setIsAnonymous(false);
     setAllowAmplification(true);
@@ -188,6 +243,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
     // Reset SEC compliance state
     setDisclaimerAcknowledged(false);
     setShowDisclaimerModal(false);
+    setSecViolations([]);
   };
 
   // Handle profile completion before allowing Ask posting
@@ -206,7 +262,6 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
         linkedin_url: profileLinkedinUrl.trim(),
         company_name: profileCompanyName.trim(),
         bio: profileBio.trim() || profile?.bio || null,
-        verification_status: 'pending',
       });
 
       if (error) throw error;
@@ -245,9 +300,22 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
 
     const isFundraisingCategory = category === 'fundraising' || category === 'fundraising_guidance';
 
-    if (isFundraisingCategory && !amount) {
-      toast.error('Please specify your fundraising amount');
+    if (isFundraisingCategory && !guidanceType) {
+      toast.error('Please select what kind of guidance you need');
       return;
+    }
+
+    // SEC Compliance validation for fundraising asks
+    if (isFundraisingCategory) {
+      const validation = validateSECCompliance(description);
+      if (!validation.isValid) {
+        setSecViolations(validation.violations);
+        setStep(2); // Go back to description step
+        toast.error('Your ask contains prohibited content', {
+          description: 'Please review the guidelines and update your description.',
+        });
+        return;
+      }
     }
 
     setLoading(true);
@@ -260,23 +328,22 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
           category,
           sector,
           description,
-          amount: isFundraisingCategory ? amount : null,
-          stage: isFundraisingCategory ? stage : null,
           linkedin_url: linkedinUrl,
           is_anonymous: isAnonymous,
           allow_amplification: allowAmplification,
           is_active: true,
-          // SEC Compliance fields
-          disclaimer_acknowledged: isFundraisingCategory ? disclaimerAcknowledged : false,
-          disclaimer_acknowledged_at: isFundraisingCategory && disclaimerAcknowledged ? new Date().toISOString() : null,
-          compliance_type: isFundraisingCategory ? 'intro' : 'advice',
-          amount_visibility: isFundraisingCategory ? 'helpers_only' : 'public',
-          terms_version: '1.0',
         })
         .select()
         .single();
 
       if (error) throw error;
+
+      // Update profile with sector (enriches profile from Ask flow)
+      if (sector && updateProfile) {
+        await updateProfile({
+          industry_focus: sector,
+        }).catch(err => console.warn('Profile update skipped:', err.message));
+      }
 
       // Show success state instead of closing immediately
       setShowSuccess(true);
@@ -392,7 +459,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                   <AlertCircle className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                   <div>
                     <p className="font-mono text-[11px] uppercase tracking-[0.1em] text-blue-400 mb-1">
-                      One Ask Per 14 Days
+                      One Ask Per 7 Days
                     </p>
                     <p className="text-sm text-white/50">
                       You can post a new ask in {daysUntilNext} days. You can refresh your existing ask anytime.
@@ -585,51 +652,89 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                   </label>
                   <textarea
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    onChange={(e) => {
+                      setDescription(e.target.value);
+                      // Clear SEC violations when user edits
+                      if (secViolations.length > 0) {
+                        setSecViolations([]);
+                      }
+                    }}
                     placeholder={
-                      category === 'fundraising' 
-                        ? "What are you building? What stage? What kind of investors are you looking for?"
+                      category === 'fundraising'
+                        ? "What are you building? What stage? What kind of guidance do you need?"
                         : category === 'cofounder'
                         ? "What role are you looking for? What skills? What's the equity situation?"
                         : "What specific help or advice do you need?"
                     }
-                    className="w-full h-32 bg-transparent border border-white/20 p-4 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/40 resize-none font-mono"
+                    className={`w-full h-32 bg-transparent border p-4 text-sm text-white placeholder:text-white/30 focus:outline-none resize-none font-mono ${
+                      secViolations.length > 0
+                        ? 'border-red-500/50 focus:border-red-500/70'
+                        : 'border-white/20 focus:border-white/40'
+                    }`}
                     maxLength={500}
                   />
-                  <span className="font-mono text-[10px] text-white/30 block mt-1 text-right">
-                    {description.length}/500
-                  </span>
+                  <div className="flex justify-between items-start mt-1">
+                    <span className="font-mono text-[10px] text-white/30">
+                      {description.length}/500
+                    </span>
+                  </div>
+
+                  {/* SEC Violation Error */}
+                  {secViolations.length > 0 && (
+                    <div className="mt-3 p-3 border border-red-500/30 bg-red-500/10">
+                      <div className="flex items-start gap-2">
+                        <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                        <div>
+                          <p className="font-mono text-[10px] text-red-400 uppercase tracking-[0.1em] mb-1">
+                            Prohibited Content Detected
+                          </p>
+                          <p className="text-xs text-white/60 mb-2">
+                            Your description contains {secViolations.join(', ')}. This platform is for seeking guidance and introductions — not direct investment solicitation.
+                          </p>
+                          <p className="text-xs text-white/40">
+                            Please remove specific amounts, valuations, and investment-seeking language to continue.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                {/* Fundraising-specific fields */}
+                {/* Fundraising Guidance-specific fields */}
                 {(category === 'fundraising' || category === 'fundraising_guidance') && (
                   <>
                     <div>
                       <label className="font-mono text-[10px] text-white/50 uppercase tracking-[0.1em] block mb-2">
-                        How much are you raising? *
+                        What kind of guidance do you need? *
                       </label>
-                      <div className="relative">
-                        <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" strokeWidth={1.5} />
-                        <input
-                          type="text"
-                          value={amount}
-                          onChange={(e) => setAmount(e.target.value)}
-                          placeholder="e.g., 500K, 2M, 5M"
-                          className="w-full bg-transparent border border-white/20 py-3 pl-10 pr-4 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/40 font-mono"
-                        />
+                      <div className="space-y-2">
+                        {GUIDANCE_TYPES.map((type) => (
+                          <button
+                            key={type.value}
+                            type="button"
+                            onClick={() => setGuidanceType(type.value)}
+                            className={`w-full text-left font-mono text-[11px] px-4 py-3 border transition-colors cursor-crosshair ${
+                              guidanceType === type.value
+                                ? 'bg-white text-black border-white'
+                                : 'bg-transparent text-white/70 border-white/20 hover:border-white/40'
+                            }`}
+                          >
+                            {type.label}
+                          </button>
+                        ))}
                       </div>
                     </div>
 
                     <div>
                       <label className="font-mono text-[10px] text-white/50 uppercase tracking-[0.1em] block mb-2">
-                        Stage
+                        Stage (optional)
                       </label>
                       <div className="flex flex-wrap gap-2">
                         {STAGES.map((s) => (
                           <button
                             key={s}
                             type="button"
-                            onClick={() => setStage(s)}
+                            onClick={() => setStage(stage === s ? '' : s)}
                             className={`font-mono text-[10px] uppercase tracking-[0.1em] px-3 py-2 border transition-colors cursor-crosshair ${
                               stage === s
                                 ? 'bg-white text-black border-white'
@@ -674,7 +779,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                   </button>
                   <button
                     onClick={() => setStep(3)}
-                    disabled={!description || ((category === 'fundraising' || category === 'fundraising_guidance') && !amount) || !linkedinUrl}
+                    disabled={!description || ((category === 'fundraising' || category === 'fundraising_guidance') && !guidanceType) || !linkedinUrl}
                     className="flex-1 font-mono text-[11px] uppercase tracking-[0.1em] py-3 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair disabled:opacity-30 disabled:cursor-not-allowed"
                   >
                     Continue
@@ -760,10 +865,16 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                       <span className="text-white/40">Sector</span>
                       <span className="text-white">{sector}</span>
                     </div>
-                    {(category === 'fundraising' || category === 'fundraising_guidance') && amount && (
+                    {(category === 'fundraising' || category === 'fundraising_guidance') && guidanceType && (
                       <div className="flex justify-between">
-                        <span className="text-white/40">Raising</span>
-                        <span className="text-white">${amount}</span>
+                        <span className="text-white/40">Guidance</span>
+                        <span className="text-white">{GUIDANCE_TYPES.find(t => t.value === guidanceType)?.label}</span>
+                      </div>
+                    )}
+                    {stage && (
+                      <div className="flex justify-between">
+                        <span className="text-white/40">Stage</span>
+                        <span className="text-white">{stage}</span>
                       </div>
                     )}
                     <div className="flex justify-between">
@@ -803,12 +914,30 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                   <Sparkles className="w-8 h-8 text-green-400" strokeWidth={1.5} />
                 </div>
 
-                <h3 className="font-serif text-2xl text-white mb-2">
-                  Your Ask is Live
+                <h3 className="font-serif text-2xl text-white mb-4">
+                  Your Ask is Live!
                 </h3>
-                <p className="text-white/50 text-sm max-w-sm mx-auto mb-8">
-                  Community helpers can now see your ask and reach out. We'll notify you when someone offers to help.
-                </p>
+
+                {/* Post-submission context */}
+                <div className="text-left bg-white/5 border border-white/10 p-4 mb-6">
+                  <p className="font-mono text-[10px] text-white/40 uppercase tracking-[0.15em] mb-3">
+                    Here's what happens next:
+                  </p>
+                  <ol className="space-y-2 text-sm text-white/60">
+                    <li className="flex items-start gap-3">
+                      <span className="font-mono text-white/30">1.</span>
+                      <span>Helpers see your ask and reach out if they can help</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="font-mono text-white/30">2.</span>
+                      <span>You review their offer and accept the ones that fit</span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <span className="font-mono text-white/30">3.</span>
+                      <span>You get their LinkedIn to continue the conversation privately</span>
+                    </li>
+                  </ol>
+                </div>
 
                 <div className="space-y-3">
                   <button
@@ -842,10 +971,6 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                     Keep Browsing
                   </button>
                 </div>
-
-                <p className="mt-6 text-[11px] text-white/30 font-mono">
-                  Tip: Sharing amplifies your reach beyond the platform
-                </p>
               </div>
             )}
           </div>

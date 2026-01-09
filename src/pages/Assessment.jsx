@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Box, Megaphone, Settings, Brain, CheckCircle2, RotateCcw, Share2, Bookmark } from "lucide-react";
+import { ArrowLeft, ArrowRight, Box, Megaphone, Settings, Brain, CheckCircle2, RotateCcw, Bookmark } from "lucide-react";
 import SEO from "@/components/SEO";
 import { BureauAtmosphere, BureauFooter } from "@/components/bureau";
 import { useAuth } from "@/contexts/AuthContext";
@@ -253,7 +253,7 @@ const RECOMMENDATIONS = {
 
 export default function Assessment() {
   const navigate = useNavigate();
-  const { user, profile, openSignup } = useAuth();
+  const { user, openSignup } = useAuth();
   const { addBookmark } = useBookmarks();
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentStep, setCurrentStep] = useState("intro"); // intro, questions, results
@@ -282,7 +282,6 @@ export default function Assessment() {
   const calculateResults = () => {
     const dimensionResults = {};
     let totalScore = 0;
-    let questionCount = 0;
 
     DIMENSIONS.forEach((dim) => {
       const dimAnswers = dim.questions.map((q) => answers[q.id] || 1);
@@ -296,7 +295,6 @@ export default function Assessment() {
       };
 
       totalScore += avgScore;
-      questionCount += dimAnswers.length;
     });
 
     const overallScore = totalScore / 4;
@@ -452,7 +450,7 @@ export default function Assessment() {
     }
   };
 
-  const handleFeedback = async (helpful) => {
+  const handleFeedback = async (_helpful) => {
     setFeedbackGiven(true);
     // Could save to Supabase for analytics
     toast.success("Thanks for your feedback!");
@@ -466,15 +464,7 @@ export default function Assessment() {
   const getGaps = () => {
     if (!results) return [];
     return Object.entries(results.dimensions)
-      .filter(([_, data]) => data.phase === 1)
-      .map(([id]) => DIMENSIONS.find((d) => d.id === id));
-  };
-
-  // Find strengths (dimensions in Phase 3)
-  const getStrengths = () => {
-    if (!results) return [];
-    return Object.entries(results.dimensions)
-      .filter(([_, data]) => data.phase === 3)
+      .filter(([_id, data]) => data.phase === 1)
       .map(([id]) => DIMENSIONS.find((d) => d.id === id));
   };
 

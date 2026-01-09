@@ -1,10 +1,10 @@
-import React, { useState, useMemo } from "react";
-import { DollarSign, ExternalLink, Calendar, TrendingUp, Rocket, Award, Search, Filter, X, Flame, ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
+import { useState, useMemo } from "react";
+import { DollarSign, Calendar, Search, Filter, X, Flame, ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
 import ShareActions from "@/components/ShareActions";
 
 const ITEMS_PER_PAGE = 12;
 
-export default function FundingOpportunitiesContent({ opportunities = [], upcomingOpportunities = [] }) {
+export default function FundingOpportunitiesContent({ opportunities = [] }) {
   const [activeTab, setActiveTab] = useState("all");
   const [focusFilter, setFocusFilter] = useState("all");
   const [stageFilter, setStageFilter] = useState("all");

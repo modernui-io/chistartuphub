@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Users, ExternalLink, Search, Loader2, ArrowUpRight } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
+import { Users, Search, ArrowUpRight } from "lucide-react";
 import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
 import SEO from "@/components/SEO";
 import ShareActions from "@/components/ShareActions";
-import { BureauAtmosphere, BureauButton, BureauFooter } from "@/components/bureau";
+import { BureauAtmosphere, BureauFooter } from "@/components/bureau";
 
 export default function Community() {
   const [searchQuery, setSearchQuery] = useState("");

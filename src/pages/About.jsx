@@ -1,15 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { motion } from "framer-motion";
 import {
   Target,
   Users,
   Heart,
   Shield,
-  CheckCircle2,
   Mail,
-  ArrowRight,
   ArrowUpRight
 } from "lucide-react";
 import SEO from "@/components/SEO";

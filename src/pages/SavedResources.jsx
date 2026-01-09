@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { Bookmark, ExternalLink, Trash2, Filter, Search, FolderOpen, Download, StickyNote, X, Check } from "lucide-react";
+import { ExternalLink, Trash2, Search, FolderOpen, Download, StickyNote, X, Check } from "lucide-react";
 import ExportResourcesModal from "@/components/ExportResourcesModal";
 import { BureauAtmosphere, BureauFooter } from "@/components/bureau";
 import SEO from "@/components/SEO";
@@ -9,7 +9,7 @@ import { supabase } from "@/api/supabaseClient";
 import { toast } from "sonner";
 
 export default function SavedResources() {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [savedItems, setSavedItems] = useState([]);
   const [loading, setLoading] = useState(true);

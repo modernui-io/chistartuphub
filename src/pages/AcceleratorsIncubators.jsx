@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Rocket, ExternalLink, Search, Filter, X, Building2, Loader2 } from "lucide-react";
 import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";

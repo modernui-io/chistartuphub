@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Calendar, Search, ArrowUpRight } from "lucide-react";
 import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Send, Download, Search, X, ChevronDown, ChevronRight, Compass, BookOpen, Wrench, TrendingUp, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";

@@ -17,17 +17,12 @@ import {
   XCircle,
   Clock,
   DollarSign,
-  UserPlus,
-  Activity,
   BarChart3,
   Eye,
   Trash2,
   Shield,
   RefreshCw,
-  Filter,
   Search,
-  ChevronDown,
-  ExternalLink,
   Loader2,
   Megaphone,
   Download,
@@ -36,7 +31,6 @@ import {
   Linkedin,
   Mail,
   CheckSquare,
-  Square,
   Send,
   Calendar,
   FileText,
@@ -45,19 +39,10 @@ import {
   Reply,
   Archive
 } from 'lucide-react';
-
-// ============================================
-// ADMIN ACCESS CHECK
-// ============================================
-const ADMIN_EMAILS = [
-  'admin@test.chistartuphub.com',
-  'hello@chistartuphub.com',
-  'billy@chistartuphub.com',
-  // Add more admin emails as needed
-];
+import { ADMIN_EMAILS } from '@/constants/adminEmails';
 
 export default function Admin() {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
@@ -209,7 +194,7 @@ export default function Admin() {
 
   const fetchUsers = async () => {
     const { data, error } = await supabase
-      .from('user_profiles')
+      .from('user_profiles_decrypted')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(100);
@@ -309,7 +294,7 @@ export default function Admin() {
         });
 
         if (emailResult.success) {
-          console.log(`[AMPLIFICATION] Email sent to ${ask.user_profiles.email}`);
+          console.log(`[AMPLIFICATION] Email sent to founder (ask: ${ask.id})`);
         } else {
           console.error(`[AMPLIFICATION] Email failed:`, emailResult.error);
           // Don't throw - amplification is marked, just email failed
@@ -1080,7 +1065,7 @@ export default function Admin() {
                       <div>
                         <span className="text-white/40 text-xs block mb-1">Requester</span>
                         <span className="text-white">{conn.requester_name || 'Unknown'}</span>
-                        <span className="text-white/30 text-xs block">{conn.requester_email}</span>
+                        <span className="text-white/30 text-xs block">{conn.requester_email || `ID: ${conn.requester_id?.slice(0, 8)}...`}</span>
                       </div>
                       <div>
                         <span className="text-white/40 text-xs block mb-1">Ask</span>

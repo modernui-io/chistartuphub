@@ -1,17 +1,15 @@
-import React, { useState } from "react";
-import { Rocket, Building2, Calendar, Newspaper, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState } from "react";
+import { Rocket, Building2, Newspaper, ChevronLeft, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import NewsCard from "./NewsCard";
 
-export default function NewsList({ 
-  fundsClosed, 
-  roundsClosed, 
-  groupedStartupRounds, 
-  groupedFundCloses,
+export default function NewsList({
+  fundsClosed,
+  roundsClosed,
   clearNewsFilters,
-  hasNoResults 
+  hasNoResults
 }) {
   const [currentDealsPage, setCurrentDealsPage] = useState(0);
   const [currentFundsPage, setCurrentFundsPage] = useState(0);

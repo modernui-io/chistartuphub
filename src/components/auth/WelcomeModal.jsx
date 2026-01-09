@@ -100,7 +100,7 @@ export default function WelcomeModal({ isOpen, onClose, userName, userRole }) {
                   <ul className="text-sm text-white/50 space-y-2">
                     <li className="flex items-start gap-2">
                       <span className="text-white/30">•</span>
-                      <span>Post <strong className="text-white/70">1 ask every 14 days</strong> to ensure quality responses</span>
+                      <span>Post <strong className="text-white/70">1 ask every 7 days</strong> to ensure quality responses</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-white/30">•</span>

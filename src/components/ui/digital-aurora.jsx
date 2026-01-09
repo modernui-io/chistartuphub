@@ -1,5 +1,3 @@
-import React from 'react';
-
 // ===================== HERO COMPONENT =====================
 const AuroraHero = ({
   title,

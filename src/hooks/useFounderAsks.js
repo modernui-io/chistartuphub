@@ -153,6 +153,7 @@ export function useConnectionRequest() {
         throw new Error('You have already requested to connect with this founder');
       }
 
+      // NOTE: requester_email removed - fetch from user_profiles_decrypted via requester_id when needed
       const { data, error } = await supabase
         .from('connection_requests')
         .insert({
@@ -161,7 +162,6 @@ export function useConnectionRequest() {
           founder_id: founderId,
           requester_linkedin: linkedinUrl,
           requester_context: context,
-          requester_email: user.email,
         })
         .select()
         .single();

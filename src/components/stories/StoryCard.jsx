@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import { Badge } from "@/components/ui/badge";
 
 const StoryCard = memo(function StoryCard({ story, size = "default" }) {

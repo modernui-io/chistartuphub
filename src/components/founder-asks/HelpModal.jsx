@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Linkedin, Mail, Send, AlertCircle, Heart, ArrowRight } from 'lucide-react';
+import { X, Linkedin, Send, AlertCircle, Heart, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -61,6 +61,7 @@ export default function HelpModal({ isOpen, onClose, ask }) {
       }
 
       // Create connection request
+      // NOTE: requester_email removed - fetch from user_profiles_decrypted via requester_id when needed
       const { error: insertError } = await supabase
         .from('connection_requests')
         .insert({
@@ -69,19 +70,25 @@ export default function HelpModal({ isOpen, onClose, ask }) {
           founder_id: ask.userId,
           requester_linkedin: linkedinUrl,
           requester_context: message,
-          requester_email: user.email,
           requester_name: profile?.full_name || user.email,
         });
 
       if (insertError) throw insertError;
 
-      // Increment connection request count
-      await supabase.rpc('increment_connection_count', { ask_uuid: ask.id });
+      // Increment connection request count (non-blocking - don't fail if count update fails)
+      try {
+        await supabase.rpc('increment_connection_count', { ask_uuid: ask.id });
+      } catch (rpcError) {
+        // Log but don't block - the connection request was created successfully
+        if (import.meta.env.DEV) {
+          console.warn('[HELP] Failed to increment connection count:', rpcError.message);
+        }
+      }
 
-      // Get founder's email and send notification
+      // Get founder's email and send notification (use decrypted view for PII)
       if (ask.userId) {
         const { data: founderProfile } = await supabase
-          .from('user_profiles')
+          .from('user_profiles_decrypted')
           .select('email, full_name')
           .eq('id', ask.userId)
           .single();
@@ -179,11 +186,11 @@ export default function HelpModal({ isOpen, onClose, ask }) {
                   <button
                     onClick={() => {
                       handleClose();
-                      navigate('/profile?tab=requests');
+                      navigate('/profile?tab=offers');
                     }}
                     className="w-full font-mono text-[11px] uppercase tracking-[0.1em] py-4 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair flex items-center justify-center gap-2"
                   >
-                    View Requests
+                    View My Offers
                     <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
                   </button>
                   <button

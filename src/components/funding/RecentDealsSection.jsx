@@ -1,4 +1,3 @@
-import React from "react";
 import { TrendingUp, DollarSign, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";

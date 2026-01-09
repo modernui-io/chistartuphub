@@ -159,9 +159,15 @@ export default function ConnectionRequests({ hasAsks = true, onPostAsk }) {
 
       if (error) throw error;
 
-      // Send email notification to helper
-      if (selectedRequest.requester_email) {
-        const emailResult = await sendConnectionAcceptedEmail(selectedRequest.requester_email, {
+      // Fetch requester's email from encrypted store and send notification
+      const { data: requesterProfile } = await supabase
+        .from('user_profiles_decrypted')
+        .select('email')
+        .eq('id', selectedRequest.requester_id)
+        .single();
+
+      if (requesterProfile?.email) {
+        const emailResult = await sendConnectionAcceptedEmail(requesterProfile.email, {
           helperName: selectedRequest.requester_name || 'Helper',
           founderName: profile?.full_name || 'Founder',
           founderEmail: user.email,
@@ -202,9 +208,15 @@ export default function ConnectionRequests({ hasAsks = true, onPostAsk }) {
 
       if (error) throw error;
 
-      // Send email notification to helper
-      if (request.requester_email) {
-        const emailResult = await sendConnectionDeclinedEmail(request.requester_email, {
+      // Fetch requester's email from encrypted store and send notification
+      const { data: requesterProfile } = await supabase
+        .from('user_profiles_decrypted')
+        .select('email')
+        .eq('id', request.requester_id)
+        .single();
+
+      if (requesterProfile?.email) {
+        const emailResult = await sendConnectionDeclinedEmail(requesterProfile.email, {
           helperName: request.requester_name || 'Helper',
           founderName: profile?.full_name || 'Founder',
           askDescription: request.founder_asks?.description || 'The ask',

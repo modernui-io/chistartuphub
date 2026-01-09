@@ -12,13 +12,7 @@ import {
   Shield,
   Bell
 } from "lucide-react";
-
-// Admin access list
-const ADMIN_EMAILS = [
-  'admin@test.chistartuphub.com',
-  'hello@chistartuphub.com',
-  'billy@chistartuphub.com',
-];
+import { ADMIN_EMAILS } from '@/constants/adminEmails';
 import {
   DropdownMenu,
   DropdownMenuContent,
