@@ -15,27 +15,33 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(null);
   const { signIn, signInWithOAuth } = useAuth();
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
 
-    const { error } = await signIn(email, password);
+    const { error: signInError } = await signIn(email, password);
 
-    if (error) {
+    if (signInError) {
       if (import.meta.env.DEV) {
-        console.error('[LOGIN] Error details:', error);
+        console.error('[LOGIN] Error details:', signInError);
       }
 
       // Provide better error messages
-      let errorMessage = error.message;
-      if (error.message.includes('Invalid login credentials')) {
+      let errorMessage = signInError.message;
+      if (signInError.message.includes('Invalid login credentials')) {
         errorMessage = 'Invalid email or password. Please check your credentials and try again.';
-      } else if (error.message.includes('Email not confirmed')) {
+      } else if (signInError.message.includes('Email not confirmed')) {
         errorMessage = 'Please verify your email before signing in. Check your inbox for a confirmation link.';
       }
 
+      // Set inline error (visible in form)
+      setError(errorMessage);
+
+      // Also show toast
       toast.error('Login failed', {
         description: errorMessage,
       });
@@ -45,6 +51,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
       });
       setEmail('');
       setPassword('');
+      setError(null);
       onClose();
     }
 
@@ -113,6 +120,15 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
               </button>
             </div>
           </div>
+
+          {/* Inline Error Message */}
+          {error && (
+            <div className="p-3 border border-red-500/50 bg-red-500/10">
+              <p className="font-mono text-[11px] text-red-400 uppercase tracking-[0.05em]">
+                {error}
+              </p>
+            </div>
+          )}
 
           <button
             type="submit"

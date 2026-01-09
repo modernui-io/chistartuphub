@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { DollarSign, Calendar, Search, Filter, X, Flame, ChevronLeft, ChevronRight, ArrowUpRight } from "lucide-react";
 import ShareActions from "@/components/ShareActions";
+import FundingDetailModal from "./FundingDetailModal";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -12,6 +13,8 @@ export default function FundingOpportunitiesContent({ opportunities = [] }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(0);
+  const [selectedOpportunity, setSelectedOpportunity] = useState(null);
+  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
 
   const quickTabs = [
     { id: "all", label: "All" },
@@ -315,7 +318,11 @@ export default function FundingOpportunitiesContent({ opportunities = [] }) {
               return (
                 <div
                   key={opp.id || index}
-                  className="p-6 border-b border-r border-white/10 last:border-r-0 md:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0 bg-black/20 hover:bg-black/40 transition-colors group flex flex-col"
+                  onClick={(e) => {
+                    setModalPosition({ x: e.clientX, y: e.clientY });
+                    setSelectedOpportunity(opp);
+                  }}
+                  className="p-6 border-b border-r border-white/10 last:border-r-0 md:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0 bg-black/20 hover:bg-black/40 transition-colors group flex flex-col cursor-pointer"
                 >
                   <div className="flex items-start justify-between mb-3">
                     <span className="font-mono text-xs text-white/20">
@@ -364,7 +371,7 @@ export default function FundingOpportunitiesContent({ opportunities = [] }) {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
                       <ShareActions
                         resourceType="funding_opportunity"
                         resourceId={opp.id}
@@ -372,15 +379,17 @@ export default function FundingOpportunitiesContent({ opportunities = [] }) {
                         resourceDescription={description}
                         resourceUrl={url}
                       />
-                      <a
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setModalPosition({ x: e.clientX, y: e.clientY });
+                          setSelectedOpportunity(opp);
+                        }}
                         className="font-mono text-[10px] uppercase tracking-[0.15em] px-3 py-2 border border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white transition-colors flex items-center gap-1 cursor-crosshair"
                       >
-                        View
+                        Details
                         <ArrowUpRight className="w-3 h-3" strokeWidth={1.5} />
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -460,6 +469,14 @@ export default function FundingOpportunitiesContent({ opportunities = [] }) {
           ))}
         </div>
       </section>
+
+      {/* Detail Modal */}
+      <FundingDetailModal
+        opportunity={selectedOpportunity}
+        isOpen={!!selectedOpportunity}
+        onClose={() => setSelectedOpportunity(null)}
+        position={modalPosition}
+      />
     </div>
   );
 }
