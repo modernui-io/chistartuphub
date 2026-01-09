@@ -446,7 +446,10 @@ export default function Admin() {
       .eq('id', askId);
 
     if (error) {
-      toast.error('Failed to delete ask');
+      console.error('[ADMIN] Delete ask error:', error);
+      toast.error('Failed to delete ask', {
+        description: error.message || 'Check RLS policies'
+      });
     } else {
       toast.success('Ask deleted');
       fetchAsks();
@@ -944,6 +947,26 @@ export default function Admin() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
+              {/* Stats Summary */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="border border-white/10 p-4 bg-black/40 text-center">
+                  <div className="text-2xl font-bold text-white">{stats.totalAsks}</div>
+                  <div className="text-[10px] font-mono text-white/40 uppercase tracking-wider mt-1">Total Asks</div>
+                </div>
+                <div className="border border-green-500/20 p-4 bg-green-500/5 text-center">
+                  <div className="text-2xl font-bold text-green-400">{stats.activeAsks}</div>
+                  <div className="text-[10px] font-mono text-white/40 uppercase tracking-wider mt-1">Active</div>
+                </div>
+                <div className="border border-white/10 p-4 bg-black/40 text-center">
+                  <div className="text-2xl font-bold text-white/50">{stats.totalAsks - stats.activeAsks}</div>
+                  <div className="text-[10px] font-mono text-white/40 uppercase tracking-wider mt-1">Inactive</div>
+                </div>
+                <div className="border border-amber-500/20 p-4 bg-amber-500/5 text-center">
+                  <div className="text-2xl font-bold text-amber-400">{stats.amplifyAsks}</div>
+                  <div className="text-[10px] font-mono text-white/40 uppercase tracking-wider mt-1">Amplify Ready</div>
+                </div>
+              </div>
+
               {/* Filters */}
               <div className="flex flex-wrap gap-2 mb-6">
                 {[
