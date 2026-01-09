@@ -382,6 +382,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess, editingAsk = 
             sector,
             description,
             linkedin_url: linkedinUrl,
+            company_name: profile?.company_name || null,
             is_anonymous: isAnonymous,
             allow_amplification: allowAmplification,
             is_active: true,
