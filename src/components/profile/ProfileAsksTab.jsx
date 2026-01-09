@@ -6,7 +6,8 @@ import {
   Users,
   ArrowRight,
   Loader2,
-  MessageSquarePlus
+  MessageSquarePlus,
+  Pencil
 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,12 +27,14 @@ const CATEGORY_LABELS = {
  * @param {boolean} props.loading - Loading state
  * @param {Function} props.onPostAsk - Handler to open post ask modal
  * @param {Function} props.onViewRequests - Handler to switch to requests tab
+ * @param {Function} props.onEditAsk - Handler to edit an ask
  */
 export default function ProfileAsksTab({
   asks = [],
   loading = false,
   onPostAsk,
   onViewRequests,
+  onEditAsk,
 }) {
   if (loading) {
     return (
@@ -83,6 +86,7 @@ export default function ProfileAsksTab({
               key={ask.id}
               ask={ask}
               onViewRequests={onViewRequests}
+              onEdit={() => onEditAsk && onEditAsk(ask)}
             />
           ))}
         </div>
@@ -94,7 +98,7 @@ export default function ProfileAsksTab({
 /**
  * Individual ask card
  */
-function AskCard({ ask, onViewRequests }) {
+function AskCard({ ask, onViewRequests, onEdit }) {
   const isActive = ask.is_active;
   const expiresAt = new Date(ask.expires_at);
   const isExpired = expiresAt < new Date();
@@ -107,7 +111,7 @@ function AskCard({ ask, onViewRequests }) {
       animate={{ opacity: 1, y: 0 }}
       className="bg-black/40 backdrop-blur-sm border border-white/10 rounded-none p-6"
     >
-      {/* Status + Category */}
+      {/* Status + Category + Edit */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <span className={`px-3 py-1 text-[10px] font-mono uppercase tracking-[0.1em] border ${
@@ -123,12 +127,26 @@ function AskCard({ ask, onViewRequests }) {
             {CATEGORY_LABELS[ask.category] || ask.category}
           </span>
         </div>
-        {!isExpired && (
-          <div className="flex items-center gap-1.5 text-xs text-white/40">
-            <Clock size={12} />
-            {daysLeft} days left
-          </div>
-        )}
+        <div className="flex items-center gap-3">
+          {/* Edit button - only for non-expired asks */}
+          {!isExpired && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onEdit}
+              className="text-white/40 hover:text-white hover:bg-white/10 rounded-none h-8 px-2"
+            >
+              <Pencil size={14} className="mr-1.5" />
+              <span className="text-[10px] font-mono uppercase tracking-wider">Edit</span>
+            </Button>
+          )}
+          {!isExpired && (
+            <div className="flex items-center gap-1.5 text-xs text-white/40">
+              <Clock size={12} />
+              {daysLeft} days left
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Description */}

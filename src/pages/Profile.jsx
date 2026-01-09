@@ -172,6 +172,7 @@ export default function Profile() {
   const [myAsks, setMyAsks] = useState([]);
   const [asksLoading, setAsksLoading] = useState(false);
   const [showPostAskModal, setShowPostAskModal] = useState(false);
+  const [editingAsk, setEditingAsk] = useState(null);
   const [isEditingInline, setIsEditingInline] = useState(false);
   const [myOffers, setMyOffers] = useState([]);
   const [offersLoading, setOffersLoading] = useState(false);
@@ -1159,6 +1160,10 @@ export default function Profile() {
             loading={asksLoading}
             onPostAsk={() => setShowPostAskModal(true)}
             onViewRequests={() => setActiveTab('requests')}
+            onEditAsk={(ask) => {
+              setEditingAsk(ask);
+              setShowPostAskModal(true);
+            }}
           />
         )}
 
@@ -1285,9 +1290,14 @@ export default function Profile() {
       {/* Post Ask Modal */}
       <PostAskModal
         isOpen={showPostAskModal}
-        onClose={() => setShowPostAskModal(false)}
+        onClose={() => {
+          setShowPostAskModal(false);
+          setEditingAsk(null);
+        }}
+        editingAsk={editingAsk}
         onSuccess={() => {
           setShowPostAskModal(false);
+          setEditingAsk(null);
           // Refresh asks list
           if (user) {
             supabase

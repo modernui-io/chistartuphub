@@ -159,26 +159,41 @@ export default function FounderAskCard({ ask, index, onHelp, isAdmin, onModerate
 
       {/* Body */}
       <div className="p-4">
-        {/* Founder Info (if not anonymous) */}
-        {!ask.isAnonymous && ask.founderName && (
+        {/* Company/Founder Info - Always show company (you must be known), hide personal info when anonymous */}
+        {(ask.companyName || (!ask.isAnonymous && ask.founderName)) && (
           <div className="flex items-center gap-3 mb-3">
-            {ask.founderAvatar ? (
-              <OptimizedImage
-                src={ask.founderAvatar}
-                alt={ask.founderName}
-                className="w-8 h-8 rounded-full object-cover border border-white/10"
-              />
-            ) : (
+            {/* Avatar - only show if not anonymous */}
+            {!ask.isAnonymous && ask.founderName && (
+              ask.founderAvatar ? (
+                <OptimizedImage
+                  src={ask.founderAvatar}
+                  alt={ask.founderName}
+                  className="w-8 h-8 rounded-full object-cover border border-white/10"
+                />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                  <span className="font-mono text-[10px] text-white/50">
+                    {ask.founderName.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+              )
+            )}
+            {/* Company icon when anonymous but has company */}
+            {ask.isAnonymous && ask.companyName && (
               <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-                <span className="font-mono text-[10px] text-white/50">
-                  {ask.founderName.charAt(0).toUpperCase()}
-                </span>
+                <Building2 className="w-4 h-4 text-white/50" strokeWidth={1.5} />
               </div>
             )}
             <div>
-              <span className="text-sm text-white font-medium block">{ask.founderName}</span>
+              {/* Founder name - only if not anonymous */}
+              {!ask.isAnonymous && ask.founderName && (
+                <span className="text-sm text-white font-medium block">{ask.founderName}</span>
+              )}
+              {/* Company name - always show if available */}
               {ask.companyName && (
-                <span className="text-xs text-white/40">{ask.companyName}</span>
+                <span className={`text-xs ${!ask.isAnonymous && ask.founderName ? 'text-white/40' : 'text-white font-medium'}`}>
+                  {ask.companyName}
+                </span>
               )}
             </div>
           </div>

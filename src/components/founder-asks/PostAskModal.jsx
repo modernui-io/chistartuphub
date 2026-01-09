@@ -121,7 +121,7 @@ function validateSECCompliance(text) {
 // POST ASK MODAL COMPONENT
 // ============================================
 
-export default function PostAskModal({ isOpen, onClose, onSuccess }) {
+export default function PostAskModal({ isOpen, onClose, onSuccess, editingAsk = null }) {
   const { user, profile, updateProfile } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
@@ -133,6 +133,9 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
   // Check if user is admin (bypasses restrictions)
   const isAdmin = user && ADMIN_EMAILS.includes(user.email);
 
+  // Edit mode flag
+  const isEditMode = !!editingAsk;
+
   // Profile completion state
   const [profileLinkedinUrl, setProfileLinkedinUrl] = useState('');
   const [profileCompanyName, setProfileCompanyName] = useState('');
@@ -140,8 +143,9 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileJustCompleted, setProfileJustCompleted] = useState(false);
 
-  // Check if profile is complete (linkedin_url and company_name required)
-  const isProfileComplete = !!(profile?.linkedin_url && profile?.company_name) || profileJustCompleted;
+  // Check if profile is complete (company_name required - "you must be known")
+  // LinkedIn is optional for profile, required per-ask as contact method
+  const isProfileComplete = !!(profile?.company_name) || profileJustCompleted;
 
   // Form state
   const [category, setCategory] = useState('');
@@ -225,6 +229,22 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
     }
   }, [profile]);
 
+  // Pre-fill form when editing an existing ask
+  useEffect(() => {
+    if (isOpen && editingAsk) {
+      setCategory(editingAsk.category || '');
+      setSector(editingAsk.sector || '');
+      setDescription(editingAsk.description || '');
+      setGuidanceType(editingAsk.guidance_type || '');
+      setStage(editingAsk.stage || '');
+      setLinkedinUrl(editingAsk.linkedin_url || profile?.linkedin_url || '');
+      setIsAnonymous(editingAsk.is_anonymous || false);
+      setAllowAmplification(editingAsk.allow_amplification ?? true);
+      // Skip rate limit check for edits
+      setCanPost(true);
+    }
+  }, [isOpen, editingAsk, profile?.linkedin_url]);
+
   const resetForm = () => {
     setStep(1);
     setCategory('');
@@ -250,24 +270,30 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
   const handleProfileComplete = async (e) => {
     e.preventDefault();
 
-    if (!profileLinkedinUrl.trim() || !profileCompanyName.trim()) {
-      toast.error('Please fill in LinkedIn URL and Company Name');
+    if (!profileCompanyName.trim()) {
+      toast.error('Please fill in your Company Name');
       return;
     }
 
     setProfileSaving(true);
 
     try {
-      const { error } = await updateProfile({
-        linkedin_url: profileLinkedinUrl.trim(),
+      const updateData = {
         company_name: profileCompanyName.trim(),
         bio: profileBio.trim() || profile?.bio || null,
-      });
+      };
+
+      // Only update LinkedIn if provided
+      if (profileLinkedinUrl.trim()) {
+        updateData.linkedin_url = profileLinkedinUrl.trim();
+        // Pre-fill the Ask form with the LinkedIn URL just saved
+        setLinkedinUrl(profileLinkedinUrl.trim());
+      }
+
+      const { error } = await updateProfile(updateData);
 
       if (error) throw error;
 
-      // Pre-fill the Ask form with the LinkedIn URL just saved
-      setLinkedinUrl(profileLinkedinUrl.trim());
       setProfileJustCompleted(true);
 
       toast.success('Profile updated! You can now post your ask.');
@@ -321,20 +347,51 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase
-        .from('founder_asks')
-        .insert({
-          user_id: user.id,
-          category,
-          sector,
-          description,
-          linkedin_url: linkedinUrl,
-          is_anonymous: isAnonymous,
-          allow_amplification: allowAmplification,
-          is_active: true,
-        })
-        .select()
-        .single();
+      let data, error;
+
+      if (isEditMode) {
+        // Update existing ask
+        const result = await supabase
+          .from('founder_asks')
+          .update({
+            category,
+            sector,
+            description,
+            linkedin_url: linkedinUrl,
+            is_anonymous: isAnonymous,
+            allow_amplification: allowAmplification,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', editingAsk.id)
+          .eq('user_id', user.id) // Ensure user owns the ask
+          .select()
+          .single();
+        data = result.data;
+        error = result.error;
+      } else {
+        // Create new ask
+        // Explicitly set expires_at to 14 days from now (backup for DB trigger)
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 14);
+
+        const result = await supabase
+          .from('founder_asks')
+          .insert({
+            user_id: user.id,
+            category,
+            sector,
+            description,
+            linkedin_url: linkedinUrl,
+            is_anonymous: isAnonymous,
+            allow_amplification: allowAmplification,
+            is_active: true,
+            expires_at: expiresAt.toISOString(),
+          })
+          .select()
+          .single();
+        data = result.data;
+        error = result.error;
+      }
 
       if (error) throw error;
 
@@ -387,10 +444,10 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
             <div className="flex items-center justify-between">
               <div>
                 <span className="font-mono text-[10px] text-white/30 uppercase tracking-[0.2em] block">
-                  {showSuccess ? '[STATUS: LIVE]' : (!isProfileComplete && isFounder ? '[COMPLETE: PROFILE]' : '[CREATE: ASK]')}
+                  {showSuccess ? '[STATUS: LIVE]' : (!isProfileComplete && isFounder ? '[COMPLETE: PROFILE]' : (isEditMode ? '[EDIT: ASK]' : '[CREATE: ASK]'))}
                 </span>
                 <h2 className="font-serif text-2xl text-white mt-1">
-                  {showSuccess ? 'Success!' : (!isProfileComplete && isFounder ? 'Complete Your Profile' : 'Post Your Ask')}
+                  {showSuccess ? 'Success!' : (!isProfileComplete && isFounder ? 'Complete Your Profile' : (isEditMode ? 'Edit Your Ask' : 'Post Your Ask'))}
                 </h2>
               </div>
               <button
@@ -477,25 +534,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                 </p>
 
                 <form onSubmit={handleProfileComplete} className="space-y-5">
-                  {/* LinkedIn URL */}
-                  <div>
-                    <label className="font-mono text-[10px] text-white/50 uppercase tracking-[0.1em] block mb-2">
-                      LinkedIn URL *
-                    </label>
-                    <div className="relative">
-                      <Linkedin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" strokeWidth={1.5} />
-                      <input
-                        type="url"
-                        value={profileLinkedinUrl}
-                        onChange={(e) => setProfileLinkedinUrl(e.target.value)}
-                        placeholder="https://linkedin.com/in/yourprofile"
-                        required
-                        className="w-full bg-transparent border border-white/20 py-3 pl-10 pr-4 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/40 font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Company Name */}
+                  {/* Company Name - Required ("you must be known") */}
                   <div>
                     <label className="font-mono text-[10px] text-white/50 uppercase tracking-[0.1em] block mb-2">
                       Company Name *
@@ -508,6 +547,23 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                       required
                       className="w-full bg-transparent border border-white/20 py-3 px-4 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/40 font-mono"
                     />
+                  </div>
+
+                  {/* LinkedIn URL - Optional for profile */}
+                  <div>
+                    <label className="font-mono text-[10px] text-white/50 uppercase tracking-[0.1em] block mb-2">
+                      LinkedIn URL
+                    </label>
+                    <div className="relative">
+                      <Linkedin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" strokeWidth={1.5} />
+                      <input
+                        type="url"
+                        value={profileLinkedinUrl}
+                        onChange={(e) => setProfileLinkedinUrl(e.target.value)}
+                        placeholder="https://linkedin.com/in/yourprofile (optional)"
+                        className="w-full bg-transparent border border-white/20 py-3 pl-10 pr-4 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-white/40 font-mono"
+                      />
+                    </div>
                   </div>
 
                   {/* Bio (optional) */}
@@ -530,7 +586,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    disabled={profileSaving || !profileLinkedinUrl.trim() || !profileCompanyName.trim()}
+                    disabled={profileSaving || !profileCompanyName.trim()}
                     className="w-full font-mono text-[11px] uppercase tracking-[0.1em] py-4 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {profileSaving ? 'Saving...' : 'Save & Continue'}
@@ -898,10 +954,10 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                   </button>
                   <button
                     onClick={handleSubmit}
-                    disabled={loading || !isFounder || !canPost}
+                    disabled={loading || !isFounder || (!isEditMode && !canPost)}
                     className="flex-1 font-mono text-[11px] uppercase tracking-[0.1em] py-3 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair disabled:opacity-30 disabled:cursor-not-allowed"
                   >
-                    {loading ? 'Posting...' : 'Post Ask'}
+                    {loading ? (isEditMode ? 'Updating...' : 'Posting...') : (isEditMode ? 'Update Ask' : 'Post Ask')}
                   </button>
                 </div>
               </div>
@@ -915,7 +971,7 @@ export default function PostAskModal({ isOpen, onClose, onSuccess }) {
                 </div>
 
                 <h3 className="font-serif text-2xl text-white mb-4">
-                  Your Ask is Live!
+                  {isEditMode ? 'Ask Updated!' : 'Your Ask is Live!'}
                 </h3>
 
                 {/* Post-submission context */}
