@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/api/supabaseClient';
+import posthog from 'posthog-js';
 
 const AuthContext = createContext({});
 
@@ -59,8 +60,25 @@ export const AuthProvider = ({ children }) => {
 
         if (session?.user) {
           loadUserProfile(session.user.id);
+
+          // Identify user in PostHog
+          posthog.identify(session.user.id, {
+            email: session.user.email,
+            created_at: session.user.created_at,
+          });
+
+          // Track auth events
+          if (event === 'SIGNED_IN') {
+            posthog.capture('user_signed_in', {
+              method: session.user.app_metadata?.provider || 'email',
+            });
+          } else if (event === 'SIGNED_UP' || event === 'USER_UPDATED') {
+            // Note: Supabase doesn't always fire SIGNED_UP, check if new user
+          }
         } else {
           setProfile(null);
+          // Reset PostHog identity on logout
+          posthog.reset();
         }
       }
     );
@@ -74,6 +92,14 @@ export const AuthProvider = ({ children }) => {
       password,
       options: { data: metadata },
     });
+
+    if (!error && data?.user) {
+      posthog.capture('user_signed_up', {
+        method: 'email',
+        user_id: data.user.id,
+      });
+    }
+
     return { data, error };
   };
 
@@ -86,6 +112,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signInWithOAuth = async (provider) => {
+    posthog.capture('oauth_login_started', { provider });
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider,
       options: { redirectTo: `${window.location.origin}/` },
@@ -94,11 +122,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signOut = async () => {
+    posthog.capture('user_signed_out');
+
     const { error } = await supabase.auth.signOut();
     if (!error) {
       setUser(null);
       setProfile(null);
       setSession(null);
+      posthog.reset();
     }
     return { error };
   };
@@ -117,7 +148,24 @@ export const AuthProvider = ({ children }) => {
         .single();
 
       if (error) return { data: null, error };
+
       setProfile(data);
+
+      // Track profile update with relevant properties
+      posthog.capture('profile_updated', {
+        has_company: !!updates.company_name,
+        has_linkedin: !!updates.linkedin_url,
+        sectors: updates.sectors?.length || 0,
+        stage: updates.stage,
+      });
+
+      // Update PostHog person properties
+      posthog.people.set({
+        company_name: data.company_name,
+        stage: data.stage,
+        profile_complete: !!(data.full_name && data.company_name),
+      });
+
       return { data, error: null };
     } catch (err) {
       return { error: err };

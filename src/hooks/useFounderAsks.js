@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/contexts/AuthContext';
+import posthog from 'posthog-js';
 
 // Query key constants
 export const FOUNDER_ASKS_KEY = ['founder-asks'];
@@ -102,6 +103,17 @@ export function useCreateFounderAsk() {
         .single();
 
       if (error) throw error;
+
+      // Track founder ask creation
+      posthog.capture('founder_ask_posted', {
+        category: askData.category,
+        sector: askData.sector,
+        stage: askData.stage,
+        is_anonymous: askData.isAnonymous,
+        allow_amplification: askData.allowAmplification,
+        has_amount: !!askData.amount,
+      });
+
       return data;
     },
     onSuccess: () => {
@@ -170,6 +182,13 @@ export function useConnectionRequest() {
 
       // Increment connection request count
       await supabase.rpc('increment_connection_count', { ask_uuid: askId });
+
+      // Track connection request
+      posthog.capture('connection_requested', {
+        ask_id: askId,
+        has_linkedin: !!linkedinUrl,
+        has_context: !!context,
+      });
 
       return data;
     },
@@ -244,6 +263,13 @@ export function useMyConnectionRequests() {
         .eq('founder_id', user.id);
 
       if (error) throw error;
+
+      // Track connection response
+      posthog.capture('connection_responded', {
+        request_id: requestId,
+        status: status, // 'accepted', 'declined', etc.
+        has_response_message: !!response,
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: CONNECTION_REQUESTS_KEY });

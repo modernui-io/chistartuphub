@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/api/supabaseClient';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import posthog from 'posthog-js';
 
 export const useBookmarks = (resourceType) => {
   const { user } = useAuth();
@@ -27,12 +28,10 @@ export const useBookmarks = (resourceType) => {
 
         // If table doesn't exist, return empty array silently
         if (error) {
-          console.warn('Bookmarks query error (table may not exist):', error.message);
           return [];
         }
         return data || [];
-      } catch (err) {
-        console.warn('Bookmarks fetch error:', err);
+      } catch {
         return [];
       }
     },
@@ -44,8 +43,6 @@ export const useBookmarks = (resourceType) => {
   const addBookmark = useMutation({
     mutationFn: async ({ resourceType, resourceId, resourceName, resourceDescription, resourceUrl, notes }) => {
       if (!user) throw new Error('Must be logged in to bookmark');
-
-      console.log('Adding bookmark:', { resourceType, resourceId, resourceName, resourceDescription, resourceUrl, userId: user.id });
 
       // Start with minimal required fields, then try adding optional columns
       const baseData = {
@@ -69,7 +66,6 @@ export const useBookmarks = (resourceType) => {
 
       // If columns don't exist, try progressively simpler inserts
       if (result.error?.code === 'PGRST204' || result.error?.message?.includes('column')) {
-        console.log('Some columns missing, trying with resource_name only...');
         result = await supabase
           .from('bookmarks')
           .insert({
@@ -83,7 +79,6 @@ export const useBookmarks = (resourceType) => {
 
       // If resource_name also doesn't exist, try with just base fields
       if (result.error?.code === 'PGRST204' || result.error?.message?.includes('column')) {
-        console.log('Trying with minimal fields only...');
         result = await supabase
           .from('bookmarks')
           .insert({
@@ -96,7 +91,6 @@ export const useBookmarks = (resourceType) => {
 
       // Final fallback - just the absolute minimum
       if (result.error?.code === 'PGRST204' || result.error?.message?.includes('column')) {
-        console.log('Trying with absolute minimum fields...');
         result = await supabase
           .from('bookmarks')
           .insert(baseData)
@@ -105,22 +99,26 @@ export const useBookmarks = (resourceType) => {
       }
 
       if (result.error) {
-        console.error('Bookmark insert error:', JSON.stringify(result.error, null, 2));
         throw result.error;
       }
 
-      console.log('Bookmark added successfully:', result.data);
       return result.data;
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
+
+      // Track bookmark creation
+      posthog.capture('resource_saved', {
+        resource_type: variables.resourceType,
+        resource_id: variables.resourceId,
+        resource_name: variables.resourceName,
+      });
+
       toast.success('Bookmarked', {
         description: 'Added to your saved items',
       });
     },
     onError: (error) => {
-      console.error('Bookmark error:', error);
-
       // More helpful error messages
       let errorMessage = 'Failed to bookmark';
       if (error.message?.includes('violates row-level security')) {
@@ -147,14 +145,19 @@ export const useBookmarks = (resourceType) => {
 
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (data, bookmarkId) => {
       queryClient.invalidateQueries({ queryKey: ['bookmarks'] });
+
+      // Track bookmark removal
+      posthog.capture('resource_unsaved', {
+        bookmark_id: bookmarkId,
+      });
+
       toast.success('Removed', {
         description: 'Removed from your saved items',
       });
     },
     onError: (error) => {
-      console.error('Remove bookmark error:', error);
       toast.error('Error', {
         description: error.message || 'Failed to remove bookmark',
       });
