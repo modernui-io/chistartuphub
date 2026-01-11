@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD Pipeline
 
 on:
   push:
@@ -9,9 +9,15 @@ on:
     branches:
       - main
 
+env:
+  NODE_VERSION: '22'
+
 jobs:
-  lint-and-build:
-    name: Lint & Build
+  # ============================================
+  # Quality Gate: Lint, Type Check, Build
+  # ============================================
+  quality:
+    name: Quality Checks
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +27,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
       - name: Install dependencies
@@ -36,7 +42,19 @@ jobs:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
           VITE_GA_MEASUREMENT_ID: ${{ secrets.VITE_GA_MEASUREMENT_ID }}
+          VITE_PUBLIC_POSTHOG_KEY: ${{ secrets.VITE_PUBLIC_POSTHOG_KEY }}
+          VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  # ============================================
+  # Security Audit
+  # ============================================
   security:
     name: Security Audit
     runs-on: ubuntu-latest
@@ -48,7 +66,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
       - name: Install dependencies
@@ -58,7 +76,7 @@ jobs:
         run: npm audit --audit-level=high
         continue-on-error: true
 
-      - name: Check for known vulnerabilities
+      - name: Check for critical vulnerabilities
         run: |
           echo "Checking for critical security issues..."
           npm audit --json > audit-results.json || true
@@ -71,12 +89,13 @@ jobs:
             exit 1
           fi
 
-  # Preview deployment for pull requests
-  preview:
-    name: Deploy Preview
+  # ============================================
+  # Tests (when available)
+  # ============================================
+  test:
+    name: Tests
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    needs: [lint-and-build]
+    continue-on-error: true  # Don't block if tests aren't set up yet
 
     steps:
       - name: Checkout repository
@@ -85,18 +104,36 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build project
-        run: npm run build
+      - name: Run tests
+        run: npm test --if-present
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_GA_MEASUREMENT_ID: ${{ secrets.VITE_GA_MEASUREMENT_ID }}
+
+  # ============================================
+  # Preview Deployment (Pull Requests)
+  # ============================================
+  preview:
+    name: Deploy Preview
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: [quality]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
 
       - name: Deploy to Netlify Preview
         uses: nwtgck/actions-netlify@v3.0
@@ -107,44 +144,52 @@ jobs:
           deploy-message: "Preview deploy from PR #${{ github.event.pull_request.number }}"
           enable-pull-request-comment: true
           enable-commit-comment: false
+          overwrites-pull-request-comment: true
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
-  # Production deployment on main branch
+  # ============================================
+  # Production Deployment (Main Branch)
+  # ============================================
   deploy:
     name: Deploy Production
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    needs: [lint-and-build, security]
+    needs: [quality, security]
+    environment:
+      name: production
+      url: https://chistartuphub.com
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
         with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build project
-        run: npm run build
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          VITE_GA_MEASUREMENT_ID: ${{ secrets.VITE_GA_MEASUREMENT_ID }}
+          name: dist
+          path: dist/
 
       - name: Deploy to Netlify Production
+        id: netlify
         uses: nwtgck/actions-netlify@v3.0
         with:
           publish-dir: './dist'
           production-deploy: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          deploy-message: "Production deploy from commit ${{ github.sha }}"
+          deploy-message: "Production deploy from ${{ github.sha }}"
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      - name: Deployment Summary
+        run: |
+          echo "## Deployment Complete! :rocket:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** \`${{ github.ref_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### What's Deployed" >> $GITHUB_STEP_SUMMARY
+          echo "- Production site updated" >> $GITHUB_STEP_SUMMARY
+          echo "- PostHog analytics active" >> $GITHUB_STEP_SUMMARY
