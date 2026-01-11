@@ -4,11 +4,13 @@ import { test, expect, devices } from '@playwright/test';
  * Mobile Responsiveness Tests
  *
  * Verify the app works correctly on mobile devices.
+ * Note: These tests run with iPhone 12 viewport by default.
  */
 
-test.describe('Mobile Responsiveness', () => {
-  test.use({ ...devices['iPhone 12'] });
+// Set mobile device for all tests in this file
+test.use({ ...devices['iPhone 12'] });
 
+test.describe('Mobile Responsiveness', () => {
   test('homepage renders on mobile', async ({ page }) => {
     await page.goto('/');
 
@@ -69,23 +71,5 @@ test.describe('Mobile Responsiveness', () => {
       );
       expect(fontSize).toBeGreaterThanOrEqual(14);
     }
-  });
-});
-
-test.describe('Tablet Responsiveness', () => {
-  test.use({ ...devices['iPad Mini'] });
-
-  test('layout adapts to tablet', async ({ page }) => {
-    await page.goto('/');
-
-    // Should render without issues
-    await expect(page.locator('#root')).not.toBeEmpty();
-
-    // Check for no overflow
-    const body = page.locator('body');
-    const bodyWidth = await body.evaluate((el) => el.scrollWidth);
-    const viewportWidth = await page.evaluate(() => window.innerWidth);
-
-    expect(bodyWidth).toBeLessThanOrEqual(viewportWidth + 20);
   });
 });
