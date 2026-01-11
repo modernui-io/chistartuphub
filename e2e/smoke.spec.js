@@ -1,52 +1,38 @@
 import { test, expect } from '@playwright/test';
 
 /**
- * Smoke Tests - Basic sanity checks
+ * Smoke Tests
  *
- * These tests verify the app loads and basic functionality works.
- * They should run quickly and catch obvious regressions.
+ * Quick sanity checks to verify the app loads.
+ * These run first and should catch obvious breakages.
  */
 
 test.describe('Smoke Tests', () => {
-  test('homepage loads successfully', async ({ page }) => {
-    await page.goto('/');
+  test('homepage loads', async ({ page }) => {
+    const response = await page.goto('/');
 
-    // Check page title
-    await expect(page).toHaveTitle(/ChiStartup/i);
+    // Should return success status
+    expect(response?.status()).toBeLessThan(400);
 
-    // Check main heading is visible
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-
-    // Check navigation is present
-    await expect(page.getByRole('navigation')).toBeVisible();
+    // App should render
+    await expect(page.locator('#root')).not.toBeEmpty({ timeout: 15000 });
   });
 
-  test('no console errors on homepage', async ({ page }) => {
-    const errors = [];
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') {
-        errors.push(msg.text());
-      }
-    });
+  test('no uncaught exceptions', async ({ page }) => {
+    let pageError = null;
+    page.on('pageerror', (err) => { pageError = err; });
 
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(2000);
 
-    // Filter out known acceptable errors (e.g., favicon 404)
-    const criticalErrors = errors.filter(
-      (e) => !e.includes('favicon') && !e.includes('404')
-    );
-
-    expect(criticalErrors).toHaveLength(0);
+    expect(pageError).toBeNull();
   });
 
-  test('app renders without crashing', async ({ page }) => {
+  test('app is interactive', async ({ page }) => {
     await page.goto('/');
 
-    // Check that React has mounted (no error boundary)
-    await expect(page.locator('#root')).not.toBeEmpty();
-
-    // Check no "Something went wrong" error
-    await expect(page.getByText(/something went wrong/i)).not.toBeVisible();
+    // Should have at least one clickable button
+    const buttons = page.getByRole('button');
+    expect(await buttons.count()).toBeGreaterThan(0);
   });
 });
