@@ -217,6 +217,8 @@ jobs:
     name: 🔗 Deploy Preview
     runs-on: ubuntu-latest
     needs: [build]
+    outputs:
+      preview-url: ${{ steps.netlify.outputs.deploy-url }}
 
     steps:
       - uses: actions/checkout@v4
@@ -242,3 +244,101 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+  # ============================================
+  # Preview Smoke Test - Verify preview works
+  # ============================================
+  preview-smoke-test:
+    name: 🔍 Preview Smoke Test
+    runs-on: ubuntu-latest
+    needs: [preview]
+    if: needs.preview.outputs.preview-url != ''
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Playwright
+        run: |
+          npm ci
+          npx playwright install chromium
+
+      - name: Wait for preview to be ready
+        run: sleep 15
+
+      - name: Run smoke tests against preview
+        run: |
+          PREVIEW_URL="${{ needs.preview.outputs.preview-url }}"
+          echo "Testing preview at: $PREVIEW_URL"
+
+          cat > preview-smoke.spec.js << 'EOF'
+          const { test, expect } = require('@playwright/test');
+
+          const PREVIEW_URL = process.env.PREVIEW_URL;
+
+          test.describe('Preview Smoke Tests', () => {
+            test('preview loads successfully', async ({ page }) => {
+              const response = await page.goto(PREVIEW_URL);
+              expect(response.status()).toBe(200);
+              await expect(page.locator('#root')).not.toBeEmpty();
+            });
+
+            test('no critical errors on preview', async ({ page }) => {
+              const errors = [];
+              page.on('console', msg => {
+                if (msg.type() === 'error') {
+                  errors.push(msg.text());
+                }
+              });
+
+              await page.goto(PREVIEW_URL);
+              await page.waitForTimeout(3000);
+
+              const criticalErrors = errors.filter(e =>
+                !e.includes('favicon') &&
+                !e.includes('PostHog') &&
+                !e.includes('analytics')
+              );
+              expect(criticalErrors).toHaveLength(0);
+            });
+
+            test('app renders without crash', async ({ page }) => {
+              let crashed = false;
+              page.on('pageerror', () => { crashed = true; });
+
+              await page.goto(PREVIEW_URL);
+              await page.waitForTimeout(2000);
+
+              expect(crashed).toBe(false);
+            });
+
+            test('navigation works', async ({ page }) => {
+              await page.goto(PREVIEW_URL);
+
+              // Check a key page loads
+              await page.goto(PREVIEW_URL + '/opportunities');
+              await expect(page.locator('#root')).not.toBeEmpty();
+            });
+          });
+          EOF
+
+          npx playwright test preview-smoke.spec.js --project=chromium --reporter=list
+        env:
+          PREVIEW_URL: ${{ needs.preview.outputs.preview-url }}
+
+      - name: Report results
+        if: always()
+        run: |
+          echo "## 🔍 Preview Smoke Test" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Preview URL:** ${{ needs.preview.outputs.preview-url }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ job.status }}" == "success" ]; then
+            echo "✅ Preview deployment verified working" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Preview smoke tests failed - check deployment" >> $GITHUB_STEP_SUMMARY
+          fi
