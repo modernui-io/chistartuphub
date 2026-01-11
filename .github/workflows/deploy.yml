@@ -9,6 +9,7 @@ on:
 
 env:
   NODE_VERSION: '22'
+  PRODUCTION_URL: 'https://chistartuphub.com'
 
 jobs:
   deploy:
@@ -51,11 +52,164 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
-      - name: Summary
+  # ============================================
+  # Post-Deploy Smoke Test
+  # Verifies production is actually working
+  # ============================================
+  smoke-test:
+    name: 🔍 Post-Deploy Smoke Test
+    runs-on: ubuntu-latest
+    needs: [deploy]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Playwright
         run: |
-          echo "## 🚀 Production Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          npm ci
+          npx playwright install chromium
+
+      - name: Wait for deploy propagation
+        run: sleep 30
+
+      - name: Run smoke tests against production
+        run: |
+          cat > smoke-test.spec.js << 'EOF'
+          const { test, expect } = require('@playwright/test');
+
+          const PROD_URL = process.env.PRODUCTION_URL || 'https://chistartuphub.com';
+
+          test.describe('Production Smoke Tests', () => {
+            test('homepage loads successfully', async ({ page }) => {
+              const response = await page.goto(PROD_URL);
+              expect(response.status()).toBe(200);
+              await expect(page.locator('#root')).not.toBeEmpty();
+            });
+
+            test('no critical console errors', async ({ page }) => {
+              const errors = [];
+              page.on('console', msg => {
+                if (msg.type() === 'error' && !msg.text().includes('favicon')) {
+                  errors.push(msg.text());
+                }
+              });
+
+              await page.goto(PROD_URL);
+              await page.waitForTimeout(3000);
+
+              const criticalErrors = errors.filter(e =>
+                !e.includes('PostHog') &&
+                !e.includes('analytics') &&
+                !e.includes('third-party')
+              );
+              expect(criticalErrors).toHaveLength(0);
+            });
+
+            test('key pages are accessible', async ({ page }) => {
+              const pages = ['/', '/opportunities', '/resources', '/funding'];
+
+              for (const path of pages) {
+                const response = await page.goto(PROD_URL + path);
+                expect(response.status()).toBeLessThan(400);
+              }
+            });
+
+            test('app hydrates without crash', async ({ page }) => {
+              let crashed = false;
+              page.on('pageerror', () => { crashed = true; });
+
+              await page.goto(PROD_URL);
+              await page.waitForTimeout(3000);
+
+              expect(crashed).toBe(false);
+              await expect(page.locator('#root')).toBeVisible();
+            });
+
+            test('auth button is interactive', async ({ page }) => {
+              await page.goto(PROD_URL);
+
+              const signInBtn = page.getByRole('button', { name: /sign in|log in/i });
+              await expect(signInBtn).toBeVisible({ timeout: 10000 });
+              await expect(signInBtn).toBeEnabled();
+            });
+          });
+          EOF
+
+          npx playwright test smoke-test.spec.js --project=chromium --reporter=list
+        env:
+          PRODUCTION_URL: ${{ env.PRODUCTION_URL }}
+
+      - name: Report success
+        if: success()
+        run: |
+          echo "## 🔍 Post-Deploy Smoke Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ **All smoke tests passed!**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Verified:" >> $GITHUB_STEP_SUMMARY
+          echo "- Homepage loads (200 OK)" >> $GITHUB_STEP_SUMMARY
+          echo "- No critical console errors" >> $GITHUB_STEP_SUMMARY
+          echo "- Key pages accessible" >> $GITHUB_STEP_SUMMARY
+          echo "- App hydrates without crash" >> $GITHUB_STEP_SUMMARY
+          echo "- Auth button is interactive" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "🚀 **Production is healthy!**" >> $GITHUB_STEP_SUMMARY
+
+      - name: Report failure
+        if: failure()
+        run: |
+          echo "## 🔍 Post-Deploy Smoke Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "❌ **Smoke tests failed!**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ Production may be experiencing issues." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Action required:**" >> $GITHUB_STEP_SUMMARY
+          echo "1. Check the test logs above" >> $GITHUB_STEP_SUMMARY
+          echo "2. Visit https://chistartuphub.com to verify" >> $GITHUB_STEP_SUMMARY
+          echo "3. Consider rolling back via Netlify dashboard" >> $GITHUB_STEP_SUMMARY
+
+  # ============================================
+  # Final Summary
+  # ============================================
+  summary:
+    name: 📋 Deployment Summary
+    runs-on: ubuntu-latest
+    needs: [deploy, smoke-test]
+    if: always()
+
+    steps:
+      - name: Generate summary
+        run: |
+          echo "## 🚀 Production Deployment Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Commit:** \`${{ github.sha }}\`" >> $GITHUB_STEP_SUMMARY
           echo "**Message:** ${{ github.event.head_commit.message }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Site is live!" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.deploy.result }}" == "success" ]; then
+            echo "✅ Deploy: Success" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Deploy: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ needs.smoke-test.result }}" == "success" ]; then
+            echo "✅ Smoke Test: Passed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Smoke Test: Failed" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.deploy.result }}" == "success" ] && [ "${{ needs.smoke-test.result }}" == "success" ]; then
+            echo "### ✅ Deployment Complete & Verified" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### ⚠️ Deployment Needs Attention" >> $GITHUB_STEP_SUMMARY
+          fi
