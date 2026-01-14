@@ -15,7 +15,7 @@ import VerificationBanner from "@/components/VerificationBanner";
 export default function Layout({ children }) {
   const location = useLocation();
   const isHomePage = location.pathname === '/' || location.pathname === '/home';
-  const hideLayoutFooter = isHomePage || location.pathname === '/funding' || location.pathname === '/about' || location.pathname === '/community' || location.pathname === '/workspaces' || location.pathname === '/events' || location.pathname === '/resources' || location.pathname === '/before-you-start' || location.pathname === '/service-resources' || location.pathname === '/small-business-resources' || location.pathname === '/business-type-explorer' || location.pathname === '/opportunities' || location.pathname === '/stories' || location.pathname.startsWith('/stories/') || location.pathname === '/WhyChicago' || location.pathname === '/SubmitResource' || location.pathname === '/assessment' || location.pathname === '/profile' || location.pathname === '/saved-resources' || location.pathname === '/settings' || location.pathname === '/accelerators-incubators' || location.pathname === '/contact' || location.pathname === '/admin';
+  const hideLayoutFooter = isHomePage || location.pathname === '/funding' || location.pathname === '/about' || location.pathname === '/community' || location.pathname === '/workspaces' || location.pathname === '/events' || location.pathname === '/resources' || location.pathname === '/before-you-start' || location.pathname === '/service-resources' || location.pathname === '/small-business-resources' || location.pathname === '/business-type-explorer' || location.pathname === '/opportunities' || location.pathname === '/stories' || location.pathname.startsWith('/stories/') || location.pathname === '/WhyChicago' || location.pathname === '/SubmitResource' || location.pathname === '/assessment' || location.pathname === '/profile' || location.pathname === '/saved-resources' || location.pathname === '/settings' || location.pathname === '/accelerators-incubators' || location.pathname === '/contact' || location.pathname === '/admin' || location.pathname === '/Investors';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(!window.hasShownLoader);
   const [showWelcome, setShowWelcome] = useState(false);
@@ -43,7 +43,7 @@ export default function Layout({ children }) {
     {
       title: "Startup Resources",
       links: [
-        { name: "Capital", url: createPageUrl("Funding") },
+        { name: "Funding", url: createPageUrl("Funding") },
         { name: "Startup Toolkit", url: createPageUrl("Resources") },
         { name: "Community", url: createPageUrl("Community") },
         { name: "Co-Working", url: createPageUrl("Workspaces") },

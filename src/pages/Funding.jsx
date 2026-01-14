@@ -25,6 +25,13 @@ export default function Funding() {
     staleTime: 1000 * 60 * 5,
   });
 
+  // Fetch investors for comprehensive funding view
+  const { data: investors = [] } = useQuery({
+    queryKey: ['investors'],
+    queryFn: () => entities.Investor.list('-mvip_score'),
+    staleTime: 1000 * 60 * 5,
+  });
+
   // Filter out closed opportunities for accurate counts
   const activeOpportunities = useMemo(() => {
     const now = new Date();
@@ -82,9 +89,9 @@ export default function Funding() {
   return (
     <div className="min-h-screen relative" data-page="funding">
       <SEO
-        title="Chicago Startup Funding & Investors"
-        description="Build faster with direct access to 90+ active Chicago investors. No warm intros required—filter by stage, check size, and focus area to find your funding match."
-        keywords="Chicago venture capital, angel investors, startup funding, pre-seed, seed funding, Series A"
+        title="Chicago Startup Funding Opportunities"
+        description="Apply to grants, accelerators, and competitions with active deadlines. Filter by type, amount, and sector to find funding that fits your startup."
+        keywords="startup grants, accelerator programs, pitch competitions, Chicago funding, startup capital"
       />
 
       {/* Background */}
@@ -93,67 +100,65 @@ export default function Funding() {
       {/* Main Content */}
       <div className="relative z-10">
         {/* Hero Section */}
-        <section className="pt-32 pb-16 px-6">
+        <section className="pt-32 pb-20 px-6">
           <div className="max-w-6xl mx-auto">
+            {/* System Label */}
             <div className={`${isLoaded ? 'animate-fade-in' : 'opacity-0'}`} style={{ animationDelay: '100ms' }}>
-              <span className="bureau-label block mb-6">[CAPITAL: FUNDING_OPPORTUNITIES]</span>
+              <span className="font-mono text-[11px] text-white/40 uppercase tracking-[0.2em] block mb-8">
+                [FUNDING]
+              </span>
             </div>
-            
-            <h1 
-              className={`font-serif text-4xl md:text-5xl lg:text-6xl text-white tracking-tight leading-[1.1] mb-6 ${isLoaded ? 'animate-fade-in-up' : 'opacity-0'}`}
+
+            {/* Split Headline - Dramatic Scale */}
+            <h1
+              className={`font-serif text-6xl md:text-7xl lg:text-8xl text-white tracking-tight leading-[0.95] mb-8 ${isLoaded ? 'animate-fade-in-up' : 'opacity-0'}`}
               style={{ animationDelay: '200ms' }}
             >
-              Capital Resources
+              Find Your<br />
+              <span className="text-white/90">Funding</span>
             </h1>
 
-            <p 
-              className={`text-white/50 text-lg max-w-xl mb-8 ${isLoaded ? 'animate-fade-in-up' : 'opacity-0'}`}
+            {/* Subtitle */}
+            <p
+              className={`text-white/50 text-lg max-w-xl mb-12 ${isLoaded ? 'animate-fade-in-up' : 'opacity-0'}`}
               style={{ animationDelay: '300ms' }}
             >
-              Your comprehensive guide to funding opportunities in Chicago's startup ecosystem. Filter by type, stage, and focus area.
+              Apply to grants, accelerators, and competitions with active deadlines.
+              Plus {investors.length}+ investors to research when you're ready.
             </p>
 
-            {/* Stats */}
+            {/* Stats Grid - 3 Columns */}
             <div
-              className={`flex items-center gap-8 ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
+              className={`grid grid-cols-3 gap-0 border border-white/10 max-w-xl ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
               style={{ animationDelay: '400ms' }}
             >
-              <div className="flex items-baseline gap-2">
-                <span className="font-mono text-2xl text-white">{activeOpportunities.length + activeUpcoming.length}+</span>
-                <span className="font-mono text-xs text-white/40 uppercase tracking-[0.15em]">Opportunities</span>
+              <div className="p-6 border-r border-white/10">
+                <span className="font-mono text-4xl md:text-5xl text-white font-light block mb-2">
+                  {activeOpportunities.length + activeUpcoming.length}
+                </span>
+                <span className="font-mono text-[10px] text-white/40 uppercase tracking-[0.15em]">
+                  Opportunities
+                </span>
               </div>
-              <div className="w-px h-6 bg-white/10" />
-              <div className="flex items-baseline gap-2">
-                <span className="font-mono text-2xl text-white">{activeOpportunities.filter(o => {
-                  const days = o.deadline ? Math.ceil((new Date(o.deadline) - new Date()) / (1000 * 60 * 60 * 24)) : null;
-                  return days !== null && days >= 0 && days <= 30;
-                }).length}</span>
-                <span className="font-mono text-xs text-white/40 uppercase tracking-[0.15em]">Closing Soon</span>
+              <div className="p-6 border-r border-white/10">
+                <span className="font-mono text-4xl md:text-5xl text-amber-400 font-light block mb-2">
+                  {activeOpportunities.filter(o => {
+                    const days = o.deadline ? Math.ceil((new Date(o.deadline) - new Date()) / (1000 * 60 * 60 * 24)) : null;
+                    return days !== null && days >= 0 && days <= 7;
+                  }).length}
+                </span>
+                <span className="font-mono text-[10px] text-white/40 uppercase tracking-[0.15em]">
+                  This Week
+                </span>
               </div>
-            </div>
-
-            {/* Guidance Note */}
-            <div
-              className={`mt-10 border border-white/10 bg-white/[0.02] p-6 max-w-2xl ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
-              style={{ animationDelay: '500ms' }}
-            >
-              <h2 className="font-mono text-xs uppercase tracking-[0.15em] text-white/60 mb-3">
-                Before You Dive In
-              </h2>
-              <p className="text-white/70 text-sm leading-relaxed mb-4">
-                Raising capital is hard. Finding the <em>right</em> investor is even harder.
-                More options doesn't mean better outcomes—what matters is fit.
-                Stage alignment, sector expertise, check size, and thesis match.
-              </p>
-              <p className="text-white/70 text-sm leading-relaxed mb-4">
-                We provide the information. You do the work. Visit their websites, read their portfolios,
-                check for conflicts, and make sure you're aligned before reaching out.
-              </p>
-              <p className="text-white/50 text-sm">
-                <span className="text-white/70">Use the filters</span> to narrow your search.
-                <span className="text-white/70"> Save</span> the ones that look promising.
-                <span className="text-white/70"> Export</span> your list and discuss with your team.
-              </p>
+              <div className="p-6">
+                <span className="font-mono text-4xl md:text-5xl text-white font-light block mb-2">
+                  {investors.length}+
+                </span>
+                <span className="font-mono text-[10px] text-white/40 uppercase tracking-[0.15em]">
+                  Investors
+                </span>
+              </div>
             </div>
           </div>
         </section>
@@ -164,6 +169,7 @@ export default function Funding() {
             <FundingOpportunitiesContent
               opportunities={opportunities}
               upcomingOpportunities={upcomingOpportunities}
+              investors={investors}
             />
           </div>
         </section>

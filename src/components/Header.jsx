@@ -87,7 +87,7 @@ export default function Header({
     {
       name: "Resources",
       items: [
-        { name: "Capital", path: createPageUrl("Funding") },
+        { name: "Funding", path: createPageUrl("Funding") },
         { name: "Co-Working", path: createPageUrl("Workspaces") },
         { name: "Startup Toolkit", path: createPageUrl("Resources") }
       ]

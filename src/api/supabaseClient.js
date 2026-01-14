@@ -137,6 +137,8 @@ export const entities = {
   // Authentication entities
   UserProfile: createEntity('user_profiles'),
   Bookmark: createEntity('bookmarks'),
+  // Investor directory (read-only view)
+  Investor: createEntity('public_investors'),
 };
 
 // ===========================================
