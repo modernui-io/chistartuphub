@@ -125,6 +125,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], invest
   const quickTabs = [
     { id: "all", label: "All" },
     { id: "hot", label: "Hot" },
+    { id: "midwest", label: "Midwest" },
     { id: "Grant", label: "Grants" },
     { id: "Accelerator", label: "Accelerators" },
     { id: "Competition", label: "Competitions" },
@@ -212,7 +213,10 @@ export default function FundingOpportunitiesContent({ opportunities = [], invest
       if (activeTab === "hot") {
         const days = getDaysUntilDeadline(item.deadline);
         if (days === null || days < 0 || days > 30) return false;
-      } else if (activeTab !== "all") {
+      } else if (activeTab === "midwest") {
+        const region = getRegion(item);
+        if (region !== 'chicago') return false;
+      } else if (activeTab !== "all" && activeTab !== "VC") {
         const type = getOpportunityType(item);
         if (type !== activeTab) return false;
       }
@@ -252,7 +256,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], invest
   }, [opportunities, activeTab, focusFilter, stageFilter, regionFilter, searchQuery]);
 
   const tabCounts = useMemo(() => {
-    const counts = { all: 0, hot: 0, Grant: 0, Accelerator: 0, Competition: 0, VC: 0 };
+    const counts = { all: 0, hot: 0, midwest: 0, Grant: 0, Accelerator: 0, Competition: 0, VC: 0 };
     // Count opportunities
     opportunities.forEach(opp => {
       if (!opp) return;
@@ -263,6 +267,9 @@ export default function FundingOpportunitiesContent({ opportunities = [], invest
       if (counts[type] !== undefined) counts[type]++;
       const days = getDaysUntilDeadline(opp.deadline);
       if (days !== null && days >= 0 && days <= 30) counts.hot++;
+      // Count Midwest/Chicago opportunities
+      const region = getRegion(opp);
+      if (region === 'chicago') counts.midwest++;
     });
     // Add investors to "all" and set VC count
     counts.VC = investors.length;
