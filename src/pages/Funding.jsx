@@ -120,46 +120,12 @@ export default function Funding() {
 
             {/* Subtitle */}
             <p
-              className={`text-white/50 text-lg max-w-xl mb-12 ${isLoaded ? 'animate-fade-in-up' : 'opacity-0'}`}
+              className={`text-white/50 text-lg max-w-xl ${isLoaded ? 'animate-fade-in-up' : 'opacity-0'}`}
               style={{ animationDelay: '300ms' }}
             >
               Apply to grants, accelerators, and competitions with active deadlines.
-              Plus {investors.length}+ investors to research when you're ready.
+              Plus 1,440+ investors to research when you're ready.
             </p>
-
-            {/* Stats Grid - 3 Columns */}
-            <div
-              className={`grid grid-cols-3 gap-0 border border-white/10 max-w-xl ${isLoaded ? 'animate-fade-in' : 'opacity-0'}`}
-              style={{ animationDelay: '400ms' }}
-            >
-              <div className="p-6 border-r border-white/10">
-                <span className="font-mono text-4xl md:text-5xl text-white font-light block mb-2">
-                  {activeOpportunities.length + activeUpcoming.length}
-                </span>
-                <span className="font-mono text-[10px] text-white/40 uppercase tracking-[0.15em]">
-                  Opportunities
-                </span>
-              </div>
-              <div className="p-6 border-r border-white/10">
-                <span className="font-mono text-4xl md:text-5xl text-amber-400 font-light block mb-2">
-                  {activeOpportunities.filter(o => {
-                    const days = o.deadline ? Math.ceil((new Date(o.deadline) - new Date()) / (1000 * 60 * 60 * 24)) : null;
-                    return days !== null && days >= 0 && days <= 7;
-                  }).length}
-                </span>
-                <span className="font-mono text-[10px] text-white/40 uppercase tracking-[0.15em]">
-                  This Week
-                </span>
-              </div>
-              <div className="p-6">
-                <span className="font-mono text-4xl md:text-5xl text-white font-light block mb-2">
-                  {investors.length}+
-                </span>
-                <span className="font-mono text-[10px] text-white/40 uppercase tracking-[0.15em]">
-                  Investors
-                </span>
-              </div>
-            </div>
           </div>
         </section>
 

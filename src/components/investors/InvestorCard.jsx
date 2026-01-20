@@ -35,6 +35,36 @@ const formatCheckSize = (min, max) => {
   return null;
 };
 
+// Generate thesis tagline from available data
+const generateThesisTagline = (investor) => {
+  if (investor.description) {
+    // Truncate description to ~80 chars
+    const desc = investor.description.trim();
+    if (desc.length > 80) {
+      return desc.slice(0, 77).trim() + '...';
+    }
+    return desc;
+  }
+
+  // Generate from type + location + sectors
+  const parts = [];
+  const typeLabel = TYPE_LABELS[investor.investor_type]?.label || 'Investor';
+
+  if (investor.hq_city || investor.hq_state) {
+    const location = [investor.hq_city, investor.hq_state].filter(Boolean).join(', ');
+    parts.push(`${location}-based ${typeLabel.toLowerCase()}`);
+  } else {
+    parts.push(typeLabel);
+  }
+
+  if (investor.sectors?.length > 0) {
+    const sectorStr = investor.sectors.slice(0, 2).join(', ');
+    parts.push(`focused on ${sectorStr}`);
+  }
+
+  return parts.join(' ') || null;
+};
+
 export default function InvestorCard({ investor, onClick }) {
   const {
     canonical_name,
@@ -48,12 +78,14 @@ export default function InvestorCard({ investor, onClick }) {
     check_size_max,
     website,
     mvip_score,
+    description,
   } = investor;
 
   const typeConfig = TYPE_LABELS[investor_type] || TYPE_LABELS.other;
   const stageLabel = STAGE_LABELS[stage_focus] || stage_focus;
   const checkSize = formatCheckSize(check_size_min, check_size_max);
   const location = [hq_city, hq_state].filter(Boolean).join(", ");
+  const thesisTagline = generateThesisTagline(investor);
 
   const handleExternalClick = (e) => {
     e.stopPropagation();
@@ -69,20 +101,27 @@ export default function InvestorCard({ investor, onClick }) {
       className="group cursor-pointer bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.06] hover:border-white/[0.12] p-6 transition-all duration-300"
     >
       {/* Header */}
-      <div className="flex items-start justify-between gap-3 mb-4">
+      <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex-1 min-w-0">
-          <h3 className="font-mono text-sm text-white font-medium truncate group-hover:text-blue-400 transition-colors">
-            {canonical_name}
-          </h3>
+          <div className="flex items-center gap-2">
+            <h3 className="font-mono text-sm text-white font-medium truncate group-hover:text-blue-400 transition-colors">
+              {canonical_name}
+            </h3>
+            {is_midwest && (
+              <span className="shrink-0 px-1.5 py-0.5 bg-amber-500/15 border border-amber-500/30 text-amber-400 text-[9px] font-mono uppercase tracking-wider">
+                Midwest
+              </span>
+            )}
+          </div>
+          {thesisTagline && (
+            <p className="text-[11px] text-white/40 mt-1.5 line-clamp-1 leading-relaxed">
+              {thesisTagline}
+            </p>
+          )}
           {location && (
-            <div className="flex items-center gap-1.5 mt-1 text-white/40 text-xs">
-              <MapPin size={12} />
+            <div className="flex items-center gap-1.5 mt-1.5 text-white/30 text-[11px]">
+              <MapPin size={10} />
               <span>{location}</span>
-              {is_midwest && (
-                <span className="ml-1 px-1.5 py-0.5 bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-mono uppercase tracking-wider">
-                  Midwest
-                </span>
-              )}
             </div>
           )}
         </div>
@@ -91,7 +130,7 @@ export default function InvestorCard({ investor, onClick }) {
         {website && (
           <button
             onClick={handleExternalClick}
-            className="p-2 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] hover:border-white/[0.15] transition-all"
+            className="shrink-0 p-2 bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.08] hover:border-white/[0.15] transition-all"
             title="Visit website"
           >
             <ArrowUpRight size={14} className="text-white/60 group-hover:text-white" />
