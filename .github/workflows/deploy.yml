@@ -92,7 +92,7 @@ jobs:
           CONFIGEOF
 
           cat > smoke-test.spec.js << 'EOF'
-          const { test, expect } = require('@playwright/test');
+          import { test, expect } from '@playwright/test';
 
           const PROD_URL = process.env.PLAYWRIGHT_BASE_URL || 'https://chistartuphub.com';
 
