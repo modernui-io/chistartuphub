@@ -84,7 +84,7 @@ jobs:
           cat > smoke-test.spec.js << 'EOF'
           const { test, expect } = require('@playwright/test');
 
-          const PROD_URL = process.env.PRODUCTION_URL || 'https://chistartuphub.com';
+          const PROD_URL = process.env.PLAYWRIGHT_BASE_URL || 'https://chistartuphub.com';
 
           test.describe('Production Smoke Tests', () => {
             test('homepage loads successfully', async ({ page }) => {
@@ -144,7 +144,7 @@ jobs:
 
           npx playwright test smoke-test.spec.js --project=chromium --reporter=list
         env:
-          PRODUCTION_URL: ${{ env.PRODUCTION_URL }}
+          PLAYWRIGHT_BASE_URL: ${{ env.PRODUCTION_URL }}
 
       - name: Report success
         if: success()
