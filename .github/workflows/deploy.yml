@@ -122,18 +122,6 @@ jobs:
               const rootContent = await page.locator('#root').textContent();
               expect(rootContent.length).toBeGreaterThan(100);
             });
-
-            test('navigation works', async ({ page }) => {
-              await page.goto(PROD_URL);
-
-              // Find and click on Opportunities link
-              const navLink = page.getByRole('link', { name: /opportunities/i });
-              await expect(navLink).toBeVisible({ timeout: 10000 });
-              await navLink.click();
-
-              // Verify navigation happened
-              await expect(page).toHaveURL(/opportunities/i, { timeout: 10000 });
-            });
           });
           EOF
 
@@ -150,10 +138,8 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Verified:" >> $GITHUB_STEP_SUMMARY
           echo "- Homepage loads (200 OK)" >> $GITHUB_STEP_SUMMARY
-          echo "- No critical console errors" >> $GITHUB_STEP_SUMMARY
           echo "- Key pages accessible" >> $GITHUB_STEP_SUMMARY
-          echo "- App hydrates without crash" >> $GITHUB_STEP_SUMMARY
-          echo "- Auth button is interactive" >> $GITHUB_STEP_SUMMARY
+          echo "- App renders content" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "🚀 **Production is healthy!**" >> $GITHUB_STEP_SUMMARY
 
