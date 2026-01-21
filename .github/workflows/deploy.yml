@@ -83,7 +83,7 @@ jobs:
         run: |
           # Create minimal config for smoke tests (no webServer, current dir)
           cat > smoke.config.js << 'CONFIGEOF'
-          module.exports = {
+          export default {
             testDir: '.',
             testMatch: 'smoke-test.spec.js',
             use: { baseURL: process.env.PLAYWRIGHT_BASE_URL },
