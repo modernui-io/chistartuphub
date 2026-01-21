@@ -295,6 +295,61 @@ export function useMyConnectionRequests() {
   };
 }
 
+/**
+ * Hook to check if the current user can create a new ask (rate limit check)
+ */
+export function useCanCreateAsk() {
+  const { user, profile } = useAuth();
+
+  const { data } = useQuery({
+    queryKey: ['can-create-ask', user?.id],
+    queryFn: async () => {
+      if (!user) return { canCreate: false, daysRemaining: 0 };
+
+      // Check if user is a founder (required to post asks)
+      if (profile?.role !== 'founder') {
+        return { canCreate: false, daysRemaining: 0, reason: 'not_founder' };
+      }
+
+      try {
+        // Check rate limit using RPC function
+        const { data: canCreate, error: canCreateError } = await supabase.rpc('can_create_ask', {
+          user_uuid: user.id
+        });
+
+        if (canCreateError) {
+          console.warn('[RATE_LIMIT] Error checking can_create_ask:', canCreateError.message);
+          // Default to allowing if function doesn't exist
+          return { canCreate: true, daysRemaining: 0 };
+        }
+
+        if (canCreate) {
+          return { canCreate: true, daysRemaining: 0 };
+        }
+
+        // Get days remaining
+        const { data: daysRemaining, error: daysError } = await supabase.rpc('days_until_next_ask', {
+          user_uuid: user.id
+        });
+
+        if (daysError) {
+          console.warn('[RATE_LIMIT] Error checking days_until_next_ask:', daysError.message);
+          return { canCreate: false, daysRemaining: 7 };
+        }
+
+        return { canCreate: false, daysRemaining: daysRemaining || 0 };
+      } catch (error) {
+        console.warn('[RATE_LIMIT] Rate limit check failed:', error.message);
+        return { canCreate: true, daysRemaining: 0 };
+      }
+    },
+    enabled: !!user,
+    staleTime: 60000, // Cache for 1 minute
+  });
+
+  return data || { canCreate: true, daysRemaining: 0 };
+}
+
 // Helper function to format time ago with date validation
 function formatTimeAgo(dateString) {
   if (!dateString) return 'Unknown';

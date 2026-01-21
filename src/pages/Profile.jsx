@@ -176,6 +176,7 @@ export default function Profile() {
   const [isEditingInline, setIsEditingInline] = useState(false);
   const [myOffers, setMyOffers] = useState([]);
   const [offersLoading, setOffersLoading] = useState(false);
+  const [pendingRequestCount, setPendingRequestCount] = useState(0);
 
   // Check if user is admin (can access founder features)
   const isAdmin = user && ADMIN_EMAILS.includes(user.email);
@@ -264,6 +265,28 @@ export default function Profile() {
 
     fetchMyOffers();
   }, [user, activeTab]);
+
+  // Fetch pending request count for founders (shown as badge on Requests tab)
+  useEffect(() => {
+    const fetchPendingRequestCount = async () => {
+      if (!user || !isFounderOrAdmin) return;
+
+      try {
+        const { count, error } = await supabase
+          .from('connection_requests')
+          .select('*', { count: 'exact', head: true })
+          .eq('founder_id', user.id)
+          .eq('status', 'pending');
+
+        if (error) throw error;
+        setPendingRequestCount(count || 0);
+      } catch (error) {
+        console.error('Error fetching pending request count:', error);
+      }
+    };
+
+    fetchPendingRequestCount();
+  }, [user, isFounderOrAdmin]);
 
   // Fetch assessment results when results tab is active
   useEffect(() => {
@@ -561,6 +584,15 @@ export default function Profile() {
                     >
                       <Inbox size={16} className="flex-shrink-0" />
                       <span className="sm:hidden">Inbox</span><span className="hidden sm:inline">Requests</span>
+                      {pendingRequestCount > 0 && (
+                        <span className={`ml-1 px-1.5 py-0.5 text-[10px] font-mono min-w-[20px] text-center ${
+                          activeTab === 'requests'
+                            ? 'bg-black text-white'
+                            : 'bg-amber-500 text-black'
+                        }`}>
+                          {pendingRequestCount}
+                        </span>
+                      )}
                     </button>
                   </>
                 )}

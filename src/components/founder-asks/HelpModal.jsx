@@ -18,11 +18,41 @@ export default function HelpModal({ isOpen, onClose, ask }) {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [emailFailed, setEmailFailed] = useState(false);
+  const [pendingEmailData, setPendingEmailData] = useState(null);
 
   const handleClose = () => {
     setShowSuccess(false);
+    setEmailFailed(false);
+    setPendingEmailData(null);
     setMessage('');
     onClose();
+  };
+
+  const handleRetryEmail = async () => {
+    if (!pendingEmailData) return;
+
+    setLoading(true);
+    try {
+      const emailResult = await sendConnectionRequestEmail(
+        pendingEmailData.founderEmail,
+        pendingEmailData
+      );
+
+      if (emailResult.success) {
+        setEmailFailed(false);
+        setPendingEmailData(null);
+        toast.success('Notification sent!');
+      } else {
+        toast.error('Still unable to send notification', {
+          description: 'The founder will see your offer in their dashboard.',
+        });
+      }
+    } catch (error) {
+      toast.error('Failed to retry notification');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -75,15 +105,18 @@ export default function HelpModal({ isOpen, onClose, ask }) {
 
       if (insertError) throw insertError;
 
-      // Increment connection request count (non-blocking - don't fail if count update fails)
-      try {
-        await supabase.rpc('increment_connection_count', { ask_uuid: ask.id });
-      } catch (rpcError) {
-        // Log but don't block - the connection request was created successfully
-        if (import.meta.env.DEV) {
-          console.warn('[HELP] Failed to increment connection count:', rpcError.message);
-        }
-      }
+      // DB insert succeeded - show success state immediately (optimistic)
+      setShowSuccess(true);
+      setLoading(false);
+
+      // Do remaining operations in background (non-blocking)
+      // Increment connection request count
+      supabase.rpc('increment_connection_count', { ask_uuid: ask.id })
+        .catch((rpcError) => {
+          if (import.meta.env.DEV) {
+            console.warn('[HELP] Failed to increment connection count:', rpcError.message);
+          }
+        });
 
       // Get founder's email and send notification (use decrypted view for PII)
       if (ask.userId) {
@@ -94,30 +127,34 @@ export default function HelpModal({ isOpen, onClose, ask }) {
           .single();
 
         if (founderProfile?.email) {
-          const emailResult = await sendConnectionRequestEmail(founderProfile.email, {
+          const emailPayload = {
+            founderEmail: founderProfile.email,
             founderName: founderProfile.full_name || 'Founder',
             helperName: profile?.full_name || user.email,
             helperEmail: user.email,
             helperLinkedIn: linkedinUrl,
             helperMessage: message,
             askDescription: ask.description,
-          });
+          };
+
+          const emailResult = await sendConnectionRequestEmail(founderProfile.email, emailPayload);
 
           if (!emailResult.success) {
             console.warn('[HELP] Email notification failed:', emailResult.error);
-            // Don't block the flow - the connection request was created
+            // Store data for retry
+            setPendingEmailData(emailPayload);
+            setEmailFailed(true);
           }
+        } else {
+          // No founder email found
+          setEmailFailed(true);
         }
       }
-
-      // Show success state instead of closing
-      setShowSuccess(true);
     } catch (error) {
       console.error('Error sending help offer:', error);
       toast.error('Failed to send', {
         description: error.message,
       });
-    } finally {
       setLoading(false);
     }
   };
@@ -171,16 +208,45 @@ export default function HelpModal({ isOpen, onClose, ask }) {
             {/* Success State */}
             {showSuccess && (
               <div className="text-center py-6">
-                <div className="w-16 h-16 mx-auto mb-6 border-2 border-green-400 flex items-center justify-center">
-                  <Heart className="w-8 h-8 text-green-400" strokeWidth={1.5} />
+                <div className={`w-16 h-16 mx-auto mb-6 border-2 ${emailFailed ? 'border-amber-400' : 'border-green-400'} flex items-center justify-center`}>
+                  <Heart className={`w-8 h-8 ${emailFailed ? 'text-amber-400' : 'text-green-400'}`} strokeWidth={1.5} />
                 </div>
 
                 <h3 className="font-serif text-2xl text-white mb-2">
-                  Thank You for Helping
+                  {emailFailed ? 'Offer Saved!' : 'Thank You for Helping'}
                 </h3>
-                <p className="text-white/50 text-sm max-w-sm mx-auto mb-8">
-                  The founder will be notified of your offer. They have 48 hours to review and accept. We'll let you know when they respond.
-                </p>
+
+                {/* Email status feedback */}
+                {emailFailed ? (
+                  <div className="mb-6">
+                    <div className="p-4 border border-amber-500/30 bg-amber-500/5 mb-4">
+                      <div className="flex items-start gap-3">
+                        <AlertCircle className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" strokeWidth={1.5} />
+                        <div className="text-left">
+                          <p className="text-sm text-white/70 mb-1">
+                            Your offer was saved, but we couldn't send the notification email.
+                          </p>
+                          <p className="text-xs text-white/40">
+                            Don't worry — the founder will still see your offer in their dashboard.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    {pendingEmailData && (
+                      <button
+                        onClick={handleRetryEmail}
+                        disabled={loading}
+                        className="font-mono text-[10px] uppercase tracking-[0.1em] px-4 py-2 border border-amber-500/30 text-amber-400 hover:bg-amber-500/10 transition-colors cursor-crosshair disabled:opacity-50"
+                      >
+                        {loading ? 'Retrying...' : 'Retry Notification'}
+                      </button>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-white/50 text-sm max-w-sm mx-auto mb-8">
+                    The founder has been notified of your offer. They have 48 hours to review and accept. We'll let you know when they respond.
+                  </p>
+                )}
 
                 <div className="space-y-3">
                   <button

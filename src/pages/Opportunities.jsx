@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { supabase } from "@/api/supabaseClient";
 import { motion } from 'framer-motion';
 import {
@@ -20,7 +20,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import BureauFooter from '@/components/bureau/BureauFooter';
 
-import { useFounderAsks } from '@/hooks/useFounderAsks';
+import { useFounderAsks, useCanCreateAsk } from '@/hooks/useFounderAsks';
 import { FounderAskCard, PostAskModal, HelpModal } from '@/components/founder-asks';
 
 // ============================================
@@ -68,6 +68,9 @@ export default function Opportunities() {
   // Fetch real data from Supabase
   const { asks, loading: asksLoading, error: asksError, refetch } = useFounderAsks();
 
+  // Check rate limit for posting asks
+  const { canCreate, daysRemaining } = useCanCreateAsk();
+
   // Filter asks based on search, category, and sector (memoized for performance)
   const filteredAsks = useMemo(() => {
     return asks.filter(ask => {
@@ -94,6 +97,8 @@ export default function Opportunities() {
 
   const handleHelp = async (ask) => {
     if (!user) {
+      // Store the ask ID they wanted to help with for after auth
+      sessionStorage.setItem('pendingHelpAskId', ask.id);
       toast('Sign up to connect with founders', {
         description: 'Create an account to offer your help and expertise.',
         action: {
@@ -118,6 +123,28 @@ export default function Opportunities() {
     setShowHelpModal(true);
   };
 
+  // Restore context after authentication
+  useEffect(() => {
+    if (user && asks.length > 0) {
+      const pendingAskId = sessionStorage.getItem('pendingHelpAskId');
+      if (pendingAskId) {
+        sessionStorage.removeItem('pendingHelpAskId');
+        // Find the ask they wanted to help with
+        const ask = asks.find(a => a.id === pendingAskId);
+        if (ask) {
+          // Small delay to ensure UI is ready
+          setTimeout(() => {
+            setSelectedAsk(ask);
+            setShowHelpModal(true);
+            toast.success('Welcome back!', {
+              description: 'You can now offer your help.',
+            });
+          }, 500);
+        }
+      }
+    }
+  }, [user, asks]);
+
   const handlePostAsk = () => {
     if (!user) {
       toast('Sign up to post your ask', {
@@ -129,7 +156,7 @@ export default function Opportunities() {
       });
       return;
     }
-    
+
     // Check if user is a founder
     if (profile?.role !== 'founder') {
       toast.error('Posting is limited to founders only', {
@@ -138,7 +165,16 @@ export default function Opportunities() {
       });
       return;
     }
-    
+
+    // Check rate limit
+    if (!canCreate && daysRemaining > 0) {
+      toast.error(`You can post a new ask in ${daysRemaining} day${daysRemaining === 1 ? '' : 's'}`, {
+        description: 'Founders can post one ask per 7 days to keep the feed fresh and focused.',
+        duration: 5000,
+      });
+      return;
+    }
+
     setShowPostAskModal(true);
   };
 
@@ -266,10 +302,25 @@ export default function Opportunities() {
                 <div className="flex flex-wrap gap-3">
                   <button
                     onClick={handlePostAsk}
-                    className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 bg-white text-black hover:bg-white/90 transition-colors cursor-crosshair"
+                    disabled={!canCreate && daysRemaining > 0}
+                    title={!canCreate && daysRemaining > 0 ? `${daysRemaining} days until you can post` : ''}
+                    className={`flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 transition-colors cursor-crosshair ${
+                      !canCreate && daysRemaining > 0
+                        ? 'bg-white/20 text-white/50 border border-white/10 cursor-not-allowed'
+                        : 'bg-white text-black hover:bg-white/90'
+                    }`}
                   >
-                    <Plus className="w-4 h-4" strokeWidth={1.5} />
-                    Post Your Ask
+                    {!canCreate && daysRemaining > 0 ? (
+                      <>
+                        <Lock className="w-4 h-4" strokeWidth={1.5} />
+                        Post in {daysRemaining} day{daysRemaining === 1 ? '' : 's'}
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="w-4 h-4" strokeWidth={1.5} />
+                        Post Your Ask
+                      </>
+                    )}
                   </button>
                   <div className="flex items-center gap-2 font-mono text-[10px] text-white/30 px-4">
                     <Lock className="w-3 h-3" strokeWidth={1.5} />

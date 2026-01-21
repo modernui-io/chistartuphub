@@ -38,6 +38,17 @@ const STATUS_STYLES = {
   expired: 'bg-gray-500/10 text-gray-400 border-gray-500/20',
 };
 
+// Validate LinkedIn URL properly (prevents bypass attacks)
+function isValidLinkedInUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+  try {
+    const parsed = new URL(url);
+    return parsed.hostname === 'linkedin.com' || parsed.hostname.endsWith('.linkedin.com');
+  } catch {
+    return false;
+  }
+}
+
 // Format time remaining
 function formatTimeRemaining(expiresAt) {
   if (!expiresAt) return 'Unknown';
@@ -131,12 +142,88 @@ export default function ConnectionRequests({ hasAsks = true, onPostAsk }) {
 
   // Handle accept request
   const handleAccept = (request) => {
+    // If founder already has valid LinkedIn in profile, skip the modal
+    if (profile?.linkedin_url && isValidLinkedInUrl(profile.linkedin_url)) {
+      confirmAcceptDirect(request, profile.linkedin_url);
+      return;
+    }
+
+    // Otherwise show modal to collect LinkedIn
     setSelectedRequest(request);
     setLinkedInUrl(profile?.linkedin_url || '');
     setShowLinkedInModal(true);
   };
 
-  // Confirm accept with LinkedIn
+  // Direct accept when LinkedIn is already in profile
+  const confirmAcceptDirect = async (request, linkedinUrl) => {
+    // Optimistic update - immediately update UI
+    setRequests(prev => prev.map(r =>
+      r.id === request.id
+        ? { ...r, status: 'accepted', founder_linkedin: linkedinUrl.trim(), _optimistic: true }
+        : r
+    ));
+
+    try {
+      // Call the database function to accept
+      const { error } = await supabase.rpc('accept_connection_request', {
+        request_uuid: request.id,
+        linkedin_url: linkedinUrl.trim()
+      });
+
+      if (error) throw error;
+
+      // Fetch requester's email from encrypted store and send notification
+      const { data: requesterProfile } = await supabase
+        .from('user_profiles_decrypted')
+        .select('email')
+        .eq('id', request.requester_id)
+        .single();
+
+      let emailSent = false;
+      if (requesterProfile?.email) {
+        const emailResult = await sendConnectionAcceptedEmail(requesterProfile.email, {
+          helperName: request.requester_name || 'Helper',
+          founderName: profile?.full_name || 'Founder',
+          founderEmail: user.email,
+          founderLinkedIn: linkedinUrl.trim(),
+          askDescription: request.founder_asks?.description || 'Your ask',
+        });
+
+        if (!emailResult.success) {
+          console.warn('[CONNECTION] Email notification failed:', emailResult.error);
+        } else {
+          emailSent = true;
+        }
+      }
+
+      if (emailSent) {
+        toast.success('Request accepted!', {
+          description: 'Your LinkedIn has been shared with the helper'
+        });
+      } else {
+        toast.success('Request accepted!', {
+          description: 'Notification email failed, but the helper can see the update in their profile.',
+          duration: 6000,
+        });
+      }
+
+      // Remove optimistic flag
+      setRequests(prev => prev.map(r =>
+        r.id === request.id ? { ...r, _optimistic: false } : r
+      ));
+    } catch (error) {
+      console.error('Error accepting request:', error);
+      toast.error('Failed to accept request');
+      // Revert optimistic update on error
+      setRequests(prev => prev.map(r =>
+        r.id === request.id
+          ? { ...r, status: 'pending', founder_linkedin: null, _optimistic: false }
+          : r
+      ));
+    }
+  };
+
+  // Confirm accept with LinkedIn (from modal)
   const confirmAccept = async () => {
     if (!linkedInUrl.trim()) {
       toast.error('Please enter your LinkedIn URL');
@@ -148,57 +235,105 @@ export default function ConnectionRequests({ hasAsks = true, onPostAsk }) {
       return;
     }
 
-    setProcessingId(selectedRequest.id);
+    // Store request data before clearing
+    const requestId = selectedRequest.id;
+    const requesterId = selectedRequest.requester_id;
+    const requesterName = selectedRequest.requester_name;
+    const askDescription = selectedRequest.founder_asks?.description;
+
+    // Close modal immediately (optimistic)
+    setShowLinkedInModal(false);
+
+    // Optimistic update - immediately update UI
+    setRequests(prev => prev.map(r =>
+      r.id === requestId
+        ? { ...r, status: 'accepted', founder_linkedin: linkedInUrl.trim(), _optimistic: true }
+        : r
+    ));
+
+    setSelectedRequest(null);
+    setLinkedInUrl('');
+
+    // Also save LinkedIn to profile if not already there
+    if (!profile?.linkedin_url) {
+      supabase
+        .from('user_profiles')
+        .update({ linkedin_url: linkedInUrl.trim() })
+        .eq('id', user.id)
+        .then(() => {})
+        .catch((updateError) => {
+          console.warn('[CONNECTION] Failed to save LinkedIn to profile:', updateError.message);
+        });
+    }
 
     try {
       // Call the database function to accept
       const { error } = await supabase.rpc('accept_connection_request', {
-        request_uuid: selectedRequest.id,
+        request_uuid: requestId,
         linkedin_url: linkedInUrl.trim()
       });
 
       if (error) throw error;
 
       // Fetch requester's email from encrypted store and send notification
-      const { data: requesterProfile } = await supabase
+      const { data: requesterProfileData } = await supabase
         .from('user_profiles_decrypted')
         .select('email')
-        .eq('id', selectedRequest.requester_id)
+        .eq('id', requesterId)
         .single();
 
-      if (requesterProfile?.email) {
-        const emailResult = await sendConnectionAcceptedEmail(requesterProfile.email, {
-          helperName: selectedRequest.requester_name || 'Helper',
+      let emailSent = false;
+      if (requesterProfileData?.email) {
+        const emailResult = await sendConnectionAcceptedEmail(requesterProfileData.email, {
+          helperName: requesterName || 'Helper',
           founderName: profile?.full_name || 'Founder',
           founderEmail: user.email,
           founderLinkedIn: linkedInUrl.trim(),
-          askDescription: selectedRequest.founder_asks?.description || 'Your ask',
+          askDescription: askDescription || 'Your ask',
         });
 
         if (!emailResult.success) {
           console.warn('[CONNECTION] Email notification failed:', emailResult.error);
+        } else {
+          emailSent = true;
         }
       }
 
-      toast.success('Request accepted!', {
-        description: 'Your LinkedIn has been shared with the helper'
-      });
+      if (emailSent) {
+        toast.success('Request accepted!', {
+          description: 'Your LinkedIn has been shared with the helper'
+        });
+      } else {
+        toast.success('Request accepted!', {
+          description: 'Notification email failed, but the helper can see the update in their profile.',
+          duration: 6000,
+        });
+      }
 
-      setShowLinkedInModal(false);
-      setSelectedRequest(null);
-      setLinkedInUrl('');
-      fetchRequests();
+      // Remove optimistic flag
+      setRequests(prev => prev.map(r =>
+        r.id === requestId ? { ...r, _optimistic: false } : r
+      ));
     } catch (error) {
       console.error('Error accepting request:', error);
       toast.error('Failed to accept request');
-    } finally {
-      setProcessingId(null);
+      // Revert optimistic update on error
+      setRequests(prev => prev.map(r =>
+        r.id === requestId
+          ? { ...r, status: 'pending', founder_linkedin: null, _optimistic: false }
+          : r
+      ));
     }
   };
 
   // Handle decline request
   const handleDecline = async (request) => {
-    setProcessingId(request.id);
+    // Optimistic update - immediately update UI
+    setRequests(prev => prev.map(r =>
+      r.id === request.id
+        ? { ...r, status: 'declined', _optimistic: true }
+        : r
+    ));
 
     try {
       // Call the database function to decline
@@ -215,6 +350,7 @@ export default function ConnectionRequests({ hasAsks = true, onPostAsk }) {
         .eq('id', request.requester_id)
         .single();
 
+      let emailSent = false;
       if (requesterProfile?.email) {
         const emailResult = await sendConnectionDeclinedEmail(requesterProfile.email, {
           helperName: request.requester_name || 'Helper',
@@ -224,16 +360,33 @@ export default function ConnectionRequests({ hasAsks = true, onPostAsk }) {
 
         if (!emailResult.success) {
           console.warn('[CONNECTION] Decline email failed:', emailResult.error);
+        } else {
+          emailSent = true;
         }
       }
 
-      toast.success('Request declined');
-      fetchRequests();
+      if (emailSent) {
+        toast.success('Request declined');
+      } else {
+        toast.success('Request declined', {
+          description: 'Notification email failed, but the helper can see the update.',
+          duration: 5000,
+        });
+      }
+
+      // Remove optimistic flag
+      setRequests(prev => prev.map(r =>
+        r.id === request.id ? { ...r, _optimistic: false } : r
+      ));
     } catch (error) {
       console.error('Error declining request:', error);
       toast.error('Failed to decline request');
-    } finally {
-      setProcessingId(null);
+      // Revert optimistic update on error
+      setRequests(prev => prev.map(r =>
+        r.id === request.id
+          ? { ...r, status: 'pending', _optimistic: false }
+          : r
+      ));
     }
   };
 
