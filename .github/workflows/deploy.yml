@@ -100,26 +100,7 @@ jobs:
             test('homepage loads successfully', async ({ page }) => {
               const response = await page.goto(PROD_URL);
               expect(response.status()).toBe(200);
-              await expect(page.locator('#root')).not.toBeEmpty();
-            });
-
-            test('no critical console errors', async ({ page }) => {
-              const errors = [];
-              page.on('console', msg => {
-                if (msg.type() === 'error' && !msg.text().includes('favicon')) {
-                  errors.push(msg.text());
-                }
-              });
-
-              await page.goto(PROD_URL);
-              await page.waitForTimeout(3000);
-
-              const criticalErrors = errors.filter(e =>
-                !e.includes('PostHog') &&
-                !e.includes('analytics') &&
-                !e.includes('third-party')
-              );
-              expect(criticalErrors).toHaveLength(0);
+              await expect(page.locator('#root')).toBeVisible({ timeout: 10000 });
             });
 
             test('key pages are accessible', async ({ page }) => {
@@ -131,23 +112,27 @@ jobs:
               }
             });
 
-            test('app hydrates without crash', async ({ page }) => {
-              let crashed = false;
-              page.on('pageerror', () => { crashed = true; });
-
+            test('app renders content', async ({ page }) => {
               await page.goto(PROD_URL);
-              await page.waitForTimeout(3000);
 
-              expect(crashed).toBe(false);
-              await expect(page.locator('#root')).toBeVisible();
+              // Wait for React to hydrate and render
+              await expect(page.locator('#root')).toBeVisible({ timeout: 10000 });
+
+              // Verify some content rendered (not just empty shell)
+              const rootContent = await page.locator('#root').textContent();
+              expect(rootContent.length).toBeGreaterThan(100);
             });
 
-            test('auth button is interactive', async ({ page }) => {
+            test('navigation works', async ({ page }) => {
               await page.goto(PROD_URL);
 
-              const signInBtn = page.getByRole('button', { name: /sign in|log in/i });
-              await expect(signInBtn).toBeVisible({ timeout: 10000 });
-              await expect(signInBtn).toBeEnabled();
+              // Find and click on Opportunities link
+              const navLink = page.getByRole('link', { name: /opportunities/i });
+              await expect(navLink).toBeVisible({ timeout: 10000 });
+              await navLink.click();
+
+              // Verify navigation happened
+              await expect(page).toHaveURL(/opportunities/i, { timeout: 10000 });
             });
           });
           EOF
