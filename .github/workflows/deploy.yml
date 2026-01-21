@@ -81,6 +81,16 @@ jobs:
 
       - name: Run smoke tests against production
         run: |
+          # Create minimal config for smoke tests (no webServer, current dir)
+          cat > smoke.config.js << 'CONFIGEOF'
+          module.exports = {
+            testDir: '.',
+            testMatch: 'smoke-test.spec.js',
+            use: { baseURL: process.env.PLAYWRIGHT_BASE_URL },
+            projects: [{ name: 'chromium', use: { channel: 'chromium' } }],
+          };
+          CONFIGEOF
+
           cat > smoke-test.spec.js << 'EOF'
           const { test, expect } = require('@playwright/test');
 
@@ -142,7 +152,7 @@ jobs:
           });
           EOF
 
-          npx playwright test smoke-test.spec.js --project=chromium --reporter=list
+          npx playwright test --config=smoke.config.js --reporter=list
         env:
           PLAYWRIGHT_BASE_URL: ${{ env.PRODUCTION_URL }}
 
