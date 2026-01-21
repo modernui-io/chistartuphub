@@ -53,7 +53,7 @@ ON CONFLICT DO NOTHING;
 -- WORKSPACES
 -- ===========================================
 INSERT INTO workspaces (name, description, website, address, neighborhood, workspace_type, amenities, pricing, featured) VALUES
-('1871 Coworking', 'Premier tech startup coworking space in the Merchandise Mart.', 'https://1871.com', '222 W Merchandise Mart Plaza', 'River North', 'coworking', ARRAY['High-speed WiFi', 'Conference rooms', 'Events', 'Mentorship'], 'Starting at $450/mo', true),
+('1871 Coworking', 'Chicago''s premier tech hub and startup community, now located at 111 N Canal St.', 'https://1871.com', '111 N Canal St, Chicago, IL 60606', 'West Loop', 'coworking', ARRAY['High-speed WiFi', 'Conference rooms', 'Events', 'Mentorship'], 'Starting at $450/mo', true),
 ('WeWork Fulton Market', 'Modern coworking space in the heart of Fulton Market.', 'https://wework.com', '167 N Green St', 'Fulton Market', 'coworking', ARRAY['24/7 Access', 'Phone booths', 'Coffee bar', 'Wellness room'], 'Starting at $350/mo', false),
 ('mHub Workspace', 'Workspace designed for hardware and manufacturing startups.', 'https://mhubchicago.com', '965 W Chicago Ave', 'River West', 'innovation-hub', ARRAY['Prototyping lab', 'CNC machines', '3D printing', 'Electronics lab'], 'Starting at $500/mo', true),
 ('Industrious', 'Premium flexible workspace in the Loop.', 'https://industrious.com', '111 W Washington St', 'Loop', 'private-office', ARRAY['Private offices', 'Meeting rooms', 'Hospitality', 'IT support'], 'Starting at $600/mo', false),
