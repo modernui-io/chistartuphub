@@ -65,7 +65,7 @@ export function FundingPageContent({
     hot: hotOpportunities.length,
     grants: grants.length,
     accelerators: accelerators.length,
-    vc: investors.length > 990 ? '990+' : investors.length
+    vc: investors.length > 1000 ? '1000+' : investors.length
   }), [hotOpportunities, grants, accelerators, investors]);
 
   // Get items for current category

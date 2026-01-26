@@ -56,7 +56,7 @@ export default function Investors() {
     <div className="min-h-screen relative" data-page="investors">
       <SEO
         title="Investor Directory | ChiStartup Hub"
-        description="Browse 990+ venture capital firms and angel investors. Filter by stage, sector, and location to find the right fit for your startup."
+        description="Browse 1000+ venture capital firms and angel investors. Filter by stage, sector, and location to find the right fit for your startup."
         keywords="startup investors, venture capital, angel investors, Chicago VCs, seed funding, Series A investors"
       />
 

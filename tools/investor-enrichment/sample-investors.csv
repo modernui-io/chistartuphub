@@ -1,0 +1,14 @@
+name,website,location,stages,sectors,check_size,description
+Jump Capital,https://jumpcap.com,Chicago,Series A|Series B,Fintech|SaaS|Healthcare,5M-25M,Leading Chicago-based venture firm
+Hyde Park Venture Partners,https://hydeparkvp.com,Chicago,Seed|Series A,B2B Software|Fintech,1M-10M,Early-stage focus on Midwest founders
+Lightbank,https://lightbank.com,Chicago,Seed|Series A,Consumer|Enterprise,500K-5M,Founded by Groupon cofounders
+M25,https://m25vc.com,Chicago,Pre-seed|Seed,Technology|Healthcare,250K-1M,Midwest focused early stage fund
+Chicago Ventures,https://chicagoventures.com,Chicago,Seed|Series A,SaaS|Marketplace,1M-5M,Chicago-focused venture capital
+Valor Equity Partners,https://valorep.com,Chicago,Growth,Technology|Automotive,50M-200M,Growth equity investor
+MATH Venture Partners,https://mathvp.com,Chicago,Pre-seed|Seed,Consumer|Enterprise,100K-500K,Former entrepreneurs backing founders
+OCA Ventures,https://ocaventures.com,Chicago,Seed|Series A,B2B|Healthcare,500K-3M,Midwest technology investor
+Pritzker Group VC,https://pritzkergroup.com,Chicago,Series A|Series B,Technology|Healthcare,5M-20M,Part of Pritzker family office
+Cleveland Avenue,https://clevelandavenue.com,Chicago,Seed|Series A,Food|CPG|Agriculture,1M-10M,Former McDonalds CEO fund
+Missing Website Fund,,New York,Seed,Fintech,,No website provided
+Incomplete Data Partners,https://example.com,,,,,Minimal information
+Test Investor,invalid-url,Unknown,Early Stage,Tech,Unknown,Testing bad data handling

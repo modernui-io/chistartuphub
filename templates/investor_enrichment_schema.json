@@ -1,0 +1,168 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Investor Enrichment Schema",
+  "description": "Schema for consistent investor data enrichment in ChiStartupHub",
+  "type": "object",
+  "required": ["name"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Official investor/firm name",
+      "minLength": 2,
+      "maxLength": 200,
+      "examples": ["Hyde Park Venture Partners", "ARCH Venture Partners", "Chicago Ventures"]
+    },
+    "organization": {
+      "type": "string",
+      "description": "Parent organization if different from name",
+      "maxLength": 200
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of the investor/firm (2-3 sentences)",
+      "maxLength": 1000,
+      "pattern": "^[A-Z].*\\.$"
+    },
+    "website": {
+      "type": "string",
+      "format": "uri",
+      "description": "Official website URL",
+      "examples": ["https://hydeparkvp.com", "https://archventure.com"]
+    },
+    "location": {
+      "type": "string",
+      "description": "Primary office location (City, State format)",
+      "pattern": "^[A-Za-z\\s]+,\\s*[A-Z]{2}$",
+      "examples": ["Chicago, IL", "San Francisco, CA", "New York, NY"]
+    },
+    "opportunity_type": {
+      "type": "string",
+      "enum": ["vc", "angel", "accelerator", "grant", "corporate", "family_office", "private_equity"],
+      "default": "vc",
+      "description": "Type of investment entity"
+    },
+    "check_size_min": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000000,
+      "description": "Minimum check size in USD"
+    },
+    "check_size_max": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1000000000,
+      "description": "Maximum check size in USD"
+    },
+    "stage": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["pre-seed", "seed", "series-a", "series-b", "series-c", "growth", "late-stage"]
+      },
+      "uniqueItems": true,
+      "description": "Investment stages the firm focuses on"
+    },
+    "sectors": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 50
+      },
+      "uniqueItems": true,
+      "maxItems": 10,
+      "description": "Industry sectors/verticals of focus",
+      "examples": [["SaaS", "FinTech", "Healthcare"], ["AI/ML", "Enterprise Software"]]
+    },
+    "chicago_focused": {
+      "type": "boolean",
+      "default": false,
+      "description": "Does the firm specifically invest in Chicago/Midwest startups?"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Is the firm currently actively investing?"
+    },
+    "confidence_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Overall confidence in enrichment data (0-100)"
+    },
+    "enrichment_source": {
+      "type": "string",
+      "enum": ["web", "local_file", "existing_db", "manual"],
+      "description": "Primary source of enrichment data"
+    },
+    "enriched_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of last enrichment"
+    },
+    "needs_review": {
+      "type": "boolean",
+      "default": false,
+      "description": "Flag indicating human review is required"
+    },
+    "field_sources": {
+      "type": "object",
+      "description": "Per-field confidence and source tracking",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Where this field's data came from"
+          },
+          "confidence": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "raw_value": {
+            "type": "string",
+            "description": "Original value before normalization"
+          },
+          "verified_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["source", "confidence"]
+      }
+    }
+  },
+  "examples": [
+    {
+      "name": "Hyde Park Venture Partners",
+      "description": "Early-stage venture capital firm investing in B2B software companies. Founded in 2011, HPVP focuses on seed and Series A investments in Chicago and the Midwest.",
+      "website": "https://hydeparkvp.com",
+      "location": "Chicago, IL",
+      "opportunity_type": "vc",
+      "check_size_min": 500000,
+      "check_size_max": 5000000,
+      "stage": ["seed", "series-a"],
+      "sectors": ["SaaS", "Enterprise Software", "FinTech"],
+      "chicago_focused": true,
+      "confidence_score": 95,
+      "enrichment_source": "web",
+      "needs_review": false,
+      "field_sources": {
+        "website": {
+          "source": "official_domain_verified",
+          "confidence": 100
+        },
+        "check_size_min": {
+          "source": "portfolio_analysis",
+          "confidence": 75,
+          "raw_value": "$500K-$5M typical investment"
+        },
+        "sectors": {
+          "source": "investment_thesis_page",
+          "confidence": 90
+        }
+      }
+    }
+  ]
+}

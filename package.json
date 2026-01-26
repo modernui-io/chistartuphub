@@ -20,7 +20,9 @@
     "db:stop": "npx supabase stop",
     "db:reset": "npx supabase db reset",
     "db:status": "npx supabase status",
-    "db:studio": "open http://127.0.0.1:54323"
+    "db:studio": "open http://127.0.0.1:54323",
+    "video:studio": "remotion studio video/index.ts",
+    "video:render": "remotion render video/index.ts CapitalAccessVol4 out/capital-access-vol4.mp4"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.3",
@@ -87,6 +89,8 @@
     "@eslint/js": "^9.19.0",
     "@flydotio/dockerfile": "^0.7.8",
     "@playwright/test": "^1.57.0",
+    "@remotion/bundler": "^4.0.410",
+    "@remotion/cli": "^4.0.410",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@types/node": "^22.13.5",
@@ -102,6 +106,7 @@
     "globals": "^15.14.0",
     "jsdom": "^26.1.0",
     "postcss": "^8.5.3",
+    "remotion": "^4.0.410",
     "supabase": "^2.70.5",
     "tailwindcss": "^3.4.17",
     "terser": "^5.44.1",
