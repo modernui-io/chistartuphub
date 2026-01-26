@@ -1,5 +1,5 @@
 /* Font imports - optimized for performance (reduced weights) */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500;1,600;1,700&family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600&family=Bebas+Neue&family=Archivo+Black&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -47,6 +47,10 @@
   --font-editorial: 'Playfair Display', Georgia, serif;
   --font-mono: 'JetBrains Mono', Menlo, Monaco, Consolas, monospace;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  
+  /* Noir Zine Typography */
+  --font-display: 'Bebas Neue', 'Impact', sans-serif;
+  --font-headline: 'Archivo Black', 'Impact', sans-serif;
 
   /* Grid */
   --bureau-grid-size: 80px;

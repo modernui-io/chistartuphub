@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { entities } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
-import FundingOpportunitiesContent from "../components/funding/FundingOpportunitiesContent";
+import { FundingPageContent } from "@/components/funding-v2";
 import SEO from "@/components/SEO";
 import { BureauAtmosphere, BureauFooter } from "@/components/bureau";
 
@@ -100,41 +100,39 @@ export default function Funding() {
       {/* Main Content */}
       <div className="relative z-10">
         {/* Hero Section */}
-        <section className="pt-32 pb-20 px-6">
-          <div className="max-w-6xl mx-auto">
+        <section className="pt-32 pb-12 px-6">
+          <div className="max-w-5xl mx-auto text-center">
             {/* System Label */}
             <div className={`${isLoaded ? 'animate-fade-in' : 'opacity-0'}`} style={{ animationDelay: '100ms' }}>
-              <span className="font-mono text-[11px] text-white/40 uppercase tracking-[0.2em] block mb-8">
-                [FUNDING]
+              <span className="font-mono text-[10px] text-chi-dim uppercase tracking-[0.3em] block mb-6">
+                [CHISTARTUPHUB: FUNDING]
               </span>
             </div>
 
-            {/* Split Headline - Dramatic Scale */}
+            {/* Headline */}
             <h1
-              className={`font-serif text-6xl md:text-7xl lg:text-8xl text-white tracking-tight leading-[0.95] mb-8 ${isLoaded ? 'animate-fade-in-up' : 'opacity-0'}`}
+              className={`font-editorial text-5xl md:text-6xl lg:text-7xl text-white tracking-tight leading-[1.05] mb-4 ${isLoaded ? 'animate-fade-in-up' : 'opacity-0'}`}
               style={{ animationDelay: '200ms' }}
             >
-              Find Your<br />
-              <span className="text-white/90">Funding</span>
+              Find Your Funding
             </h1>
 
-            {/* Subtitle */}
+            {/* Tagline */}
             <p
-              className={`text-white/50 text-lg max-w-xl ${isLoaded ? 'animate-fade-in-up' : 'opacity-0'}`}
+              className={`font-editorial italic text-lg md:text-xl text-chi-muted max-w-2xl mx-auto ${isLoaded ? 'animate-fade-in-up' : 'opacity-0'}`}
               style={{ animationDelay: '300ms' }}
             >
-              Apply to grants, accelerators, and competitions with active deadlines.
-              Plus 1,440+ investors to research when you're ready.
+              "Capital for the bold ones building in the shadows of the Midwest."
             </p>
           </div>
         </section>
 
-        {/* Funding Content */}
+        {/* Funding Content - New Noir Zine Design */}
         <section className="px-6 pb-24">
-          <div className="max-w-6xl mx-auto">
-            <FundingOpportunitiesContent
-              opportunities={opportunities}
-              upcomingOpportunities={upcomingOpportunities}
+          <div className="max-w-5xl mx-auto">
+            <FundingPageContent
+              opportunities={activeOpportunities}
+              upcomingOpportunities={activeUpcoming}
               investors={investors}
             />
           </div>

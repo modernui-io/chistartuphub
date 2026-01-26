@@ -25,8 +25,14 @@ module.exports = {
           'navy': '#050A14',           // The Deep Background
           'grid': 'rgba(255, 255, 255, 0.15)',  // Structural Borders
           'whitewash': 'rgba(255, 255, 255, 0.95)', // High contrast text
+          'white': '#FFFFFF',                      // Pure white text
+          'silver': 'rgba(255, 255, 255, 0.85)',   // Silver text
           'muted': 'rgba(255, 255, 255, 0.50)',    // Secondary text
           'dim': 'rgba(255, 255, 255, 0.30)',      // Tertiary/index numbers
+          'whisper': 'rgba(255, 255, 255, 0.05)',  // Subtle hover bg
+          'ghost': 'rgba(255, 255, 255, 0.10)',    // Ghost borders
+          'coral': '#FF6B6B',                      // Urgent/Hot accent
+          'signal': '#4ADE80',                     // Active/Success
         },
         // Existing shadcn colors
         background: 'hsl(var(--background))',
@@ -87,6 +93,9 @@ module.exports = {
         'mono': ['JetBrains Mono', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
         'serif': ['Playfair Display', 'Georgia', 'serif'],
         'sans': ['Inter', 'system-ui', 'sans-serif'],
+        // Noir Zine additions
+        'display': ['Bebas Neue', 'Impact', 'sans-serif'],
+        'headline': ['Archivo Black', 'Impact', 'sans-serif'],
       },
 
       // Spacing - Bureau Grid Units
@@ -114,8 +123,9 @@ module.exports = {
         'grid-texture': '2',
         'content': '10',
         'dropdown': '40',
-        'modal': '50',
+        'modal': '999',
         'header': '100',
+        'modal-backdrop': '998',
       },
 
       // Animations
