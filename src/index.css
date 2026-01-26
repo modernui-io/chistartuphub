@@ -1,5 +1,10 @@
-/* Font imports - optimized for performance (reduced weights) */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500;1,600;1,700&family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@400;500;600&family=Bebas+Neue&family=Archivo+Black&display=swap');
+/* Font imports - optimized for performance
+   - Reduced Playfair weights (only 400, 600, 700, italic 400)
+   - Reduced JetBrains Mono weights (only 400, 500)
+   - Inter kept minimal (400, 500, 600)
+   - Display fonts use font-display=swap for fast render
+*/
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Bebas+Neue&family=Archivo+Black&display=swap');
 
 @tailwind base;
 @tailwind components;

@@ -63,8 +63,28 @@ export default defineConfig(({ mode }) => {
             vendor: ['react', 'react-dom', 'react-router-dom'],
             // Animation libraries
             animation: ['framer-motion', 'gsap'],
-            // Maps library  
+            // Maps library
             maps: ['react-leaflet', 'leaflet'],
+            // UI components (Radix)
+            ui: [
+              '@radix-ui/react-dialog',
+              '@radix-ui/react-dropdown-menu',
+              '@radix-ui/react-select',
+              '@radix-ui/react-tabs',
+              '@radix-ui/react-tooltip',
+              '@radix-ui/react-popover',
+              '@radix-ui/react-accordion',
+              '@radix-ui/react-switch',
+              '@radix-ui/react-checkbox',
+              '@radix-ui/react-label',
+              '@radix-ui/react-slot',
+            ],
+            // Supabase
+            supabase: ['@supabase/supabase-js'],
+            // Query + State
+            query: ['@tanstack/react-query'],
+            // Utils
+            utils: ['clsx', 'tailwind-merge', 'class-variance-authority', 'date-fns'],
           }
         }
       }
