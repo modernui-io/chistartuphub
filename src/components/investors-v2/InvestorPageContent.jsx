@@ -16,41 +16,40 @@ export function InvestorPageContent({ investors = [] }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedInvestor, setSelectedInvestor] = useState(null);
 
-  // Calculate counts for each category
+  // Calculate counts for each category (single pass through investors)
   const counts = useMemo(() => {
-    const all = investors.length;
-    const vc = investors.filter(i => i.investor_type?.toLowerCase() === 'vc').length;
-    const angel = investors.filter(i => i.investor_type?.toLowerCase() === 'angel').length;
-    const family_office = investors.filter(i => i.investor_type?.toLowerCase() === 'family_office' || i.investor_type?.toLowerCase() === 'family office').length;
-    const cvc = investors.filter(i => i.investor_type?.toLowerCase() === 'cvc' || i.investor_type?.toLowerCase() === 'corporate').length;
-    const midwest = investors.filter(i => i.is_midwest).length;
-    
-    return { total: all, all, vc, angel, family_office, cvc, midwest };
+    const result = { total: 0, all: 0, vc: 0, angel: 0, family_office: 0, cvc: 0, midwest: 0 };
+
+    for (const inv of investors) {
+      result.all++;
+      const type = inv.investor_type?.toLowerCase() || '';
+
+      if (type === 'vc') result.vc++;
+      else if (type === 'angel') result.angel++;
+      else if (type === 'family_office' || type === 'family office') result.family_office++;
+      else if (type === 'cvc' || type === 'corporate') result.cvc++;
+
+      if (inv.is_midwest) result.midwest++;
+    }
+
+    result.total = result.all;
+    return result;
   }, [investors]);
 
   // Filter investors based on category, search, and filters
   const filteredInvestors = useMemo(() => {
     let result = [...investors];
-    
-    // Category filter
+
+    // Category filter (consolidated logic)
     if (activeCategory !== 'all') {
-      if (activeCategory === 'midwest') {
-        result = result.filter(i => i.is_midwest);
-      } else if (activeCategory === 'vc') {
-        result = result.filter(i => i.investor_type?.toLowerCase() === 'vc');
-      } else if (activeCategory === 'angel') {
-        result = result.filter(i => i.investor_type?.toLowerCase() === 'angel');
-      } else if (activeCategory === 'family_office') {
-        result = result.filter(i => 
-          i.investor_type?.toLowerCase() === 'family_office' || 
-          i.investor_type?.toLowerCase() === 'family office'
-        );
-      } else if (activeCategory === 'cvc') {
-        result = result.filter(i => 
-          i.investor_type?.toLowerCase() === 'cvc' || 
-          i.investor_type?.toLowerCase() === 'corporate'
-        );
-      }
+      result = result.filter(i => {
+        if (activeCategory === 'midwest') return i.is_midwest;
+
+        const type = i.investor_type?.toLowerCase() || '';
+        if (activeCategory === 'family_office') return type === 'family_office' || type === 'family office';
+        if (activeCategory === 'cvc') return type === 'cvc' || type === 'corporate';
+        return type === activeCategory;
+      });
     }
     
     // Search filter
@@ -128,28 +127,15 @@ export function InvestorPageContent({ investors = [] }) {
     setCurrentPage(1);
   };
 
-  // Get category display info
-  const getCategoryInfo = () => {
-    const icons = {
-      all: '📊',
-      vc: '🏦',
-      angel: '⭐',
-      family_office: '🏠',
-      cvc: '🏢',
-      midwest: '★'
-    };
-    const labels = {
-      all: 'All Investors',
-      vc: 'Venture Capital',
-      angel: 'Angel Investors',
-      family_office: 'Family Offices',
-      cvc: 'Corporate VC',
-      midwest: 'Midwest Investors'
-    };
-    return { icon: icons[activeCategory], label: labels[activeCategory] };
-  };
-
-  const categoryInfo = getCategoryInfo();
+  // Category display config (moved outside component to avoid recreation)
+  const categoryInfo = {
+    all: { icon: '📊', label: 'All Investors' },
+    vc: { icon: '🏦', label: 'Venture Capital' },
+    angel: { icon: '⭐', label: 'Angel Investors' },
+    family_office: { icon: '🏠', label: 'Family Offices' },
+    cvc: { icon: '🏢', label: 'Corporate VC' },
+    midwest: { icon: '★', label: 'Midwest Investors' }
+  }[activeCategory];
 
   return (
     <div className="space-y-6">
