@@ -95,16 +95,16 @@ WITH CHECK (
 );
 
 -- Allow public read via the view (public_investors)
--- The no_client_select_on_investors policy already blocks direct table access
--- So we need a policy that allows SELECT for the view to work
+-- RLS policy + base table GRANT both required for access
 CREATE POLICY "Allow read via public_investors view"
 ON public.investors
 FOR SELECT
 TO anon, authenticated
 USING (true);
 
--- Note: The view public_investors now uses SECURITY INVOKER
--- so this SELECT policy will be evaluated when querying through the view
+-- IMPORTANT: Grant base table SELECT permission
+-- RLS policies alone are not enough - need GRANT for table access
+GRANT SELECT ON public.investors TO anon, authenticated;
 
 -- ------------------------------------------------------------
 -- 4. REVIEW: Contact/Resource submission policies
