@@ -6,6 +6,7 @@ import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { AuthProvider } from '@/contexts/AuthContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import PageSkeleton from '@/components/PageSkeleton';
@@ -123,6 +124,7 @@ function App() {
           </Router>
           <Toaster />
           <Analytics />
+          <SpeedInsights />
         </AuthProvider>
       </QueryClientProvider>
     </ErrorBoundary>
