@@ -55,7 +55,7 @@ export function FundingStrip({
   return (
     <div className="relative border border-chi-grid bg-black/30 backdrop-blur-sm">
       {/* Label */}
-      <span className="absolute -top-2.5 left-6 bg-chi-navy px-3 text-[9px] tracking-[0.3em] text-chi-dim">
+      <span className="absolute -top-2.5 left-6 bg-chi-navy px-3 text-[9px] tracking-[0.3em] text-white">
         FUNDING
       </span>
       
