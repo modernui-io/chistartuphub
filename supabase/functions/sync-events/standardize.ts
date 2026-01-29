@@ -97,6 +97,10 @@ export function standardizeEvent(
     }
   }
 
+  // Post-processing: ensure source_url and registration_url are full URLs
+  event.source_url = ensureFullUrl(event.source_url, source, event.external_id);
+  event.registration_url = ensureFullUrl(event.registration_url, source, event.external_id);
+
   // Post-processing: clean description
   event.description = cleanDescription(event.description);
 
@@ -266,6 +270,29 @@ export function cleanDescription(text: string): string {
     .replace(/\s+/g, ' ')
     .trim()
     .substring(0, 2000);
+}
+
+/**
+ * Ensure a URL string is a full URL. Some sources (notably Luma) store slugs
+ * instead of complete URLs. This converts them to proper links.
+ */
+function ensureFullUrl(url: string, source: string, externalId: string): string {
+  if (!url) return '';
+  // Already a full URL
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+
+  // Source-specific slug-to-URL conversion
+  if (source === 'luma') {
+    return `https://lu.ma/${url}`;
+  }
+  if (source === 'meetup') {
+    return `https://www.meetup.com/${url}`;
+  }
+  if (source === 'eventbrite') {
+    return `https://www.eventbrite.com/e/${url}`;
+  }
+
+  return url;
 }
 
 /**
