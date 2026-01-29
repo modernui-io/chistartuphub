@@ -33,15 +33,18 @@ const SOURCE_CONFIG = {
 
 // Helper to format date
 const formatEventDate = (dateStr) => {
-  const date = new Date(dateStr);
+  // Parse YYYY-MM-DD as local time (not UTC) to avoid off-by-one day shift
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const date = new Date(year, month - 1, day);
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const tomorrow = new Date(today);
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  if (date.toDateString() === today.toDateString()) {
+  if (date.getTime() === today.getTime()) {
     return { day: "Today", weekday: date.toLocaleDateString('en-US', { weekday: 'long' }) };
   }
-  if (date.toDateString() === tomorrow.toDateString()) {
+  if (date.getTime() === tomorrow.getTime()) {
     return { day: "Tomorrow", weekday: date.toLocaleDateString('en-US', { weekday: 'long' }) };
   }
   return {

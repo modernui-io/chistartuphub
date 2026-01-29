@@ -170,14 +170,16 @@ export function getNestedValue(obj: any, path: string): any {
 }
 
 /**
- * Extract date (YYYY-MM-DD) from a timestamp string.
+ * Extract date (YYYY-MM-DD) from a timestamp string in Chicago timezone.
  */
 export function extractDate(timestamp: string | null): string | null {
   if (!timestamp) return null;
   try {
     const date = new Date(timestamp);
     if (isNaN(date.getTime())) return null;
-    return date.toISOString().split('T')[0];
+    // Use Chicago timezone to avoid UTC date shift
+    const chicagoDate = date.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' });
+    return chicagoDate; // en-CA locale outputs YYYY-MM-DD
   } catch {
     return null;
   }
