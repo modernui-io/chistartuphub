@@ -27,7 +27,6 @@ const Admin = lazy(() => import('./pages/Admin'));
 const Assessment = lazy(() => import('./pages/Assessment'));
 const Terms = lazy(() => import('./pages/Terms'));
 const Investors = lazy(() => import('./pages/Investors'));
-const EventsNew = lazy(() => import('./pages/EventsNew'));
 
 export const PAGES = {
     "Home": Home,
@@ -56,7 +55,6 @@ export const PAGES = {
     "assessment": Assessment,
     "terms": Terms,
     "Investors": Investors,
-    "events-calendar": EventsNew,
 }
 
 export const pagesConfig = {
