@@ -25,16 +25,24 @@ jobs:
 
       - name: Trigger sync-events Edge Function
         id: sync
+        env:
+          SYNC_SECRET: ${{ secrets.SYNC_SECRET }}
         run: |
           max_retries=3
           retry_delay=10
+
+          # Build auth header only if SYNC_SECRET is set
+          auth_header=""
+          if [ -n "$SYNC_SECRET" ]; then
+            auth_header="-H \"Authorization: Bearer $SYNC_SECRET\""
+          fi
 
           for attempt in $(seq 1 $max_retries); do
             echo "Attempt $attempt of $max_retries..."
 
             response=$(curl -s -w "\n%{http_code}" -X POST \
               "${{ secrets.SUPABASE_URL }}/functions/v1/sync-events" \
-              -H "Authorization: Bearer ${{ secrets.SYNC_SECRET }}" \
+              $auth_header \
               -H "Content-Type: application/json" \
               --max-time 120)
 
