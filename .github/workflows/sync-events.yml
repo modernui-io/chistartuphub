@@ -1,0 +1,81 @@
+name: Sync Chicago Tech Events
+
+on:
+  schedule:
+    # Run every 4 hours at minute 15 (offset avoids GitHub's busy :00 slots)
+    # Times: 0:15, 4:15, 8:15, 12:15, 16:15, 20:15 UTC
+    - cron: '15 */4 * * *'
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+# Prevent overlapping runs
+concurrency:
+  group: event-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Log start time
+        run: |
+          echo "Sync started at $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "Triggered by: ${{ github.event_name }}"
+
+      - name: Trigger sync-events Edge Function
+        id: sync
+        run: |
+          max_retries=3
+          retry_delay=10
+
+          for attempt in $(seq 1 $max_retries); do
+            echo "Attempt $attempt of $max_retries..."
+
+            response=$(curl -s -w "\n%{http_code}" -X POST \
+              "${{ secrets.SUPABASE_URL }}/functions/v1/sync-events" \
+              -H "Authorization: Bearer ${{ secrets.SYNC_SECRET }}" \
+              -H "Content-Type: application/json" \
+              --max-time 120)
+
+            http_code=$(echo "$response" | tail -n1)
+            body=$(echo "$response" | sed '$d')
+
+            echo "HTTP Status: $http_code"
+            echo "Response: $body"
+
+            if [ "$http_code" = "200" ]; then
+              echo "sync_success=true" >> $GITHUB_OUTPUT
+              echo "Sync completed successfully!"
+              exit 0
+            fi
+
+            if [ $attempt -lt $max_retries ]; then
+              echo "Retrying in ${retry_delay}s..."
+              sleep $retry_delay
+              retry_delay=$((retry_delay * 2))
+            fi
+          done
+
+          echo "sync_success=false" >> $GITHUB_OUTPUT
+          echo "Sync failed after $max_retries attempts"
+          exit 1
+
+      - name: Update event statuses
+        if: steps.sync.outputs.sync_success == 'true'
+        run: |
+          curl -s -X POST \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/rpc/update_event_statuses" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{}' \
+            --max-time 30 || true
+
+          echo "Event statuses updated"
+
+      - name: Log completion
+        if: always()
+        run: |
+          echo "Sync finished at $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          echo "Status: ${{ steps.sync.outputs.sync_success == 'true' && 'SUCCESS' || 'FAILED' }}"
