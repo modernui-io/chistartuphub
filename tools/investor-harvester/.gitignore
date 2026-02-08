@@ -1,0 +1,9 @@
+node_modules/
+data/*.csv
+data/*.json
+data/*.tsv
+!data/.gitkeep
+results/*.json
+results/*.sql
+!results/.gitkeep
+.env

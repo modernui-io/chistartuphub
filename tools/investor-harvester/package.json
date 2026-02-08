@@ -1,0 +1,20 @@
+{
+  "name": "investor-harvester",
+  "version": "1.0.0",
+  "description": "Investor data sourcing pipeline — downloads, parses, normalizes, and deduplicates investor data from public databases",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "harvest": "node src/index.js --all",
+    "harvest:dry": "node src/index.js --all --dry-run",
+    "import": "node src/index.js --import results/harvested-investors.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.90.1",
+    "papaparse": "^5.5.3",
+    "node-fetch": "^2.7.0"
+  }
+}
