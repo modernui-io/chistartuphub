@@ -1,10 +1,13 @@
 import React, { useState, useMemo } from 'react';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { Search, SlidersHorizontal, Loader2, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { InvestorStrip } from './InvestorStrip';
 import { InvestorFilters } from './InvestorFilters';
 import { InvestorCard } from './InvestorCard';
 import { InvestorModal } from './InvestorModal';
+import { TieredResults } from './TieredResults';
+import { SearchContextBanner } from './SearchContextBanner';
+import { useInvestorSearch } from '@/hooks/useInvestorSearch';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -15,6 +18,8 @@ export function InvestorPageContent({ investors = [] }) {
   const [activeFilters, setActiveFilters] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedInvestor, setSelectedInvestor] = useState(null);
+
+  const aiSearch = useInvestorSearch();
 
   // Calculate counts for each category (single pass through investors)
   const counts = useMemo(() => {
@@ -145,21 +150,42 @@ export function InvestorPageContent({ investors = [] }) {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-chi-muted" />
           <input
             type="text"
-            placeholder="Search investors by name, thesis, or location..."
+            placeholder={aiSearch.searchActive ? "Press Enter for AI search, or clear to browse..." : "Search by name — or press Enter for AI-powered search..."}
             value={searchQuery}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && searchQuery.trim().length >= 3) {
+                aiSearch.search(searchQuery);
+              }
+            }}
             onChange={(e) => {
               setSearchQuery(e.target.value);
+              if (!e.target.value.trim()) aiSearch.clearSearch();
               setCurrentPage(1);
             }}
             className="w-full pl-11 pr-4 py-3 bg-black/40 border border-chi-ghost text-white placeholder:text-chi-muted focus:outline-none focus:border-white transition-colors font-mono text-sm"
           />
         </div>
         <button
+          onClick={() => {
+            if (searchQuery.trim().length >= 3) aiSearch.search(searchQuery);
+          }}
+          disabled={searchQuery.trim().length < 3 || aiSearch.isSearching}
+          className={cn(
+            "flex items-center gap-2 px-5 py-3 border transition-colors font-mono text-sm uppercase tracking-[0.1em]",
+            searchQuery.trim().length >= 3 && !aiSearch.isSearching
+              ? "border-chi-signal text-chi-signal hover:bg-chi-signal hover:text-chi-navy"
+              : "border-chi-ghost/30 text-chi-dim cursor-not-allowed"
+          )}
+        >
+          <Sparkles className="w-4 h-4" />
+          AI Search
+        </button>
+        <button
           onClick={() => setShowFilters(!showFilters)}
           className={cn(
             "flex items-center gap-2 px-5 py-3 border transition-colors font-mono text-sm uppercase tracking-[0.1em]",
-            showFilters 
-              ? "border-white bg-white text-chi-navy" 
+            showFilters
+              ? "border-white bg-white text-chi-navy"
               : "border-chi-ghost text-chi-muted hover:border-white hover:text-white"
           )}
         >
@@ -177,75 +203,113 @@ export function InvestorPageContent({ investors = [] }) {
         onClearAll={handleClearFilters}
       />
 
-      {/* Category Strip */}
-      <InvestorStrip
-        activeCategory={activeCategory}
-        onCategoryChange={handleCategoryChange}
-        counts={counts}
-      />
+      {/* AI Search Mode vs Browse Mode */}
+      {aiSearch.searchActive ? (
+        <>
+          {/* AI Search Results */}
+          {aiSearch.isSearching ? (
+            <div className="flex items-center justify-center gap-3 py-20">
+              <Loader2 className="w-5 h-5 text-chi-muted animate-spin" />
+              <span className="text-chi-muted font-mono text-sm">Searching investors...</span>
+            </div>
+          ) : (
+            <>
+              {/* Results Header */}
+              <div className="flex items-center justify-between py-4 border-b border-chi-ghost/30">
+                <h2 className="font-editorial text-2xl md:text-3xl text-white flex items-center gap-3">
+                  <span>🔍</span>
+                  <span className="italic">AI Search Results</span>
+                </h2>
+                <span className="text-chi-muted font-mono text-sm">
+                  {aiSearch.totalResults} Results
+                </span>
+              </div>
 
-      {/* Results Header */}
-      <div className="flex items-center justify-between py-4 border-b border-chi-ghost/30">
-        <h2 className="font-editorial text-2xl md:text-3xl text-white flex items-center gap-3">
-          <span>{categoryInfo.icon}</span>
-          <span className="italic">{categoryInfo.label}</span>
-        </h2>
-        <span className="text-chi-muted font-mono text-sm">
-          {filteredInvestors.length} Results
-        </span>
-      </div>
+              {aiSearch.contextMessage && (
+                <SearchContextBanner message={aiSearch.contextMessage} />
+              )}
 
-      {/* Results Grid */}
-      {paginatedInvestors.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {paginatedInvestors.map((investor, index) => (
-            <InvestorCard
-              key={investor.id}
-              investor={investor}
-              index={(currentPage - 1) * ITEMS_PER_PAGE + index}
-              onClick={() => setSelectedInvestor(investor)}
-            />
-          ))}
-        </div>
+              <TieredResults
+                tiered={aiSearch.tieredResults}
+                parsedFilters={aiSearch.parsedFilters}
+                onInvestorClick={setSelectedInvestor}
+              />
+            </>
+          )}
+        </>
       ) : (
-        <div className="text-center py-16 border border-chi-ghost/30">
-          <p className="text-chi-muted font-mono text-sm">
-            No investors found matching your criteria.
-          </p>
-        </div>
-      )}
+        <>
+          {/* Browse Mode (original) */}
+          <InvestorStrip
+            activeCategory={activeCategory}
+            onCategoryChange={handleCategoryChange}
+            counts={counts}
+          />
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-4 pt-8">
-          <button
-            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-            disabled={currentPage === 1}
-            className={cn(
-              "px-4 py-2 border font-mono text-xs uppercase tracking-[0.1em] transition-colors",
-              currentPage === 1
-                ? "border-chi-ghost/30 text-chi-dim cursor-not-allowed"
-                : "border-chi-ghost text-chi-muted hover:border-white hover:text-white"
-            )}
-          >
-            Previous
-          </button>
-          <span className="text-chi-silver font-mono text-sm">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-            disabled={currentPage === totalPages}
-            className={cn(
-              "px-4 py-2 border font-mono text-xs uppercase tracking-[0.1em] transition-colors",
-              currentPage === totalPages
-                ? "border-chi-ghost/30 text-chi-dim cursor-not-allowed"
-                : "border-chi-ghost text-chi-muted hover:border-white hover:text-white"
-            )}
-          >
-            Next
-          </button>
-        </div>
+          {/* Results Header */}
+          <div className="flex items-center justify-between py-4 border-b border-chi-ghost/30">
+            <h2 className="font-editorial text-2xl md:text-3xl text-white flex items-center gap-3">
+              <span>{categoryInfo.icon}</span>
+              <span className="italic">{categoryInfo.label}</span>
+            </h2>
+            <span className="text-chi-muted font-mono text-sm">
+              {filteredInvestors.length} Results
+            </span>
+          </div>
+
+          {/* Results Grid */}
+          {paginatedInvestors.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {paginatedInvestors.map((investor, index) => (
+                <InvestorCard
+                  key={investor.id}
+                  investor={investor}
+                  index={(currentPage - 1) * ITEMS_PER_PAGE + index}
+                  onClick={() => setSelectedInvestor(investor)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16 border border-chi-ghost/30">
+              <p className="text-chi-muted font-mono text-sm">
+                No investors found matching your criteria.
+              </p>
+            </div>
+          )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-4 pt-8">
+              <button
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className={cn(
+                  "px-4 py-2 border font-mono text-xs uppercase tracking-[0.1em] transition-colors",
+                  currentPage === 1
+                    ? "border-chi-ghost/30 text-chi-dim cursor-not-allowed"
+                    : "border-chi-ghost text-chi-muted hover:border-white hover:text-white"
+                )}
+              >
+                Previous
+              </button>
+              <span className="text-chi-silver font-mono text-sm">
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className={cn(
+                  "px-4 py-2 border font-mono text-xs uppercase tracking-[0.1em] transition-colors",
+                  currentPage === totalPages
+                    ? "border-chi-ghost/30 text-chi-dim cursor-not-allowed"
+                    : "border-chi-ghost text-chi-muted hover:border-white hover:text-white"
+                )}
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {/* Modal */}

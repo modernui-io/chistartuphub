@@ -28,10 +28,12 @@ function generateRefCode(id) {
   return Math.abs(hash).toString(16).toUpperCase().substring(0, 8);
 }
 
-export function InvestorCard({ 
-  investor, 
+export function InvestorCard({
+  investor,
   index = 0,
-  onClick 
+  onClick,
+  whyMatch,
+  matchTier,
 }) {
   const {
     id,
@@ -93,7 +95,19 @@ export function InvestorCard({
       <p className="font-editorial italic text-sm text-chi-muted mb-5 line-clamp-2">
         {tagline}
       </p>
-      
+
+      {/* Why This Match (AI search only) */}
+      {whyMatch && (
+        <div className="flex items-center gap-2 mt-2 mb-3">
+          <span className={cn("w-1.5 h-1.5 rounded-full flex-shrink-0",
+            matchTier === 'strong' && 'bg-emerald-400',
+            matchTier === 'exploring' && 'bg-amber-400',
+            matchTier === 'broader' && 'bg-chi-dim',
+          )} />
+          <span className="text-[11px] text-chi-muted font-mono truncate">{whyMatch}</span>
+        </div>
+      )}
+
       {/* Divider */}
       <div className="border-t border-chi-ghost/50 mb-4" />
       
