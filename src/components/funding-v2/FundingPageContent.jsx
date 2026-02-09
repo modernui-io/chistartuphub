@@ -263,6 +263,7 @@ export function FundingPageContent({
 
   const isSearching = unifiedSearch.isSearching;
   const showAIResults = searchMode === 'semantic' && unifiedSearch.searchActive;
+  const rateLimited = unifiedSearch.rateLimited;
 
   return (
     <div className="space-y-5">
@@ -279,6 +280,21 @@ export function FundingPageContent({
         onSearchModeChange={handleSearchModeChange}
         onKeyDown={handleSearchKeyDown}
       />
+
+      {/* Rate Limit Notice */}
+      {rateLimited && searchMode === 'semantic' && (
+        <div className="flex items-start gap-3 px-5 py-4 bg-amber-500/[0.06] border border-amber-500/20">
+          <span className="text-amber-400 text-lg shrink-0">⚡</span>
+          <div>
+            <p className="text-sm text-amber-200/90 font-mono leading-relaxed">
+              Semantic search has reached its daily limit. To keep this tool free and accessible for everyone, we rate limit usage each day.
+            </p>
+            <p className="text-xs text-chi-muted font-mono mt-1">
+              Resets at midnight UTC. Boolean search is always unlimited — try switching modes.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Filters Panel */}
       <FundingFilters

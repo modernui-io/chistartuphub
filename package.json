@@ -22,7 +22,9 @@
     "db:status": "npx supabase status",
     "db:studio": "open http://127.0.0.1:54323",
     "video:studio": "remotion studio video/index.ts",
-    "video:render": "remotion render video/index.ts CapitalAccessVol4 out/capital-access-vol4.mp4"
+    "video:render": "remotion render video/index.ts CapitalAccessVol4 out/capital-access-vol4.mp4",
+    "video:render:vol5": "remotion render video/index.ts CapitalAccessVol5 out/capital-access-vol5.mp4",
+    "video:render:search": "remotion render video/index.ts SearchLaunch out/search-launch.mp4"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.3",

@@ -49,6 +49,12 @@ async function callEdgeFunction(query) {
 
   if (!resp.ok) {
     const err = await resp.json().catch(() => ({ error: 'Unknown error' }));
+    if (resp.status === 429) {
+      const rateLimitError = new Error('rate_limit_exceeded');
+      rateLimitError.rateLimited = true;
+      rateLimitError.resetAt = err.reset_at;
+      throw rateLimitError;
+    }
     throw new Error(err.error || `Edge function failed (${resp.status})`);
   }
 
@@ -193,6 +199,8 @@ export function useUnifiedSearch() {
   const [investorTiered, setInvestorTiered] = useState({ strong: [], exploring: [], broader: [] });
   const [oppTiered, setOppTiered] = useState({ strong: [], exploring: [], broader: [] });
   const [totalResults, setTotalResults] = useState(0);
+  const [rateLimited, setRateLimited] = useState(false);
+  const [remaining, setRemaining] = useState(null);
   const abortRef = useRef(0);
 
   const search = useCallback(async (query) => {
@@ -203,9 +211,12 @@ export function useUnifiedSearch() {
     setSearchActive(true);
 
     try {
+      setRateLimited(false);
+
       // Step 1: ONE edge function call (DeepSeek parse + OpenAI embedding)
-      const { filters, embedding } = await callEdgeFunction(query);
+      const { filters, embedding, remaining: rem } = await callEdgeFunction(query);
       if (searchId !== abortRef.current) return;
+      if (rem !== undefined && rem !== null) setRemaining(rem);
 
       // Step 2: Fan out to BOTH searches in parallel (same embedding)
       const oppFilters = mapToOppFilters(filters);
@@ -226,7 +237,12 @@ export function useUnifiedSearch() {
       setOppTiered(opTiered);
       setTotalResults(invTotal + opTotal);
     } catch (err) {
-      console.error('Unified search error:', err);
+      if (err.rateLimited) {
+        setRateLimited(true);
+        setSearchActive(false);
+      } else {
+        console.error('Unified search error:', err);
+      }
       setInvestorTiered({ strong: [], exploring: [], broader: [] });
       setOppTiered({ strong: [], exploring: [], broader: [] });
       setTotalResults(0);
@@ -241,6 +257,7 @@ export function useUnifiedSearch() {
     abortRef.current++;
     setSearchActive(false);
     setIsSearching(false);
+    setRateLimited(false);
     setInvestorTiered({ strong: [], exploring: [], broader: [] });
     setOppTiered({ strong: [], exploring: [], broader: [] });
     setTotalResults(0);
@@ -254,5 +271,7 @@ export function useUnifiedSearch() {
     investorTiered,
     oppTiered,
     totalResults,
+    rateLimited,
+    remaining,
   };
 }

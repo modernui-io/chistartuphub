@@ -1,7 +1,10 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
 
 const DEEPSEEK_API_KEY = Deno.env.get('DEEPSEEK_API_KEY')!
 const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY')!
+const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
 const PARSE_PROMPT = `You are a startup investor search query parser. Given a founder's search query, extract structured filters and a semantic intent.
 
@@ -48,6 +51,26 @@ serve(async (req: Request) => {
       return new Response(
         JSON.stringify({ error: 'Missing required field: query' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    // ── Rate limit check ──
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+    const { data: rateLimit, error: rlError } = await supabase.rpc('check_semantic_rate_limit')
+
+    if (rlError) {
+      console.error('Rate limit check failed:', rlError)
+      // If the rate limit check itself fails, allow the request (fail open)
+    } else if (rateLimit && !rateLimit.allowed) {
+      return new Response(
+        JSON.stringify({
+          error: 'rate_limit_exceeded',
+          message: 'Daily semantic search limit reached. Resets at midnight UTC.',
+          remaining: 0,
+          daily_limit: rateLimit.daily_limit,
+          reset_at: rateLimit.reset_at,
+        }),
+        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
@@ -117,8 +140,11 @@ serve(async (req: Request) => {
     const embeddingData = await embeddingResp.json()
     const embedding = embeddingData.data[0].embedding
 
+    // Include remaining quota in response
+    const remaining = rateLimit?.remaining ?? null
+
     return new Response(
-      JSON.stringify({ filters, embedding, intent }),
+      JSON.stringify({ filters, embedding, intent, remaining }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
 
