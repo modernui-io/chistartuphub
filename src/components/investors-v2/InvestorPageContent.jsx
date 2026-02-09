@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Search, SlidersHorizontal, Loader2, Sparkles } from 'lucide-react';
+import { Search, SlidersHorizontal, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { InvestorStrip } from './InvestorStrip';
 import { InvestorFilters } from './InvestorFilters';
@@ -7,7 +7,9 @@ import { InvestorCard } from './InvestorCard';
 import { InvestorModal } from './InvestorModal';
 import { TieredResults } from './TieredResults';
 import { SearchContextBanner } from './SearchContextBanner';
+import { SearchModeToggle } from '@/components/SearchModeToggle';
 import { useInvestorSearch } from '@/hooks/useInvestorSearch';
+import { parseBooleanQuery, matchesBooleanQuery, filterTieredResults } from '@/lib/booleanSearch';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -18,6 +20,7 @@ export function InvestorPageContent({ investors = [] }) {
   const [activeFilters, setActiveFilters] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedInvestor, setSelectedInvestor] = useState(null);
+  const [searchMode, setSearchMode] = useState('boolean');
 
   const aiSearch = useInvestorSearch();
 
@@ -57,14 +60,16 @@ export function InvestorPageContent({ investors = [] }) {
       });
     }
     
-    // Search filter
+    // Search filter (supports boolean: AND, OR, NOT/-, "quoted phrases")
     if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      result = result.filter(i => 
-        i.canonical_name?.toLowerCase().includes(query) ||
-        i.description?.toLowerCase().includes(query) ||
-        i.hq_city?.toLowerCase().includes(query)
-      );
+      const parsed = parseBooleanQuery(searchQuery);
+      if (parsed && parsed.length > 0) {
+        result = result.filter(i => matchesBooleanQuery([
+          (i.canonical_name || '').toLowerCase(),
+          (i.description || '').toLowerCase(),
+          (i.hq_city || '').toLowerCase(),
+        ], parsed));
+      }
     }
     
     // Stage filter
@@ -132,6 +137,12 @@ export function InvestorPageContent({ investors = [] }) {
     setCurrentPage(1);
   };
 
+  // Post-filter semantic results with Boolean operators
+  const semanticFiltered = useMemo(() => {
+    if (!aiSearch.searchActive) return { tiered: aiSearch.tieredResults, totalResults: aiSearch.totalResults };
+    return filterTieredResults(aiSearch.tieredResults, searchQuery);
+  }, [aiSearch.tieredResults, aiSearch.searchActive, aiSearch.totalResults, searchQuery]);
+
   // Category display config (moved outside component to avoid recreation)
   const categoryInfo = {
     all: { icon: '📊', label: 'All Investors' },
@@ -145,53 +156,58 @@ export function InvestorPageContent({ investors = [] }) {
   return (
     <div className="space-y-6">
       {/* Search Bar */}
-      <div className="flex items-center gap-3">
-        <div className="flex-1 relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-chi-muted" />
-          <input
-            type="text"
-            placeholder={aiSearch.searchActive ? "Press Enter for AI search, or clear to browse..." : "Search by name — or press Enter for AI-powered search..."}
-            value={searchQuery}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && searchQuery.trim().length >= 3) {
-                aiSearch.search(searchQuery);
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="flex-1 relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-chi-muted" />
+            <input
+              type="text"
+              placeholder={
+                searchMode === 'boolean'
+                  ? 'Try: fintech AND seed, health OR biotech, -crypto, "series a"'
+                  : 'Describe what you\'re looking for... press Enter, then refine with AND/OR/NOT'
               }
-            }}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              if (!e.target.value.trim()) aiSearch.clearSearch();
-              setCurrentPage(1);
-            }}
-            className="w-full pl-11 pr-4 py-3 bg-black/40 border border-chi-ghost text-white placeholder:text-chi-muted focus:outline-none focus:border-white transition-colors font-mono text-sm"
-          />
+              value={searchQuery}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchMode === 'semantic' && searchQuery.trim().length >= 3) {
+                  aiSearch.search(searchQuery);
+                }
+              }}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                if (!e.target.value.trim() && searchMode === 'semantic' && aiSearch.searchActive) {
+                  aiSearch.clearSearch();
+                }
+                setCurrentPage(1);
+              }}
+              className="w-full pl-11 pr-4 py-3 bg-black/40 border border-chi-ghost text-white placeholder:text-chi-muted focus:outline-none focus:border-white transition-colors font-mono text-sm"
+            />
+          </div>
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            className={cn(
+              "flex items-center gap-2 px-5 py-3 border transition-colors font-mono text-sm uppercase tracking-[0.1em]",
+              showFilters
+                ? "border-white bg-white text-chi-navy"
+                : "border-chi-ghost text-chi-muted hover:border-white hover:text-white"
+            )}
+          >
+            <SlidersHorizontal className="w-4 h-4" />
+            Filters
+          </button>
         </div>
-        <button
-          onClick={() => {
-            if (searchQuery.trim().length >= 3) aiSearch.search(searchQuery);
+
+        {/* Search Mode Toggle */}
+        <SearchModeToggle
+          mode={searchMode}
+          onModeChange={(newMode) => {
+            setSearchMode(newMode);
+            if (newMode === 'boolean' && aiSearch.searchActive) {
+              aiSearch.clearSearch();
+            }
+            setCurrentPage(1);
           }}
-          disabled={searchQuery.trim().length < 3 || aiSearch.isSearching}
-          className={cn(
-            "flex items-center gap-2 px-5 py-3 border transition-colors font-mono text-sm uppercase tracking-[0.1em]",
-            searchQuery.trim().length >= 3 && !aiSearch.isSearching
-              ? "border-chi-signal text-chi-signal hover:bg-chi-signal hover:text-chi-navy"
-              : "border-chi-ghost/30 text-chi-dim cursor-not-allowed"
-          )}
-        >
-          <Sparkles className="w-4 h-4" />
-          AI Search
-        </button>
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className={cn(
-            "flex items-center gap-2 px-5 py-3 border transition-colors font-mono text-sm uppercase tracking-[0.1em]",
-            showFilters
-              ? "border-white bg-white text-chi-navy"
-              : "border-chi-ghost text-chi-muted hover:border-white hover:text-white"
-          )}
-        >
-          <SlidersHorizontal className="w-4 h-4" />
-          Filters
-        </button>
+        />
       </div>
 
       {/* Filters Panel */}
@@ -204,7 +220,7 @@ export function InvestorPageContent({ investors = [] }) {
       />
 
       {/* AI Search Mode vs Browse Mode */}
-      {aiSearch.searchActive ? (
+      {searchMode === 'semantic' && aiSearch.searchActive ? (
         <>
           {/* AI Search Results */}
           {aiSearch.isSearching ? (
@@ -218,11 +234,24 @@ export function InvestorPageContent({ investors = [] }) {
               <div className="flex items-center justify-between py-4 border-b border-chi-ghost/30">
                 <h2 className="font-editorial text-2xl md:text-3xl text-white flex items-center gap-3">
                   <span>🔍</span>
-                  <span className="italic">AI Search Results</span>
+                  <span className="italic">Semantic Search Results</span>
                 </h2>
                 <span className="text-chi-muted font-mono text-sm">
-                  {aiSearch.totalResults} Results
+                  {semanticFiltered.totalResults} Results
+                  {semanticFiltered.totalResults < aiSearch.totalResults && (
+                    <span className="ml-2 text-chi-dim">
+                      (filtered from {aiSearch.totalResults})
+                    </span>
+                  )}
                 </span>
+              </div>
+
+              {/* Beta Disclaimer */}
+              <div className="flex items-start gap-3 px-5 py-3 bg-white/[0.03] border border-chi-ghost/20">
+                <span className="text-[9px] mt-0.5 px-1.5 py-0.5 bg-chi-signal/20 border border-chi-signal/40 rounded-sm tracking-[0.15em] text-chi-signal font-mono shrink-0">BETA</span>
+                <p className="text-[11px] text-chi-muted font-mono leading-relaxed">
+                  Semantic results are experimental. Refine with NOT to exclude or AND to narrow — plain words default to OR (inclusive). Always verify firm details independently.
+                </p>
               </div>
 
               {aiSearch.contextMessage && (
@@ -230,7 +259,7 @@ export function InvestorPageContent({ investors = [] }) {
               )}
 
               <TieredResults
-                tiered={aiSearch.tieredResults}
+                tiered={semanticFiltered.tiered}
                 parsedFilters={aiSearch.parsedFilters}
                 onInvestorClick={setSelectedInvestor}
               />
