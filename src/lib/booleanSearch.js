@@ -211,7 +211,29 @@ export function hasBooleanOperators(query) {
  * @param {string} query - raw search query
  * @returns {{ tiered: object, totalResults: number }}
  */
-export function filterTieredResults(tiered, query) {
+/**
+ * Default field extractor for investors.
+ */
+const defaultInvestorFields = (inv) => [
+  (inv.canonical_name || '').toLowerCase(),
+  (inv.description || '').toLowerCase(),
+  (inv.hq_city || '').toLowerCase(),
+  (inv.stage_focus || '').toLowerCase(),
+  (inv.investor_type || '').toLowerCase(),
+];
+
+/**
+ * Field extractor for opportunities.
+ */
+export const opportunityFields = (opp) => [
+  (opp.name || '').toLowerCase(),
+  (opp.organization || '').toLowerCase(),
+  (opp.description || '').toLowerCase(),
+  (opp.opportunity_type || '').toLowerCase(),
+  (Array.isArray(opp.sectors) ? opp.sectors.join(' ') : (opp.sectors || '')).toLowerCase(),
+];
+
+export function filterTieredResults(tiered, query, extractFields) {
   const total = tiered.strong.length + tiered.exploring.length + tiered.broader.length;
 
   // Skip post-filter if no explicit operators
@@ -225,13 +247,8 @@ export function filterTieredResults(tiered, query) {
     return { tiered, totalResults: total };
   }
 
-  const filterFn = (inv) => matchesBooleanQuery([
-    (inv.canonical_name || '').toLowerCase(),
-    (inv.description || '').toLowerCase(),
-    (inv.hq_city || '').toLowerCase(),
-    (inv.stage_focus || '').toLowerCase(),
-    (inv.investor_type || '').toLowerCase(),
-  ], parsed);
+  const getFields = extractFields || defaultInvestorFields;
+  const filterFn = (item) => matchesBooleanQuery(getFields(item), parsed);
 
   const filtered = {
     strong: tiered.strong.filter(filterFn),

@@ -5,10 +5,9 @@ import { FundingFilters } from './FundingFilters';
 import { NoirZineCard } from './NoirZineCard';
 import { NoirZineModal } from './NoirZineModal';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
-import { useInvestorSearch } from '@/hooks/useInvestorSearch';
-import { TieredResults } from '@/components/investors-v2/TieredResults';
-import { SearchContextBanner } from '@/components/investors-v2/SearchContextBanner';
-import { parseBooleanQuery, matchesBooleanQuery, filterTieredResults } from '@/lib/booleanSearch';
+import { useUnifiedSearch } from '@/hooks/useUnifiedSearch';
+import { UnifiedSearchResults } from './UnifiedSearchResults';
+import { parseBooleanQuery, matchesBooleanQuery, filterTieredResults, opportunityFields } from '@/lib/booleanSearch';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -50,10 +49,11 @@ export function FundingPageContent({
   const [selectedFilters, setSelectedFilters] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [searchMode, setSearchMode] = useState('boolean');
 
-  const aiSearch = useInvestorSearch();
+  const unifiedSearch = useUnifiedSearch();
 
   // Combine all opportunities
   const allOpportunities = useMemo(() => {
@@ -191,9 +191,7 @@ export function FundingPageContent({
     setCurrentPage(1);
     setSelectedFilters({});
     // Clear AI search when switching tabs
-    if (aiSearch.searchActive) {
-      aiSearch.clearSearch();
-    }
+    if (unifiedSearch.searchActive) unifiedSearch.clearSearch();
   };
 
   const handleFilterChange = (key, values) => {
@@ -206,30 +204,32 @@ export function FundingPageContent({
     setCurrentPage(1);
   };
 
-  const handleCardClick = (item) => {
+  const handleCardClick = (item, variant) => {
     setSelectedItem(item);
+    setSelectedVariant(variant || (isInvestor ? 'investor' : 'opportunity'));
     setModalOpen(true);
   };
 
   const handleSearchChange = (value) => {
     setSearchQuery(value);
-    if (!value.trim() && searchMode === 'semantic' && aiSearch.searchActive) {
-      aiSearch.clearSearch();
+    if (!value.trim() && searchMode === 'semantic') {
+      if (unifiedSearch.searchActive) unifiedSearch.clearSearch();
     }
     setCurrentPage(1);
   };
 
   const handleSearchModeChange = (newMode) => {
     setSearchMode(newMode);
-    if (newMode === 'boolean' && aiSearch.searchActive) {
-      aiSearch.clearSearch();
+    if (newMode === 'boolean') {
+      if (unifiedSearch.searchActive) unifiedSearch.clearSearch();
     }
     setCurrentPage(1);
   };
 
   const handleSearchKeyDown = (e) => {
-    if (e.key === 'Enter' && activeCategory === 'vc' && searchMode === 'semantic' && searchQuery.trim().length >= 3) {
-      aiSearch.search(searchQuery);
+    if (e.key === 'Enter' && searchMode === 'semantic' && searchQuery.trim().length >= 3) {
+      // Single unified search — one edge function call, both RPCs in parallel
+      unifiedSearch.search(searchQuery);
     }
   };
 
@@ -241,15 +241,28 @@ export function FundingPageContent({
 
   const loadingPhrase = useRotatingText(LOADING_PHRASES);
 
-  // Post-filter semantic results with Boolean operators
-  const semanticFiltered = useMemo(() => {
-    if (!aiSearch.searchActive) return { tiered: aiSearch.tieredResults, totalResults: aiSearch.totalResults };
-    return filterTieredResults(aiSearch.tieredResults, searchQuery);
-  }, [aiSearch.tieredResults, aiSearch.searchActive, aiSearch.totalResults, searchQuery]);
-
   const config = categoryConfig[activeCategory];
   const isInvestor = activeCategory === 'vc';
-  const showAIResults = isInvestor && searchMode === 'semantic' && aiSearch.searchActive;
+
+  // Post-filter semantic results with Boolean operators (both domains)
+  const investorFiltered = useMemo(() => {
+    if (!unifiedSearch.searchActive) return unifiedSearch.investorTiered;
+    return filterTieredResults(unifiedSearch.investorTiered, searchQuery).tiered;
+  }, [unifiedSearch.investorTiered, unifiedSearch.searchActive, searchQuery]);
+
+  const oppFiltered = useMemo(() => {
+    if (!unifiedSearch.searchActive) return unifiedSearch.oppTiered;
+    return filterTieredResults(unifiedSearch.oppTiered, searchQuery, opportunityFields).tiered;
+  }, [unifiedSearch.oppTiered, unifiedSearch.searchActive, searchQuery]);
+
+  const unifiedTotal = useMemo(() => {
+    const inv = investorFiltered.strong.length + investorFiltered.exploring.length + investorFiltered.broader.length;
+    const opp = oppFiltered.strong.length + oppFiltered.exploring.length + oppFiltered.broader.length;
+    return inv + opp;
+  }, [investorFiltered, oppFiltered]);
+
+  const isSearching = unifiedSearch.isSearching;
+  const showAIResults = searchMode === 'semantic' && unifiedSearch.searchActive;
 
   return (
     <div className="space-y-5">
@@ -260,7 +273,8 @@ export function FundingPageContent({
         filtersOpen={filtersOpen}
         onFiltersToggle={() => setFiltersOpen(!filtersOpen)}
         activeFilterCount={activeFilterCount}
-        showModeToggle={isInvestor}
+        showModeToggle={true}
+        activeCategory={activeCategory}
         searchMode={searchMode}
         onSearchModeChange={handleSearchModeChange}
         onKeyDown={handleSearchKeyDown}
@@ -286,8 +300,8 @@ export function FundingPageContent({
       <div className="mt-12">
         {showAIResults ? (
           <>
-            {/* AI Search Mode */}
-            {aiSearch.isSearching ? (
+            {/* AI Search Mode — Unified Cross-Domain */}
+            {isSearching ? (
               <div className="flex flex-col items-center justify-center gap-4 py-20">
                 <Loader2 className="w-6 h-6 text-chi-signal animate-spin" />
                 <span key={loadingPhrase} className="text-chi-muted font-mono text-sm italic animate-fade-in">
@@ -300,15 +314,10 @@ export function FundingPageContent({
                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-chi-ghost">
                   <h2 className="font-editorial text-2xl md:text-3xl text-white flex items-center gap-3">
                     <span>🔍</span>
-                    <span className="italic">Semantic Search Results</span>
+                    <span className="italic">Search Results</span>
                   </h2>
                   <span className="text-xs text-chi-dim tracking-[0.1em] uppercase">
-                    {semanticFiltered.totalResults} {semanticFiltered.totalResults === 1 ? 'Result' : 'Results'}
-                    {semanticFiltered.totalResults < aiSearch.totalResults && (
-                      <span className="ml-2 text-chi-muted">
-                        (filtered from {aiSearch.totalResults})
-                      </span>
-                    )}
+                    {unifiedTotal} {unifiedTotal === 1 ? 'Result' : 'Results'} across all categories
                   </span>
                 </div>
 
@@ -316,18 +325,17 @@ export function FundingPageContent({
                 <div className="flex items-start gap-3 px-5 py-3 mb-5 bg-white/[0.03] border border-chi-ghost/20">
                   <span className="text-[9px] mt-0.5 px-1.5 py-0.5 bg-chi-signal/20 border border-chi-signal/40 rounded-sm tracking-[0.15em] text-chi-signal font-mono shrink-0">BETA</span>
                   <p className="text-[11px] text-chi-muted font-mono leading-relaxed">
-                    Semantic results are experimental. Refine with NOT to exclude or AND to narrow — plain words default to OR (inclusive). Always verify firm details independently.
+                    Searching investors, grants, accelerators &amp; more. Refine with NOT to exclude or AND to narrow. Always verify details independently.
                   </p>
                 </div>
 
-                {aiSearch.contextMessage && (
-                  <SearchContextBanner message={aiSearch.contextMessage} />
-                )}
-
-                <TieredResults
-                  tiered={semanticFiltered.tiered}
-                  parsedFilters={aiSearch.parsedFilters}
-                  onInvestorClick={(investor) => handleCardClick(investor)}
+                <UnifiedSearchResults
+                  investorTiered={investorFiltered}
+                  opportunityTiered={oppFiltered}
+                  onItemClick={(item, variant) => {
+                    setSelectedItem(item);
+                    setModalOpen(true);
+                  }}
                 />
               </>
             )}
@@ -401,7 +409,7 @@ export function FundingPageContent({
         item={selectedItem}
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        variant={isInvestor ? 'investor' : 'opportunity'}
+        variant={selectedVariant || (isInvestor ? 'investor' : 'opportunity')}
       />
     </div>
   );

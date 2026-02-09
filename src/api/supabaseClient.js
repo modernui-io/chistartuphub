@@ -16,23 +16,37 @@ export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '');
 // ===========================================
 
 /**
- * Generic list function with sorting
+ * Generic list function with sorting.
+ * Auto-paginates past Supabase's 1000-row default limit.
  */
+const PAGE_SIZE = 1000;
 const createListFunction = (tableName) => async (orderBy = '-created_date') => {
   const isDescending = orderBy.startsWith('-');
   const column = orderBy.replace('-', '');
 
-  const { data, error } = await supabase
-    .from(tableName)
-    .select('*')
-    .order(column, { ascending: !isDescending });
+  let allData = [];
+  let from = 0;
 
-  if (error) {
-    console.error(`Error fetching ${tableName}:`, error);
-    throw error;
+  while (true) {
+    const { data, error } = await supabase
+      .from(tableName)
+      .select('*')
+      .order(column, { ascending: !isDescending })
+      .range(from, from + PAGE_SIZE - 1);
+
+    if (error) {
+      console.error(`Error fetching ${tableName}:`, error);
+      throw error;
+    }
+
+    const rows = data || [];
+    allData = allData.concat(rows);
+
+    if (rows.length < PAGE_SIZE) break;
+    from += PAGE_SIZE;
   }
 
-  return data || [];
+  return allData;
 };
 
 /**

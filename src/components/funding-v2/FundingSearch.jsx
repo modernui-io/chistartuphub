@@ -3,6 +3,15 @@ import { Search, SlidersHorizontal } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SearchModeToggle } from '@/components/SearchModeToggle';
 
+const BOOLEAN_PLACEHOLDERS = {
+  hot: 'Try: fintech AND "Q1 2026", climate OR cleantech, -expired',
+  grants: 'Try: SBIR AND biotech, "minority founders" OR "women in tech", -federal',
+  accelerators: 'Try: AI AND Chicago, health OR biotech, -equity',
+  vc: 'Try: fintech AND seed, health OR biotech, -crypto, "series a"',
+};
+
+const SEMANTIC_PLACEHOLDER = 'Search investors, grants, accelerators... e.g. "fintech Chicago seed stage"';
+
 export function FundingSearch({
   searchQuery,
   onSearchChange,
@@ -12,13 +21,12 @@ export function FundingSearch({
   showModeToggle = false,
   searchMode = 'boolean',
   onSearchModeChange,
-  onKeyDown
+  onKeyDown,
+  activeCategory = 'vc'
 }) {
-  const placeholder = !showModeToggle
-    ? 'Search funding opportunities, investors...'
-    : searchMode === 'boolean'
-      ? 'Try: fintech AND seed, health OR biotech, -crypto, "series a"'
-      : 'Describe what you\'re looking for... press Enter, then refine with AND/OR/NOT';
+  const placeholder = searchMode === 'boolean'
+    ? (BOOLEAN_PLACEHOLDERS[activeCategory] || BOOLEAN_PLACEHOLDERS.vc)
+    : SEMANTIC_PLACEHOLDER;
 
   return (
     <div className="space-y-3">
