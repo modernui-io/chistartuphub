@@ -54,8 +54,35 @@ serve(async (req: Request) => {
       )
     }
 
-    // ── Rate limit check ──
+    // ── Rate limit checks ──
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)
+
+    // Extract client IP from request headers
+    const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+      || req.headers.get('cf-connecting-ip')
+      || req.headers.get('x-real-ip')
+      || 'unknown'
+
+    // 1. Per-IP limit (20/hour) — stops bots/abuse from a single source
+    if (clientIp !== 'unknown') {
+      const { data: ipLimit, error: ipError } = await supabase.rpc('check_ip_rate_limit', { p_ip: clientIp })
+
+      if (ipError) {
+        console.error('IP rate limit check failed:', ipError)
+      } else if (ipLimit && !ipLimit.allowed) {
+        return new Response(
+          JSON.stringify({
+            error: 'rate_limit_exceeded',
+            message: 'Too many searches. Please wait a bit before trying again.',
+            remaining: 0,
+            reset_at: ipLimit.reset_at,
+          }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+    }
+
+    // 2. Global daily limit (150/day) — keeps total API costs under $5/month
     const { data: rateLimit, error: rlError } = await supabase.rpc('check_semantic_rate_limit')
 
     if (rlError) {
