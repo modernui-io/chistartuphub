@@ -7,6 +7,11 @@ import { NoirZineModal } from './NoirZineModal';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 import { useUnifiedSearch } from '@/hooks/useUnifiedSearch';
 import { UnifiedSearchResults } from './UnifiedSearchResults';
+import { SaveSearchButton } from '@/components/investors-v2/SaveSearchButton';
+import { SaveListButton } from '@/components/investors-v2/SaveListButton';
+import { ExportInvestorsButton } from '@/components/investors-v2/ExportInvestorsButton';
+import { SavedSearchesPanel } from '@/components/investors-v2/SavedSearchesPanel';
+import { usePipelineAnnotations } from '@/hooks/usePipelineAnnotations';
 import { parseBooleanQuery, matchesBooleanQuery, filterTieredResults, opportunityFields } from '@/lib/booleanSearch';
 
 const ITEMS_PER_PAGE = 6;
@@ -54,6 +59,7 @@ export function FundingPageContent({
   const [searchMode, setSearchMode] = useState('boolean');
 
   const unifiedSearch = useUnifiedSearch();
+  const { annotations } = usePipelineAnnotations();
 
   // Combine all opportunities
   const allOpportunities = useMemo(() => {
@@ -233,6 +239,18 @@ export function FundingPageContent({
     }
   };
 
+  // Restore a saved search
+  const handleRestoreSearch = (saved) => {
+    setSearchQuery(saved.query);
+    setSearchMode(saved.search_mode);
+    setSelectedFilters(saved.filters || {});
+    if (saved.active_category) setActiveCategory(saved.active_category);
+    setCurrentPage(1);
+    if (saved.search_mode === 'semantic' && saved.query.trim().length >= 3) {
+      setTimeout(() => unifiedSearch.search(saved.query), 50);
+    }
+  };
+
   // Count active filters
   const activeFilterCount = Object.values(selectedFilters).reduce(
     (count, arr) => count + (arr?.length || 0),
@@ -254,6 +272,16 @@ export function FundingPageContent({
     if (!unifiedSearch.searchActive) return unifiedSearch.oppTiered;
     return filterTieredResults(unifiedSearch.oppTiered, searchQuery, opportunityFields).tiered;
   }, [unifiedSearch.oppTiered, unifiedSearch.searchActive, searchQuery]);
+
+  // Flat list of all semantic investor results (for export/save list)
+  const allSemanticInvestors = useMemo(() => {
+    if (!investorFiltered) return [];
+    return [
+      ...(investorFiltered.strong || []),
+      ...(investorFiltered.exploring || []),
+      ...(investorFiltered.broader || []),
+    ];
+  }, [investorFiltered]);
 
   const unifiedTotal = useMemo(() => {
     const inv = investorFiltered.strong.length + investorFiltered.exploring.length + investorFiltered.broader.length;
@@ -280,6 +308,17 @@ export function FundingPageContent({
         onSearchModeChange={handleSearchModeChange}
         onKeyDown={handleSearchKeyDown}
       />
+
+      {/* Save Search + Saved Searches Panel */}
+      <div className="flex items-center gap-2">
+        <SaveSearchButton
+          query={searchQuery}
+          searchMode={searchMode}
+          filters={selectedFilters}
+          activeCategory={activeCategory}
+        />
+      </div>
+      <SavedSearchesPanel onRestore={handleRestoreSearch} />
 
       {/* Rate Limit Notice */}
       {rateLimited && searchMode === 'semantic' && (
@@ -332,9 +371,13 @@ export function FundingPageContent({
                     <span>🔍</span>
                     <span className="italic">Search Results</span>
                   </h2>
-                  <span className="text-xs text-chi-dim tracking-[0.1em] uppercase">
-                    {unifiedTotal} {unifiedTotal === 1 ? 'Result' : 'Results'} across all categories
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-chi-dim tracking-[0.1em] uppercase">
+                      {unifiedTotal} {unifiedTotal === 1 ? 'Result' : 'Results'}
+                    </span>
+                    <SaveListButton investors={allSemanticInvestors} />
+                    <ExportInvestorsButton investors={allSemanticInvestors} filename="funding-search" />
+                  </div>
                 </div>
 
                 {/* Beta Disclaimer */}
@@ -364,9 +407,17 @@ export function FundingPageContent({
               <h2 className="font-editorial text-2xl md:text-3xl italic text-white">
                 {config.title}
               </h2>
-              <span className="text-xs text-chi-dim tracking-[0.1em] uppercase">
-                {filteredItems.length} {filteredItems.length === 1 ? 'Result' : 'Results'}
-              </span>
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-chi-dim tracking-[0.1em] uppercase">
+                  {filteredItems.length} {filteredItems.length === 1 ? 'Result' : 'Results'}
+                </span>
+                {isInvestor && (
+                  <>
+                    <SaveListButton investors={filteredItems} />
+                    <ExportInvestorsButton investors={filteredItems} filename="funding-investors" />
+                  </>
+                )}
+              </div>
             </div>
 
             {/* Results Grid */}

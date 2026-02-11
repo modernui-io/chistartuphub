@@ -1,6 +1,12 @@
 import React from 'react';
-import { X, ExternalLink, Bookmark, Share2 } from 'lucide-react';
+import { X, ExternalLink, Share2 } from 'lucide-react';
+import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
+import { useInvestorPipeline } from '@/hooks/useInvestorPipeline';
+import { AddToPipelineButton } from './AddToPipelineButton';
+import { InvestorTagSelector } from './InvestorTagSelector';
+import { InvestorNotesField } from './InvestorNotesField';
 
 // Format check size for display
 function formatCheckSize(min, max) {
@@ -20,11 +26,14 @@ function formatCheckSize(min, max) {
   return 'Varies';
 }
 
-export function InvestorModal({ 
-  investor, 
-  isOpen, 
-  onClose 
+export function InvestorModal({
+  investor,
+  isOpen,
+  onClose
 }) {
+  const { user } = useAuth();
+  const { getItem, updateTag, updateNotes } = useInvestorPipeline();
+  const pipelineItem = investor ? getItem(investor.id) : null;
   // Lock body scroll when modal is open
   React.useEffect(() => {
     if (isOpen) {
@@ -152,6 +161,16 @@ export function InvestorModal({
               </p>
             </div>
             
+            {/* Tag Selector (logged-in only) */}
+            {user && investor?.id && (
+              <div className="mb-8">
+                <InvestorTagSelector
+                  currentTag={pipelineItem?.tag || null}
+                  onTagChange={(tag) => updateTag({ investorId: investor.id, tag })}
+                />
+              </div>
+            )}
+
             {/* Sector Focus */}
             {sectorList.length > 0 && (
               <div className="mb-8">
@@ -160,7 +179,7 @@ export function InvestorModal({
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {sectorList.map((sector, i) => (
-                    <span 
+                    <span
                       key={i}
                       className="px-3 py-1.5 border border-chi-ghost text-[10px] uppercase tracking-[0.08em] text-chi-silver"
                     >
@@ -170,16 +189,34 @@ export function InvestorModal({
                 </div>
               </div>
             )}
+
+            {/* Notes (logged-in only) */}
+            {user && investor?.id && (
+              <div className="mb-8">
+                <InvestorNotesField
+                  notes={pipelineItem?.notes || ''}
+                  onSave={(notes) => updateNotes({ investorId: investor.id, notes })}
+                />
+              </div>
+            )}
           </div>
           
           {/* Footer Actions */}
           <div className="p-6 md:p-8 border-t border-chi-grid bg-black/30">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <button className="p-3 border border-chi-ghost text-chi-muted hover:text-white hover:border-white transition-colors">
-                  <Bookmark className="w-4 h-4" />
-                </button>
-                <button className="p-3 border border-chi-ghost text-chi-muted hover:text-white hover:border-white transition-colors">
+                {investor?.id && (
+                  <AddToPipelineButton investorId={investor.id} variant="icon" />
+                )}
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.origin + '/investors?highlight=' + investor?.id)
+                      .then(() => toast?.success?.('Link copied!'))
+                      .catch(() => {});
+                  }}
+                  className="p-3 border border-chi-ghost text-chi-muted hover:text-white hover:border-white transition-colors"
+                  title="Copy link"
+                >
                   <Share2 className="w-4 h-4" />
                 </button>
               </div>

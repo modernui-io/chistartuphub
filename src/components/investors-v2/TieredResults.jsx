@@ -24,7 +24,7 @@ const TIERS = [
   },
 ];
 
-export function TieredResults({ tiered, parsedFilters, onInvestorClick }) {
+export function TieredResults({ tiered, parsedFilters, onInvestorClick, annotations }) {
   const total = tiered.strong.length + tiered.exploring.length + tiered.broader.length;
 
   if (total === 0) {
@@ -67,6 +67,7 @@ export function TieredResults({ tiered, parsedFilters, onInvestorClick }) {
                     onClick={() => onInvestorClick(investor)}
                     whyMatch={buildWhyMatch(investor)}
                     matchTier={key}
+                    annotation={annotations?.get(String(investor.id))}
                   />
                 );
               })}

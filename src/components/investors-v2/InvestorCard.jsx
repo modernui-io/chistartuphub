@@ -1,5 +1,6 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { InvestorTagDot } from './InvestorTagDot';
 
 // Format check size for display
 function formatCheckSize(min, max) {
@@ -34,6 +35,7 @@ export function InvestorCard({
   onClick,
   whyMatch,
   matchTier,
+  annotation,
 }) {
   const {
     id,
@@ -84,6 +86,8 @@ export function InvestorCard({
             ★ Midwest
           </span>
         )}
+
+        {annotation?.tag && <InvestorTagDot tag={annotation.tag} />}
       </div>
       
       {/* Title */}

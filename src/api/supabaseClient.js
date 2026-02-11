@@ -153,6 +153,10 @@ export const entities = {
   Bookmark: createEntity('bookmarks'),
   // Investor directory (read-only view)
   Investor: createEntity('public_investors'),
+  // Investor research workflow
+  SavedSearch: createEntity('saved_searches'),
+  InvestorPipeline: createEntity('investor_pipeline'),
+  SavedList: createEntity('saved_lists'),
 };
 
 // ===========================================

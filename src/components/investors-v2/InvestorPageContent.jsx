@@ -8,7 +8,12 @@ import { InvestorModal } from './InvestorModal';
 import { TieredResults } from './TieredResults';
 import { SearchContextBanner } from './SearchContextBanner';
 import { SearchModeToggle } from '@/components/SearchModeToggle';
+import { SaveSearchButton } from './SaveSearchButton';
+import { SavedSearchesPanel } from './SavedSearchesPanel';
+import { SaveListButton } from './SaveListButton';
+import { ExportInvestorsButton } from './ExportInvestorsButton';
 import { useInvestorSearch } from '@/hooks/useInvestorSearch';
+import { usePipelineAnnotations } from '@/hooks/usePipelineAnnotations';
 import { parseBooleanQuery, matchesBooleanQuery, filterTieredResults } from '@/lib/booleanSearch';
 
 const ITEMS_PER_PAGE = 6;
@@ -23,6 +28,7 @@ export function InvestorPageContent({ investors = [] }) {
   const [searchMode, setSearchMode] = useState('boolean');
 
   const aiSearch = useInvestorSearch();
+  const { annotations } = usePipelineAnnotations();
 
   // Calculate counts for each category (single pass through investors)
   const counts = useMemo(() => {
@@ -59,7 +65,7 @@ export function InvestorPageContent({ investors = [] }) {
         return type === activeCategory;
       });
     }
-    
+
     // Search filter (supports boolean: AND, OR, NOT/-, "quoted phrases")
     if (searchQuery.trim()) {
       const parsed = parseBooleanQuery(searchQuery);
@@ -71,7 +77,7 @@ export function InvestorPageContent({ investors = [] }) {
         ], parsed));
       }
     }
-    
+
     // Stage filter
     if (activeFilters.stage?.length > 0) {
       result = result.filter(i => {
@@ -79,7 +85,7 @@ export function InvestorPageContent({ investors = [] }) {
         return activeFilters.stage.some(s => stage.includes(s.replace('_', ' ')));
       });
     }
-    
+
     // Check size filter
     if (activeFilters.checkSize?.length > 0) {
       result = result.filter(i => {
@@ -93,14 +99,13 @@ export function InvestorPageContent({ investors = [] }) {
         });
       });
     }
-    
+
     // Location filter
     if (activeFilters.location?.length > 0) {
       result = result.filter(i => {
         const city = i.hq_city?.toLowerCase() || '';
-        const state = i.hq_state?.toLowerCase() || '';
         const isMidwest = i.is_midwest;
-        
+
         return activeFilters.location.some(loc => {
           if (loc === 'midwest') return isMidwest;
           if (loc === 'chicago') return city === 'chicago';
@@ -110,7 +115,7 @@ export function InvestorPageContent({ investors = [] }) {
         });
       });
     }
-    
+
     return result;
   }, [investors, activeCategory, searchQuery, activeFilters]);
 
@@ -137,13 +142,37 @@ export function InvestorPageContent({ investors = [] }) {
     setCurrentPage(1);
   };
 
+  // Restore a saved search
+  const handleRestoreSearch = (saved) => {
+    setSearchQuery(saved.query);
+    setSearchMode(saved.search_mode);
+    setActiveFilters(saved.filters || {});
+    setActiveCategory(saved.active_category || 'all');
+    setCurrentPage(1);
+
+    // Trigger semantic search if needed
+    if (saved.search_mode === 'semantic' && saved.query.trim().length >= 3) {
+      setTimeout(() => aiSearch.search(saved.query), 50);
+    }
+  };
+
   // Post-filter semantic results with Boolean operators
   const semanticFiltered = useMemo(() => {
     if (!aiSearch.searchActive) return { tiered: aiSearch.tieredResults, totalResults: aiSearch.totalResults };
     return filterTieredResults(aiSearch.tieredResults, searchQuery);
   }, [aiSearch.tieredResults, aiSearch.searchActive, aiSearch.totalResults, searchQuery]);
 
-  // Category display config (moved outside component to avoid recreation)
+  // Flat list of all semantic results (for export/save list)
+  const allSemanticResults = useMemo(() => {
+    if (!semanticFiltered.tiered) return [];
+    return [
+      ...(semanticFiltered.tiered.strong || []),
+      ...(semanticFiltered.tiered.exploring || []),
+      ...(semanticFiltered.tiered.broader || []),
+    ];
+  }, [semanticFiltered.tiered]);
+
+  // Category display config
   const categoryInfo = {
     all: { icon: '📊', label: 'All Investors' },
     vc: { icon: '🏦', label: 'Venture Capital' },
@@ -195,6 +224,12 @@ export function InvestorPageContent({ investors = [] }) {
             <SlidersHorizontal className="w-4 h-4" />
             Filters
           </button>
+          <SaveSearchButton
+            query={searchQuery}
+            searchMode={searchMode}
+            filters={activeFilters}
+            activeCategory={activeCategory}
+          />
         </div>
 
         {/* Search Mode Toggle */}
@@ -208,6 +243,9 @@ export function InvestorPageContent({ investors = [] }) {
             setCurrentPage(1);
           }}
         />
+
+        {/* Saved Searches */}
+        <SavedSearchesPanel onRestore={handleRestoreSearch} />
       </div>
 
       {/* Filters Panel */}
@@ -236,14 +274,18 @@ export function InvestorPageContent({ investors = [] }) {
                   <span>🔍</span>
                   <span className="italic">Semantic Search Results</span>
                 </h2>
-                <span className="text-chi-muted font-mono text-sm">
-                  {semanticFiltered.totalResults} Results
-                  {semanticFiltered.totalResults < aiSearch.totalResults && (
-                    <span className="ml-2 text-chi-dim">
-                      (filtered from {aiSearch.totalResults})
-                    </span>
-                  )}
-                </span>
+                <div className="flex items-center gap-3">
+                  <span className="text-chi-muted font-mono text-sm">
+                    {semanticFiltered.totalResults} Results
+                    {semanticFiltered.totalResults < aiSearch.totalResults && (
+                      <span className="ml-2 text-chi-dim">
+                        (filtered from {aiSearch.totalResults})
+                      </span>
+                    )}
+                  </span>
+                  <SaveListButton investors={allSemanticResults} />
+                  <ExportInvestorsButton investors={allSemanticResults} filename="semantic-results" />
+                </div>
               </div>
 
               {/* Beta Disclaimer */}
@@ -262,6 +304,7 @@ export function InvestorPageContent({ investors = [] }) {
                 tiered={semanticFiltered.tiered}
                 parsedFilters={aiSearch.parsedFilters}
                 onInvestorClick={setSelectedInvestor}
+                annotations={annotations}
               />
             </>
           )}
@@ -281,9 +324,13 @@ export function InvestorPageContent({ investors = [] }) {
               <span>{categoryInfo.icon}</span>
               <span className="italic">{categoryInfo.label}</span>
             </h2>
-            <span className="text-chi-muted font-mono text-sm">
-              {filteredInvestors.length} Results
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-chi-muted font-mono text-sm">
+                {filteredInvestors.length} Results
+              </span>
+              <SaveListButton investors={filteredInvestors} />
+              <ExportInvestorsButton investors={filteredInvestors} filename="investors" />
+            </div>
           </div>
 
           {/* Results Grid */}
@@ -295,6 +342,7 @@ export function InvestorPageContent({ investors = [] }) {
                   investor={investor}
                   index={(currentPage - 1) * ITEMS_PER_PAGE + index}
                   onClick={() => setSelectedInvestor(investor)}
+                  annotation={annotations?.get(String(investor.id))}
                 />
               ))}
             </div>
