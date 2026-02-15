@@ -1701,20 +1701,28 @@ async function stageDelivery() {
   const projectDir = join(PROJECT_ROOT, 'docs', 'newsletters', weekNum);
   ensureDir(projectDir);
 
+  // Write to Desktop archive (tracked by week)
+  const DESKTOP_BASE = join(process.env.HOME || '/Users/billyndizeye', 'Desktop', 'Capital-Access-Research');
+  const desktopDir = join(DESKTOP_BASE, weekNum);
+  ensureDir(desktopDir);
+
   for (const [filename, content] of Object.entries(state.files)) {
     const obsPath = join(obsidianDir, filename);
     const projPath = join(projectDir, filename);
+    const deskPath = join(desktopDir, filename);
 
     if (DRY_RUN) {
       log(`  [DRY RUN] Would write: ${filename} (${content.length} chars)`);
     } else {
       writeFileSync(obsPath, content, 'utf-8');
       writeFileSync(projPath, content, 'utf-8');
+      writeFileSync(deskPath, content, 'utf-8');
     }
   }
 
   if (!DRY_RUN) {
     log(`  ✓ Files written to:`);
+    log(`    Desktop:  ${desktopDir}`);
     log(`    Obsidian: ${obsidianDir}`);
     log(`    Project:  ${projectDir}`);
   }
@@ -1722,7 +1730,7 @@ async function stageDelivery() {
   // Write HTML research report and open in browser
   if (!DRY_RUN) {
     try {
-      const htmlPath = writeResearchHtml(state.volumeNumber, weekNum, projectDir);
+      const htmlPath = writeResearchHtml(state.volumeNumber, weekNum, projectDir, desktopDir);
       log(`  ✓ Research report written: ${htmlPath}`);
       // Open in default browser (macOS)
       try {
@@ -1740,7 +1748,7 @@ async function stageDelivery() {
   printSummary();
 }
 
-function writeResearchHtml(volumeNum, weekNum, outputDir) {
+function writeResearchHtml(volumeNum, weekNum, outputDir, desktopDir) {
   const verifiedDeals = state.deals.filter(d => d.verified && !d.previouslyCovered);
   const singleSourceDeals = state.deals.filter(d => !d.verified && !d.previouslyCovered);
   const totalRaisedM = verifiedDeals.reduce((sum, d) => sum + (d.amount_millions || 0), 0);
@@ -2005,6 +2013,11 @@ Files: Obsidian + docs/newsletters/${weekNum}/
   const obsidianDir = join(OBSIDIAN_BASE, `${weekNum}_Vol-${volumeNum}`);
   if (existsSync(obsidianDir)) {
     writeFileSync(join(obsidianDir, '03-Research-Report.html'), html, 'utf-8');
+  }
+
+  // Also write to Desktop archive
+  if (desktopDir && existsSync(desktopDir)) {
+    writeFileSync(join(desktopDir, '03-Research-Report.html'), html, 'utf-8');
   }
 
   return htmlPath;
