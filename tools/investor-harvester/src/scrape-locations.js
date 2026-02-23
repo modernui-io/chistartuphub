@@ -4,9 +4,9 @@
 const fs = require('fs')
 
 // ── Config ──────────────────────────────────────────────────────────────────
-const SUPABASE_URL = 'https://fbgxeinarhbrqatrsuoj.supabase.co'
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZiZ3hlaW5hcmhicnFhdHJzdW9qIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzNTIyNjIsImV4cCI6MjA4MTkyODI2Mn0.k6yRcQ60OONig97VQZ-UJdmC49ijEm7kskP_2qtaW1E'
-const DEEPSEEK_API_KEY = 'sk-d928e785a8c64d5580594c9d60c56de4'
+const SUPABASE_URL = process.env.SUPABASE_URL
+const SUPABASE_KEY = process.env.SUPABASE_KEY
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY
 const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions'
 const MODEL = 'deepseek-chat'
 
@@ -269,6 +269,15 @@ async function runConcurrent(items, concurrency, delayMs, fn) {
 
 // ── Main ────────────────────────────────────────────────────────────────────
 async function main() {
+  // ── Validate required environment variables ────────────────────────────
+  const requiredEnvVars = ['SUPABASE_URL', 'SUPABASE_KEY', 'DEEPSEEK_API_KEY']
+  const missing = requiredEnvVars.filter(v => !process.env[v])
+  if (missing.length > 0) {
+    console.error(`Error: Missing required environment variables: ${missing.join(', ')}`)
+    console.error('Please set them in your environment or in a .env file.')
+    process.exit(1)
+  }
+
   console.log('=== Investor Location Scraper ===')
   console.log(`Started: ${new Date().toISOString()}\n`)
 
