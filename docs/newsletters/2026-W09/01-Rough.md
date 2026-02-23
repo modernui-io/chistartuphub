@@ -5,27 +5,88 @@
 
 ## Opening
 
-[PLACEHOLDER: Billy writes opening — 0 deals totaling ~$0M
+[PLACEHOLDER: Billy writes opening — 2 deals totaling ~$139M
++ $7565M in new fund capital.
 Theme ideas: ___, current events tie-in, ecosystem observation.]
 
 ---
 
-## Deals
+## Qumis — $4.3M Seed
 
-*No verified deals this period. Check 00-Research.md for single-source leads and SEC filings.*
+Attorney-trained AI platform for commercial insurance coverage intelligence that delivers coverage-expert-level analysis at scale with source-linked citations and transparent reasoning.
+
+**Lead:** MTech Capital
+**Also participating:** American Family Ventures
+
+**Source:** [Qumis Raises $4.3M to Bring Attorney-Grade Coverage Intelligence to Commercial Insurance](https://www.globenewswire.com/news-release/2026/02/19/3241222/0/en/Qumis-Raises-4-3M-to-Bring-Attorney-Grade-Coverage-Intelligence-to-Commercial-Insurance.html) | [Qumis Raises $4.3M in Seed Round](https://www.thesaasnews.com/news/qumis-raises-4-3m-in-seed-round) | [Perplexity citation](https://www.seedtable.com/best-startups-in-chicago) | [Perplexity citation](https://www.illinoistimes.com/news/pritzker-proposes-56b-budget-with-minimal-new-spending-tax-on-social-media-companies/) | [Perplexity citation](https://www.builtinchicago.org/company/built-in/faq/stability-growth) | [Perplexity citation](https://explodingtopics.com/startups/location/chicago) | [Perplexity citation](https://capitolnewsillinois.com/news/pritzker-proposes-56b-budget-with-minimal-new-spending-tax-on-social-media-companies/) | [Perplexity citation](https://www.builtinchicago.org/articles/workforce-operations-platform-xenia-raises-12-million-series-a-20251118) | [Perplexity citation](https://techcrunch.com/2026/02/04/snak-venture-partners-raises-50m-fund-to-back-digitizing-marketplaces/) | [Perplexity citation](https://www.prnewswire.com/news-releases/startup-companies-selected-for-the-ameren-accelerator-300495869.html) | [Perplexity citation](https://techcrunch.com/2026/02/17/climactic-launches-hybrid-fund-to-get-startups-through-the-valley-of-death/) | [Perplexity citation](https://www.prnewswire.com/news-releases/future-proof-group-media-fpg-media-welcomes-cultured-meat-symposium-to-expand-global-alternative-protein-platform-302564609.html)
+
+---
+
+## LanzaJet — $135M Growth Equity
+
+Leading sustainable aviation fuel and alternative fuels technology company developing patented ethanol-based alcohol-to-jet technology.
+
+**Lead:** IAG
+**Also participating:** Shell, Groupe ADP, LanzaTech, Mitsui
+
+**Source:** [LanzaJet Lands $135M Financing Round](https://vcnewsdaily.com/lanzajet/venture-capital-funding/cqthbpksjt) | [Perplexity citation](https://fundraiseinsider.com/blog/recently-funded-startups-chicago/) | [Perplexity citation](https://www.seedtable.com/best-startups-in-chicago) | [Perplexity citation](https://www.growthmentor.com/location/chicago/startups/) | [Perplexity citation](https://americanbazaaronline.com/2026/02/20/chicagos-qumis-secures-4-3m-to-reinvent-insurance-ai-475496/) | [Perplexity citation](https://www.thesaasnews.com/news/qumis-raises-4-3m-in-seed-round) | [Perplexity citation](https://www.builtinchicago.org/articles)
 
 ---
 
 ## Fund News
 
-### Orange & Blue Ventures | Undisclosed
+### Shore Capital Industrial Partners Fund II, L.P. | $400M+
 
-**Sector:** Student-led venture capital — early-stage startups across multiple industries
+**Sector:** Private equity — fragmented industrial services
 
-Gies College of Business at the University of Illinois launched Orange & Blue Ventures, the university's first student-led venture capital fund. Funded by a gift from Illinois alumni Douglas and Deborah Ackerman, the program will invest real money in promising startups and is led by the Department of Finance in collaboration with campus and industry partners.
+Shore Capital Partners closed its second industrials-focused private equity fund with over $400 million in capital commitments. The fund targets infrastructure-adjacent services, environmental and safety solutions, building envelope and access systems, and specialized maintenance and repair markets. The closing reflects strong demand from existing and new limited partners for Shore's sector-focused strategy.
 
-**Close Date:** 2026-02-05
-**Source:** [Gies Business launches U of I's first student-led venture capital fund](https://giesbusiness.illinois.edu/news/2026/02/05/gies-business-launches-u-of-i-s-first-student-led-venture-capital-fund) | [Perplexity citation](https://globalventuring.com/university/us-and-canada/university-of-chicago-partners-on-25m-spinout-fund/) | [Perplexity citation](https://www.adamsstreetpartners.com/news/adams-street-partners-raises-over-1-2-billion-for-venture-innovation-fund-iv-program/) | [Perplexity citation](https://blog.foundersuite.com/fresh-capital-for-founders-50-new-venture-funds-to-pitch-in-2026-part-1/) | [Perplexity citation](https://polsky.uchicago.edu/event/chicago-booth-private-equity-conference-2026/) | [Perplexity citation](https://www.builtinchicago.org/companies/type/angel-vcfirm-companies) | [Perplexity citation](https://www.openvc.app/investor-lists/private-equity-firms-chicago) | [Perplexity citation](https://www.basetemplates.com/investors/top-10-vc-investors-in-chicago) | [Perplexity citation](https://illinoisvc.org/ivca-newsletter-february-18-2026/)
+**Close Date:** 2026-02-04
+**Source:** [Kirkland Represents Shore Capital Partners on Closing of Industrials Fund II](https://www.kirkland.com/news/press-release/2026/02/kirkland-represents-shore-capital-partners-on-closing-of-industrials-fund-ii) | [Shore Capital Closes Second Industrials Fund Above $400M](https://www.connectmoney.com/stories/shore-capital-closes-second-industrials-fund-above-400m/) | [Perplexity citation](https://thequantuminsider.com/2025/07/02/venture-capital-fund-aims-to-turn-chicago-into-a-deep-tech-powerhouse/) | [Perplexity citation](https://www.agriinvestor.com/investor-intentions-surs-seeks-to-deploy-capital-across-non-core-real-assets-in-2026/) | [Perplexity citation](https://monroecap.com/press_release/monroe-capital-closes-on-6-1-billion-in-new-investable-capital-for-its-private-credit-strategy/) | [Perplexity citation](https://www.infrastructureinvestor.com/investor-intentions-imrf-issues-rfp-from-open-end-infra-funds/) | [Perplexity citation](https://vcwire.tech/2026/02/12/multimodal-ventures-closes-first-fund-at-15m/) | [Perplexity citation](https://www.shorecp.com/news/shore-capital-partners-closes-second-industrials-fund-amid-strong-lp-demand-for-sector-focused-strategy) | [Perplexity citation](https://www.privatedebtinvestor.com/monroe-holds-final-close-just-shy-of-3bn-target/)
+
+---
+
+### Monroe Capital Private Credit Fund V | $6.1B total investable capital
+
+**Sector:** Private credit — senior secured direct lending to lower middle-market companies
+
+Monroe Capital announced the final close of its 2025 Monroe Capital Private Credit Fund V with $6.1 billion in total investable capital, comprising $2.8 billion in institutional LP commitments, $1.5 billion in targeted leverage, and $1.8 billion in separately managed accounts. This is Monroe's largest private credit vehicle to date and continues the firm's focus on providing senior secured financing to lower middle-market U.S. companies with approximately $35 million or less in EBITDA.
+
+**Close Date:** 2026-01-06
+**Source:** [Monroe Capital Closes $6.1 Billion in New Investable Capital for its Private Credit Strategy](https://monroecap.com/press_release/monroe-capital-closes-on-6-1-billion-in-new-investable-capital-for-its-private-credit-strategy) | [Perplexity citation](https://www.kirkland.com/news/press-release/2026/02/kirkland-represents-shore-capital-partners-on-closing-of-industrials-fund-ii) | [Perplexity citation](https://thequantuminsider.com/2025/07/02/venture-capital-fund-aims-to-turn-chicago-into-a-deep-tech-powerhouse/) | [Perplexity citation](https://www.agriinvestor.com/investor-intentions-surs-seeks-to-deploy-capital-across-non-core-real-assets-in-2026/) | [Perplexity citation](https://monroecap.com/press_release/monroe-capital-closes-on-6-1-billion-in-new-investable-capital-for-its-private-credit-strategy/) | [Perplexity citation](https://www.infrastructureinvestor.com/investor-intentions-imrf-issues-rfp-from-open-end-infra-funds/) | [Perplexity citation](https://www.connectmoney.com/stories/shore-capital-closes-second-industrials-fund-above-400m/) | [Perplexity citation](https://vcwire.tech/2026/02/12/multimodal-ventures-closes-first-fund-at-15m/) | [Perplexity citation](https://www.shorecp.com/news/shore-capital-partners-closes-second-industrials-fund-amid-strong-lp-demand-for-sector-focused-strategy) | [Perplexity citation](https://www.privatedebtinvestor.com/monroe-holds-final-close-just-shy-of-3bn-target/)
+
+---
+
+### SNAK Venture Partners Fund I | $50M
+
+**Sector:** Venture capital — B2B digital marketplaces
+
+SNAK Venture Partners closed an oversubscribed $50 million debut fund focused on digital marketplaces in industries still running on spreadsheets and phone calls. The fund targets vertical B2B marketplace companies in construction, supply chain, equipment rental, and other sectors undergoing digital transformation. Anchored by Pritzker Group, the fund aims to deploy capital into at least 20 companies at $1-2 million seed checks over 3-4 years.
+
+**Close Date:** 2026-02-04
+**Source:** [SNAK Venture Partners raises $50M fund to back digitizing marketplaces](https://techcrunch.com/2026/02/04/snak-venture-partners-raises-50m-fund-to-back-digitizing-marketplaces/) | [SNAK Venture Partners Closes Oversubscribed $50M Debut Fund](https://www.techbuzz.ai/articles/snak-venture-partners-closes-oversubscribed-50m-debut-fund) | [Perplexity citation](https://www.kirkland.com/news/press-release/2026/02/kirkland-represents-shore-capital-partners-on-closing-of-industrials-fund-ii) | [Perplexity citation](https://thequantuminsider.com/2025/07/02/venture-capital-fund-aims-to-turn-chicago-into-a-deep-tech-powerhouse/) | [Perplexity citation](https://www.agriinvestor.com/investor-intentions-surs-seeks-to-deploy-capital-across-non-core-real-assets-in-2026/) | [Perplexity citation](https://monroecap.com/press_release/monroe-capital-closes-on-6-1-billion-in-new-investable-capital-for-its-private-credit-strategy/) | [Perplexity citation](https://www.infrastructureinvestor.com/investor-intentions-imrf-issues-rfp-from-open-end-infra-funds/) | [Perplexity citation](https://www.connectmoney.com/stories/shore-capital-closes-second-industrials-fund-above-400m/) | [Perplexity citation](https://vcwire.tech/2026/02/12/multimodal-ventures-closes-first-fund-at-15m/) | [Perplexity citation](https://www.shorecp.com/news/shore-capital-partners-closes-second-industrials-fund-amid-strong-lp-demand-for-sector-focused-strategy) | [Perplexity citation](https://www.privatedebtinvestor.com/monroe-holds-final-close-just-shy-of-3bn-target/)
+
+---
+
+### Multimodal Ventures Fund I | $15M
+
+**Sector:** Venture capital — Y Combinator-backed startups, seed stage
+
+Multimodal Ventures, a Naperville, Illinois-based seed-stage venture capital firm, closed its first fund with $15 million in capital. The fund focuses on investing in Y Combinator-backed startups and aims to provide better access for Chicago investors to support the next generation of potential unicorn companies.
+
+**Close Date:** 2026-02-12
+**Source:** [Multimodal Ventures Closes First Fund, at $15M](https://vcwire.tech/2026/02/12/multimodal-ventures-closes-first-fund-at-15m/) | [Perplexity citation](https://www.kirkland.com/news/press-release/2026/02/kirkland-represents-shore-capital-partners-on-closing-of-industrials-fund-ii) | [Perplexity citation](https://thequantuminsider.com/2025/07/02/venture-capital-fund-aims-to-turn-chicago-into-a-deep-tech-powerhouse/) | [Perplexity citation](https://www.agriinvestor.com/investor-intentions-surs-seeks-to-deploy-capital-across-non-core-real-assets-in-2026/) | [Perplexity citation](https://monroecap.com/press_release/monroe-capital-closes-on-6-1-billion-in-new-investable-capital-for-its-private-credit-strategy/) | [Perplexity citation](https://www.infrastructureinvestor.com/investor-intentions-imrf-issues-rfp-from-open-end-infra-funds/) | [Perplexity citation](https://www.connectmoney.com/stories/shore-capital-closes-second-industrials-fund-above-400m/) | [Perplexity citation](https://www.shorecp.com/news/shore-capital-partners-closes-second-industrials-fund-amid-strong-lp-demand-for-sector-focused-strategy) | [Perplexity citation](https://www.privatedebtinvestor.com/monroe-holds-final-close-just-shy-of-3bn-target/)
+
+---
+
+### SRE Opportunity Fund V, L.P. | $1B+
+
+**Sector:** Real estate — opportunistic debt and equity across all major asset classes
+
+Singerman Real Estate completed the final closing of SRE Opportunity Fund V with total commitments exceeding $1 billion. The fund is capitalized by institutional investors including endowments, foundations, public pensions, corporate pensions, and consultants. The firm focuses on maximizing risk-adjusted returns through investments in both debt and equity across industrial, residential, hospitality, office, life science, retail, and select niche real estate sectors.
+
+**Close Date:** 2026-01-12
+**Source:** [Singerman Real Estate Closes Latest Investment Fund for $1B](https://www.connectcre.com/stories/singerman-real-estate-closes-latest-investment-fund-for-1b/) | [Perplexity citation](https://www.kirkland.com/news/press-release/2026/02/kirkland-represents-shore-capital-partners-on-closing-of-industrials-fund-ii) | [Perplexity citation](https://thequantuminsider.com/2025/07/02/venture-capital-fund-aims-to-turn-chicago-into-a-deep-tech-powerhouse/) | [Perplexity citation](https://www.agriinvestor.com/investor-intentions-surs-seeks-to-deploy-capital-across-non-core-real-assets-in-2026/) | [Perplexity citation](https://monroecap.com/press_release/monroe-capital-closes-on-6-1-billion-in-new-investable-capital-for-its-private-credit-strategy/) | [Perplexity citation](https://www.infrastructureinvestor.com/investor-intentions-imrf-issues-rfp-from-open-end-infra-funds/) | [Perplexity citation](https://www.connectmoney.com/stories/shore-capital-closes-second-industrials-fund-above-400m/) | [Perplexity citation](https://vcwire.tech/2026/02/12/multimodal-ventures-closes-first-fund-at-15m/) | [Perplexity citation](https://www.shorecp.com/news/shore-capital-partners-closes-second-industrials-fund-amid-strong-lp-demand-for-sector-focused-strategy) | [Perplexity citation](https://www.privatedebtinvestor.com/monroe-holds-final-close-just-shy-of-3bn-target/)
 
 ---
 
@@ -40,7 +101,7 @@ Gies College of Business at the University of Illinois launched Orange & Blue Ve
 | **Feb 25** | ViVE Health AgeTech Pitch | Varies | [Apply](https://viveevent.com) |
 | **Feb 26** | AgeTech February Open Mic | Varies | [Apply](https://agetechcollaborative.org) |
 | **Feb 26** | Colorado Advanced Industries Accelerator Grant 2026 [DEADLINE MISMATCH] | Up to $150K | [Apply](https://oedit.colorado.gov/advanced-industries-accelerator-programs) |
-| **Feb 27** | Ilitch School Tech Pitch (Finalists) [DEADLINE MISMATCH] | Varies | [Apply](https://ilitchbusiness.wayne.edu) |
+| **Feb 27** | Ilitch School Tech Pitch (Finalists) | Varies | [Apply](https://ilitchbusiness.wayne.edu) |
 | **Feb 27** | Comcast Innovation Fund 2026 | $3K–$150K | [Apply](https://innovationfund.comcast.com) |
 | **Feb 28** | EU-Startups Pitch Competition | $50K–$250K | [Apply](https://www.eu-startups.com/2026/02/last-chance-to-apply-for-this-years-eu-startups-pitch-competition) |
 | **Feb 28** | Greylock Edge | $500K–$5M | [Apply](https://greylock.com/edge/) |
@@ -95,18 +156,48 @@ Know a founder who should see this? Forward it.
 
 ## Sources
 
+**Startup Deals:**
+- [Qumis Raises $4.3M to Bring Attorney-Grade Coverage Intelligence to Commercial Insurance](https://www.globenewswire.com/news-release/2026/02/19/3241222/0/en/Qumis-Raises-4-3M-to-Bring-Attorney-Grade-Coverage-Intelligence-to-Commercial-Insurance.html)
+- [Qumis Raises $4.3M in Seed Round](https://www.thesaasnews.com/news/qumis-raises-4-3m-in-seed-round)
+- [Perplexity citation](https://www.seedtable.com/best-startups-in-chicago)
+- [Perplexity citation](https://www.illinoistimes.com/news/pritzker-proposes-56b-budget-with-minimal-new-spending-tax-on-social-media-companies/)
+- [Perplexity citation](https://www.builtinchicago.org/company/built-in/faq/stability-growth)
+- [Perplexity citation](https://explodingtopics.com/startups/location/chicago)
+- [Perplexity citation](https://capitolnewsillinois.com/news/pritzker-proposes-56b-budget-with-minimal-new-spending-tax-on-social-media-companies/)
+- [Perplexity citation](https://www.builtinchicago.org/articles/workforce-operations-platform-xenia-raises-12-million-series-a-20251118)
+- [Perplexity citation](https://techcrunch.com/2026/02/04/snak-venture-partners-raises-50m-fund-to-back-digitizing-marketplaces/)
+- [Perplexity citation](https://www.prnewswire.com/news-releases/startup-companies-selected-for-the-ameren-accelerator-300495869.html)
+- [Perplexity citation](https://techcrunch.com/2026/02/17/climactic-launches-hybrid-fund-to-get-startups-through-the-valley-of-death/)
+- [Perplexity citation](https://www.prnewswire.com/news-releases/future-proof-group-media-fpg-media-welcomes-cultured-meat-symposium-to-expand-global-alternative-protein-platform-302564609.html)
+- [LanzaJet Lands $135M Financing Round](https://vcnewsdaily.com/lanzajet/venture-capital-funding/cqthbpksjt)
+- [LanzaJet pulls in $47M in new funding, reaches $650M pre-money](https://www.bizjournals.com/chicago/news/2026/02/19/lanzajet-sustainable-fuels-startup-47-million.html) [BROKEN]
+- [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/02/04/the-beat-chicago-startups-funding.html) [BROKEN]
+- [Perplexity citation](https://fundraiseinsider.com/blog/recently-funded-startups-chicago/)
+- [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/02/10/rectangle-raises-preseed-funding-logistics-email.html) [BROKEN]
+- [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/01/30/the-beat-startups-to-watch-2026.html) [BROKEN]
+- [Perplexity citation](https://www.growthmentor.com/location/chicago/startups/)
+- [Perplexity citation](https://americanbazaaronline.com/2026/02/20/chicagos-qumis-secures-4-3m-to-reinvent-insurance-ai-475496/)
+- [Perplexity citation](https://www.builtinchicago.org/articles)
+- [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/02/20/the-beat-chicago-ai-startup-lanzajet.html) [BROKEN]
+
 **Fund Closes:**
-- [Gies Business launches U of I's first student-led venture capital fund](https://giesbusiness.illinois.edu/news/2026/02/05/gies-business-launches-u-of-i-s-first-student-led-venture-capital-fund)
-- [Perplexity citation](https://globalventuring.com/university/us-and-canada/university-of-chicago-partners-on-25m-spinout-fund/)
-- [Perplexity citation](https://www.adamsstreetpartners.com/news/adams-street-partners-raises-over-1-2-billion-for-venture-innovation-fund-iv-program/)
-- [Perplexity citation](https://blog.foundersuite.com/fresh-capital-for-founders-50-new-venture-funds-to-pitch-in-2026-part-1/)
-- [Perplexity citation](https://polsky.uchicago.edu/event/chicago-booth-private-equity-conference-2026/)
-- [Perplexity citation](https://www.builtinchicago.org/companies/type/angel-vcfirm-companies)
-- [Perplexity citation](https://www.openvc.app/investor-lists/private-equity-firms-chicago)
-- [Perplexity citation](https://www.basetemplates.com/investors/top-10-vc-investors-in-chicago)
-- [Perplexity citation](https://illinoisvc.org/ivca-newsletter-february-18-2026/)
+- [Kirkland Represents Shore Capital Partners on Closing of Industrials Fund II](https://www.kirkland.com/news/press-release/2026/02/kirkland-represents-shore-capital-partners-on-closing-of-industrials-fund-ii)
+- [Shore Capital Closes Second Industrials Fund Above $400M](https://www.connectmoney.com/stories/shore-capital-closes-second-industrials-fund-above-400m/)
+- [Perplexity citation](https://thequantuminsider.com/2025/07/02/venture-capital-fund-aims-to-turn-chicago-into-a-deep-tech-powerhouse/)
+- [Perplexity citation](https://www.agriinvestor.com/investor-intentions-surs-seeks-to-deploy-capital-across-non-core-real-assets-in-2026/)
+- [Perplexity citation](https://monroecap.com/press_release/monroe-capital-closes-on-6-1-billion-in-new-investable-capital-for-its-private-credit-strategy/)
+- [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/02/06/the-beat-chicago-fund-multimodal-ventures.html) [BROKEN]
+- [Perplexity citation](https://www.infrastructureinvestor.com/investor-intentions-imrf-issues-rfp-from-open-end-infra-funds/)
+- [Perplexity citation](https://vcwire.tech/2026/02/12/multimodal-ventures-closes-first-fund-at-15m/)
+- [Perplexity citation](https://www.shorecp.com/news/shore-capital-partners-closes-second-industrials-fund-amid-strong-lp-demand-for-sector-focused-strategy)
+- [Perplexity citation](https://www.privatedebtinvestor.com/monroe-holds-final-close-just-shy-of-3bn-target/)
+- [Monroe Capital Closes $6.1 Billion in New Investable Capital for its Private Credit Strategy](https://monroecap.com/press_release/monroe-capital-closes-on-6-1-billion-in-new-investable-capital-for-its-private-credit-strategy)
+- [SNAK Venture Partners raises $50M fund to back digitizing marketplaces](https://techcrunch.com/2026/02/04/snak-venture-partners-raises-50m-fund-to-back-digitizing-marketplaces/)
+- [SNAK Venture Partners Closes Oversubscribed $50M Debut Fund](https://www.techbuzz.ai/articles/snak-venture-partners-closes-oversubscribed-50m-debut-fund)
+- [Singerman Real Estate Closes Latest Investment Fund for $1B](https://www.connectcre.com/stories/singerman-real-estate-closes-latest-investment-fund-for-1b/)
+- [Singerman Real Estate Closes Its Fifth Investment Fund for $1 Billion](https://rivercountry.newschannelnebraska.com/story/53373772/singerman-real-estate-closes-its-fifth-investment-fund-for-1-billion) [BROKEN]
 
 ---
 
-*Vol. 8 | Research edition*
+*Vol. 8 | $139M raised | $7565M+ in new fund capital*
 *Author: Billy Ndizeye*
