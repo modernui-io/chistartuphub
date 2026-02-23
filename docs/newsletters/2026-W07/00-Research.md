@@ -1,43 +1,42 @@
 # Research Notes — 2026-W07
-*Generated: 2026-02-15T22:48:13.115Z*
+*Generated: 2026-02-15T23:02:11.561Z*
 *Window: 2026-02-08 to 2026-02-15 (deals) | 2026-01-11 to 2026-02-15 (funds)*
 
 ## Web-Discovered Deals (2)
 
-### Rectangle — $2.5M Pre-Seed ✅
-- **Sector:** Logistics
-- **Lead:** Autotech Ventures
-- **Date:** 2026-02-10
-- **Chicago nexus:** HQ
-- **Description:** Rectangle raised funding to cut logistics email overload.
-- **Sources (9):**
-  - [Rectangle raises $2.5M to cut logistics email overload - Chicago ...](https://www.bizjournals.com/chicago/news/2026/02/10/rectangle-raises-preseed-funding-logistics-email.html) [BROKEN LINK]
-  - [Perplexity citation](https://growthlist.co/chicago-startups/)
-  - [Perplexity citation](https://www.seedtable.com/best-startups-in-chicago)
-  - [Perplexity citation](https://thecurrentbyvcf.substack.com/p/velocity-currents-9th-edition)
-  - [Perplexity citation](https://explodingtopics.com/startups/location/chicago)
-  - [Perplexity citation](https://www.f6s.com/companies/united-states/illinois/chicago/lo) [BROKEN LINK]
-  - [Perplexity citation](https://www.startupblink.com/top-startups/chicago-il-us) [BROKEN LINK]
-  - [Perplexity citation](https://techcrunch.com/2026/02/11/twilio-co-founders-fusion-power-startup-raises-450m-from-bessemer-and-alphabets-gv/)
-  - [Perplexity citation](https://chistartuphub.com/funding)
-
 ### Prenosis — $40M Series A ✅
-- **Sector:** biotech
-- **Lead:** N/A
-- **Also:** PACE Healthcare Capital
+- **Sector:** HealthTech
+- **Lead:** PACE Healthcare Capital
 - **Date:** 2026-02
 - **Chicago nexus:** HQ
-- **Description:** Chicago biotech startup developing an FDA authorized AI diagnostic tool for sepsis.
+- **Description:** Chicago biotech startup with FDA authorized AI diagnostic tool for sepsis.
 - **Sources (9):**
   - [Velocity Currents 9th Edition](https://thecurrentbyvcf.substack.com/p/velocity-currents-9th-edition)
   - [Perplexity citation](https://growthlist.co/chicago-startups/)
-  - [Perplexity citation](https://www.seedtable.com/best-startups-in-chicago)
   - [Perplexity citation](https://explodingtopics.com/startups/location/chicago)
   - [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/02/04/the-beat-chicago-startups-funding.html) [BROKEN LINK]
+  - [Perplexity citation](https://fundraiseinsider.com/blog/series-a-startups/)
   - [Perplexity citation](https://www.f6s.com/companies/united-states/illinois/chicago/lo) [BROKEN LINK]
   - [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/02/10/rectangle-raises-preseed-funding-logistics-email.html) [BROKEN LINK]
+  - [Perplexity citation](https://techcrunch.com/2026/02/09/tem-raises-75m-to-remake-electricity-markets-using-ai/)
   - [Perplexity citation](https://www.startupblink.com/top-startups/chicago-il-us) [BROKEN LINK]
-  - [Perplexity citation](https://techcrunch.com/2026/02/10/primary-ventures-raises-massive-625m-fund-v-to-focus-on-seed-investing/)
+
+### Rectangle — $2.5M Pre-Seed ✅
+- **Sector:** SaaS
+- **Lead:** Autotech Ventures
+- **Date:** 2026-02-10
+- **Chicago nexus:** HQ
+- **Description:** AI-powered platform to assist logistics companies in handling email overload.
+- **Sources (9):**
+  - [Rectangle raises $2.5M to cut logistics email overload](https://www.bizjournals.com/chicago/news/2026/02/10/rectangle-raises-preseed-funding-logistics-email.html) [BROKEN LINK]
+  - [Perplexity citation](https://growthlist.co/chicago-startups/)
+  - [Perplexity citation](https://thecurrentbyvcf.substack.com/p/velocity-currents-9th-edition)
+  - [Perplexity citation](https://explodingtopics.com/startups/location/chicago)
+  - [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/02/04/the-beat-chicago-startups-funding.html) [BROKEN LINK]
+  - [Perplexity citation](https://fundraiseinsider.com/blog/series-a-startups/)
+  - [Perplexity citation](https://www.f6s.com/companies/united-states/illinois/chicago/lo) [BROKEN LINK]
+  - [Perplexity citation](https://techcrunch.com/2026/02/09/tem-raises-75m-to-remake-electricity-markets-using-ai/)
+  - [Perplexity citation](https://www.startupblink.com/top-startups/chicago-il-us) [BROKEN LINK]
 
 ## SEC EDGAR Filings — Illinois (0)
 

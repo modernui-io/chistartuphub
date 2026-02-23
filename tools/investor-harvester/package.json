@@ -7,14 +7,19 @@
   "scripts": {
     "harvest": "node src/index.js --all",
     "harvest:dry": "node src/index.js --all --dry-run",
-    "import": "node src/index.js --import results/harvested-investors.json"
+    "import": "node src/index.js --import results/harvested-investors.json",
+    "enrich": "node src/enrich.js --all",
+    "enrich:scrape": "node src/enrich.js --scrape-only",
+    "enrich:ai": "node src/enrich.js --ai-only",
+    "enrich:dry": "node src/enrich.js --all --dry-run"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@supabase/supabase-js": "^2.90.1",
-    "papaparse": "^5.5.3",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^2.7.0",
+    "openai": "^4.104.0",
+    "papaparse": "^5.5.3"
   }
 }

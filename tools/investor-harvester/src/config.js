@@ -18,6 +18,7 @@ try {
 
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://fbgxeinarhbrqatrsuoj.supabase.co'
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || ''
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || ''
 
 const supabase = SUPABASE_KEY ? createClient(SUPABASE_URL, SUPABASE_KEY) : null
 
@@ -42,6 +43,7 @@ const RESULTS_DIR = resolve(__dirname, '..', 'results')
 module.exports = {
   supabase,
   SUPABASE_URL,
+  DEEPSEEK_API_KEY,
   SOURCE_CONFIDENCE,
   BATCH_SIZE,
   DATA_DIR,

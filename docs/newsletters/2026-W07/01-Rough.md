@@ -10,23 +10,23 @@ Theme ideas: ___, current events tie-in, ecosystem observation.]
 
 ---
 
-## Rectangle — $2.5M Pre-Seed
+## Prenosis — $40M Series A
 
-Rectangle raised funding to cut logistics email overload.
+Chicago biotech startup with FDA authorized AI diagnostic tool for sepsis.
 
-**Lead:** Autotech Ventures
+**Lead:** PACE Healthcare Capital
 
-**Source:** [Perplexity citation](https://growthlist.co/chicago-startups/) | [Perplexity citation](https://www.seedtable.com/best-startups-in-chicago) | [Perplexity citation](https://thecurrentbyvcf.substack.com/p/velocity-currents-9th-edition) | [Perplexity citation](https://explodingtopics.com/startups/location/chicago) | [Perplexity citation](https://techcrunch.com/2026/02/11/twilio-co-founders-fusion-power-startup-raises-450m-from-bessemer-and-alphabets-gv/) | [Perplexity citation](https://chistartuphub.com/funding)
+**Source:** [Velocity Currents 9th Edition](https://thecurrentbyvcf.substack.com/p/velocity-currents-9th-edition) | [Perplexity citation](https://growthlist.co/chicago-startups/) | [Perplexity citation](https://explodingtopics.com/startups/location/chicago) | [Perplexity citation](https://fundraiseinsider.com/blog/series-a-startups/) | [Perplexity citation](https://techcrunch.com/2026/02/09/tem-raises-75m-to-remake-electricity-markets-using-ai/)
 
 ---
 
-## Prenosis — $40M Series A
+## Rectangle — $2.5M Pre-Seed
 
-Chicago biotech startup developing an FDA authorized AI diagnostic tool for sepsis.
+AI-powered platform to assist logistics companies in handling email overload.
 
-**Also participating:** PACE Healthcare Capital
+**Lead:** Autotech Ventures
 
-**Source:** [Velocity Currents 9th Edition](https://thecurrentbyvcf.substack.com/p/velocity-currents-9th-edition) | [Perplexity citation](https://growthlist.co/chicago-startups/) | [Perplexity citation](https://www.seedtable.com/best-startups-in-chicago) | [Perplexity citation](https://explodingtopics.com/startups/location/chicago) | [Perplexity citation](https://techcrunch.com/2026/02/10/primary-ventures-raises-massive-625m-fund-v-to-focus-on-seed-investing/)
+**Source:** [Perplexity citation](https://growthlist.co/chicago-startups/) | [Perplexity citation](https://thecurrentbyvcf.substack.com/p/velocity-currents-9th-edition) | [Perplexity citation](https://explodingtopics.com/startups/location/chicago) | [Perplexity citation](https://fundraiseinsider.com/blog/series-a-startups/) | [Perplexity citation](https://techcrunch.com/2026/02/09/tem-raises-75m-to-remake-electricity-markets-using-ai/)
 
 ---
 
@@ -107,17 +107,15 @@ Know a founder who should see this? Forward it.
 ## Sources
 
 **Startup Deals:**
-- [Rectangle raises $2.5M to cut logistics email overload - Chicago ...](https://www.bizjournals.com/chicago/news/2026/02/10/rectangle-raises-preseed-funding-logistics-email.html) [BROKEN]
+- [Velocity Currents 9th Edition](https://thecurrentbyvcf.substack.com/p/velocity-currents-9th-edition)
 - [Perplexity citation](https://growthlist.co/chicago-startups/)
-- [Perplexity citation](https://www.seedtable.com/best-startups-in-chicago)
-- [Perplexity citation](https://thecurrentbyvcf.substack.com/p/velocity-currents-9th-edition)
 - [Perplexity citation](https://explodingtopics.com/startups/location/chicago)
-- [Perplexity citation](https://www.f6s.com/companies/united-states/illinois/chicago/lo) [BROKEN]
-- [Perplexity citation](https://www.startupblink.com/top-startups/chicago-il-us) [BROKEN]
-- [Perplexity citation](https://techcrunch.com/2026/02/11/twilio-co-founders-fusion-power-startup-raises-450m-from-bessemer-and-alphabets-gv/)
-- [Perplexity citation](https://chistartuphub.com/funding)
 - [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/02/04/the-beat-chicago-startups-funding.html) [BROKEN]
-- [Perplexity citation](https://techcrunch.com/2026/02/10/primary-ventures-raises-massive-625m-fund-v-to-focus-on-seed-investing/)
+- [Perplexity citation](https://fundraiseinsider.com/blog/series-a-startups/)
+- [Perplexity citation](https://www.f6s.com/companies/united-states/illinois/chicago/lo) [BROKEN]
+- [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/02/10/rectangle-raises-preseed-funding-logistics-email.html) [BROKEN]
+- [Perplexity citation](https://techcrunch.com/2026/02/09/tem-raises-75m-to-remake-electricity-markets-using-ai/)
+- [Perplexity citation](https://www.startupblink.com/top-startups/chicago-il-us) [BROKEN]
 
 ---
 

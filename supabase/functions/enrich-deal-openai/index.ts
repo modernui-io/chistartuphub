@@ -119,7 +119,7 @@ serve(async (req: Request) => {
           }
         ],
         response_format: { type: 'json_object' },
-        temperature: 0.3, // Lower for more factual responses
+        temperature: 0, // Deterministic for factual responses
       }),
     })
 
