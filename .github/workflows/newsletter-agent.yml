@@ -29,7 +29,7 @@ jobs:
   research:
     name: Run Research Agent
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
 
     steps:
       - name: Checkout repository
@@ -48,7 +48,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
           NOTIFICATION_EMAIL: billyndizeye@gmail.com
-          # Pipeline: Perplexity Sonar (primary) → Tavily+OpenAI (fallback)
+          # Pipeline: Perplexity Deep Research (deals/funds) + Sonar (opps) → Tavily+OpenAI (fallback)
           # No OLLAMA_URL in cloud — Ollama is local-only fallback
         run: |
           ARGS=""

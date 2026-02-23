@@ -305,7 +305,7 @@ async function tavilyExtract(urls, query = '') {
  *
  * @param {string} systemPrompt - System message with extraction rules
  * @param {string} userQuery - The search/extraction query
- * @param {object} options - { domains, recency, json }
+ * @param {object} options - { domains, recency, json, deepResearch }
  * @returns {{ content: string, citations: string[], model: string }}
  */
 async function perplexityChat(systemPrompt, userQuery, options = {}) {
@@ -313,8 +313,10 @@ async function perplexityChat(systemPrompt, userQuery, options = {}) {
     throw new Error('No PERPLEXITY_API_KEY');
   }
 
+  const model = options.deepResearch ? 'sonar-deep-research' : 'sonar';
+
   const body = {
-    model: 'sonar',
+    model,
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userQuery },
@@ -323,59 +325,69 @@ async function perplexityChat(systemPrompt, userQuery, options = {}) {
     web_search_options: {},
   };
 
-  // Domain filtering
-  if (options.domains?.length) {
+  // Domain filtering (not supported by deep research)
+  if (options.domains?.length && !options.deepResearch) {
     body.web_search_options.search_domain_filter = options.domains;
   }
 
-  // Recency: "month", "week", "day", "hour"
-  if (options.recency) {
+  // Recency: "month", "week", "day", "hour" (not supported by deep research)
+  if (options.recency && !options.deepResearch) {
     body.web_search_options.search_recency_filter = options.recency;
   }
 
   // Note: Perplexity doesn't support json_object response_format like OpenAI.
   // We rely on strong system prompt instructions for JSON output instead.
 
-  const resp = await fetch('https://api.perplexity.ai/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${PERPLEXITY_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
+  // Deep research takes much longer (30-120s) — increase timeout
+  const timeoutMs = options.deepResearch ? 300_000 : 60_000;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
-  if (!resp.ok) {
-    const text = await resp.text();
-    throw new Error(`Perplexity ${resp.status}: ${text.slice(0, 300)}`);
-  }
+  try {
+    const resp = await fetch('https://api.perplexity.ai/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${PERPLEXITY_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
 
-  const data = await resp.json();
-  const content = data.choices?.[0]?.message?.content;
-  const citations = data.citations || [];
-
-  if (!content) {
-    throw new Error('Perplexity returned empty content');
-  }
-
-  // If JSON expected, extract it (Perplexity often wraps in markdown or adds text)
-  let finalContent = content;
-  if (options.json) {
-    // Try: markdown code fences first
-    const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (jsonMatch) {
-      finalContent = jsonMatch[1].trim();
-    } else {
-      // Try: extract first { ... } block from mixed text+JSON response
-      const braceMatch = content.match(/\{[\s\S]*\}/);
-      if (braceMatch) {
-        finalContent = braceMatch[0];
-      }
+    if (!resp.ok) {
+      const text = await resp.text();
+      throw new Error(`Perplexity ${resp.status}: ${text.slice(0, 300)}`);
     }
-    JSON.parse(finalContent); // validate
-  }
 
-  return { content: finalContent, citations, model: 'perplexity/sonar' };
+    const data = await resp.json();
+    const content = data.choices?.[0]?.message?.content;
+    const citations = data.citations || [];
+
+    if (!content) {
+      throw new Error('Perplexity returned empty content');
+    }
+
+    // If JSON expected, extract it (Perplexity often wraps in markdown or adds text)
+    let finalContent = content;
+    if (options.json) {
+      // Try: markdown code fences first
+      const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (jsonMatch) {
+        finalContent = jsonMatch[1].trim();
+      } else {
+        // Try: extract first { ... } block from mixed text+JSON response
+        const braceMatch = content.match(/\{[\s\S]*\}/);
+        if (braceMatch) {
+          finalContent = braceMatch[0];
+        }
+      }
+      JSON.parse(finalContent); // validate
+    }
+
+    return { content: finalContent, citations, model: `perplexity/${model}` };
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 /**
@@ -593,9 +605,9 @@ const state = {
 async function stageDealDiscovery() {
   log('STAGE 1: DEAL DISCOVERY — Searching for Chicago startup raises');
 
-  // === PRIMARY: Perplexity Sonar (search + synthesize in 1 call) ===
+  // === PRIMARY: Perplexity Deep Research (multi-step search + synthesis) ===
   if (PERPLEXITY_API_KEY) {
-    log('  Using Perplexity Sonar for deal discovery...');
+    log('  Using Perplexity Deep Research for deal discovery...');
     const allDeals = await perplexityDealDiscovery();
     if (allDeals !== null) {
       // Perplexity succeeded — apply date guardrails and dedup
@@ -674,10 +686,9 @@ IMPORTANT: Your ENTIRE response must be valid JSON only. No explanatory text bef
 
   for (const { query, domains, label } of queries) {
     try {
-      log(`  Perplexity [${label}]...`);
+      log(`  Perplexity Deep Research [${label}]...`);
       const result = await perplexityChat(dealSystemPrompt, query, {
-        domains,
-        recency: 'week',
+        deepResearch: true,
         json: true,
       });
 
@@ -947,9 +958,9 @@ async function stageEdgarScan() {
 async function stageFundNewsScan() {
   log('STAGE 3: FUND NEWS — Searching for Chicago fund closes');
 
-  // === PRIMARY: Perplexity Sonar ===
+  // === PRIMARY: Perplexity Deep Research ===
   if (PERPLEXITY_API_KEY) {
-    log('  Using Perplexity Sonar for fund news...');
+    log('  Using Perplexity Deep Research for fund news...');
     const allFunds = await perplexityFundDiscovery();
     if (allFunds !== null) {
       finalizeFundResults(allFunds);
@@ -999,13 +1010,12 @@ Return JSON:
 If no Chicago-HQ fund news found, return {"funds": []}.`;
 
   try {
-    log('  Perplexity [fund news]...');
+    log('  Perplexity Deep Research [fund news]...');
     const result = await perplexityChat(
       fundSystemPrompt,
       `What Chicago-based or Illinois-based private equity firms, venture capital firms, or investment funds have announced new fund closes, fund launches, or LP commitments in the past month? Include fund name, size, strategy, and close date. Today is ${today()}.`,
       {
-        domains: ['chicagobusiness.com', 'prnewswire.com', 'businesswire.com', 'pehub.com', 'pitchbook.com', 'bloomberg.com', 'buyoutsinsider.com'],
-        recency: 'month',
+        deepResearch: true,
         json: true,
       }
     );
@@ -2530,7 +2540,7 @@ async function main() {
   console.log('║  Capital Access Newsletter — Research Agent v1.0     ║');
   console.log('╚══════════════════════════════════════════════════════╝');
   console.log(`  Supabase:  ${SUPABASE_URL}`);
-  console.log(`  Search:    ${PERPLEXITY_API_KEY ? 'Perplexity Sonar' : 'Tavily'}${TAVILY_API_KEY ? ' + Tavily fallback' : ''}`);
+  console.log(`  Search:    ${PERPLEXITY_API_KEY ? 'Perplexity Deep Research (deals/funds) + Sonar (opps)' : 'Tavily'}${TAVILY_API_KEY ? ' + Tavily fallback' : ''}`);
   console.log(`  Days back: ${DAYS} (deals) | ${FUND_DAYS} (funds)`);
   console.log(`  Dry run:   ${DRY_RUN}`);
   if (STEP) console.log(`  Step:      ${STEP}`);
