@@ -19,7 +19,9 @@ export default function Layout({ children }) {
   const isHomePage = location.pathname === '/' || location.pathname === '/home';
   const hideLayoutFooter = isHomePage || location.pathname === '/funding' || location.pathname === '/about' || location.pathname === '/community' || location.pathname === '/workspaces' || location.pathname === '/events' || location.pathname === '/resources' || location.pathname === '/before-you-start' || location.pathname === '/service-resources' || location.pathname === '/small-business-resources' || location.pathname === '/business-type-explorer' || location.pathname === '/opportunities' || location.pathname === '/stories' || location.pathname.startsWith('/stories/') || location.pathname === '/WhyChicago' || location.pathname === '/SubmitResource' || location.pathname === '/assessment' || location.pathname === '/profile' || location.pathname === '/saved-resources' || location.pathname === '/settings' || location.pathname === '/accelerators-incubators' || location.pathname === '/contact' || location.pathname === '/admin' || location.pathname === '/Investors';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(!window.hasShownLoader);
+  // Skip loading screen if page was pre-rendered (SSG) or already shown
+  const isPrerendered = typeof document !== 'undefined' && document.getElementById('root')?.hasAttribute('data-prerendered');
+  const [isLoading, setIsLoading] = useState(!window.hasShownLoader && !isPrerendered);
   const [showWelcome, setShowWelcome] = useState(false);
   const [welcomeUserData, setWelcomeUserData] = useState({ name: '', role: '' });
   const {

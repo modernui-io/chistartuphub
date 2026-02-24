@@ -51,6 +51,7 @@ export default function LoadingScreen({ onComplete }) {
           ease: [0.16, 1, 0.3, 1]
         } 
       }}
+      data-loading-screen="true"
       className="fixed inset-0 z-[9999] bg-[#050A14] flex flex-col items-center justify-center overflow-hidden"
     >
       {/* Subtle grid background */}
