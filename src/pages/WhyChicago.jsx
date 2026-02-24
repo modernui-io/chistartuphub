@@ -44,8 +44,8 @@ export default function WhyChicago() {
           if (videoRef.current) {
             const playPromise = videoRef.current.play();
             if (playPromise !== undefined) {
-              playPromise.catch(err => {
-                console.log("Video autoplay prevented or error:", err);
+              playPromise.catch(() => {
+                // Video autoplay prevented - expected on some browsers
               });
             }
           }

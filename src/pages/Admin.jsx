@@ -295,7 +295,7 @@ export default function Admin() {
         });
 
         if (emailResult.success) {
-          console.log(`[AMPLIFICATION] Email sent to founder (ask: ${ask.id})`);
+          if (import.meta.env.DEV) console.log(`[AMPLIFICATION] Email sent to founder (ask: ${ask.id})`);
         } else {
           console.error(`[AMPLIFICATION] Email failed:`, emailResult.error);
           // Don't throw - amplification is marked, just email failed
@@ -365,7 +365,7 @@ export default function Admin() {
       const successCount = emailResults.filter(r => r.status === 'fulfilled' && r.value.success).length;
       const failCount = emailResults.length - successCount;
 
-      console.log(`[AMPLIFICATION] Bulk emails: ${successCount} sent, ${failCount} failed`);
+      if (import.meta.env.DEV) console.log(`[AMPLIFICATION] Bulk emails: ${successCount} sent, ${failCount} failed`);
 
       if (failCount > 0) {
         toast.success(`Processed ${pendingAsks.length} asks!`, {

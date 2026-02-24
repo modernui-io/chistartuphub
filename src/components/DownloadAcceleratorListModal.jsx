@@ -45,11 +45,11 @@ export default function DownloadAcceleratorListModal({ isOpen, onClose }) {
           source: 'accelerator_list_download'
         });
 
-      if (error) {
+      if (error && import.meta.env.DEV) {
         console.error('Email signup error (non-blocking):', error);
       }
     } catch (err) {
-      console.error('Email signup exception (non-blocking):', err);
+      if (import.meta.env.DEV) console.error('Email signup exception (non-blocking):', err);
     }
 
     // Always trigger download and show success

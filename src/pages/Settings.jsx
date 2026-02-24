@@ -58,8 +58,6 @@ export default function Settings() {
   const saveSettings = async () => {
     try {
       setSaving(true);
-      console.log('[SETTINGS] Saving with role:', selectedRole, 'user.id:', user.id);
-
       const { data, error } = await supabase
         .from("user_profiles")
         .update({
@@ -73,13 +71,10 @@ export default function Settings() {
         .eq("id", user.id)
         .select();
 
-      console.log('[SETTINGS] Update result:', { data, error });
-
       if (error) throw error;
 
       setMessage({ type: "success", text: `Settings saved! Role set to: ${selectedRole}` });
       if (refreshProfile) {
-        console.log('[SETTINGS] Refreshing profile...');
         await refreshProfile();
       }
 

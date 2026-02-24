@@ -435,7 +435,7 @@ export default function Assessment() {
         try {
           await addBookmark(rec);
         } catch (e) {
-          console.log('Could not save bookmark:', rec.resourceName, e);
+          if (import.meta.env.DEV) console.log('Could not save bookmark:', rec.resourceName, e);
         }
       }
 

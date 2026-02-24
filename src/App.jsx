@@ -1,10 +1,10 @@
 import './App.css'
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
-import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, Link, useLocation } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import { AuthProvider } from '@/contexts/AuthContext';
@@ -12,6 +12,26 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import PageSkeleton from '@/components/PageSkeleton';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { BureauAtmosphere, BureauFooter } from '@/components/bureau';
+import posthog from 'posthog-js';
+
+// Initialize PostHog with optimized config
+posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_KEY, {
+  api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com',
+  autocapture: false,
+  capture_pageview: false,
+  capture_pageleave: true,
+  disable_session_recording: true,
+  persistence: 'localStorage',
+});
+
+// Track pageviews on route changes
+function PageviewTracker() {
+  const location = useLocation();
+  useEffect(() => {
+    posthog.capture('$pageview');
+  }, [location.pathname]);
+  return null;
+}
 
 // Routes that require authentication
 const PROTECTED_ROUTES = ['Profile', 'settings', 'saved'];
@@ -32,6 +52,7 @@ function App() {
       <QueryClientProvider client={queryClientInstance}>
         <AuthProvider>
           <Router>
+            <PageviewTracker />
             <LayoutWrapper currentPageName={mainPageKey}>
               <Suspense fallback={<PageSkeleton />}>
                 <Routes>

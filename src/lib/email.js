@@ -35,7 +35,7 @@ async function sendEmail(type, to, data) {
       return { success: false, error: result.error || 'Failed to send email' };
     }
 
-    console.log('[EMAIL] Sent successfully:', type, to);
+    if (import.meta.env.DEV) console.log('[EMAIL] Sent successfully:', type, to);
     return { success: true, id: result.id };
   } catch (error) {
     console.error('[EMAIL] Error:', error);
