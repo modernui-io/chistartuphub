@@ -1,0 +1,322 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #050A14; color: #e2e8f0; margin: 0; padding: 0; }
+  .container { max-width: 680px; margin: 0 auto; padding: 40px 24px; }
+  h1 { color: #ffffff; font-size: 28px; margin-bottom: 4px; }
+  h2 { color: #d4af37; font-size: 20px; margin-top: 32px; border-bottom: 1px solid #1e3a5f; padding-bottom: 8px; }
+  h3 { color: #ffffff; font-size: 16px; margin-bottom: 4px; }
+  .subtitle { color: #94a3b8; font-size: 14px; margin-bottom: 24px; }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  .stat { background: #0f1a2e; border: 1px solid #1e3a5f; border-radius: 8px; padding: 12px 16px; }
+  .stat-value { font-size: 24px; font-weight: 700; color: #ffffff; }
+  .stat-label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; }
+  .deal { background: #0f1a2e; border-left: 3px solid #d4af37; padding: 16px; margin: 12px 0; border-radius: 0 8px 8px 0; }
+  .deal-name { font-size: 18px; font-weight: 700; color: #ffffff; }
+  .deal-amount { font-size: 14px; color: #d4af37; }
+  .deal-meta { font-size: 13px; color: #94a3b8; margin-top: 8px; }
+  .fund { background: #0f1a2e; border-left: 3px solid #3b82f6; padding: 16px; margin: 12px 0; border-radius: 0 8px 8px 0; }
+  .fund-name { font-size: 16px; font-weight: 700; color: #ffffff; }
+  .fund-size { font-size: 14px; color: #3b82f6; }
+  .deadline-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  .deadline-table th { text-align: left; color: #94a3b8; font-size: 12px; text-transform: uppercase; padding: 8px; border-bottom: 1px solid #1e3a5f; }
+  .deadline-table td { padding: 8px; border-bottom: 1px solid #0f1a2e; font-size: 14px; }
+  .deadline-table td:first-child { color: #d4af37; font-weight: 600; }
+  a { color: #60a5fa; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 600; }
+  .badge-verified { background: #065f46; color: #6ee7b7; }
+  .badge-single { background: #78350f; color: #fbbf24; }
+  .badge-prev { background: #1e3a5f; color: #93c5fd; }
+  .source-link { font-size: 13px; color: #60a5fa; display: block; margin: 2px 0; }
+  .section-note { font-size: 13px; color: #94a3b8; font-style: italic; margin: 8px 0; }
+  .warning { background: #78350f; border: 1px solid #92400e; padding: 12px; border-radius: 8px; margin: 12px 0; }
+  .warning-text { color: #fbbf24; font-size: 14px; }
+  .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #1e3a5f; color: #64748b; font-size: 12px; }
+  .model-badge { font-size: 11px; color: #64748b; background: #1e293b; padding: 2px 6px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Capital Access Vol. 9</h1>
+<div class="subtitle">Research Package — 2026-W10 | March 5, 2026</div>
+
+<!-- Stats -->
+<div class="stat-grid">
+  <div class="stat">
+    <div class="stat-value">1</div>
+    <div class="stat-label">Verified Deals</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">$27M</div>
+    <div class="stat-label">Total Raised</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">2</div>
+    <div class="stat-label">Fund News</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">$450M</div>
+    <div class="stat-label">Fund Capital</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">11</div>
+    <div class="stat-label">Deadlines (21d)</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">0</div>
+    <div class="stat-label">SEC Filings</div>
+  </div>
+  <div class="stat">
+    <div class="stat-value">7</div>
+    <div class="stat-label">New Opps Found</div>
+  </div>
+</div>
+
+<!-- Verified Deals -->
+
+<h2>Verified Deals</h2>
+
+<div class="deal">
+  <div class="deal-name">KeyCare <span class="badge badge-verified">VERIFIED</span></div>
+  <div class="deal-amount">$27.4M Growth</div>
+  <div class="deal-meta">
+    <strong>Lead:</strong> HealthX Ventures<br>
+    <strong>Also:</strong> 8VC, LRVHealth, BOLD Capital Partners, Ikigai Venture Partners, WellSpan Health, Allina Health, University of Chicago Ventures, Edge Ventures, Exact Sciences<br>
+    <strong>Sector:</strong> HealthTech | <strong>Nexus:</strong> HQ
+  </div>
+  <div class="deal-meta">Epic-based virtual care platform providing 24/7 urgent, preventive, chronic, and primary care services integrated with health systems.</div>
+  <div style="margin-top: 8px;">
+    <a class="source-link" href="https://www.businesswire.com/news/home/20260303870542/en/KeyCare-Raises-$27.4-Million-to-Scale-their-AI-Powered-Epic-Based-Virtual-Care-Solution-for-Health-Systems">❌ KeyCare Raises $27.4M to Scale their AI-Powered, Epic-Based Virtual Care Solution for Health Systems</a><a class="source-link" href="https://www.bizjournals.com/chicago/news/2026/03/03/keycare-27-million-virtual-care-startup.html">❌ KeyCare raises another $27 million for virtual care</a><a class="source-link" href="https://www.builtinchicago.org/articles/keycare-raises-27m-funding-20260303">✓ Healthtech Platform KeyCare Raises $27.4M in Funding</a><a class="source-link" href="https://theaiinsider.tech/2026/03/05/keycare-raises-27-4m-to-scale-their-ai-powered-epic-based-virtual-care-solution-for-health-systems/">✓ Perplexity citation</a><a class="source-link" href="https://fundraiseinsider.com/blog/recently-funded-startups-chicago/">✓ Perplexity citation</a><a class="source-link" href="https://www.failory.com/startups/chicago">✓ Perplexity citation</a><a class="source-link" href="https://www.bizjournals.com/chicago/news/2026/01/30/the-beat-startups-to-watch-2026.html">❌ Perplexity citation</a><a class="source-link" href="https://explodingtopics.com/startups/technology/chicago">✓ Perplexity citation</a><a class="source-link" href="https://www.failory.com/startups/illinois">✓ Perplexity citation</a><a class="source-link" href="https://www.openvc.app/investor-lists/venture-capital-firms-investors-chicago">✓ Perplexity citation</a><a class="source-link" href="https://explodingtopics.com/startups/location/chicago">✓ Perplexity citation</a><a class="source-link" href="https://fundraiseinsider.com/blog/series-a-startups/">✓ Perplexity citation</a><a class="source-link" href="https://www.bizjournals.com/chicago/inno/newsletter/44234905?skip=0">❌ Perplexity citation</a><a class="source-link" href="https://nationaltoday.com/us/il/chicago/news/2026/03/04/fairway-private-equity-venture-capital-opportunities-fund-announces-results/">✓ Perplexity citation</a><a class="source-link" href="https://www.bizjournals.com/chicago/news/2026/02/24/chicago-ai-startup-letterai-40-million.html">❌ Perplexity citation</a><a class="source-link" href="https://www.mhubchicago.com/blog/announcing-the-2026-fourth-revolution-awards-honorary-industry-awards">✓ Perplexity citation</a><a class="source-link" href="https://growthlist.co/chicago-startups/">✓ Perplexity citation</a><a class="source-link" href="https://www.constructiondive.com/news/z-modular-chicago-offsite-construction/746940/">❌ Perplexity citation</a><a class="source-link" href="https://www.bizjournals.com/chicago/inno/newsletter/44325079?skip=0">❌ Perplexity citation</a><a class="source-link" href="https://www.bizjournals.com/chicago/inno/newsletter/44479820?skip=0">❌ Perplexity citation</a><a class="source-link" href="https://www.z-modular.com/news/z-modular-expands-annual-production-capacity-to-10-million-sq-ft/">✓ Perplexity citation</a><a class="source-link" href="https://techcrunch.com/2026/02/11/twilio-co-founders-fusion-power-startup-raises-450m-from-bessemer-and-alphabets-gv/">✓ Perplexity citation</a><a class="source-link" href="https://fortune.com/2026/02/25/exclusive-solveai-eight-months-raises-50-million-ai-coding-tool-race/">✓ Perplexity citation</a><a class="source-link" href="https://www.morningstar.com/news/pr-newswire/20260304cl00827/jll-foundation-deploys-record-51m-to-climate-startups-in-2025">✓ Perplexity citation</a><a class="source-link" href="https://www.bizjournals.com/chicago/news/2026/02/04/the-beat-chicago-startups-funding.html">❌ Perplexity citation</a><a class="source-link" href="https://www.thesaasnews.com/news/qumis-raises-4-3m-in-seed-round">✓ Perplexity citation</a><a class="source-link" href="https://www.bizjournals.com/chicago/inno/newsletter/44383297?skip=0">❌ Perplexity citation</a><a class="source-link" href="https://www.insurancejournal.com/news/midwest/2026/02/20/858943.htm">✓ Perplexity citation</a><a class="source-link" href="https://blog.mean.ceo/startup-funding-announcements-news-march-2026/">✓ Perplexity citation</a><a class="source-link" href="https://www.f6s.com/companies/united-states/illinois/chicago/lo">❌ Perplexity citation</a><a class="source-link" href="https://www.bizjournals.com/chicago/inno/newsletter/22842817?skip=680">❌ Perplexity citation</a><a class="source-link" href="https://topstartups.io/jobs/?job_location=Chicago">✓ Perplexity citation</a><a class="source-link" href="https://www.thesaasnews.com/news/letter-ai-raises-40-million-in-series-b">✓ Perplexity citation</a><a class="source-link" href="https://www.bizjournals.com/chicago/news/2026/02/03/ariel-investments-fund-project-level-250m.html">❌ Perplexity citation</a><a class="source-link" href="https://www.prnewswire.com/news-releases/letter-ai-raises-40m-series-b-to-bring-deal-level-intelligence-to-revenue-enablement-302694721.html">✓ Perplexity citation</a><a class="source-link" href="https://www.arielinvestments.com/article/project-level-first-close/">✓ Perplexity citation</a><a class="source-link" href="https://www.bizjournals.com/chicago/inno">❌ Perplexity citation</a><a class="source-link" href="https://nationaltoday.com/us/il/chicago/news/2026/02/24/qumis-raises-4-3m-to-bring-attorney-grade-coverage-intelligence-to-commercial-insurance/">✓ Perplexity citation</a><a class="source-link" href="https://www.startupblink.com/top-startups/chicago-il-us">✓ Perplexity citation</a><a class="source-link" href="https://www.builtinchicago.org/companies/startups">✓ Perplexity citation</a><a class="source-link" href="https://www.bizjournals.com/chicago/news/2026/02/25/the-beat-letter-ai-40-million-spothero.html">❌ Perplexity citation</a><a class="source-link" href="https://blog.mean.ceo/tech-startup-funding-news-march-2026/">✓ Perplexity citation</a><a class="source-link" href="https://basepoint.vc/stories/startup-funding-roundup-1-march-2026">✓ Perplexity citation</a>
+  </div>
+</div>
+
+
+
+<!-- Single Source Deals -->
+
+
+<!-- SEC EDGAR -->
+
+
+<!-- Fund News -->
+
+<h2>Fund News</h2>
+
+<div class="fund">
+  <div class="fund-name">Shore Capital Industrial Partners Fund II <span class="badge badge-verified">VERIFIED</span></div>
+  <div class="fund-size">$400M+</div>
+  <div class="deal-meta">
+    <strong>Strategy:</strong> Private equity — industrial services<br>
+    <strong>Close:</strong> 2026-02
+  </div>
+  <div class="deal-meta">Shore Capital Partners successfully closed its second industrials-focused fund with over $400 million in capital commitments. The fund reflects strong demand from existing and new limited partners for Shore's differentiated, sector-focused investment strategy targeting industrial companies.</div>
+  <div style="margin-top: 8px;">
+    <a class="source-link" href="https://www.kirkland.com/news/press-release/2026/02/kirkland-represents-shore-capital-partners-on-closing-of-industrials-fund-ii">Kirkland Represents Shore Capital Partners on Closing of Industrials Fund II</a><a class="source-link" href="https://fortune.com/2026/02/05/2026-private-equity-outlook-hazy-pitchbook/">2026 private equity outlook — Fortune/PitchBook</a><a class="source-link" href="https://illinoisventures.com/about-us/news/">Perplexity citation</a><a class="source-link" href="https://www.marketsgroup.org/news/nebraska-earmarks-375m-private-equity-pacing-for-2026">Perplexity citation</a><a class="source-link" href="https://illinoisvc.org/ivca-newsletter-february-18-2026/">Perplexity citation</a><a class="source-link" href="https://www.businesswire.com/news/home/20260129120430/en/The-O.H.I.O.-Fund-Accelerates-into-2026">Perplexity citation</a><a class="source-link" href="https://techcrunch.com/2026/02/04/snak-venture-partners-raises-50m-fund-to-back-digitizing-marketplaces/">Perplexity citation</a><a class="source-link" href="https://frontenac.com">Perplexity citation</a><a class="source-link" href="https://pfingsten.com/lorem-ipsum-dolor-sit-amet-consectetur-ultrices-arcu-tellus-aliquet-curabitur-at-3/">Perplexity citation</a><a class="source-link" href="https://www.techbuzz.ai/articles/snak-venture-partners-closes-oversubscribed-50m-debut-fund">Perplexity citation</a><a class="source-link" href="https://frontenac.com/frontenac-named-to-2026-top-50-pe-firms-in-the-middle-market-list/">Perplexity citation</a><a class="source-link" href="https://www.kirkland.com/news/press-release/2023/10/kirkland-advises-on-close-of-$435-million-pfingsten-fund-vi">Perplexity citation</a><a class="source-link" href="https://illinoisvc.org/ivca-provides-updates-for-state-legislative-issues-02-18-2026/">Perplexity citation</a><a class="source-link" href="https://pfingsten.com/pfingsten-named-to-2026-top-50-pe-firms-in-the-middle-market-list-for-tenth-consecutive-year/">Perplexity citation</a><a class="source-link" href="https://alpha-maven.com/news/hedge-fund/midwest-pension-makes-commitments">Perplexity citation</a><a class="source-link" href="https://giesbusiness.illinois.edu/news/2026/02/05/gies-business-launches-u-of-i-s-first-student-led-venture-capital-fund">Perplexity citation</a><a class="source-link" href="https://www.bain.com/insights/outlook-gaining-traction-global-private-equity-report-2026/">Perplexity citation</a><a class="source-link" href="https://www.fin-news.com/2026/02/25/midwest-pension-makes-commitments/">Perplexity citation</a><a class="source-link" href="https://www.vistaequitypartners.com/news/bigtime-software-receives-100-million-strategic-growth-investment-from-vista-equity-partners/">Perplexity citation</a><a class="source-link" href="https://www.collercapital.com/coller-capital-raises-17-billion-for-global-private-equity-secondaries-platform/">Perplexity citation</a><a class="source-link" href="https://middlemarketgrowth.org/february-2026-on-the-move/">Perplexity citation</a><a class="source-link" href="https://www.wallstreetoasis.com/forum/private-equity/vista-equity-partners-2026-update">Perplexity citation</a><a class="source-link" href="https://www.privateequityinternational.com/download-the-february-2026-issue-of-private-equity-international/">Perplexity citation</a><a class="source-link" href="https://polsky.uchicago.edu/event/chicago-booth-private-equity-conference-2026/">Perplexity citation</a><a class="source-link" href="https://nationaltoday.com/us/il/chicago/news/2026/03/04/fairway-private-equity-venture-capital-opportunities-fund-announces-results/">Perplexity citation</a><a class="source-link" href="https://www.ai-cio.com/news/illinois-municipal-retirement-fund-commits-300m-to-real-assets-alts/">Perplexity citation</a><a class="source-link" href="https://www.venturecapitaljournal.com/heartland-ventures-raises-initial-35-2m-for-fund-iii-targeting-60m/">Perplexity citation</a><a class="source-link" href="https://polsky.uchicago.edu/2026/02/27/7-startups-to-compete-for-investment-at-the-202-college-new-venture-challenge/">Perplexity citation</a><a class="source-link" href="https://www.marketbeat.com/instant-alerts/filing-illinois-municipal-retirement-fund-reduces-stake-in-fidelity-national-financial-inc-fnf-2026-02-13/">Perplexity citation</a><a class="source-link" href="https://www.thesaasnews.com/news/luster-raises-3-million-in-seed-round">Perplexity citation</a><a class="source-link" href="https://www.ta.com">Perplexity citation</a><a class="source-link" href="https://wpcapital.com/press-releases/">Perplexity citation</a><a class="source-link" href="https://www.ta.com/news/ta-announces-global-promotions-2026/">Perplexity citation</a><a class="source-link" href="https://wpcapital.com">Perplexity citation</a><a class="source-link" href="https://www.bizjournals.com/louisville/news/2026/01/26/heartland-ventures-closes-third-fund-60-million.html">Perplexity citation</a><a class="source-link" href="https://www.globenewswire.com/news-release/2026/01/21/3222898/0/en/Heartland-Ventures-Launches-60-Million-Fund-III-to-Power-Reindustrialization-Backed-by-Network-of-Midwestern-Business-Owner-Operators.html">Perplexity citation</a><a class="source-link" href="https://www.polkbrosfdn.org/polk-bros-foundation-to-release-three-grant-opportunities-to-support-community-driven-efforts-and-help-shape-future-grantmaking/">Perplexity citation</a><a class="source-link" href="https://lasvegassun.com/news/2026/mar/04/fairway-private-equity-venture-capital-opportuniti/">Perplexity citation</a><a class="source-link" href="https://www.fidelity.com/news/article/mergers-and-acquisitions/202603040700BIZWIRE_USPR_____20260303_BW998995">Perplexity citation</a><a class="source-link" href="https://inforcapital.com/news/torch-key-asset-management-launches-with-backing-from-gcm-grosvenor/">Perplexity citation</a><a class="source-link" href="https://www.bayhawkcapital.com/article/bayhawk_capital_announces_final_close_of_inaugural_fund_at_over_600_million">Perplexity citation</a><a class="source-link" href="https://www.hklaw.com/en/insights/publications/2026/02/proposed-illinois-amendments-would-help-capture-healthcare">Perplexity citation</a><a class="source-link" href="https://www.kirkland.com/news/press-release/2026/02/kirkland-advises-bayhawk-on-final-close-of-inaugural-fund-at-over-$600-million">Perplexity citation</a><a class="source-link" href="https://www.esopassociation.org/articles/launched-and-funded-private-equity-ownership-works-and-expanding-esops">Perplexity citation</a><a class="source-link" href="https://www.failory.com/blog/venture-capital-firms-chicago">Perplexity citation</a><a class="source-link" href="https://startupsavant.com/top-venture-capital-firms/chicago">Perplexity citation</a><a class="source-link" href="https://vendelux.com/insights/chicago-booth-private-equity-conference-2026-attendee-list">Perplexity citation</a><a class="source-link" href="https://www.themiddlemarket.com/news-analysis/wind-point-pitches-operations-for-2-5b-fundraise">Perplexity citation</a><a class="source-link" href="https://am.gs.com/en-us/advisors/news/press-release/2026/PECP-final-close">Perplexity citation</a><a class="source-link" href="https://www.marketbeat.com/instant-alerts/filing-illinois-tool-works-inc-itw-shares-bought-by-fisher-asset-management-llc-2026-03-02/">Perplexity citation</a>
+  </div>
+</div>
+
+<div class="fund">
+  <div class="fund-name">SNAK Venture Partners Fund I <span class="badge badge-verified">VERIFIED</span></div>
+  <div class="fund-size">$50M</div>
+  <div class="deal-meta">
+    <strong>Strategy:</strong> Venture capital — B2B vertical marketplaces and digital commerce<br>
+    <strong>Close:</strong> 2026-02-04
+  </div>
+  <div class="deal-meta">SNAK Venture Partners closed an oversubscribed $50 million inaugural fund focused on backing vertical B2B marketplaces in traditionally non-digitized sectors including construction, supply chain, and equipment rental. The fund is anchored by investment support from Pritzker Group.</div>
+  <div style="margin-top: 8px;">
+    <a class="source-link" href="https://techcrunch.com/2026/02/04/snak-venture-partners-raises-50m-fund-to-back-digitizing-marketplaces/">SNAK Venture Partners raises $50M fund to back vertical marketplaces</a><a class="source-link" href="https://www.techbuzz.ai/articles/snak-venture-partners-closes-oversubscribed-50m-debut-fund">SNAK Venture Partners Closes Oversubscribed $50M Debut Fund</a><a class="source-link" href="https://www.kirkland.com/news/press-release/2026/02/kirkland-represents-shore-capital-partners-on-closing-of-industrials-fund-ii">Perplexity citation</a><a class="source-link" href="https://illinoisventures.com/about-us/news/">Perplexity citation</a><a class="source-link" href="https://www.marketsgroup.org/news/nebraska-earmarks-375m-private-equity-pacing-for-2026">Perplexity citation</a><a class="source-link" href="https://fortune.com/2026/02/05/2026-private-equity-outlook-hazy-pitchbook/">Perplexity citation</a><a class="source-link" href="https://illinoisvc.org/ivca-newsletter-february-18-2026/">Perplexity citation</a><a class="source-link" href="https://www.businesswire.com/news/home/20260129120430/en/The-O.H.I.O.-Fund-Accelerates-into-2026">Perplexity citation</a><a class="source-link" href="https://frontenac.com">Perplexity citation</a><a class="source-link" href="https://pfingsten.com/lorem-ipsum-dolor-sit-amet-consectetur-ultrices-arcu-tellus-aliquet-curabitur-at-3/">Perplexity citation</a><a class="source-link" href="https://frontenac.com/frontenac-named-to-2026-top-50-pe-firms-in-the-middle-market-list/">Perplexity citation</a><a class="source-link" href="https://www.kirkland.com/news/press-release/2023/10/kirkland-advises-on-close-of-$435-million-pfingsten-fund-vi">Perplexity citation</a><a class="source-link" href="https://illinoisvc.org/ivca-provides-updates-for-state-legislative-issues-02-18-2026/">Perplexity citation</a><a class="source-link" href="https://pfingsten.com/pfingsten-named-to-2026-top-50-pe-firms-in-the-middle-market-list-for-tenth-consecutive-year/">Perplexity citation</a><a class="source-link" href="https://alpha-maven.com/news/hedge-fund/midwest-pension-makes-commitments">Perplexity citation</a><a class="source-link" href="https://giesbusiness.illinois.edu/news/2026/02/05/gies-business-launches-u-of-i-s-first-student-led-venture-capital-fund">Perplexity citation</a><a class="source-link" href="https://www.bain.com/insights/outlook-gaining-traction-global-private-equity-report-2026/">Perplexity citation</a><a class="source-link" href="https://www.fin-news.com/2026/02/25/midwest-pension-makes-commitments/">Perplexity citation</a><a class="source-link" href="https://www.vistaequitypartners.com/news/bigtime-software-receives-100-million-strategic-growth-investment-from-vista-equity-partners/">Perplexity citation</a><a class="source-link" href="https://www.collercapital.com/coller-capital-raises-17-billion-for-global-private-equity-secondaries-platform/">Perplexity citation</a><a class="source-link" href="https://middlemarketgrowth.org/february-2026-on-the-move/">Perplexity citation</a><a class="source-link" href="https://www.wallstreetoasis.com/forum/private-equity/vista-equity-partners-2026-update">Perplexity citation</a><a class="source-link" href="https://www.privateequityinternational.com/download-the-february-2026-issue-of-private-equity-international/">Perplexity citation</a><a class="source-link" href="https://polsky.uchicago.edu/event/chicago-booth-private-equity-conference-2026/">Perplexity citation</a><a class="source-link" href="https://nationaltoday.com/us/il/chicago/news/2026/03/04/fairway-private-equity-venture-capital-opportunities-fund-announces-results/">Perplexity citation</a><a class="source-link" href="https://www.ai-cio.com/news/illinois-municipal-retirement-fund-commits-300m-to-real-assets-alts/">Perplexity citation</a><a class="source-link" href="https://www.venturecapitaljournal.com/heartland-ventures-raises-initial-35-2m-for-fund-iii-targeting-60m/">Perplexity citation</a><a class="source-link" href="https://polsky.uchicago.edu/2026/02/27/7-startups-to-compete-for-investment-at-the-202-college-new-venture-challenge/">Perplexity citation</a><a class="source-link" href="https://www.marketbeat.com/instant-alerts/filing-illinois-municipal-retirement-fund-reduces-stake-in-fidelity-national-financial-inc-fnf-2026-02-13/">Perplexity citation</a><a class="source-link" href="https://www.thesaasnews.com/news/luster-raises-3-million-in-seed-round">Perplexity citation</a><a class="source-link" href="https://www.ta.com">Perplexity citation</a><a class="source-link" href="https://wpcapital.com/press-releases/">Perplexity citation</a><a class="source-link" href="https://www.ta.com/news/ta-announces-global-promotions-2026/">Perplexity citation</a><a class="source-link" href="https://wpcapital.com">Perplexity citation</a><a class="source-link" href="https://www.bizjournals.com/louisville/news/2026/01/26/heartland-ventures-closes-third-fund-60-million.html">Perplexity citation</a><a class="source-link" href="https://www.globenewswire.com/news-release/2026/01/21/3222898/0/en/Heartland-Ventures-Launches-60-Million-Fund-III-to-Power-Reindustrialization-Backed-by-Network-of-Midwestern-Business-Owner-Operators.html">Perplexity citation</a><a class="source-link" href="https://www.polkbrosfdn.org/polk-bros-foundation-to-release-three-grant-opportunities-to-support-community-driven-efforts-and-help-shape-future-grantmaking/">Perplexity citation</a><a class="source-link" href="https://lasvegassun.com/news/2026/mar/04/fairway-private-equity-venture-capital-opportuniti/">Perplexity citation</a><a class="source-link" href="https://www.fidelity.com/news/article/mergers-and-acquisitions/202603040700BIZWIRE_USPR_____20260303_BW998995">Perplexity citation</a><a class="source-link" href="https://inforcapital.com/news/torch-key-asset-management-launches-with-backing-from-gcm-grosvenor/">Perplexity citation</a><a class="source-link" href="https://www.bayhawkcapital.com/article/bayhawk_capital_announces_final_close_of_inaugural_fund_at_over_600_million">Perplexity citation</a><a class="source-link" href="https://www.hklaw.com/en/insights/publications/2026/02/proposed-illinois-amendments-would-help-capture-healthcare">Perplexity citation</a><a class="source-link" href="https://www.kirkland.com/news/press-release/2026/02/kirkland-advises-bayhawk-on-final-close-of-inaugural-fund-at-over-$600-million">Perplexity citation</a><a class="source-link" href="https://www.esopassociation.org/articles/launched-and-funded-private-equity-ownership-works-and-expanding-esops">Perplexity citation</a><a class="source-link" href="https://www.failory.com/blog/venture-capital-firms-chicago">Perplexity citation</a><a class="source-link" href="https://startupsavant.com/top-venture-capital-firms/chicago">Perplexity citation</a><a class="source-link" href="https://vendelux.com/insights/chicago-booth-private-equity-conference-2026-attendee-list">Perplexity citation</a><a class="source-link" href="https://www.themiddlemarket.com/news-analysis/wind-point-pitches-operations-for-2-5b-fundraise">Perplexity citation</a><a class="source-link" href="https://am.gs.com/en-us/advisors/news/press-release/2026/PECP-final-close">Perplexity citation</a><a class="source-link" href="https://www.marketbeat.com/instant-alerts/filing-illinois-tool-works-inc-itw-shares-bought-by-fisher-asset-management-llc-2026-03-02/">Perplexity citation</a>
+  </div>
+</div>
+
+
+
+<!-- Discovered Opportunities -->
+
+<h2>New Opportunities Discovered</h2>
+<p class="section-note">Found via web search — inserted into Supabase as INACTIVE. Review and activate in the dashboard.</p>
+<table class="deadline-table">
+  <tr><th>Deadline</th><th>Opportunity</th><th>Type</th><th>Amount</th><th>Link</th></tr>
+  
+  <tr>
+    <td>Mar 5</td>
+    <td>Skip $10K Grants</td>
+    <td>Grant</td>
+    <td>$10K–$10K</td>
+    <td><a href="https://transformthehustle.substack.com/p/march-2026-grant-opportunities">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 31</td>
+    <td>Hello Alice x Pilot Small Business Growth Fund</td>
+    <td>Grant</td>
+    <td>$10K–$50K</td>
+    <td><a href="https://transformthehustle.substack.com/p/march-2026-grant-opportunities">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 9</td>
+    <td>AI Glasses Impact Grants</td>
+    <td>Grant</td>
+    <td>$25K–$200K</td>
+    <td><a href="https://www.detroitchamber.com/apply-for-march-2026-small-business-grants/">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 11</td>
+    <td>Go PINK Grant Initiative</td>
+    <td>Grant</td>
+    <td>$2.5K–$2.5K</td>
+    <td><a href="https://www.detroitchamber.com/apply-for-march-2026-small-business-grants/">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 11</td>
+    <td>Mona Small Business Impact Grant</td>
+    <td>Grant</td>
+    <td>$5K–$5K</td>
+    <td><a href="https://www.detroitchamber.com/apply-for-march-2026-small-business-grants/">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 18</td>
+    <td>Anite Grant for Women-Owned Businesses</td>
+    <td>Grant</td>
+    <td>Varies</td>
+    <td><a href="https://ctwbdc.org/anite">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 9</td>
+    <td>Gold Bold Initiative Grant</td>
+    <td>Grant</td>
+    <td>$2.5K–$2.5K</td>
+    <td><a href="https://www.youtube.com/watch?v=JqKCY5wJhs8">Apply</a></td>
+  </tr>
+  
+</table>
+
+
+<!-- Deadlines -->
+
+<h2>Upcoming Deadlines</h2>
+<table class="deadline-table">
+  <tr><th>Deadline</th><th>Opportunity</th><th>Amount</th><th>Link</th></tr>
+  
+  <tr>
+    <td>Mar 5</td>
+    <td>ARPA-E Energy Innovation Grant</td>
+    <td>$500K–$5M</td>
+    <td><a href="https://arpa-e-foa.energy.gov/">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 6</td>
+    <td>SCORE Women''s Pitch Contest (Seattle) ❌</td>
+    <td>$1K–$10K</td>
+    <td><a href="https://www.score.org/seattle/2026-womens-pitch-contest">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 6</td>
+    <td>Desjardins Startup Prize (U of T)</td>
+    <td>$10K–$100K</td>
+    <td><a href="https://entrepreneurs.utoronto.ca/for-entrepreneurs/2026-desjardins-startup-prize/">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 8</td>
+    <td>500 Global Flagship Accelerator Batch 37</td>
+    <td>$1M–$50M</td>
+    <td><a href="https://flagship.aplica.500.co/en/sites/flagship">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 9</td>
+    <td>Small Business Innovation Research Program (SBIR) Phase II</td>
+    <td>$280K–$288K</td>
+    <td><a href="https://www.grants.gov/opportunity/079d6d64-51fd-4736-aa43-4a3a37d35396">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 9</td>
+    <td>InnovateMass Clean Energy Grant</td>
+    <td>$100K–$350K</td>
+    <td><a href="https://www.masscec.com/program/innovatemass">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 13</td>
+    <td>WSU Business Plan Competition</td>
+    <td>$2K–$10K</td>
+    <td><a href="https://entrepreneurship.wsu.edu/wsu-business-plan-competition/">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 15</td>
+    <td>BoilerLaunch Chicago Pitch Competition</td>
+    <td>$5K–$25K</td>
+    <td><a href="https://www.boilerlaunch.com/">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 18</td>
+    <td>Comcast RISE Grant ❌</td>
+    <td>Varies</td>
+    <td><a href="https://corporate.comcast.com/comcast-rises">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 20</td>
+    <td>LearnLaunch Breakthrough to Scale ❌</td>
+    <td>Varies</td>
+    <td><a href="https://learnlaunch.com/apply">Apply</a></td>
+  </tr>
+  
+  <tr>
+    <td>Mar 26</td>
+    <td>MIT Female Founders Pitch Competition</td>
+    <td>$5K–$10K</td>
+    <td><a href="https://www.mitfemalefounders.com/application">Apply</a></td>
+  </tr>
+  
+</table>
+
+
+
+<!-- Errors -->
+
+<h2>Pipeline Errors</h2>
+<div style="color: #f87171; font-size: 13px; margin: 4px 0;">• Opportunity discovery [Chicago/Midwest opportunities]: Perplexity 502: <html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Perplexity AI unlocks the power of knowledge with information di</div>
+
+
+<!-- Next Steps -->
+<h2>Next Steps</h2>
+<ol style="color: #94a3b8; font-size: 14px; line-height: 1.8;">
+  <li>Open <strong>01-Rough.md</strong> in Obsidian</li>
+  <li>Write the <strong>Opening</strong> (theme + hook)</li>
+  <li>Add color to deal writeups</li>
+  <li>Write the <strong>Blueprint</strong> founder story</li>
+  <li>Review <strong>02-Fact-Check.md</strong> — verify all ⚠️ items</li>
+  <li>Polish → publish to Substack</li>
+</ol>
+
+<div class="footer">
+  Capital Access Research Agent v1.0 | Model: <span class="model-badge">perplexity/sonar-deep-research</span>
+  <br>Runtime: 342s | 1 error(s)
+  <br>Files: Obsidian + docs/newsletters/2026-W10/
+</div>
+
+</div>
+</body>
+</html>
