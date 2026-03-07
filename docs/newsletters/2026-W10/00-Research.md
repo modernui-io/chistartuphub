@@ -1,188 +1,80 @@
 # Research Notes — 2026-W10
-*Generated: 2026-03-05T19:55:12.093Z*
-*Window: 2026-02-26 to 2026-03-05 (deals) | 2026-01-29 to 2026-03-05 (funds)*
+*Generated: 2026-03-07T19:26:30.822Z*
+*Window: 2026-02-28 to 2026-03-07 (deals) | 2026-01-31 to 2026-03-07 (funds)*
 
 ## Web-Discovered Deals (1)
 
-### KeyCare — $27.4M Growth ✅
+### KeyCare — $27.4M Series B+ ✅
 - **Sector:** HealthTech
 - **Lead:** HealthX Ventures
-- **Also:** 8VC, LRVHealth, BOLD Capital Partners, Ikigai Venture Partners, WellSpan Health, Allina Health, University of Chicago Ventures, Edge Ventures, Exact Sciences
-- **Date:** 2026-03-05
+- **Also:** 8VC, LRVHealth, BOLD Capital Partners, Ikigai Venture Partners, University of Chicago Ventures, WellSpan Health, Allina Health, Edge Ventures, Exact Sciences Inc.
+- **Date:** 2026-03-03
 - **Chicago nexus:** HQ
-- **Description:** Epic-based virtual care platform providing 24/7 urgent, preventive, chronic, and primary care services integrated with health systems.
-- **Sources (43):**
-  - [KeyCare Raises $27.4M to Scale their AI-Powered, Epic-Based Virtual Care Solution for Health Systems](https://www.businesswire.com/news/home/20260303870542/en/KeyCare-Raises-$27.4-Million-to-Scale-their-AI-Powered-Epic-Based-Virtual-Care-Solution-for-Health-Systems) [BROKEN LINK]
+- **Description:** Epic-based virtual care platform providing integrated primary care, urgent care, and chronic care services through health system workflows.
+- **Sources (50):**
+  - [KeyCare Raises $27.4 Million to Scale their AI-Powered, Epic-Based Virtual Care Solution for Health Systems](https://www.businesswire.com/news/home/20260303870542/en/KeyCare-Raises-$27.4-Million-to-Scale-their-AI-Powered-Epic-Based-Virtual-Care-Solution-for-Health-Systems) [BROKEN LINK]
   - [KeyCare raises another $27 million for virtual care](https://www.bizjournals.com/chicago/news/2026/03/03/keycare-27-million-virtual-care-startup.html) [BROKEN LINK]
-  - [Healthtech Platform KeyCare Raises $27.4M in Funding](https://www.builtinchicago.org/articles/keycare-raises-27m-funding-20260303)
-  - [Perplexity citation](https://theaiinsider.tech/2026/03/05/keycare-raises-27-4m-to-scale-their-ai-powered-epic-based-virtual-care-solution-for-health-systems/)
-  - [Perplexity citation](https://fundraiseinsider.com/blog/recently-funded-startups-chicago/)
-  - [Perplexity citation](https://www.failory.com/startups/chicago)
-  - [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/01/30/the-beat-startups-to-watch-2026.html) [BROKEN LINK]
-  - [Perplexity citation](https://explodingtopics.com/startups/technology/chicago)
-  - [Perplexity citation](https://www.failory.com/startups/illinois)
-  - [Perplexity citation](https://www.openvc.app/investor-lists/venture-capital-firms-investors-chicago)
-  - [Perplexity citation](https://explodingtopics.com/startups/location/chicago)
-  - [Perplexity citation](https://fundraiseinsider.com/blog/series-a-startups/)
-  - [Perplexity citation](https://www.bizjournals.com/chicago/inno/newsletter/44234905?skip=0) [BROKEN LINK]
-  - [Perplexity citation](https://nationaltoday.com/us/il/chicago/news/2026/03/04/fairway-private-equity-venture-capital-opportunities-fund-announces-results/)
-  - [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/02/24/chicago-ai-startup-letterai-40-million.html) [BROKEN LINK]
-  - [Perplexity citation](https://www.mhubchicago.com/blog/announcing-the-2026-fourth-revolution-awards-honorary-industry-awards)
-  - [Perplexity citation](https://growthlist.co/chicago-startups/)
-  - [Perplexity citation](https://www.constructiondive.com/news/z-modular-chicago-offsite-construction/746940/) [BROKEN LINK]
-  - [Perplexity citation](https://www.bizjournals.com/chicago/inno/newsletter/44325079?skip=0) [BROKEN LINK]
-  - [Perplexity citation](https://www.bizjournals.com/chicago/inno/newsletter/44479820?skip=0) [BROKEN LINK]
-  - [Perplexity citation](https://www.z-modular.com/news/z-modular-expands-annual-production-capacity-to-10-million-sq-ft/)
-  - [Perplexity citation](https://techcrunch.com/2026/02/11/twilio-co-founders-fusion-power-startup-raises-450m-from-bessemer-and-alphabets-gv/)
-  - [Perplexity citation](https://fortune.com/2026/02/25/exclusive-solveai-eight-months-raises-50-million-ai-coding-tool-race/)
-  - [Perplexity citation](https://www.morningstar.com/news/pr-newswire/20260304cl00827/jll-foundation-deploys-record-51m-to-climate-startups-in-2025)
-  - [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/02/04/the-beat-chicago-startups-funding.html) [BROKEN LINK]
-  - [Perplexity citation](https://www.thesaasnews.com/news/qumis-raises-4-3m-in-seed-round)
-  - [Perplexity citation](https://www.bizjournals.com/chicago/inno/newsletter/44383297?skip=0) [BROKEN LINK]
-  - [Perplexity citation](https://www.insurancejournal.com/news/midwest/2026/02/20/858943.htm)
-  - [Perplexity citation](https://blog.mean.ceo/startup-funding-announcements-news-march-2026/)
-  - [Perplexity citation](https://www.f6s.com/companies/united-states/illinois/chicago/lo) [BROKEN LINK]
   - [Perplexity citation](https://www.bizjournals.com/chicago/inno/newsletter/22842817?skip=680) [BROKEN LINK]
-  - [Perplexity citation](https://topstartups.io/jobs/?job_location=Chicago)
-  - [Perplexity citation](https://www.thesaasnews.com/news/letter-ai-raises-40-million-in-series-b)
-  - [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/02/03/ariel-investments-fund-project-level-250m.html) [BROKEN LINK]
-  - [Perplexity citation](https://www.prnewswire.com/news-releases/letter-ai-raises-40m-series-b-to-bring-deal-level-intelligence-to-revenue-enablement-302694721.html)
-  - [Perplexity citation](https://www.arielinvestments.com/article/project-level-first-close/)
-  - [Perplexity citation](https://www.bizjournals.com/chicago/inno) [BROKEN LINK]
-  - [Perplexity citation](https://nationaltoday.com/us/il/chicago/news/2026/02/24/qumis-raises-4-3m-to-bring-attorney-grade-coverage-intelligence-to-commercial-insurance/)
-  - [Perplexity citation](https://www.startupblink.com/top-startups/chicago-il-us)
-  - [Perplexity citation](https://www.builtinchicago.org/companies/startups)
+  - [Perplexity citation](https://www.effinghamradio.com/2026/02/08/governor-pritzker-awards-2-4-million-to-34-companies-through-innovation-voucher-program-announces-round-3/)
+  - [Perplexity citation](https://www.seedtable.com/best-startups-in-chicago)
+  - [Perplexity citation](https://polsky.uchicago.edu/2026/03/03/uchicago-science-incubator-to-provide-on-ramp-facilities-to-accelerate-tenant-entry-into-iqmp-quantum-ecosystem/)
+  - [Perplexity citation](https://fundraiseinsider.com/blog/funded-startups-united-states/)
   - [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/02/25/the-beat-letter-ai-40-million-spothero.html) [BROKEN LINK]
-  - [Perplexity citation](https://blog.mean.ceo/tech-startup-funding-news-march-2026/)
-  - [Perplexity citation](https://basepoint.vc/stories/startup-funding-roundup-1-march-2026)
+  - [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/01/30/the-beat-startups-to-watch-2026.html) [BROKEN LINK]
+  - [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/03/06/the-beat-mhub-iqmp-chicago-keycare.html) [BROKEN LINK]
+  - [Perplexity citation](https://blog.mean.ceo/startup-funding-announcements-news-march-2026/)
+  - [Perplexity citation](https://fundraiseinsider.com/blog/recently-funded-startups-chicago/)
+  - [Perplexity citation](https://hlth.com/insights/news/keycare-secures-27-4-million-to-expand-epic-integrated-virtual-care-platform-2026-03-04)
+  - [Perplexity citation](https://www.failory.com/startups/chicago)
+  - [Perplexity citation](https://www.bizjournals.com/chicago/inno/newsletter/44325079?skip=0) [BROKEN LINK]
+  - [Perplexity citation](https://explodingtopics.com/startups/location/chicago)
+  - [Perplexity citation](https://nationaltoday.com/us/il/chicago/news/2026/02/04/mercor-io-corp-raises-103-6-million-in-equity-financing)
+  - [Perplexity citation](https://www.openvc.app/investor-lists/venture-capital-firms-investors-chicago)
+  - [Perplexity citation](https://techcrunch.com/2026/03/05/science-corp-closes-230m-round-as-it-pushes-to-get-its-brain-implant-to-patients/)
+  - [Perplexity citation](https://polsky.uchicago.edu/2026/03/06/peer-to-peer-payment-app-paytera-takes-first-place-at-the-2026-college-new-venture-challenge/)
+  - [Perplexity citation](https://www.bizjournals.com/chicago/inno/newsletter/44234905?skip=0) [BROKEN LINK]
+  - [Perplexity citation](https://www.builtinchicago.org/companies/startups)
+  - [Perplexity citation](https://thequantuminsider.com/2026/03/02/report-details-chicago-areas-quantum-advantages/)
+  - [Perplexity citation](https://fundraiseinsider.com/blog/series-a-startups/)
+  - [Perplexity citation](https://polsky.uchicago.edu/2026/02/27/7-startups-to-compete-for-investment-at-the-202-college-new-venture-challenge/)
+  - [Perplexity citation](https://www.mhubchicago.com/hardtech-summit-and-fourth-revolution-awards)
+  - [Perplexity citation](https://www.mercor.com/blog/series-c)
+  - [Perplexity citation](https://growthlist.co/chicago-startups/)
+  - [Perplexity citation](https://fortune.com/2026/02/25/exclusive-solveai-eight-months-raises-50-million-ai-coding-tool-race/)
+  - [Perplexity citation](https://thecurrentbyvcf.substack.com/p/velocity-currents-10th-edition) [BROKEN LINK]
+  - [Perplexity citation](https://www.thesaasnews.com/news/letter-ai-raises-40-million-in-series-b)
+  - [Perplexity citation](https://investors.quantaservices.com/news-events/press-releases/detail/391/quanta-services-to-participate-in-two-institutional-investor-conferences-in-march)
+  - [Perplexity citation](https://abc7chicago.com/post/chicago-taxes-new-15-off-premise-liquor-tax-takes-effect-postponement/18665474/)
+  - [Perplexity citation](https://openloophealth.com/blog/digital-health-trends-and-news-march-2026)
+  - [Perplexity citation](https://ventureburn.com/letter-ai-raises-40m-series-b-for-revenue-intelligence/)
+  - [Perplexity citation](https://www.investing.com/news/sec-filings/quanta-services-approves-2026-incentive-plans-for-employees-and-executives-93CH-4542315) [BROKEN LINK]
+  - [Perplexity citation](https://www.timeout.com/chicago/news/theres-a-new-chicago-liquor-tax-in-effect-here-is-what-it-actually-means-for-you-030226)
+  - [Perplexity citation](https://www.ycombinator.com/companies/industry/food-and-beverage)
+  - [Perplexity citation](https://www.f6s.com/companies/saas/united-states/illinois/no) [BROKEN LINK]
+  - [Perplexity citation](https://nationaltoday.com/us/il/chicago/news/business/startups/)
+  - [Perplexity citation](http://incubatorllc.com/blog/chicago-tech-company-announces-3mm-fund-for-local-b2b-digital-startups/)
+  - [Perplexity citation](https://www.ycombinator.com/companies/industry/analytics)
+  - [Perplexity citation](https://www.bizjournals.com/chicago/news/2026/03/05/sxsw-pitch-illinois-startups-shothawk.html) [BROKEN LINK]
+  - [Perplexity citation](https://www.bizjournals.com/chicago/inno/newsletter/25106138?skip=500) [BROKEN LINK]
+  - [Perplexity citation](https://www.insurancejournal.com/news/midwest/2026/02/20/858943.htm)
+  - [Perplexity citation](https://builtworlds.com/insights/mavericks-50-2026-innovators-builtworlds/)
+  - [Perplexity citation](https://wirepoints.org/funkytown-brewery-one-of-nations-few-black-owned-craft-breweries-gets-3-7-million-grant-from-city-of-chicago-cbs2-chicago/)
+  - [Perplexity citation](https://iireporter.com/qumis-raises-4-3m-for-coverage-intelligence-platform/)
+  - [Perplexity citation](https://www.ycombinator.com/companies/industry/Satellites)
+  - [Perplexity citation](https://www.alleywatch.com/2026/03/the-weekly-notable-startup-funding-report-3-2-26/)
 
 ## SEC EDGAR Filings — Illinois (0)
 
 *No Form D filings in window.*
 
-## Fund News (2)
+## Fund News (0)
 
-### Shore Capital Industrial Partners Fund II — $400M+ ✅
-- **Manager:** Shore Capital Partners
-- **Strategy:** Private equity — industrial services
-- **Close date:** 2026-02
-- **Description:** Shore Capital Partners successfully closed its second industrials-focused fund with over $400 million in capital commitments. The fund reflects strong demand from existing and new limited partners for Shore's differentiated, sector-focused investment strategy targeting industrial companies.
-- **Sources (50):**
-  - [Kirkland Represents Shore Capital Partners on Closing of Industrials Fund II](https://www.kirkland.com/news/press-release/2026/02/kirkland-represents-shore-capital-partners-on-closing-of-industrials-fund-ii)
-  - [2026 private equity outlook — Fortune/PitchBook](https://fortune.com/2026/02/05/2026-private-equity-outlook-hazy-pitchbook/)
-  - [Perplexity citation](https://illinoisventures.com/about-us/news/)
-  - [Perplexity citation](https://www.marketsgroup.org/news/nebraska-earmarks-375m-private-equity-pacing-for-2026)
-  - [Perplexity citation](https://illinoisvc.org/ivca-newsletter-february-18-2026/)
-  - [Perplexity citation](https://www.businesswire.com/news/home/20260129120430/en/The-O.H.I.O.-Fund-Accelerates-into-2026) [BROKEN LINK]
-  - [Perplexity citation](https://techcrunch.com/2026/02/04/snak-venture-partners-raises-50m-fund-to-back-digitizing-marketplaces/)
-  - [Perplexity citation](https://frontenac.com)
-  - [Perplexity citation](https://pfingsten.com/lorem-ipsum-dolor-sit-amet-consectetur-ultrices-arcu-tellus-aliquet-curabitur-at-3/)
-  - [Perplexity citation](https://www.techbuzz.ai/articles/snak-venture-partners-closes-oversubscribed-50m-debut-fund)
-  - [Perplexity citation](https://frontenac.com/frontenac-named-to-2026-top-50-pe-firms-in-the-middle-market-list/)
-  - [Perplexity citation](https://www.kirkland.com/news/press-release/2023/10/kirkland-advises-on-close-of-$435-million-pfingsten-fund-vi)
-  - [Perplexity citation](https://illinoisvc.org/ivca-provides-updates-for-state-legislative-issues-02-18-2026/)
-  - [Perplexity citation](https://pfingsten.com/pfingsten-named-to-2026-top-50-pe-firms-in-the-middle-market-list-for-tenth-consecutive-year/)
-  - [Perplexity citation](https://alpha-maven.com/news/hedge-fund/midwest-pension-makes-commitments)
-  - [Perplexity citation](https://giesbusiness.illinois.edu/news/2026/02/05/gies-business-launches-u-of-i-s-first-student-led-venture-capital-fund)
-  - [Perplexity citation](https://www.bain.com/insights/outlook-gaining-traction-global-private-equity-report-2026/)
-  - [Perplexity citation](https://www.fin-news.com/2026/02/25/midwest-pension-makes-commitments/)
-  - [Perplexity citation](https://www.vistaequitypartners.com/news/bigtime-software-receives-100-million-strategic-growth-investment-from-vista-equity-partners/)
-  - [Perplexity citation](https://www.collercapital.com/coller-capital-raises-17-billion-for-global-private-equity-secondaries-platform/)
-  - [Perplexity citation](https://middlemarketgrowth.org/february-2026-on-the-move/)
-  - [Perplexity citation](https://www.wallstreetoasis.com/forum/private-equity/vista-equity-partners-2026-update)
-  - [Perplexity citation](https://www.privateequityinternational.com/download-the-february-2026-issue-of-private-equity-international/)
-  - [Perplexity citation](https://polsky.uchicago.edu/event/chicago-booth-private-equity-conference-2026/)
-  - [Perplexity citation](https://nationaltoday.com/us/il/chicago/news/2026/03/04/fairway-private-equity-venture-capital-opportunities-fund-announces-results/)
-  - [Perplexity citation](https://www.ai-cio.com/news/illinois-municipal-retirement-fund-commits-300m-to-real-assets-alts/)
-  - [Perplexity citation](https://www.venturecapitaljournal.com/heartland-ventures-raises-initial-35-2m-for-fund-iii-targeting-60m/)
-  - [Perplexity citation](https://polsky.uchicago.edu/2026/02/27/7-startups-to-compete-for-investment-at-the-202-college-new-venture-challenge/)
-  - [Perplexity citation](https://www.marketbeat.com/instant-alerts/filing-illinois-municipal-retirement-fund-reduces-stake-in-fidelity-national-financial-inc-fnf-2026-02-13/) [BROKEN LINK]
-  - [Perplexity citation](https://www.thesaasnews.com/news/luster-raises-3-million-in-seed-round)
-  - [Perplexity citation](https://www.ta.com)
-  - [Perplexity citation](https://wpcapital.com/press-releases/)
-  - [Perplexity citation](https://www.ta.com/news/ta-announces-global-promotions-2026/)
-  - [Perplexity citation](https://wpcapital.com)
-  - [Perplexity citation](https://www.bizjournals.com/louisville/news/2026/01/26/heartland-ventures-closes-third-fund-60-million.html) [BROKEN LINK]
-  - [Perplexity citation](https://www.globenewswire.com/news-release/2026/01/21/3222898/0/en/Heartland-Ventures-Launches-60-Million-Fund-III-to-Power-Reindustrialization-Backed-by-Network-of-Midwestern-Business-Owner-Operators.html)
-  - [Perplexity citation](https://www.polkbrosfdn.org/polk-bros-foundation-to-release-three-grant-opportunities-to-support-community-driven-efforts-and-help-shape-future-grantmaking/)
-  - [Perplexity citation](https://lasvegassun.com/news/2026/mar/04/fairway-private-equity-venture-capital-opportuniti/)
-  - [Perplexity citation](https://www.fidelity.com/news/article/mergers-and-acquisitions/202603040700BIZWIRE_USPR_____20260303_BW998995)
-  - [Perplexity citation](https://inforcapital.com/news/torch-key-asset-management-launches-with-backing-from-gcm-grosvenor/)
-  - [Perplexity citation](https://www.bayhawkcapital.com/article/bayhawk_capital_announces_final_close_of_inaugural_fund_at_over_600_million)
-  - [Perplexity citation](https://www.hklaw.com/en/insights/publications/2026/02/proposed-illinois-amendments-would-help-capture-healthcare)
-  - [Perplexity citation](https://www.kirkland.com/news/press-release/2026/02/kirkland-advises-bayhawk-on-final-close-of-inaugural-fund-at-over-$600-million)
-  - [Perplexity citation](https://www.esopassociation.org/articles/launched-and-funded-private-equity-ownership-works-and-expanding-esops)
-  - [Perplexity citation](https://www.failory.com/blog/venture-capital-firms-chicago)
-  - [Perplexity citation](https://startupsavant.com/top-venture-capital-firms/chicago)
-  - [Perplexity citation](https://vendelux.com/insights/chicago-booth-private-equity-conference-2026-attendee-list)
-  - [Perplexity citation](https://www.themiddlemarket.com/news-analysis/wind-point-pitches-operations-for-2-5b-fundraise)
-  - [Perplexity citation](https://am.gs.com/en-us/advisors/news/press-release/2026/PECP-final-close)
-  - [Perplexity citation](https://www.marketbeat.com/instant-alerts/filing-illinois-tool-works-inc-itw-shares-bought-by-fisher-asset-management-llc-2026-03-02/) [BROKEN LINK]
+*No fund closes found.*
 
-### SNAK Venture Partners Fund I — $50M ✅
-- **Manager:** SNAK Venture Partners
-- **Strategy:** Venture capital — B2B vertical marketplaces and digital commerce
-- **Close date:** 2026-02-04
-- **Description:** SNAK Venture Partners closed an oversubscribed $50 million inaugural fund focused on backing vertical B2B marketplaces in traditionally non-digitized sectors including construction, supply chain, and equipment rental. The fund is anchored by investment support from Pritzker Group.
-- **Sources (50):**
-  - [SNAK Venture Partners raises $50M fund to back vertical marketplaces](https://techcrunch.com/2026/02/04/snak-venture-partners-raises-50m-fund-to-back-digitizing-marketplaces/)
-  - [SNAK Venture Partners Closes Oversubscribed $50M Debut Fund](https://www.techbuzz.ai/articles/snak-venture-partners-closes-oversubscribed-50m-debut-fund)
-  - [Perplexity citation](https://www.kirkland.com/news/press-release/2026/02/kirkland-represents-shore-capital-partners-on-closing-of-industrials-fund-ii)
-  - [Perplexity citation](https://illinoisventures.com/about-us/news/)
-  - [Perplexity citation](https://www.marketsgroup.org/news/nebraska-earmarks-375m-private-equity-pacing-for-2026)
-  - [Perplexity citation](https://fortune.com/2026/02/05/2026-private-equity-outlook-hazy-pitchbook/)
-  - [Perplexity citation](https://illinoisvc.org/ivca-newsletter-february-18-2026/)
-  - [Perplexity citation](https://www.businesswire.com/news/home/20260129120430/en/The-O.H.I.O.-Fund-Accelerates-into-2026) [BROKEN LINK]
-  - [Perplexity citation](https://frontenac.com)
-  - [Perplexity citation](https://pfingsten.com/lorem-ipsum-dolor-sit-amet-consectetur-ultrices-arcu-tellus-aliquet-curabitur-at-3/)
-  - [Perplexity citation](https://frontenac.com/frontenac-named-to-2026-top-50-pe-firms-in-the-middle-market-list/)
-  - [Perplexity citation](https://www.kirkland.com/news/press-release/2023/10/kirkland-advises-on-close-of-$435-million-pfingsten-fund-vi)
-  - [Perplexity citation](https://illinoisvc.org/ivca-provides-updates-for-state-legislative-issues-02-18-2026/)
-  - [Perplexity citation](https://pfingsten.com/pfingsten-named-to-2026-top-50-pe-firms-in-the-middle-market-list-for-tenth-consecutive-year/)
-  - [Perplexity citation](https://alpha-maven.com/news/hedge-fund/midwest-pension-makes-commitments)
-  - [Perplexity citation](https://giesbusiness.illinois.edu/news/2026/02/05/gies-business-launches-u-of-i-s-first-student-led-venture-capital-fund)
-  - [Perplexity citation](https://www.bain.com/insights/outlook-gaining-traction-global-private-equity-report-2026/)
-  - [Perplexity citation](https://www.fin-news.com/2026/02/25/midwest-pension-makes-commitments/)
-  - [Perplexity citation](https://www.vistaequitypartners.com/news/bigtime-software-receives-100-million-strategic-growth-investment-from-vista-equity-partners/)
-  - [Perplexity citation](https://www.collercapital.com/coller-capital-raises-17-billion-for-global-private-equity-secondaries-platform/)
-  - [Perplexity citation](https://middlemarketgrowth.org/february-2026-on-the-move/)
-  - [Perplexity citation](https://www.wallstreetoasis.com/forum/private-equity/vista-equity-partners-2026-update)
-  - [Perplexity citation](https://www.privateequityinternational.com/download-the-february-2026-issue-of-private-equity-international/)
-  - [Perplexity citation](https://polsky.uchicago.edu/event/chicago-booth-private-equity-conference-2026/)
-  - [Perplexity citation](https://nationaltoday.com/us/il/chicago/news/2026/03/04/fairway-private-equity-venture-capital-opportunities-fund-announces-results/)
-  - [Perplexity citation](https://www.ai-cio.com/news/illinois-municipal-retirement-fund-commits-300m-to-real-assets-alts/)
-  - [Perplexity citation](https://www.venturecapitaljournal.com/heartland-ventures-raises-initial-35-2m-for-fund-iii-targeting-60m/)
-  - [Perplexity citation](https://polsky.uchicago.edu/2026/02/27/7-startups-to-compete-for-investment-at-the-202-college-new-venture-challenge/)
-  - [Perplexity citation](https://www.marketbeat.com/instant-alerts/filing-illinois-municipal-retirement-fund-reduces-stake-in-fidelity-national-financial-inc-fnf-2026-02-13/) [BROKEN LINK]
-  - [Perplexity citation](https://www.thesaasnews.com/news/luster-raises-3-million-in-seed-round)
-  - [Perplexity citation](https://www.ta.com)
-  - [Perplexity citation](https://wpcapital.com/press-releases/)
-  - [Perplexity citation](https://www.ta.com/news/ta-announces-global-promotions-2026/)
-  - [Perplexity citation](https://wpcapital.com)
-  - [Perplexity citation](https://www.bizjournals.com/louisville/news/2026/01/26/heartland-ventures-closes-third-fund-60-million.html) [BROKEN LINK]
-  - [Perplexity citation](https://www.globenewswire.com/news-release/2026/01/21/3222898/0/en/Heartland-Ventures-Launches-60-Million-Fund-III-to-Power-Reindustrialization-Backed-by-Network-of-Midwestern-Business-Owner-Operators.html)
-  - [Perplexity citation](https://www.polkbrosfdn.org/polk-bros-foundation-to-release-three-grant-opportunities-to-support-community-driven-efforts-and-help-shape-future-grantmaking/)
-  - [Perplexity citation](https://lasvegassun.com/news/2026/mar/04/fairway-private-equity-venture-capital-opportuniti/)
-  - [Perplexity citation](https://www.fidelity.com/news/article/mergers-and-acquisitions/202603040700BIZWIRE_USPR_____20260303_BW998995)
-  - [Perplexity citation](https://inforcapital.com/news/torch-key-asset-management-launches-with-backing-from-gcm-grosvenor/)
-  - [Perplexity citation](https://www.bayhawkcapital.com/article/bayhawk_capital_announces_final_close_of_inaugural_fund_at_over_600_million)
-  - [Perplexity citation](https://www.hklaw.com/en/insights/publications/2026/02/proposed-illinois-amendments-would-help-capture-healthcare)
-  - [Perplexity citation](https://www.kirkland.com/news/press-release/2026/02/kirkland-advises-bayhawk-on-final-close-of-inaugural-fund-at-over-$600-million)
-  - [Perplexity citation](https://www.esopassociation.org/articles/launched-and-funded-private-equity-ownership-works-and-expanding-esops)
-  - [Perplexity citation](https://www.failory.com/blog/venture-capital-firms-chicago)
-  - [Perplexity citation](https://startupsavant.com/top-venture-capital-firms/chicago)
-  - [Perplexity citation](https://vendelux.com/insights/chicago-booth-private-equity-conference-2026-attendee-list)
-  - [Perplexity citation](https://www.themiddlemarket.com/news-analysis/wind-point-pitches-operations-for-2-5b-fundraise)
-  - [Perplexity citation](https://am.gs.com/en-us/advisors/news/press-release/2026/PECP-final-close)
-  - [Perplexity citation](https://www.marketbeat.com/instant-alerts/filing-illinois-tool-works-inc-itw-shares-bought-by-fisher-asset-management-llc-2026-03-02/) [BROKEN LINK]
-
-## Upcoming Deadlines (11)
+## Upcoming Deadlines (8)
 
 | Deadline | Name | Type | Amount | Link | Status |
 |----------|------|------|--------|------|--------|
-| Mar 5 | ARPA-E Energy Innovation Grant | Grant | $500K–$5M | https://arpa-e-foa.energy.gov/ | LIVE |
-| Mar 6 | SCORE Women''s Pitch Contest (Seattle) | Competition | $1K–$10K | https://www.score.org/seattle/2026-womens-pitch-contest | DEAD_OR_UNREACHABLE |
-| Mar 6 | Desjardins Startup Prize (U of T) | Competition | $10K–$100K | https://entrepreneurs.utoronto.ca/for-entrepreneurs/2026-desjardins-startup-prize/ | LIVE |
 | Mar 8 | 500 Global Flagship Accelerator Batch 37 | Accelerator | $1M–$50M | https://flagship.aplica.500.co/en/sites/flagship | LIVE |
 | Mar 9 | Small Business Innovation Research Program (SBIR) Phase II | Grant | $280K–$288K | https://www.grants.gov/opportunity/079d6d64-51fd-4736-aa43-4a3a37d35396 | LIVE |
 | Mar 9 | InnovateMass Clean Energy Grant | Grant | $100K–$350K | https://www.masscec.com/program/innovatemass | LIVE |
@@ -190,7 +82,7 @@
 | Mar 15 | BoilerLaunch Chicago Pitch Competition | Competition | $5K–$25K | https://www.boilerlaunch.com/ | LIVE |
 | Mar 18 | Comcast RISE Grant | Grant | Varies | https://corporate.comcast.com/comcast-rises | DEAD_OR_UNREACHABLE |
 | Mar 20 | LearnLaunch Breakthrough to Scale | Accelerator | Varies | https://learnlaunch.com/apply | DEAD_OR_UNREACHABLE |
-| Mar 26 | MIT Female Founders Pitch Competition | Competition | $5K–$10K | https://www.mitfemalefounders.com/application | UNCHECKED |
+| Mar 26 | MIT Female Founders Pitch Competition | Competition | $5K–$10K | https://www.mitfemalefounders.com/application | LIVE |
 
 ## Chicago Rolling Programs (36)
 
