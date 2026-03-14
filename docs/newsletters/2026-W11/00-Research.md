@@ -1,6 +1,6 @@
 # Research Notes — 2026-W11
-*Generated: 2026-03-12T19:40:35.532Z*
-*Window: 2026-03-05 to 2026-03-12 (deals) | 2026-02-05 to 2026-03-12 (funds)*
+*Generated: 2026-03-14T19:23:32.674Z*
+*Window: 2026-03-07 to 2026-03-14 (deals) | 2026-02-07 to 2026-03-14 (funds)*
 
 ## Web-Discovered Deals (0)
 
@@ -14,15 +14,15 @@
 
 *No fund closes found.*
 
-## Upcoming Deadlines (22)
+## Upcoming Deadlines (21)
 
 | Deadline | Name | Type | Amount | Link | Status |
 |----------|------|------|--------|------|--------|
-| Mar 13 | WSU Business Plan Competition | Competition | $2K–$10K | https://entrepreneurship.wsu.edu/wsu-business-plan-competition/ | LIVE |
 | Mar 15 | BoilerLaunch Chicago Pitch Competition | Competition | $5K–$25K | https://www.boilerlaunch.com/ | LIVE |
 | Mar 18 | Comcast RISE Grant | Grant | Varies | https://corporate.comcast.com/comcast-rises | DEAD_OR_UNREACHABLE |
 | Mar 20 | LearnLaunch Breakthrough to Scale | Accelerator | Varies | https://learnlaunch.com/apply | DEAD_OR_UNREACHABLE |
 | Mar 26 | MIT Female Founders Pitch Competition | Competition | $5K–$10K | https://www.mitfemalefounders.com/application | LIVE |
+| Mar 31 | Web Summit PITCH Vancouver | Competition | Up to $50K | https://vancouver.websummit.com/startups/pitch/ | LIVE |
 | Mar 31 | Newlab Founder Fellowship | Fellowship | $10K–$50K | https://www.newlab.com/post/founders-fellowship-2026-launch | LIVE |
 | Mar 31 | Farmer Veteran Coalition Fellowship Fund | Grant | $1K–$5K | https://farmvetco.org/fellowship-fund/ | LIVE |
 | Mar 31 | NL Startup Competition | Competition | $10K–$14K | https://nlstartupcompetition.com/ | LIVE |
@@ -36,7 +36,6 @@
 | Mar 31 | Secretsos Small Business Grant Q1 2026 | Grant | Varies | https://secretsos.com/grant | UNCHECKED |
 | Mar 31 | Tulane $50K Demo Day | Competition | $10K–$25K | https://innovation.tulane.edu/50kdemoday | UNCHECKED |
 | Mar 31 | CalSEED Clean Energy Grant | Grant | $100K–$150K | https://calseed.fund/ | UNCHECKED |
-| Mar 31 | Web Summit PITCH Vancouver | Competition | Up to $50K | https://vancouver.websummit.com/startups/pitch/ | UNCHECKED |
 | Mar 31 | Cook County Catalyst Grant | Grant | $25K–$100K | https://cookcountysmallbiz.org/catalystgrant/ | UNCHECKED |
 | Apr 1 | Dempsey Startup Competition | Competition | $8K–$25K | https://foster.uw.edu/centers/buerk-ctr-entrepreneurship/entrepreneurship-competitions/dempsey-startup-competition/ | UNCHECKED |
 | Apr 1 | Pitch Black Midwest BIPOC Competition | Competition | $5K–$15K | https://wepitchblack.com/ | UNCHECKED |
