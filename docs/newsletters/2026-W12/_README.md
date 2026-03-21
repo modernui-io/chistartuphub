@@ -10,13 +10,13 @@
 ## Stats
 | Metric | Count |
 |--------|-------|
-| Verified deals | 2 |
+| Verified deals | 0 |
 | Single-source deals (needs review) | 0 |
 | SEC EDGAR filings | 0 |
 | Fund news items | 0 |
 | Upcoming deadlines | 19 |
-| Chicago rolling programs | 222 |
-| Pipeline errors | 0 |
+| Chicago rolling programs | 221 |
+| Pipeline errors | 6 |
 
 ## Files
 | File | Purpose |
@@ -36,5 +36,5 @@
 8. Final polish → publish to Substack
 
 ---
-*Generated: 2026-03-19T19:47:57.315Z*
+*Generated: 2026-03-21T19:19:55.747Z*
 *Agent version: 1.0.0*
