@@ -1,12 +1,11 @@
 # Capital Access Newsletter
-**Volume 12 | March 26, 2026**
+**Volume 12 | March 28, 2026**
 
 ---
 
 ## Opening
 
 [PLACEHOLDER: Billy writes opening — 0 deals totaling ~$0M
-+ $200M in new fund capital.
 Theme ideas: ___, current events tie-in, ecosystem observation.]
 
 ---
@@ -19,14 +18,7 @@ Theme ideas: ___, current events tie-in, ecosystem observation.]
 
 ## Fund News
 
-### Clear Opportunities Fund II | $200M+
-
-**Sector:** Opportunistic real estate strategies
-
-Clear Investment Group is raising Clear Opportunities Fund II, targeting over $200 million in commitments focused on the acquisition and revitalization of multifamily housing communities nationwide.
-
-**Close Date:** 2026-03-26
-**Source:** [Clear Investment Group Highlights Market-Based Strategy to Preserve Workforce Housing Without Subsidy](https://www.prnewswire.com/news-releases/clear-investment-group-highlights-market-based-strategy-to-preserve-workforce-housing-without-subsidy-302717723.html) | [Founders Fund nears $6 billion close for latest growth fund, sources say - TechCrunch](https://techcrunch.com/2026/03/09/founders-fund-nears-6-billion-close-for-latest-growth-fund-sources-say/)
+[PLACEHOLDER: Billy adds fund news from research notes or network intel]
 
 ---
 
@@ -36,9 +28,8 @@ Clear Investment Group is raising Clear Opportunities Fund II, targeting over $2
 
 | Deadline | Opportunity | Amount | Link |
 |----------|-------------|--------|------|
-| **Mar 26** | MIT Female Founders Pitch Competition | $5K–$10K | [Apply](https://www.mitfemalefounders.com/application) |
-| **Mar 31** | Secretsos Small Business Grant Q1 2026 | Varies | [Apply](https://secretsos.com/grant) |
 | **Mar 31** | Farmer Veteran Coalition Fellowship Fund | $1K–$5K | [Apply](https://farmvetco.org/fellowship-fund/) |
+| **Mar 31** | Secretsos Small Business Grant Q1 2026 | Varies | [Apply](https://secretsos.com/grant) |
 | **Mar 31** | HBS Africa New Venture Competition | $10K–$55K | [Apply](https://vc4a.com/africa-business-club-harvard/hbs-africa-business-club-new-venture-competition-2026/) |
 | **Mar 31** | MedTech Innovator Accelerator & Showcase | $50K–$500K | [Apply](https://medtechinnovator.org/apply/) |
 | **Mar 31** | Arch Grants Startup Competition | $75K–$100K | [Apply](https://archgrants.org/programs/startup-competition/) |
@@ -83,12 +74,7 @@ Know a founder who should see this? Forward it.
 
 ## Sources
 
-**Fund Closes:**
-- [Clear Investment Group Highlights Market-Based Strategy to Preserve Workforce Housing Without Subsidy](https://www.prnewswire.com/news-releases/clear-investment-group-highlights-market-based-strategy-to-preserve-workforce-housing-without-subsidy-302717723.html)
-- [Founders Fund nears $6 billion close for latest growth fund, sources say - TechCrunch](https://techcrunch.com/2026/03/09/founders-fund-nears-6-billion-close-for-latest-growth-fund-sources-say/)
-- [Exclusive | Truelink Capital Collects $2 Billion for Second Fund - WSJ](https://www.wsj.com/articles/truelink-capital-collects-2-billion-for-second-fund-68c29bfd?gaa_at=eafs&gaa_n=AWEtsqd-nC2wwe7YuJRKKrJRtbMJwoQburaRWOipY9k-QuVusW0dhXTrR15z&gaa_ts=69aeb024&gaa_sig=ZCRl8vyxklDASykwJSkE5rUfT3TRIpChCNQCWwvV-vC8MPX7QY6wvgzEV0Uo35K4Jd0hAhkMHQAt6EbpAm3JQA%3D%3D) [BROKEN]
-
 ---
 
-*Vol. 12 | Research edition | $200M+ in new fund capital*
+*Vol. 12 | Research edition*
 *Author: Billy Ndizeye*

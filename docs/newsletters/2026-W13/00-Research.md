@@ -1,6 +1,6 @@
 # Research Notes — 2026-W13
-*Generated: 2026-03-26T19:53:27.370Z*
-*Window: 2026-03-19 to 2026-03-26 (deals) | 2026-02-19 to 2026-03-26 (funds)*
+*Generated: 2026-03-28T19:26:22.903Z*
+*Window: 2026-03-21 to 2026-03-28 (deals) | 2026-02-21 to 2026-03-28 (funds)*
 
 ## Web-Discovered Deals (0)
 
@@ -10,25 +10,16 @@
 
 *No Form D filings in window.*
 
-## Fund News (1)
+## Fund News (0)
 
-### Clear Opportunities Fund II — $200M+ ✅
-- **Manager:** Clear Investment Group
-- **Strategy:** Opportunistic real estate strategies
-- **Close date:** 2026-03-26
-- **Description:** Clear Investment Group is raising Clear Opportunities Fund II, targeting over $200 million in commitments focused on the acquisition and revitalization of multifamily housing communities nationwide.
-- **Sources (3):**
-  - [Clear Investment Group Highlights Market-Based Strategy to Preserve Workforce Housing Without Subsidy](https://www.prnewswire.com/news-releases/clear-investment-group-highlights-market-based-strategy-to-preserve-workforce-housing-without-subsidy-302717723.html)
-  - [Founders Fund nears $6 billion close for latest growth fund, sources say - TechCrunch](https://techcrunch.com/2026/03/09/founders-fund-nears-6-billion-close-for-latest-growth-fund-sources-say/)
-  - [Exclusive | Truelink Capital Collects $2 Billion for Second Fund - WSJ](https://www.wsj.com/articles/truelink-capital-collects-2-billion-for-second-fund-68c29bfd?gaa_at=eafs&gaa_n=AWEtsqd-nC2wwe7YuJRKKrJRtbMJwoQburaRWOipY9k-QuVusW0dhXTrR15z&gaa_ts=69aeb024&gaa_sig=ZCRl8vyxklDASykwJSkE5rUfT3TRIpChCNQCWwvV-vC8MPX7QY6wvgzEV0Uo35K4Jd0hAhkMHQAt6EbpAm3JQA%3D%3D) [BROKEN LINK]
+*No fund closes found.*
 
-## Upcoming Deadlines (20)
+## Upcoming Deadlines (19)
 
 | Deadline | Name | Type | Amount | Link | Status |
 |----------|------|------|--------|------|--------|
-| Mar 26 | MIT Female Founders Pitch Competition | Competition | $5K–$10K | https://www.mitfemalefounders.com/application | LIVE |
-| Mar 31 | Secretsos Small Business Grant Q1 2026 | Grant | Varies | https://secretsos.com/grant | LIVE |
 | Mar 31 | Farmer Veteran Coalition Fellowship Fund | Grant | $1K–$5K | https://farmvetco.org/fellowship-fund/ | LIVE |
+| Mar 31 | Secretsos Small Business Grant Q1 2026 | Grant | Varies | https://secretsos.com/grant | LIVE |
 | Mar 31 | HBS Africa New Venture Competition | Competition | $10K–$55K | https://vc4a.com/africa-business-club-harvard/hbs-africa-business-club-new-venture-competition-2026/ | LIVE |
 | Mar 31 | MedTech Innovator Accelerator & Showcase | Competition | $50K–$500K | https://medtechinnovator.org/apply/ | LIVE |
 | Mar 31 | Arch Grants Startup Competition | Competition | $75K–$100K | https://archgrants.org/programs/startup-competition/ | LIVE |
@@ -36,7 +27,7 @@
 | Mar 31 | Tulane $50K Demo Day | Competition | $10K–$25K | https://innovation.tulane.edu/50kdemoday | LIVE |
 | Mar 31 | CalSEED Clean Energy Grant | Grant | $100K–$150K | https://calseed.fund/ | LIVE |
 | Mar 31 | Web Summit PITCH Vancouver | Competition | Up to $50K | https://vancouver.websummit.com/startups/pitch/ | LIVE |
-| Mar 31 | Newlab Founder Fellowship | Fellowship | $10K–$50K | https://www.newlab.com/post/founders-fellowship-2026-launch | UNCHECKED |
+| Mar 31 | Newlab Founder Fellowship | Fellowship | $10K–$50K | https://www.newlab.com/post/founders-fellowship-2026-launch | LIVE |
 | Mar 31 | Fintechs Pitch LIVE at PAY360 | Competition | $5K–$50K | https://pay360event.com/fintechspitchlive/ | UNCHECKED |
 | Mar 31 | NL Startup Competition | Competition | $10K–$14K | https://nlstartupcompetition.com/ | UNCHECKED |
 | Mar 31 | 47Pitches Women Founders Q1 2026 | Competition | $1K–$10K | https://www.47pitches.com/women-founders-2026-q1 | UNCHECKED |
