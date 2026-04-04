@@ -1,5 +1,5 @@
 # Capital Access Newsletter
-**Volume 13 | April 2, 2026**
+**Volume 13 | April 4, 2026**
 
 ---
 
@@ -24,11 +24,16 @@ Theme ideas: ___, current events tie-in, ecosystem observation.]
 
 ## Deadlines
 
-### Coming Up
+### This Week
 
 | Deadline | Opportunity | Amount | Link |
 |----------|-------------|--------|------|
 | **Apr 10** | Summerfest Tech Pitch Competition | $5K–$25K | [Apply](https://www.summerfest-tech.com/pitch/pitch-competition) |
+
+### Coming Up
+
+| Deadline | Opportunity | Amount | Link |
+|----------|-------------|--------|------|
 | **Apr 15** | Innovate for Impact AgTech Challenge | $10K–$50K | [Apply](https://news.fundsforngos.org/2026/02/02/innovate-for-impact-world-food-prize-foundation-opens-50k-agtech-startup-competition/) |
 | **Apr 23** | UNO Maverick Business Plan Competition | $1K–$5K | [Apply](https://www.unomaha.edu/college-of-business-administration/center-for-innovation-entrepreneurship-franchising/events-and-opportunities/maverick-business-plan-competition.php) |
 
