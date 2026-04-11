@@ -1,11 +1,12 @@
 # Capital Access Newsletter
-**Volume 14 | April 9, 2026**
+**Volume 14 | April 11, 2026**
 
 ---
 
 ## Opening
 
 [PLACEHOLDER: Billy writes opening — 0 deals totaling ~$0M
++ $200M in new fund capital.
 Theme ideas: ___, current events tie-in, ecosystem observation.]
 
 ---
@@ -18,7 +19,14 @@ Theme ideas: ___, current events tie-in, ecosystem observation.]
 
 ## Fund News
 
-[PLACEHOLDER: Billy adds fund news from research notes or network intel]
+### Clear Opportunities Fund II | $200M+
+
+**Sector:** Opportunistic real estate strategies focused on multifamily housing.
+
+Clear Investment Group is raising Clear Opportunities Fund II, targeting over $200 million to acquire and revitalize multifamily housing communities across the U.S.
+
+**Close Date:** 2026-03-18
+**Source:** [Clear Investment Group Highlights Market-Based Strategy to Preserve Workforce Housing Without Subsidy](https://www.prnewswire.com/news-releases/clear-investment-group-highlights-market-based-strategy-to-preserve-workforce-housing-without-subsidy-302717723.html) | [Bluerock High Income Institutional Credit Fund Announces Q1 2026 Distribution at an 8.75% Current Annualized Rate - Financial Times](https://markets.ft.com/data/announce/detail?dockey=600-202604061805PR_NEWS_USPRX____DE28049-1)
 
 ---
 
@@ -28,7 +36,6 @@ Theme ideas: ___, current events tie-in, ecosystem observation.]
 
 | Deadline | Opportunity | Amount | Link |
 |----------|-------------|--------|------|
-| **Apr 10** | Summerfest Tech Pitch Competition | $5K–$25K | [Apply](https://www.summerfest-tech.com/pitch/pitch-competition) |
 | **Apr 15** | Innovate for Impact AgTech Challenge | $10K–$50K | [Apply](https://news.fundsforngos.org/2026/02/02/innovate-for-impact-world-food-prize-foundation-opens-50k-agtech-startup-competition/) |
 
 ### Coming Up
@@ -36,6 +43,7 @@ Theme ideas: ___, current events tie-in, ecosystem observation.]
 | Deadline | Opportunity | Amount | Link |
 |----------|-------------|--------|------|
 | **Apr 23** | UNO Maverick Business Plan Competition | $1K–$5K | [Apply](https://www.unomaha.edu/college-of-business-administration/center-for-innovation-entrepreneurship-franchising/events-and-opportunities/maverick-business-plan-competition.php) |
+| **Apr 30** | Black Ambition Prize | $50K–$3M | [Apply](https://blackambitionprize.com/apply-now/) |
 | **Apr 30** | National Pride Grant (LGBTQ+) | $1K–$25K | [Apply](https://foundersfirstcdc.org/pride-grant) |
 | **Apr 30** | Patagonia Environmental Grants Program | $5K–$20K | [Apply](https://www.patagonia.com/how-we-fund/corporate-grant/) |
 | **Apr 30** | Web Summit PITCH Rio | Up to $50K | [Apply](https://rio.websummit.com/startups/pitch/) |
@@ -45,11 +53,11 @@ Theme ideas: ___, current events tie-in, ecosystem observation.]
 | **Apr 30** | Onstage VC Demo Day | Up to $100K | [Apply](https://www.onstage.vc/startups) |
 | **Apr 30** | Harvard President''s Innovation Challenge | $10K–$75K | [Apply](https://innovationlabs.harvard.edu/events/launch-party-2026-presidents-innovation-challenge) |
 | **Apr 30** | MassChallenge FinTech Challenge | $25K–$100K | [Apply](https://masschallenge.org/2026-fintech-challenge-program/) |
-| **Apr 30** | NIBS Worldwide Business Plan Competition | $1K–$10K | [Apply](https://www.nibsweb.org/competitions/business-plan-competition/) |
-| **Apr 30** | AI for Good Innovation Factory | $5K–$20K | [Apply](https://aiforgood.itu.int/innovation-factory-startup-application-form/) |
 | **Apr 30** | DePaul Purpose Pitch Competition | $5K–$25K | [Apply](https://business.depaul.edu/about/centers-institutes/coleman-entrepreneurship-center/events-programs/Pages/Purpose-Pitch-Competition.aspx) |
 | **Apr 30** | MIT Climate & Energy Prize | $10K–$100K | [Apply](https://cep.mit.edu/competition) |
-| **Apr 30** | Black Ambition Prize | $50K–$3M | [Apply](https://blackambitionprize.com/apply-now/) |
+| **Apr 30** | AI for Good Innovation Factory | $5K–$20K | [Apply](https://aiforgood.itu.int/innovation-factory-startup-application-form/) |
+| **Apr 30** | NIBS Worldwide Business Plan Competition | $1K–$10K | [Apply](https://www.nibsweb.org/competitions/business-plan-competition/) |
+| **May 1** | Halstead Grant for Silver Jewelry Entrepreneurs | $1K–$8K | [Apply](https://www.halsteadbead.com/halstead-grant) |
 
 **Full list:** [chistartuphub.com/funding](https://chistartuphub.com/funding)
 
@@ -72,7 +80,12 @@ Know a founder who should see this? Forward it.
 
 ## Sources
 
+**Fund Closes:**
+- [Clear Investment Group Highlights Market-Based Strategy to Preserve Workforce Housing Without Subsidy](https://www.prnewswire.com/news-releases/clear-investment-group-highlights-market-based-strategy-to-preserve-workforce-housing-without-subsidy-302717723.html)
+- [Bluerock High Income Institutional Credit Fund Announces Q1 2026 Distribution at an 8.75% Current Annualized Rate - Financial Times](https://markets.ft.com/data/announce/detail?dockey=600-202604061805PR_NEWS_USPRX____DE28049-1)
+- [Private credit fund redemption requests topped $20bn in Q1 - Private Equity Wire](https://www.privateequitywire.co.uk/private-credit-fund-redemption-requests-topped-20bn-in-q1/) [BROKEN]
+
 ---
 
-*Vol. 14 | Research edition*
+*Vol. 14 | Research edition | $200M+ in new fund capital*
 *Author: Billy Ndizeye*
