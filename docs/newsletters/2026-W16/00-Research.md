@@ -1,6 +1,6 @@
 # Research Notes — 2026-W16
-*Generated: 2026-04-16T19:58:37.606Z*
-*Window: 2026-04-09 to 2026-04-16 (deals) | 2026-03-12 to 2026-04-16 (funds)*
+*Generated: 2026-04-18T19:37:38.971Z*
+*Window: 2026-04-11 to 2026-04-18 (deals) | 2026-03-14 to 2026-04-18 (funds)*
 
 ## Web-Discovered Deals (0)
 
@@ -10,17 +10,9 @@
 
 *No Form D filings in window.*
 
-## Fund News (1)
+## Fund News (0)
 
-### Clear Opportunities Fund II — $200M+ ✅
-- **Manager:** Clear Investment Group
-- **Strategy:** Real estate — multifamily housing communities
-- **Close date:** 2026-03-18
-- **Description:** Clear Investment Group is raising Clear Opportunities Fund II, targeting over $200 million in commitments focused on the acquisition and revitalization of multifamily housing communities nationwide.
-- **Sources (3):**
-  - [Clear Investment Group Highlights Market-Based Strategy to Preserve Workforce Housing Without Subsidy](https://www.prnewswire.com/news-releases/clear-investment-group-highlights-market-based-strategy-to-preserve-workforce-housing-without-subsidy-302717723.html)
-  - [Startup funding shatters all records in Q1 - TechCrunch](https://techcrunch.com/2026/04/01/startup-funding-shatters-all-records-in-q1/)
-  - [Gateway Capital announces first close of $25M Fund II - TechCrunch](https://techcrunch.com/2026/04/02/gateway-capital-dana-guthrie-milwaukee-first-close-fund-ii/)
+*No fund closes found.*
 
 ## Upcoming Deadlines (16)
 

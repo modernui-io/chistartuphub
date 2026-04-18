@@ -1,12 +1,11 @@
 # Capital Access Newsletter
-**Volume 15 | April 16, 2026**
+**Volume 15 | April 18, 2026**
 
 ---
 
 ## Opening
 
 [PLACEHOLDER: Billy writes opening — 0 deals totaling ~$0M
-+ $200M in new fund capital.
 Theme ideas: ___, current events tie-in, ecosystem observation.]
 
 ---
@@ -19,14 +18,7 @@ Theme ideas: ___, current events tie-in, ecosystem observation.]
 
 ## Fund News
 
-### Clear Opportunities Fund II | $200M+
-
-**Sector:** Real estate — multifamily housing communities
-
-Clear Investment Group is raising Clear Opportunities Fund II, targeting over $200 million in commitments focused on the acquisition and revitalization of multifamily housing communities nationwide.
-
-**Close Date:** 2026-03-18
-**Source:** [Clear Investment Group Highlights Market-Based Strategy to Preserve Workforce Housing Without Subsidy](https://www.prnewswire.com/news-releases/clear-investment-group-highlights-market-based-strategy-to-preserve-workforce-housing-without-subsidy-302717723.html) | [Startup funding shatters all records in Q1 - TechCrunch](https://techcrunch.com/2026/04/01/startup-funding-shatters-all-records-in-q1/) | [Gateway Capital announces first close of $25M Fund II - TechCrunch](https://techcrunch.com/2026/04/02/gateway-capital-dana-guthrie-milwaukee-first-close-fund-ii/)
+[PLACEHOLDER: Billy adds fund news from research notes or network intel]
 
 ---
 
@@ -79,12 +71,7 @@ Know a founder who should see this? Forward it.
 
 ## Sources
 
-**Fund Closes:**
-- [Clear Investment Group Highlights Market-Based Strategy to Preserve Workforce Housing Without Subsidy](https://www.prnewswire.com/news-releases/clear-investment-group-highlights-market-based-strategy-to-preserve-workforce-housing-without-subsidy-302717723.html)
-- [Startup funding shatters all records in Q1 - TechCrunch](https://techcrunch.com/2026/04/01/startup-funding-shatters-all-records-in-q1/)
-- [Gateway Capital announces first close of $25M Fund II - TechCrunch](https://techcrunch.com/2026/04/02/gateway-capital-dana-guthrie-milwaukee-first-close-fund-ii/)
-
 ---
 
-*Vol. 15 | Research edition | $200M+ in new fund capital*
+*Vol. 15 | Research edition*
 *Author: Billy Ndizeye*
