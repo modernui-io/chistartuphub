@@ -108,14 +108,12 @@ jobs:
             });
 
             test('app renders content', async ({ page }) => {
-              await page.goto(PROD_URL);
+              await page.goto(PROD_URL, { waitUntil: 'domcontentloaded' });
 
-              // Wait for React to hydrate and render
-              await expect(page.locator('#root')).toBeVisible({ timeout: 10000 });
-
-              // Verify some content rendered (not just empty shell)
-              const rootContent = await page.locator('#root').textContent();
-              expect(rootContent.length).toBeGreaterThan(100);
+              await expect(page.locator('#root')).toBeVisible({ timeout: 15000 });
+              await expect(page.locator('#main-content')).toBeVisible({ timeout: 15000 });
+              await expect(page.locator('[data-page="home"]')).toBeVisible({ timeout: 15000 });
+              await expect(page.getByRole('link', { name: /CS ChiStartup Hub homepage/i })).toBeVisible({ timeout: 15000 });
             });
           });
           EOF
