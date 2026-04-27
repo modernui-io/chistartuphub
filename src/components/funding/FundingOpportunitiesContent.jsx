@@ -337,7 +337,7 @@ export default function FundingOpportunitiesContent({ opportunities = [], invest
       {filteredOpportunities.length > OPPORTUNITIES_PREVIEW_LIMIT && (
         <div className="mt-6 text-center">
           <Link
-            to="/opportunities"
+            to="/funding"
             className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em] px-6 py-3 border border-white/20 text-white/60 hover:bg-white hover:text-black hover:border-white transition-colors"
           >
             View All Opportunities

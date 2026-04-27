@@ -2321,7 +2321,7 @@ function renderRough(vol, weekNum, data) {
   // LINKS
   lines.push('## Links\n');
   lines.push('- **[chistartuphub.com/funding](https://chistartuphub.com/funding)** — Full directory');
-  lines.push('- **[chistartuphub.com/ecosystem/founder-asks](https://chistartuphub.com/ecosystem/founder-asks)** — Peer help\n');
+  lines.push('- **[chistartuphub.com/events](https://chistartuphub.com/events)** — Chicago startup events\n');
   lines.push('Know a founder who should see this? Forward it.\n');
   lines.push('---\n');
 

@@ -236,7 +236,7 @@ const RECOMMENDATIONS = {
     1: [
       { title: "Storytelling & Design", link: "/Resources#guides", type: "guide", description: "Sequoia's Business Plan format" },
       { title: "The Art of the Pitch", link: "/Resources#guides", type: "guide", description: "How to Pitch Your Startup" },
-      { title: "Founder Asks", link: "/Opportunities", type: "chicago", description: "Get feedback on your pitch from Chicago founders" },
+      { title: "Startup Events", link: "/Events", type: "chicago", description: "Get feedback and meet Chicago founders" },
     ],
     2: [
       { title: "The Art of the Pitch", link: "/Resources#guides", type: "guide", description: "Master the Art of Influence" },

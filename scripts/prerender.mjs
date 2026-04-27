@@ -35,7 +35,6 @@ const ROUTES = [
   '/before-you-start',
   '/business-type-explorer',
   '/Directory',
-  '/Opportunities',
   '/service-resources',
   '/small-business-resources',
   '/assessment',

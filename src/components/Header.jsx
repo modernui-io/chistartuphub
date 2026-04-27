@@ -95,7 +95,6 @@ export default function Header({
     {
       name: "Ecosystem",
       items: [
-        { name: "Founder Asks", path: createPageUrl("Opportunities") },
         { name: "Hubs & Events", path: createPageUrl("Events") },
         { name: "Community", path: createPageUrl("Community") },
         { name: "Why Chicago", path: createPageUrl("WhyChicago") }

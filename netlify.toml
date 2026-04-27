@@ -6,6 +6,19 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Founder Asks sunset redirects
+[[redirects]]
+  from = "/opportunities"
+  to = "/events"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/ecosystem/founder-asks"
+  to = "/events"
+  status = 301
+  force = true
+
 # SPA routing - redirect all routes to index.html
 [[redirects]]
   from = "/*"

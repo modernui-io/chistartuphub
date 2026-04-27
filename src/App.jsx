@@ -89,7 +89,9 @@ function App() {
                     return <Route key={path} path={`/${path}`} element={<Page />} />;
                   })}
                   <Route path="/stories/:slug" element={<Pages.StoryDetail />} />
-                  <Route path="/ecosystem/founder-asks" element={<Navigate to="/Opportunities" replace />} />
+                  <Route path="/opportunities" element={<Navigate to="/events" replace />} />
+                  <Route path="/Opportunities" element={<Navigate to="/events" replace />} />
+                  <Route path="/ecosystem/founder-asks" element={<Navigate to="/events" replace />} />
                   <Route path="*" element={
                     <div className="min-h-screen relative" data-page="not-found">
                       <BureauAtmosphere />
@@ -123,10 +125,10 @@ function App() {
                               Go Home
                             </Link>
                             <Link
-                              to="/opportunities"
+                              to="/events"
                               className="font-mono text-[11px] uppercase tracking-[0.1em] px-6 py-3 border border-white/20 text-white/50 hover:bg-white/5 transition-colors cursor-crosshair inline-block"
                             >
-                              Browse Asks
+                              Browse Events
                             </Link>
                           </div>
 

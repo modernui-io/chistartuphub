@@ -18,7 +18,6 @@ const Profile = lazy(() => import('./pages/Profile'));
 const BeforeYouStart = lazy(() => import('./pages/BeforeYouStart'));
 const BusinessTypeExplorer = lazy(() => import('./pages/BusinessTypeExplorer'));
 const Directory = lazy(() => import('./pages/Directory'));
-const Opportunities = lazy(() => import('./pages/Opportunities'));
 const ServiceResources = lazy(() => import('./pages/ServiceResources'));
 const SmallBusinessResources = lazy(() => import('./pages/SmallBusinessResources'));
 const SavedResources = lazy(() => import('./pages/SavedResources'));
@@ -46,7 +45,6 @@ export const PAGES = {
     "before-you-start": BeforeYouStart,
     "business-type-explorer": BusinessTypeExplorer,
     "Directory": Directory,
-    "Opportunities": Opportunities,
     "service-resources": ServiceResources,
     "small-business-resources": SmallBusinessResources,
     "saved": SavedResources,

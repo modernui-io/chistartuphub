@@ -60,9 +60,9 @@ export default function ProfileOffersTab({ offers = [], loading = false }) {
           asChild
           className="bg-white text-black hover:bg-white/90 rounded-none"
         >
-          <Link to="/opportunities">
+          <Link to="/events">
             <Plus size={16} className="mr-2" />
-            Help More Founders
+            Find Events
           </Link>
         </Button>
       </div>
@@ -73,12 +73,12 @@ export default function ProfileOffersTab({ offers = [], loading = false }) {
             <Heart className="w-8 h-8 text-white/30" />
           </div>
           <p className="text-white/60 mb-2 text-lg">No offers sent yet</p>
-          <p className="text-white/40 text-sm mb-2">Browse founder asks and offer your expertise to help them grow.</p>
-          <p className="text-white/30 text-xs mb-8">Your offers appear here so you can track their status.</p>
+          <p className="text-white/40 text-sm mb-2">Founder Asks has been sunset. Browse events to meet founders directly.</p>
+          <p className="text-white/30 text-xs mb-8">Historical offers remain here so you can track their status.</p>
           <Button asChild className="bg-white text-black hover:bg-white/90 rounded-none px-6">
-            <Link to="/opportunities">
+            <Link to="/events">
               <ArrowRight size={16} className="mr-2" />
-              Browse Opportunities
+              Browse Events
             </Link>
           </Button>
         </Card>

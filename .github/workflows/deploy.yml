@@ -99,7 +99,7 @@ jobs:
             });
 
             test('key pages are accessible', async ({ page }) => {
-              const pages = ['/', '/opportunities', '/resources', '/funding'];
+              const pages = ['/', '/events', '/resources', '/funding'];
 
               for (const path of pages) {
                 const response = await page.goto(PROD_URL + path);

@@ -59,6 +59,12 @@ npm run sync:luma         # Sync only Luma
 Required environment variables:
 - `SUPABASE_URL` or `VITE_SUPABASE_URL`
 - `SUPABASE_SERVICE_ROLE_KEY`
+- `SYNC_SECRET` if configured on the Edge Function
+
+GitHub Actions secrets:
+- `SUPABASE_URL`
+- `SUPABASE_ANON_KEY` for the status refresh RPC
+- `SYNC_SECRET` if the Edge Function requires it
 
 ### Option 2: Supabase Edge Function
 
@@ -70,7 +76,17 @@ supabase functions deploy sync-events
 Invoke manually:
 ```bash
 curl -X POST https://YOUR_PROJECT.supabase.co/functions/v1/sync-events \
-  -H "Authorization: Bearer YOUR_ANON_KEY"
+  -H "Authorization: Bearer YOUR_SYNC_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+Target one or more source APIs:
+```bash
+curl -X POST https://YOUR_PROJECT.supabase.co/functions/v1/sync-events \
+  -H "Authorization: Bearer YOUR_SYNC_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{"sources":["meetup","luma"]}'
 ```
 
 ### Option 3: GitHub Actions (Recommended)
@@ -83,7 +99,12 @@ name: Sync Chicago Tech Events
 on:
   schedule:
     - cron: '0 */4 * * *'  # Every 4 hours
-  workflow_dispatch:        # Manual trigger
+  workflow_dispatch:
+    inputs:
+      sources:
+        description: "Optional comma-separated source APIs to sync: meetup,eventbrite,luma"
+        required: false
+        default: ""
 
 jobs:
   sync:

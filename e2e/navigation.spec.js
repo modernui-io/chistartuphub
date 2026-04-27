@@ -14,7 +14,6 @@ test.describe('Navigation', () => {
     '/funding',
     '/events',
     '/community',
-    '/opportunities',
   ];
 
   for (const path of pages) {

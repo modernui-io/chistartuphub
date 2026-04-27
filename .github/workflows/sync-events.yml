@@ -6,6 +6,11 @@ on:
     # Times: 0:15, 4:15, 8:15, 12:15, 16:15, 20:15 UTC
     - cron: '15 */4 * * *'
   workflow_dispatch: # Allow manual trigger from GitHub UI
+    inputs:
+      sources:
+        description: "Optional comma-separated source APIs to sync: meetup,eventbrite,luma"
+        required: false
+        default: ""
 
 # Prevent overlapping runs
 concurrency:
@@ -28,9 +33,19 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SYNC_SECRET: ${{ secrets.SYNC_SECRET }}
+          EVENT_SOURCES: ${{ github.event.inputs.sources }}
         run: |
           max_retries=3
           retry_delay=10
+          body="{}"
+
+          if [ -n "$EVENT_SOURCES" ]; then
+            json_sources=$(printf '%s' "$EVENT_SOURCES" | jq -R 'split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))')
+            body=$(jq -n --argjson sources "$json_sources" '{sources: $sources}')
+            echo "Targeting event sources: $EVENT_SOURCES"
+          else
+            echo "No source filter provided; syncing all active event sources."
+          fi
 
           for attempt in $(seq 1 $max_retries); do
             echo "Attempt $attempt of $max_retries..."
@@ -44,6 +59,7 @@ jobs:
             fi
 
             curl_args+=(-H "Content-Type: application/json" --max-time 120)
+            curl_args+=(--data "$body")
 
             response=$(curl "${curl_args[@]}")
 

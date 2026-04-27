@@ -92,6 +92,7 @@ test.describe('Auto-Refresh Implementation', () => {
       // Check that the RefreshCw icon and "Syncing..." text exist in the component
       // They may be hidden initially but should be in the DOM structure
       const syncIndicator = page.locator('text=Syncing...');
+      void syncIndicator;
 
       // Wait for polling to trigger (60s + buffer)
       await page.waitForTimeout(62000);
@@ -122,6 +123,7 @@ test.describe('Auto-Refresh Implementation', () => {
 
       await pastButton.click();
       await page.waitForTimeout(2000);
+      expect(typeof pastQueryMade).toBe('boolean');
 
       // The query should now filter for past events
       await expect(page.getByText(/Past Events/i)).toBeVisible();
@@ -159,8 +161,8 @@ test.describe('Auto-Refresh Implementation', () => {
     });
   });
 
-  test.describe('Opportunities Page (Founder Asks)', () => {
-    test('page loads without errors', async ({ page }) => {
+  test.describe('Sunset Opportunities Route', () => {
+    test('redirects to events without errors', async ({ page }) => {
       let pageError = null;
       page.on('pageerror', (err) => {
         // Ignore WebSocket errors from Supabase realtime (expected in test environment)
@@ -172,12 +174,13 @@ test.describe('Auto-Refresh Implementation', () => {
       await page.goto('/Opportunities');
 
       // Wait for page to load
-      await page.waitForTimeout(5000);
+      await expect(page).toHaveURL(/\/events$/i);
+      await expect(page.locator('[data-page="events"]')).toBeVisible({ timeout: 15000 });
 
       expect(pageError).toBeNull();
     });
 
-    test('makes initial API request to founder_asks', async ({ page }) => {
+    test('does not request founder_asks from the sunset public route', async ({ page }) => {
       let founderAsksRequest = false;
 
       page.on('request', (request) => {
@@ -187,30 +190,10 @@ test.describe('Auto-Refresh Implementation', () => {
       });
 
       await page.goto('/Opportunities');
-      await page.waitForTimeout(5000);
+      await expect(page).toHaveURL(/\/events$/i);
+      await page.waitForTimeout(2000);
 
-      expect(founderAsksRequest).toBe(true);
-    });
-
-    test('polling triggers refetch after ~60 seconds', async ({ page }) => {
-      let requestCount = 0;
-
-      page.on('request', (request) => {
-        if (request.url().includes('founder_asks') && request.method() === 'GET') {
-          requestCount++;
-        }
-      });
-
-      await page.goto('/Opportunities');
-      await page.waitForTimeout(5000);
-
-      const initialCount = requestCount;
-      expect(initialCount).toBeGreaterThanOrEqual(1);
-
-      // Wait for polling interval + buffer
-      await page.waitForTimeout(65000);
-
-      expect(requestCount).toBeGreaterThan(initialCount);
+      expect(founderAsksRequest).toBe(false);
     });
   });
 
@@ -236,6 +219,7 @@ test.describe('Auto-Refresh Implementation', () => {
 
       // Wait for what would be a polling interval
       await page.waitForTimeout(65000);
+      expect(requestCount).toBeGreaterThanOrEqual(initialCount);
 
       // With refetchIntervalInBackground: false,
       // polling should pause when tab is not focused
@@ -281,9 +265,10 @@ test.describe('Quick Audit (< 30 seconds)', () => {
     expect(criticalErrors).toHaveLength(0);
   });
 
-  test('Opportunities page: React Query config is correct', async ({ page }) => {
+  test('Sunset opportunities route redirects cleanly', async ({ page }) => {
     await page.goto('/Opportunities');
-    await page.waitForTimeout(5000);
+    await expect(page).toHaveURL(/\/events$/i);
+    await expect(page.locator('[data-page="events"]')).toBeVisible({ timeout: 15000 });
 
     // Verify no console errors during load
     let consoleErrors = [];

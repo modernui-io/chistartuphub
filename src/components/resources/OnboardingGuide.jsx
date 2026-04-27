@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Compass, Users, FileText, ArrowRight, Sparkles } from "lucide-react";
+import { X, Compass, Calendar, FileText, ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -13,12 +13,12 @@ const STARTER_ACTIONS = [
     link: "/assessment",
   },
   {
-    id: "community",
-    icon: Users,
-    title: "Post an Ask",
-    description: "Get help from Chicago's founder community — intros, advice, or resources",
-    action: "Browse Asks",
-    link: "/opportunities",
+    id: "events",
+    icon: Calendar,
+    title: "Find Events",
+    description: "Meet founders, investors, and operators at upcoming Chicago startup events",
+    action: "Browse Events",
+    link: "/events",
   },
   {
     id: "resources",

@@ -65,10 +65,29 @@ serve(async (req) => {
     try {
       const body = await req.json();
       if (Array.isArray(body?.sources)) {
-        requestedSources = body.sources;
+        requestedSources = body.sources
+          .map((source: unknown) => String(source).trim().toLowerCase())
+          .filter(Boolean);
       }
     } catch {
       // No body or invalid JSON — sync all sources
+    }
+
+    if (requestedSources?.length) {
+      const unknownSources = requestedSources.filter((source) => !SCRAPERS[source]);
+      if (unknownSources.length > 0) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: `Unknown event source(s): ${unknownSources.join(', ')}`,
+            valid_sources: Object.keys(SCRAPERS),
+          }),
+          {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          },
+        );
+      }
     }
 
     // Get active sources from DB
@@ -117,6 +136,14 @@ serve(async (req) => {
       if (result.status === 'rejected') {
         // Fix 5: Source name is now embedded in the error message
         console.error('Source fetch failed:', result.reason);
+        const errorMessage = (result.reason as Error).message ?? String(result.reason);
+        const failedSource = errorMessage.match(/^\[([^\]]+)\]/)?.[1] || 'unknown';
+        summary[failedSource] = {
+          found: 0,
+          created: 0,
+          errors: 1,
+          error: errorMessage,
+        };
         continue;
       }
 

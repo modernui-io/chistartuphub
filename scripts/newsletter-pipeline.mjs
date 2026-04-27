@@ -398,7 +398,7 @@ function renderRough(weekNum, volumeNum, verifiedDeals, hotDeadlines, chicagoOpp
   lines.push('## LINKS\n');
   lines.push('- Full funding directory: **chistartuphub.com/funding**');
   lines.push('- Submit a resource: **chistartuphub.com/submit-resource**');
-  lines.push('- Founder Asks: **chistartuphub.com/ecosystem/founder-asks**');
+  lines.push('- Events: **chistartuphub.com/events**');
   lines.push('\n---\n');
 
   // SOURCES

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Sparkles, BookOpen, MessageSquarePlus, ArrowRight, HandHelping } from "lucide-react";
+import { X, Sparkles, BookOpen, Calendar, ArrowRight, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
@@ -7,8 +7,8 @@ import { createPageUrl } from "@/utils";
  * WelcomeModal - Post-signup onboarding experience
  * Works for both Founders and Helpers
  * 
- * Founders: Activation = Post an Ask
- * Helpers: Activation = Help a Founder
+ * Founders: Activation = Find Events
+ * Helpers: Activation = Join Community
  */
 export default function WelcomeModal({ isOpen, onClose, userName, userRole }) {
   const [step, setStep] = useState(1);
@@ -90,7 +90,7 @@ export default function WelcomeModal({ isOpen, onClose, userName, userRole }) {
                 </h2>
                 
                 <p className="text-white/60 leading-relaxed mb-4">
-                  Post an <strong className="text-white/80">Ask</strong> and let the community help you. Our community members are here to support founders like you.
+                  Use the hub to find timely events, capital resources, and communities built for Chicago founders.
                 </p>
 
                 <div className="p-4 border border-white/10 bg-white/5 mb-6">
@@ -100,15 +100,15 @@ export default function WelcomeModal({ isOpen, onClose, userName, userRole }) {
                   <ul className="text-sm text-white/50 space-y-2">
                     <li className="flex items-start gap-2">
                       <span className="text-white/30">•</span>
-                      <span>Post <strong className="text-white/70">1 ask every 7 days</strong> to ensure quality responses</span>
+                      <span>Browse upcoming Chicago events for workshops, pitch nights, and investor sessions</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-white/30">•</span>
-                      <span>Choose from 3 categories: <strong className="text-white/70">Capital</strong>, <strong className="text-white/70">Cofounder</strong>, or <strong className="text-white/70">General Advice</strong></span>
+                      <span>Use funding and resource pages to compare capital options and startup guides</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-white/30">•</span>
-                      <span>Helpers reach out, you have <strong className="text-white/70">48 hours to respond</strong></span>
+                      <span>Join community channels to build local relationships over time</span>
                     </li>
                   </ul>
                 </div>
@@ -121,7 +121,7 @@ export default function WelcomeModal({ isOpen, onClose, userName, userRole }) {
                 </h2>
                 
                 <p className="text-white/60 leading-relaxed mb-4">
-                  Browse <strong className="text-white/80">Founder Asks</strong> and offer your expertise. Whether it's introductions, advice, or connections - your help matters.
+                  Browse <strong className="text-white/80">Events</strong> and community channels to meet founders where they are already gathering.
                 </p>
 
                 <div className="p-4 border border-white/10 bg-white/5 mb-6">
@@ -131,15 +131,15 @@ export default function WelcomeModal({ isOpen, onClose, userName, userRole }) {
                   <ul className="text-sm text-white/50 space-y-2">
                     <li className="flex items-start gap-2">
                       <span className="text-white/30">•</span>
-                      <span>Browse asks from Chicago founders seeking help</span>
+                      <span>Find upcoming Chicago startup events and workshops</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-white/30">•</span>
-                      <span>Click <strong className="text-white/70">"I Can Help"</strong> and share how you can assist</span>
+                      <span>Join communities where founders ask questions and share opportunities</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-white/30">•</span>
-                      <span>If accepted, you'll receive the founder's LinkedIn to connect</span>
+                      <span>Use your expertise to support founders through warm, local relationships</span>
                     </li>
                   </ul>
                 </div>
@@ -173,20 +173,20 @@ export default function WelcomeModal({ isOpen, onClose, userName, userRole }) {
             <div className="space-y-3">
               {/* Primary Action - Role Specific */}
               <Link
-                to={createPageUrl("Opportunities")}
+                to={createPageUrl("Events")}
                 onClick={onClose}
                 className="w-full py-4 px-6 bg-white text-black font-mono text-sm uppercase tracking-[0.1em] hover:bg-white/90 transition-colors flex items-center justify-between cursor-crosshair"
               >
                 <div className="flex items-center gap-3">
                   {isFounder ? (
                     <>
-                      <MessageSquarePlus className="w-5 h-5" />
-                      <span>Post an Ask</span>
+                      <Calendar className="w-5 h-5" />
+                      <span>Find Events</span>
                     </>
                   ) : (
                     <>
-                      <HandHelping className="w-5 h-5" />
-                      <span>Help a Founder</span>
+                      <Users className="w-5 h-5" />
+                      <span>Join Community</span>
                     </>
                   )}
                 </div>

@@ -334,7 +334,7 @@ jobs:
               await expect(page.locator('#root')).not.toBeEmpty({ timeout: 10000 });
 
               // Check a key page loads
-              await page.goto(PREVIEW_URL + '/opportunities');
+              await page.goto(PREVIEW_URL + '/events');
               await expect(page.locator('#root')).not.toBeEmpty({ timeout: 10000 });
             });
           });

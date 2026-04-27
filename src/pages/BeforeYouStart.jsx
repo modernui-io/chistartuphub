@@ -12,7 +12,7 @@ const PATHS = [
     title: "Startup",
     subtitle: "Building a product designed to scale",
     description: "Software, tech, biotech, or consumer products with high-growth potential",
-    whatYouGet: ["150+ accelerators & investors", "Founder community asks", "Startup Maturity Atlas toolkit"],
+    whatYouGet: ["150+ accelerators & investors", "Chicago startup events", "Startup Maturity Atlas toolkit"],
     link: "/resources",
     linkText: "View Startup Resources",
     recommended: true, // Most common path
@@ -73,9 +73,9 @@ export default function BeforeYouStart() {
     if (!profile?.role) return null;
     const roleMessages = {
       founder: "As a founder, you'll find resources to help you build, fund, and scale.",
-      helper: "Connect with founders and share your expertise through our community asks.",
-      investor: "Looking to connect with Chicago startups? Browse founder asks or explore the ecosystem.",
-      'service-provider': "Find founders who need your expertise through our community asks.",
+      helper: "Connect with founders through events, communities, and curated ecosystem resources.",
+      investor: "Looking to connect with Chicago startups? Browse events or explore the ecosystem.",
+      'service-provider': "Find founder communities, events, and resource channels where your expertise fits.",
       student: "Explore what it takes to build in Chicago — resources, communities, and opportunities.",
     };
     return roleMessages[profile.role] || null;

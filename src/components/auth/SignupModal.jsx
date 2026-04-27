@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Eye, EyeOff, Check, ArrowRight, Megaphone, Bookmark, Compass } from 'lucide-react';
+import { Eye, EyeOff, Check, ArrowRight, Bookmark, Compass } from 'lucide-react';
 import { toast } from 'sonner';
 
 const ROLES = [
@@ -259,16 +259,16 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin, onSignup
                       onClick={() => {
                         resetForm();
                         onClose();
-                        navigate('/opportunities');
+                        navigate('/events');
                       }}
                       whileHover={{ scale: 1.01, x: 2 }}
                       whileTap={{ scale: 0.99 }}
                       className="w-full flex items-center gap-3 px-4 py-3 border border-white/20 hover:border-white/40 hover:bg-white/[0.02] transition-all duration-150 cursor-crosshair rounded-none text-left"
                     >
-                      <Megaphone className="w-4 h-4 text-white/60" strokeWidth={1.5} />
+                      <Compass className="w-4 h-4 text-white/60" strokeWidth={1.5} />
                       <div>
-                        <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white block">Post an Ask</span>
-                        <span className="font-mono text-[9px] text-white/40">Get help from the community</span>
+                        <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-white block">Find an Event</span>
+                        <span className="font-mono text-[9px] text-white/40">Meet the Chicago founder ecosystem</span>
                       </div>
                     </motion.button>
                   )}
