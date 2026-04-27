@@ -1,6 +1,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { InvestorTagDot } from './InvestorTagDot';
+import { getInvestorQuality } from '@/lib/investorQuality';
 
 // Format check size for display
 function formatCheckSize(min, max) {
@@ -55,6 +56,13 @@ export function InvestorCard({
   const checkSize = formatCheckSize(check_size_min, check_size_max);
   const location = hq_city ? `${hq_city}` : 'National';
   const refCode = generateRefCode(id);
+  const quality = getInvestorQuality(investor);
+  const qualityClass = {
+    green: 'border-emerald-400/50 text-emerald-300',
+    amber: 'border-amber-400/50 text-amber-300',
+    blue: 'border-sky-400/50 text-sky-300',
+    muted: 'border-chi-ghost text-chi-muted',
+  }[quality.tone];
 
   // Truncate description for tagline
   const tagline = description 
@@ -86,6 +94,10 @@ export function InvestorCard({
             ★ Midwest
           </span>
         )}
+
+        <span className={cn("px-2.5 py-1 border text-[9px] uppercase tracking-[0.1em] font-mono", qualityClass)}>
+          {quality.label} {quality.score}
+        </span>
 
         {annotation?.tag && <InvestorTagDot tag={annotation.tag} />}
       </div>

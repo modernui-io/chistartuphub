@@ -64,6 +64,7 @@ export const listBrowseInvestors = async () => {
       .select('*')
       .or('is_midwest.eq.true,mvip_score.gte.60')
       .order('is_midwest', { ascending: false })
+      .order('completeness_score', { ascending: false, nullsFirst: false })
       .order('mvip_score', { ascending: false, nullsFirst: false })
       .order('canonical_name', { ascending: true })
       .range(from, from + PAGE_SIZE - 1);

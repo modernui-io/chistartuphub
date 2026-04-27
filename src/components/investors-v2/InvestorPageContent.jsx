@@ -15,6 +15,7 @@ import { ExportInvestorsButton } from './ExportInvestorsButton';
 import { useInvestorSearch } from '@/hooks/useInvestorSearch';
 import { usePipelineAnnotations } from '@/hooks/usePipelineAnnotations';
 import { parseBooleanQuery, matchesBooleanQuery, filterTieredResults } from '@/lib/booleanSearch';
+import { getInvestorQuality } from '@/lib/investorQuality';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -32,11 +33,23 @@ export function InvestorPageContent({ investors = [] }) {
 
   // Calculate counts for each category (single pass through investors)
   const counts = useMemo(() => {
-    const result = { total: 0, all: 0, vc: 0, angel: 0, family_office: 0, cvc: 0, midwest: 0 };
+    const result = {
+      total: 0,
+      all: 0,
+      vc: 0,
+      angel: 0,
+      family_office: 0,
+      cvc: 0,
+      midwest: 0,
+      complete: 0,
+      usable: 0,
+      needs_review: 0,
+    };
 
     for (const inv of investors) {
       result.all++;
       const type = inv.investor_type?.toLowerCase() || '';
+      const quality = getInvestorQuality(inv);
 
       if (type === 'vc') result.vc++;
       else if (type === 'angel') result.angel++;
@@ -44,6 +57,9 @@ export function InvestorPageContent({ investors = [] }) {
       else if (type === 'cvc' || type === 'corporate') result.cvc++;
 
       if (inv.is_midwest) result.midwest++;
+      if (quality.score >= 80) result.complete++;
+      if (quality.score >= 60) result.usable++;
+      if (quality.score < 35) result.needs_review++;
     }
 
     result.total = result.all;
@@ -111,6 +127,19 @@ export function InvestorPageContent({ investors = [] }) {
           if (loc === 'chicago') return city === 'chicago';
           if (loc === 'coastal') return ['san francisco', 'new york', 'los angeles', 'boston', 'seattle'].includes(city);
           if (loc === 'national') return true;
+          return true;
+        });
+      });
+    }
+
+    // Profile quality filter
+    if (activeFilters.profileQuality?.length > 0) {
+      result = result.filter(i => {
+        const quality = getInvestorQuality(i);
+        return activeFilters.profileQuality.some(q => {
+          if (q === 'complete') return quality.score >= 80;
+          if (q === 'usable') return quality.score >= 60;
+          if (q === 'needs_review') return quality.score < 35;
           return true;
         });
       });
@@ -317,6 +346,21 @@ export function InvestorPageContent({ investors = [] }) {
             onCategoryChange={handleCategoryChange}
             counts={counts}
           />
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="border border-chi-ghost/50 bg-black/30 px-4 py-3">
+              <span className="text-[9px] uppercase tracking-[0.18em] text-chi-dim font-mono block mb-1">Complete Profiles</span>
+              <span className="font-display text-2xl text-emerald-300">{counts.complete.toLocaleString()}</span>
+            </div>
+            <div className="border border-chi-ghost/50 bg-black/30 px-4 py-3">
+              <span className="text-[9px] uppercase tracking-[0.18em] text-chi-dim font-mono block mb-1">Usable Profiles</span>
+              <span className="font-display text-2xl text-amber-300">{counts.usable.toLocaleString()}</span>
+            </div>
+            <div className="border border-chi-ghost/50 bg-black/30 px-4 py-3">
+              <span className="text-[9px] uppercase tracking-[0.18em] text-chi-dim font-mono block mb-1">Needs Review</span>
+              <span className="font-display text-2xl text-chi-muted">{counts.needs_review.toLocaleString()}</span>
+            </div>
+          </div>
 
           {/* Results Header */}
           <div className="flex items-center justify-between py-4 border-b border-chi-ghost/30">

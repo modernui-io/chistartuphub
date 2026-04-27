@@ -42,6 +42,14 @@ const filterConfig = {
       { id: 'enterprise', label: 'Enterprise' },
       { id: 'climate', label: 'Climate' }
     ]
+  },
+  profileQuality: {
+    label: 'Profile Quality',
+    options: [
+      { id: 'complete', label: 'Complete 80+' },
+      { id: 'usable', label: 'Usable 60+' },
+      { id: 'needs_review', label: 'Needs Review' }
+    ]
   }
 };
 
@@ -82,7 +90,7 @@ export function InvestorFilters({
       </div>
       
       {/* Filter Groups */}
-      <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         {Object.entries(filterConfig).map(([key, config]) => (
           <div key={key}>
             <span className="text-[9px] uppercase tracking-[0.2em] text-chi-dim block mb-3 font-mono">

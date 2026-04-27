@@ -7,6 +7,7 @@ import { useInvestorPipeline } from '@/hooks/useInvestorPipeline';
 import { AddToPipelineButton } from './AddToPipelineButton';
 import { InvestorTagSelector } from './InvestorTagSelector';
 import { InvestorNotesField } from './InvestorNotesField';
+import { getInvestorQuality } from '@/lib/investorQuality';
 
 // Format check size for display
 function formatCheckSize(min, max) {
@@ -66,12 +67,19 @@ export function InvestorModal({
   const checkSize = formatCheckSize(check_size_min, check_size_max);
   const location = hq_city && hq_state ? `${hq_city}, ${hq_state}` : 'National';
   const sectorList = sectors || [];
+  const quality = getInvestorQuality(investor);
+  const qualityClass = {
+    green: 'border-emerald-400/50 text-emerald-300',
+    amber: 'border-amber-400/50 text-amber-300',
+    blue: 'border-sky-400/50 text-sky-300',
+    muted: 'border-chi-ghost text-chi-muted',
+  }[quality.tone];
 
   const stats = [
     { label: 'Check Size', value: checkSize },
     { label: 'Stage Focus', value: stage_focus || 'Multi-Stage' },
     { label: 'Location', value: location },
-    { label: 'Type', value: typeBadge }
+    { label: 'Profile Quality', value: `${quality.score}%` }
   ];
 
   return (
@@ -111,6 +119,10 @@ export function InvestorModal({
                   
                   <span className="px-3 py-1.5 border border-green-500/50 text-[10px] uppercase tracking-[0.1em] text-green-400">
                     Actively Investing
+                  </span>
+
+                  <span className={cn("px-3 py-1.5 border text-[10px] uppercase tracking-[0.1em]", qualityClass)}>
+                    {quality.label} Profile
                   </span>
                 </div>
                 
