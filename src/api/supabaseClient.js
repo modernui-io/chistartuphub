@@ -50,6 +50,40 @@ const createListFunction = (tableName) => async (orderBy = '-created_date') => {
 };
 
 /**
+ * Investor browse intentionally avoids pulling the full raw investor table.
+ * Production contains a very large harvested database, so the UI loads the
+ * founder-facing slice: Midwest investors plus high-confidence national firms.
+ */
+export const listBrowseInvestors = async () => {
+  let allData = [];
+  let from = 0;
+
+  while (true) {
+    const { data, error } = await supabase
+      .from('public_investors')
+      .select('*')
+      .or('is_midwest.eq.true,mvip_score.gte.60')
+      .order('is_midwest', { ascending: false })
+      .order('mvip_score', { ascending: false, nullsFirst: false })
+      .order('canonical_name', { ascending: true })
+      .range(from, from + PAGE_SIZE - 1);
+
+    if (error) {
+      console.error('Error fetching curated investor browse list:', error);
+      throw error;
+    }
+
+    const rows = data || [];
+    allData = allData.concat(rows);
+
+    if (rows.length < PAGE_SIZE) break;
+    from += PAGE_SIZE;
+  }
+
+  return allData;
+};
+
+/**
  * Generic get by ID function
  */
 const createGetFunction = (tableName) => async (id) => {

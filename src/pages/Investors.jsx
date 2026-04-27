@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { entities } from "@/api/supabaseClient";
+import { listBrowseInvestors } from "@/api/supabaseClient";
 import { useQuery } from "@tanstack/react-query";
 import { InvestorPageContent } from "@/components/investors-v2";
 import SEO from "@/components/SEO";
@@ -14,8 +14,8 @@ export default function Investors() {
   }, []);
 
   const { data: investors = [], isLoading, error } = useQuery({
-    queryKey: ["investors"],
-    queryFn: () => entities.Investor.list("-mvip_score"),
+    queryKey: ["investors", "browse"],
+    queryFn: listBrowseInvestors,
     staleTime: 1000 * 60 * 5,
   });
 
