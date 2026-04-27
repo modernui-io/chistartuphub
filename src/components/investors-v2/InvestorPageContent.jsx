@@ -68,7 +68,15 @@ export function InvestorPageContent({ investors = [] }) {
 
   // Filter investors based on category, search, and filters
   const filteredInvestors = useMemo(() => {
-    let result = [...investors];
+    let result = [...investors].sort((a, b) => {
+      const qualityDelta = getInvestorQuality(b).score - getInvestorQuality(a).score;
+      if (qualityDelta !== 0) return qualityDelta;
+
+      const scoreDelta = (b.mvip_score || 0) - (a.mvip_score || 0);
+      if (scoreDelta !== 0) return scoreDelta;
+
+      return (a.canonical_name || '').localeCompare(b.canonical_name || '');
+    });
 
     // Category filter (consolidated logic)
     if (activeCategory !== 'all') {
