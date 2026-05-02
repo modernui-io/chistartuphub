@@ -1,5 +1,5 @@
 # Capital Access Newsletter
-**Volume 17 | April 30, 2026**
+**Volume 17 | May 2, 2026**
 
 ---
 
@@ -23,26 +23,6 @@ Theme ideas: ___, current events tie-in, ecosystem observation.]
 ---
 
 ## Deadlines
-
-### This Week
-
-| Deadline | Opportunity | Amount | Link |
-|----------|-------------|--------|------|
-| **Apr 30** | DePaul Purpose Pitch Competition | $5K–$25K | [Apply](https://business.depaul.edu/about/centers-institutes/coleman-entrepreneurship-center/events-programs/Pages/Purpose-Pitch-Competition.aspx) |
-| **Apr 30** | AI for Good Innovation Factory | $5K–$20K | [Apply](https://aiforgood.itu.int/innovation-factory-startup-application-form/) |
-| **Apr 30** | MIT Climate & Energy Prize | $10K–$100K | [Apply](https://cep.mit.edu/competition) |
-| **Apr 30** | Black Ambition Prize | $50K–$3M | [Apply](https://blackambitionprize.com/apply-now/) |
-| **Apr 30** | National Pride Grant (LGBTQ+) | $1K–$25K | [Apply](https://foundersfirstcdc.org/pride-grant) |
-| **Apr 30** | Patagonia Environmental Grants Program | $5K–$20K | [Apply](https://www.patagonia.com/how-we-fund/corporate-grant/) |
-| **Apr 30** | Harvard President''s Innovation Challenge [DEADLINE MISMATCH] | $10K–$75K | [Apply](https://innovationlabs.harvard.edu/events/launch-party-2026-presidents-innovation-challenge) |
-| **Apr 30** | MassChallenge FinTech Challenge | $25K–$100K | [Apply](https://masschallenge.org/2026-fintech-challenge-program/) |
-| **Apr 30** | NIBS Worldwide Business Plan Competition | $1K–$10K | [Apply](https://www.nibsweb.org/competitions/business-plan-competition/) |
-| **Apr 30** | Web Summit PITCH Rio | Up to $50K | [Apply](https://rio.websummit.com/startups/pitch/) |
-| **Apr 30** | Better Futures HBCU Pitch Competition | $5K–$25K | [Apply](https://www.hbcufi.org/pitch-competition) |
-| **Apr 30** | Fowler Global Social Innovation Challenge | $10K–$75K | [Apply](https://www.fowlergsic.org/) |
-| **Apr 30** | HRX Pitch Competition - Healthcare Innovators | $5K–$50K | [Apply](https://experiencehrx.com/hrx-live/pitch-competition/) |
-| **Apr 30** | Onstage VC Demo Day | Up to $100K | [Apply](https://www.onstage.vc/startups) |
-| **May 1** | Halstead Grant for Silver Jewelry Entrepreneurs | $1K–$8K | [Apply](https://www.halsteadbead.com/halstead-grant) |
 
 ### Coming Up
 
