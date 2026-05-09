@@ -1,5 +1,5 @@
 # Capital Access Newsletter
-**Volume 18 | May 7, 2026**
+**Volume 18 | May 9, 2026**
 
 ---
 
@@ -24,11 +24,16 @@ Theme ideas: ___, current events tie-in, ecosystem observation.]
 
 ## Deadlines
 
+### This Week
+
+| Deadline | Opportunity | Amount | Link |
+|----------|-------------|--------|------|
+| **May 15** | Neighborhood Opportunity Fund (NOF) [DEADLINE MISMATCH] | $10K–$250K | [Apply](https://www.chicago.gov/city/en/sites/neighborhood-opportunity-fund/home.html) |
+
 ### Coming Up
 
 | Deadline | Opportunity | Amount | Link |
 |----------|-------------|--------|------|
-| **May 15** | Neighborhood Opportunity Fund (NOF) | $10K–$250K | [Apply](https://www.chicago.gov/city/en/sites/neighborhood-opportunity-fund/home.html) |
 | **May 20** | iF Social Impact Prize 2026 | $10K–$100K | [Apply](https://opportunitiesforyouth.org/2026/02/04/apply-now-if-social-impact-prize-2025-win-funding-for-projects-supporting-un-sustainable-development-goals/) |
 
 **Full list:** [chistartuphub.com/funding](https://chistartuphub.com/funding)
