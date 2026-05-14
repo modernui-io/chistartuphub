@@ -1,0 +1,54 @@
+# Research Notes — 2026-W20
+*Generated: 2026-05-14T20:26:07.599Z*
+*Window: 2026-05-07 to 2026-05-14 (deals) | 2026-04-09 to 2026-05-14 (funds)*
+
+## Web-Discovered Deals (0)
+
+*No deals found via web search.*
+
+## SEC EDGAR Filings — Illinois (0)
+
+*No Form D filings in window.*
+
+## Fund News (1)
+
+### S2G Investments Solutions Fund I — $1 billion ✅
+- **Manager:** S2G Investments
+- **Strategy:** Growth-stage investment across food & agriculture, energy, and oceans
+- **Close date:** 2026-05-12
+- **Description:** S2G Investments announced the final closing of Solutions Fund I, a $1 billion growth-stage investment fund aimed at advancing commercial solutions that deliver greater efficiency, resilience, and long-term value.
+- **Sources (3):**
+  - [S2G Investments Closes $1 Billion Solutions Fund I to Scale Growth-Stage Companies Across Food & Agriculture, Energy, and Oceans](https://www.businesswire.com/news/home/20260512836810/en/S2G-Investments-Closes-%241-Billion-Solutions-Fund-I-to-Scale-Growth-Stage-Companies-Across-Food-Agriculture-Energy-and-Oceans) [BROKEN LINK]
+  - [Jeb Bush’s Finback Investment Raises Nearly $500 Million for New Fund - WSJ](https://www.wsj.com/pro/private-equity/jeb-bushs-finback-investment-raises-nearly-500-million-for-new-fund-0dbddaa1) [BROKEN LINK]
+  - [Brookfield on track for record year after raising $21bn in Q1 - Private Equity Wire](https://www.privateequitywire.co.uk/brookfield-on-track-for-record-year-after-raising-21bn-in-q1/) [BROKEN LINK]
+
+## Upcoming Deadlines (6)
+
+| Deadline | Name | Type | Amount | Link | Status |
+|----------|------|------|--------|------|--------|
+| May 15 | Neighborhood Opportunity Fund (NOF) | Grant | $10K–$250K | https://www.chicago.gov/city/en/sites/neighborhood-opportunity-fund/home.html | DEAD_OR_UNREACHABLE |
+| May 20 | iF Social Impact Prize 2026 | Competition | $10K–$100K | https://opportunitiesforyouth.org/2026/02/04/apply-now-if-social-impact-prize-2025-win-funding-for-projects-supporting-un-sustainable-development-goals/ | LIVE |
+| May 31 | Ag Innovation Challenge | Competition | $10K–$50K | https://www.fb.org/initiative/ag-innovation-challenge | LIVE |
+| May 31 | ABC Business Plan Competition 2026 | Competition | $1K–$10K | https://abcbootcamps.com/abc-business-plan-competition-2026/ | LIVE |
+| May 31 | TechChicago Startup Challenge | Competition | $5K–$25K | https://gotechchicago.com/week/ | LIVE |
+| Jun 1 | Hello Tomorrow Global Challenge 2026 | Competition | Varies | https://hello-tomorrow.org/global-challenge/ | LIVE |
+
+## Chicago Rolling Programs (215)
+
+- **1871 Chicago Tech Incubator** — Varies — https://1871.com
+- **A W Rollins Memorial Fund 2620048100** — Varies — N/A
+- **Aauw Gender Equity Fund Of Illinois Inc** — Varies — http://www.bufi.org/
+- **Accion Chicago** — $5K–$100K — https://us.accion.org/chicago
+- **Ace Tech Endowment Fund** — Varies — N/A
+- **Acorn Equality Fund** — Varies — https://acornheadstudio.weebly.com/
+- **Affordable Housing Development Fund Inc** — Varies — https://hcr.ny.gov/housing-development-fund-corporation-hdfc
+- **Agapa Community Development** — Varies — http://www.northsidecdc.org/
+- **Ahayah Community Development Corporation** — Varies — https://new-covenantcdc.org/
+- **Am Shalom Endowment Fund** — Varies — http://www.amshalom.com/
+- **Angel Feather Fund** — Varies — http://featherfund.net/
+- **Angel Fund Charitable Tr** — Varies — N/A
+- **Angel Of Lower Drive Fund Inc** — Varies — N/A
+- **Angela Vendegna Scholarshp Fund** — Varies — N/A
+- **Angels Wish Spay And Neuter Assistance Fund Corporation** — Varies — N/A
+
+*...and 200 more.*
