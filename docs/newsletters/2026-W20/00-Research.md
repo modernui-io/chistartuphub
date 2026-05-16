@@ -1,6 +1,6 @@
 # Research Notes — 2026-W20
-*Generated: 2026-05-14T20:26:07.599Z*
-*Window: 2026-05-07 to 2026-05-14 (deals) | 2026-04-09 to 2026-05-14 (funds)*
+*Generated: 2026-05-16T20:00:14.156Z*
+*Window: 2026-05-09 to 2026-05-16 (deals) | 2026-04-11 to 2026-05-16 (funds)*
 
 ## Web-Discovered Deals (0)
 
@@ -12,21 +12,20 @@
 
 ## Fund News (1)
 
-### S2G Investments Solutions Fund I — $1 billion ✅
+### Solutions Fund I — $1 Billion ✅
 - **Manager:** S2G Investments
 - **Strategy:** Growth-stage investment across food & agriculture, energy, and oceans
 - **Close date:** 2026-05-12
-- **Description:** S2G Investments announced the final closing of Solutions Fund I, a $1 billion growth-stage investment fund aimed at advancing commercial solutions that deliver greater efficiency, resilience, and long-term value.
+- **Description:** S2G Investments has closed its Solutions Fund I, a $1 billion fund aimed at scaling growth-stage companies in various sectors including food, agriculture, and energy. The fund received commitments from a diverse group of institutional investors.
 - **Sources (3):**
   - [S2G Investments Closes $1 Billion Solutions Fund I to Scale Growth-Stage Companies Across Food & Agriculture, Energy, and Oceans](https://www.businesswire.com/news/home/20260512836810/en/S2G-Investments-Closes-%241-Billion-Solutions-Fund-I-to-Scale-Growth-Stage-Companies-Across-Food-Agriculture-Energy-and-Oceans) [BROKEN LINK]
   - [Jeb Bush’s Finback Investment Raises Nearly $500 Million for New Fund - WSJ](https://www.wsj.com/pro/private-equity/jeb-bushs-finback-investment-raises-nearly-500-million-for-new-fund-0dbddaa1) [BROKEN LINK]
-  - [Brookfield on track for record year after raising $21bn in Q1 - Private Equity Wire](https://www.privateequitywire.co.uk/brookfield-on-track-for-record-year-after-raising-21bn-in-q1/) [BROKEN LINK]
+  - [SAGA Metals Announces Closing of Over-Subscribed $10.2 Million Non-Brokered Private Placement - Investing News Network](https://investingnews.com/saga-metals-announces-closing-of-over-subscribed-10-2-million-non-brokered-private-placement/)
 
-## Upcoming Deadlines (6)
+## Upcoming Deadlines (5)
 
 | Deadline | Name | Type | Amount | Link | Status |
 |----------|------|------|--------|------|--------|
-| May 15 | Neighborhood Opportunity Fund (NOF) | Grant | $10K–$250K | https://www.chicago.gov/city/en/sites/neighborhood-opportunity-fund/home.html | DEAD_OR_UNREACHABLE |
 | May 20 | iF Social Impact Prize 2026 | Competition | $10K–$100K | https://opportunitiesforyouth.org/2026/02/04/apply-now-if-social-impact-prize-2025-win-funding-for-projects-supporting-un-sustainable-development-goals/ | LIVE |
 | May 31 | Ag Innovation Challenge | Competition | $10K–$50K | https://www.fb.org/initiative/ag-innovation-challenge | LIVE |
 | May 31 | ABC Business Plan Competition 2026 | Competition | $1K–$10K | https://abcbootcamps.com/abc-business-plan-competition-2026/ | LIVE |
