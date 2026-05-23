@@ -1,8 +1,4 @@
 # Environment files
-.env
-.env.*
-.env.local
-.env.production
 !.env.example
 
 # Logs
@@ -37,3 +33,4 @@ supabase/.temp/
 # MCP config (contains tokens)
 .mcp.json
 .vercel
+config.bat
